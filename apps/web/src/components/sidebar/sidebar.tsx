@@ -104,6 +104,8 @@ export const Sidebar = () => {
                 />
             </HeaderLogoContainer>
             <SidebarMainNav isClipped={isClipped}/>
+            
+
         </BaseSidebar>
     )
 }
