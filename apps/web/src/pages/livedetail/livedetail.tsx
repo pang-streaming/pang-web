@@ -1,42 +1,15 @@
 import { useLocation } from "react-router-dom";
 import { MainLiveProps } from "../explore/livecard/mainlivecard/mainlivecard.props";
-import {
-  ChatArea,
-  ChatHeader,
-  ChatHeaderIcon,
-  ChatHeaderText,
-  ChattingContainer,
-  ChattingElemContainer,
-  ChattingInput,
-  ChattingInputContainer,
-  ChattingMessage,
-  ChattingTextField,
-  ChattingViewer,
-  ChattingViewerName,
-  EmojiButton,
-  LiveDetailContainer,
-  SendButton,
-  SendContainer,
-  Spacer,
-  Video,
-  VideoContainer,
-  randomColor,
-} from "./livedetail.style";
-import {
-  MainStreamerName,
-  StreamInfo,
-} from "../explore/livecard/mainlivecard/mainlivecard.style";
+import {MainStreamerName,StreamInfo,} from "../explore/livecard/mainlivecard/mainlivecard.style";
 import { ProfileImage } from "../explore/livecard/livecard.style";
 import { FollowerCount } from "../../components/followingcard/followingcard.style";
 import munjioppa from "../../assets/munjioppa.png";
 import { useState } from "react";
 import { IoSend } from "react-icons/io5";
 import { FaRegFaceLaugh } from "react-icons/fa6";
-import SponsorshipBadge from "./components/sponsorship-badge/sponsorship-badge";
-import { BadgeContainer } from "./components/sponsorship-badge/sponsorship-badge.style";
 import { SponsorshipBadgeContainer } from "./components/sponsorship-badge/sponsorship-badge-container";
 import { NoticeBox } from "./components/notice-box/notice-box";
-
+import * as S from './livedetail.style';
 export const LiveDetail = () => {
   const [chat, setChat] = useState("");
   const [viewers, setViewer] = useState([
@@ -81,7 +54,7 @@ export const LiveDetail = () => {
       id: viewers.length + 1,
       viewerName: "선유입니다",
       chatting: chat,
-      color: randomColor(),
+      color: S.randomColor(),
     };
 
     setViewer([...viewers, newChat]);
@@ -107,44 +80,44 @@ export const LiveDetail = () => {
   const live = location.state as MainLiveProps;
 
   return (
-    <LiveDetailContainer>
-      <VideoContainer>
+    <S.LiveDetailContainer>
+      <S.VideoContainer>
         {/* <Video src={live.thumbnail} alt="ddddd"/> */}
-        <Video src={munjioppa} />
+        <S.Video src={munjioppa} />
         <StreamInfo>
           <ProfileImage src={live.profileImage} />
           <MainStreamerName>{live.streamerName}</MainStreamerName>
           <FollowerCount>{live.followerCount}18.8 만명</FollowerCount>
         </StreamInfo>
-      </VideoContainer>
-      <ChatArea>
-        <ChatHeader>
-          <ChatHeaderIcon />
-          <Spacer />
-          <ChatHeaderText>채팅</ChatHeaderText>
-          <Spacer />
-        </ChatHeader>
-        <ChattingContainer>
+      </S.VideoContainer>
+      <S.ChatArea>
+        <S.ChatHeader>
+          <S.ChatHeaderIcon />
+          <S.Spacer />
+          <S.ChatHeaderText>채팅</S.ChatHeaderText>
+          <S.Spacer />
+        </S.ChatHeader>
+        <S.ChattingContainer>
         <div style={{ display: 'flex', flexDirection: 'column',justifyContent: 'center', alignItems: 'center', width: '100%' }}>
         <SponsorshipBadgeContainer />
         <NoticeBox />
     </div>
 
 
-          <ChattingElemContainer>
+          <S.ChattingElemContainer>
             {viewers.map((viewer) => (
-              <ChattingViewer key={viewer.id}>
-                <ChattingViewerName style={{ color: viewer.color }}>
+              <S.ChattingViewer key={viewer.id}>
+                <S.ChattingViewerName style={{ color: viewer.color }}>
                   {viewer.viewerName}
-                </ChattingViewerName>
-                <ChattingMessage>{viewer.chatting}</ChattingMessage>
-              </ChattingViewer>
+                </S.ChattingViewerName>
+                <S.ChattingMessage>{viewer.chatting}</S.ChattingMessage>
+              </S.ChattingViewer>
             ))}
-          </ChattingElemContainer>
-          <Spacer />
-          <ChattingInputContainer>
-            <ChattingInput>
-              <ChattingTextField
+          </S.ChattingElemContainer>
+          <S.Spacer />
+          <S.ChattingInputContainer>
+            <S.ChattingInput>
+              <S.ChattingTextField
                 type="text"
                 placeholder="채팅창 문구"
                 value={chat}
@@ -153,18 +126,18 @@ export const LiveDetail = () => {
                 onCompositionStart={compositionStart}
                 onCompositionEnd={compositionEnd}
               />
-              <SendContainer>
-                <EmojiButton>
+              <S.SendContainer>
+                <S.EmojiButton>
                   <FaRegFaceLaugh />
-                </EmojiButton>
-                <SendButton onClick={appendChat}>
+                </S.EmojiButton>
+                <S.SendButton onClick={appendChat}>
                   <IoSend />
-                </SendButton>
-              </SendContainer>
-            </ChattingInput>
-          </ChattingInputContainer>
-        </ChattingContainer>
-      </ChatArea>
-    </LiveDetailContainer>
+                </S.SendButton>
+              </S.SendContainer>
+            </S.ChattingInput>
+          </S.ChattingInputContainer>
+        </S.ChattingContainer>
+      </S.ChatArea>
+    </S.LiveDetailContainer>
   );
 };

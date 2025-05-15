@@ -1,10 +1,6 @@
-import { Link } from "react-router-dom";
-import styled from "styled-components";
-import { MainLiveProps } from "../explore/livecard/mainlivecard/mainlivecard.props";
-import { SiEnterprisedb } from "react-icons/si";
-import { PiEnvelopeThin, PiExportThin } from "react-icons/pi";
-import { LuArrowRightToLine } from "react-icons/lu";
 
+import styled from "styled-components";
+import { LuArrowRightToLine } from "react-icons/lu";
 
 
 export const LiveDetailContainer = styled.div`

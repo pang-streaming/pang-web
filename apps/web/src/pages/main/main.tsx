@@ -1,10 +1,10 @@
-import { Card } from "../../components/card/card"
-import { FollowingContainer, FollowingTitle, LiveContainer } from "../follow/following.style"
+
+import { FollowingContainer, FollowingTitle } from "../follow/following.style"
 import { GridContainer } from "./main.style"
 import dlook from '../../assets/dlook.png'
 import { LiveCard } from "../explore/livecard/livecard"
 import { MainLiveCard } from "../explore/livecard/mainlivecard/mainlivecard"
-import { useNavigate } from "react-router-dom"
+
 
 
 
@@ -29,11 +29,6 @@ export const Main = () => {
             title: "안녕하세요"
         }
     ];
-
-    const navigate = useNavigate();
-    const clickLive = () => {
-        navigate('/fakelogin')
-    }
     return (
             <FollowingContainer>
               <MainLiveCard 
@@ -45,7 +40,6 @@ export const Main = () => {
                 category="마인크래프트"
                 badge={true}
               />
-              <button onClick={clickLive}>svsdvsdv</button>
                 <FollowingTitle>이 방송 어때요?</FollowingTitle>
                 <GridContainer>
                         {lives.map(() => (
