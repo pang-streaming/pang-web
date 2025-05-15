@@ -1,5 +1,4 @@
 import React from 'react';
-import { BrowserRouter } from 'react-router-dom';
 import { Header } from './components/header/header';
 import { Sidebar } from './components/sidebar/sidebar';
 import { AppRoutes } from './routes';
@@ -11,15 +10,13 @@ export interface AppProps {
 
 export const App: React.FC<AppProps> = ({ isClipped = false }) => {
   return (
-    <BrowserRouter>
-      <div>
-        <Header />
-        <Sidebar isClipped={isClipped} />
-        <main style={{ marginLeft: '240px', marginTop: '72px', padding: '20px' }}>
-          <AppRoutes />
-        </main>
-      </div>
-    </BrowserRouter>
+    <div>
+      <Header />
+      <Sidebar isClipped={isClipped} />
+      <main style={{ marginLeft: '240px', marginTop: '72px', padding: '20px' }}>
+        <AppRoutes />
+      </main>
+    </div>
   );
 }
 
