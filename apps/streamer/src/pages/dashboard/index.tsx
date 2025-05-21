@@ -1,12 +1,5 @@
 import { FC } from 'react';
-import {
-    DashboardContainer,
-    RecentLiveSection,
-    StatsSection,
-    UploadSection,
-    NoticeSection,
-    PangCommuSection
-} from './dashboard.style';
+import * as S from './dashboard.style';
 import { FaUpload } from 'react-icons/fa';
 
 interface LiveItem {
@@ -51,8 +44,8 @@ export const DashboardPage: FC = () => {
     };
 
     return (
-        <DashboardContainer>
-            <RecentLiveSection>
+        <S.DashboardContainer>
+            <S.RecentLiveSection>
                 <h2>최근 스트리밍 라이브</h2>
                 {recentLives.map((live, index) => (
                     <div key={index} className="live-item">
@@ -63,26 +56,26 @@ export const DashboardPage: FC = () => {
                         <button>다시보기</button>
                     </div>
                 ))}
-            </RecentLiveSection>
+            </S.RecentLiveSection>
 
-            <StatsSection>
+            <S.StatsSection>
                 <h2>구독자 현황</h2>
                 <div className="stat-box">
                     <div className="number">{subscriberCount.toLocaleString()}</div>
                     <div className="label">총 구독자</div>
                     <div className="change">+{subscriberIncrease} 이번 주 신규</div>
                 </div>
-            </StatsSection>
+            </S.StatsSection>
 
-            <UploadSection>
+            <S.UploadSection>
                 <h2>동영상 업로드</h2>
                 <div className="upload-box" onClick={handleUpload}>
                     <FaUpload style={{ marginRight: '8px' }} />
                     <span>내 동영상을 간편하게 업로드 하세요</span>
                 </div>
-            </UploadSection>
+            </S.UploadSection>
 
-            <NoticeSection>
+            <S.NoticeSection>
                 <h2>공지사항</h2>
                 {notices.map((notice, index) => (
                     <div key={index} className="notice-item">
@@ -90,9 +83,9 @@ export const DashboardPage: FC = () => {
                         <div className="date">{notice.date}</div>
                     </div>
                 ))}
-            </NoticeSection>
+            </S.NoticeSection>
 
-            <PangCommuSection>
+            <S.PangCommuSection>
                 <h2>팡커뮤</h2>
                 {pangryuItems.map((item, index) => (
                     <div key={index} className="pangryu-item">
@@ -100,7 +93,7 @@ export const DashboardPage: FC = () => {
                         <div className="date">{item.date}</div>
                     </div>
                 ))}
-            </PangCommuSection>
-        </DashboardContainer>
+            </S.PangCommuSection>
+        </S.DashboardContainer>
     );
 };

@@ -50,7 +50,6 @@ export const StreamingPage: React.FC = () => {
     }));
   };
 
-  // 컨트롤 버튼 데이터
   const controlButtons = [
     { icon: <FaPlay />, text: '시작', primary: true },
     { icon: <FaVideo />, text: '', primary: false },
