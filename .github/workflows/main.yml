@@ -76,9 +76,9 @@ jobs:
         with:
           name: build-artifacts
 
-      # 파일 전송을 위한 SCP 액션
+      # 파일 전송을 위한 SCP 액션 (버전 업데이트)
       - name: EC2로 파일 전송
-        uses: appleboy/scp-action@v0.1.4
+        uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ec2-user
@@ -86,11 +86,11 @@ jobs:
           port: 22
           source: build-artifacts.zip
           target: /home/ec2-user/deploy
-          debug: true
+          overwrite: true
       
-      # 원격 명령 실행을 위한 SSH 액션
+      # 원격 명령 실행을 위한 SSH 액션 (버전 업데이트)
       - name: 원격 배포 스크립트 실행
-        uses: appleboy/ssh-action@v1.0.0
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ec2-user
