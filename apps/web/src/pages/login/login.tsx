@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import {
   DividerText,
   LeftSection,
@@ -29,6 +31,7 @@ import { FcGoogle } from "react-icons/fc";
 export const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const isActive = username.trim() !== "" && password.trim() !== "";
 
@@ -100,7 +103,7 @@ export const Login = () => {
         <div style={{ marginTop: "30px" }}>
           <SignUpText>
             가입된 계정이 없으신가요?{" "}
-            <SignUpLink onClick={() => alert("회원가입 페이지 이동!")}>
+            <SignUpLink onClick={() => navigate("/signup")}>
               회원가입
             </SignUpLink>
           </SignUpText>

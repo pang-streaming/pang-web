@@ -163,23 +163,54 @@ export const NextButton = styled.button<{ $active: boolean }>`
 `;
 
 export const CheckboxLabel = styled.label`
-  display: flex;
-  align-items: center;
-  cursor: pointer;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    padding-left: 40px;
+    user-select: none;
 `;
 
-export const Checkbox = styled.input`
-  width: 20px;
-  height: 20px;
-  margin-right: 8px;
-  margin-left: 15px;
-  accent-color: #f37;
-  border-radius: 4px;
+export const Checkbox = styled.input.attrs({ type: "checkbox" })`
+    opacity: 0;
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    cursor: pointer;
 
-  &:checked {
-    background-color: #f37;
-    border-color: #f37;
-  }
+    &:checked ~ .custom-checkbox {
+        background-color: #f37;
+        border-color: #f37;
+    }
+
+    &:checked ~ .custom-checkbox::after {
+        content: "";
+        position: absolute;
+        left: 5.5px;
+        top: 2px;
+        width: 6px;
+        height: 11px;
+        border: solid white;
+        border-width: 0 3px 3px 0;
+        transform: rotate(45deg);
+        border-radius: 1px;
+    }
+`;
+
+// 가짜 체크박스
+export const CustomCheckbox = styled.span`
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 20px;
+  width: 20px;
+  background-color: #404040;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
 `;
 
 //이 밑부터 컨페티효과

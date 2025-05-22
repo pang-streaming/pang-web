@@ -12,6 +12,7 @@ import {
     SignupWrap,
     CheckboxLabel,
     Checkbox,
+    CustomCheckbox,
     NextButtonWrapper,
   } from "../signup.style";
   
@@ -64,11 +65,11 @@ import {
                 <SignupBoxAllAccessBox>
                   <CheckboxLabel>
                     <Checkbox
-                      type="checkbox"
-                      id="all-access-checkbox"
-                      checked={allChecked}
-                      onChange={handleAllCheckedChange}
+                        id="all-access-checkbox"
+                        checked={allChecked}
+                        onChange={handleAllCheckedChange}
                     />
+                    <CustomCheckbox className="custom-checkbox" />
                     <SignupBoxAllAccessBoxText>
                       약관 전체 동의
                     </SignupBoxAllAccessBoxText>
@@ -79,11 +80,11 @@ import {
                   <div>
                     <CheckboxLabel>
                       <Checkbox
-                        type="checkbox"
-                        id="terms-checkbox"
-                        checked={termsChecked}
-                        onChange={(e) => setTermsChecked(e.target.checked)}
+                          id="terms-checkbox"
+                          checked={termsChecked}
+                          onChange={(e) => setTermsChecked(e.target.checked)}
                       />
+                      <CustomCheckbox className="custom-checkbox" />
                       <SignupBoxDetailAccessContainerText>
                         서비스 이용 약관에 동의
                       </SignupBoxDetailAccessContainerText>
@@ -92,11 +93,11 @@ import {
                   <div>
                     <CheckboxLabel>
                       <Checkbox
-                        type="checkbox"
-                        id="privacy-checkbox"
-                        checked={privacyChecked}
-                        onChange={(e) => setPrivacyChecked(e.target.checked)}
+                          id="privacy-checkbox"
+                          checked={privacyChecked}
+                          onChange={(e) => setPrivacyChecked(e.target.checked)}
                       />
+                      <CustomCheckbox className="custom-checkbox" />
                       <SignupBoxDetailAccessContainerText>
                         개인정보 수집 및 이용에 동의
                       </SignupBoxDetailAccessContainerText>
