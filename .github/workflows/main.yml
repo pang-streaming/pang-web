@@ -76,27 +76,31 @@ jobs:
         with:
           name: build-artifacts
 
-      # GitHub Runner에 SSH 키 파일 생성
       - name: SSH 키 설정
         run: |
+          # SSH 키 파일 생성
           mkdir -p ~/.ssh/
-          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/ec2_key.pem
-          chmod 600 ~/.ssh/ec2_key.pem
+          # 개행 문자를 처리하고 파일에 저장
+          echo "${{ secrets.EC2_SSH_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
+          # 파일 권한 설정
+          chmod 600 ~/.ssh/id_rsa
+          ls -la ~/.ssh/id_rsa
+          # 키 정보 확인
+          ssh-keygen -y -f ~/.ssh/id_rsa || echo "SSH 키 형식에 문제가 있을 수 있습니다."
+          # 호스트 정보 저장
           ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+          cat ~/.ssh/known_hosts
       
       # SCP로 파일 전송
       - name: EC2로 파일 전송
         run: |
-          scp -i ~/.ssh/ec2_key.pem -o StrictHostKeyChecking=no build-artifacts.zip ec2-user@${{ secrets.EC2_HOST }}:/home/ec2-user/deploy/
+          scp -v -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no \
+              build-artifacts.zip ec2-user@${{ secrets.EC2_HOST }}:/home/ec2-user/deploy/
 
+      # 원격 서버 배포 스크립트 실행
       - name: 원격 배포 스크립트 실행
         run: |
-          ssh -i ~/.ssh/ec2_key.pem -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} '
-            set -e
-            cd /home/ec2-user
-            
-            # 배포용 폴더가 없으면 생성
-            mkdir -p /home/ec2-user/deploy
+          ssh -v -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} '
             cd /home/ec2-user/deploy
             
             unzip -o build-artifacts.zip
@@ -113,4 +117,3 @@ jobs:
             sudo systemctl reload nginx
             
             echo "[Deploy] EC2 배포 완료: $(date)"
-          '
