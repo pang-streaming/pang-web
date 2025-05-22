@@ -4,7 +4,7 @@ import { RiDashboardFill, RiLiveFill, RiMoneyDollarCircleFill, RiGroupFill, RiFi
 import { BaseSidebar, SidebarContainer, ItemIconAndText, ItemIconAndTextCliped } from './sidebar.style';
 import { SidebarProps, SidebarExplorerItem } from './sidebar.props';
 
-const SidebarItem = ({ id, icon, label, isClipped, to }: SidebarExplorerItem) => {
+const SidebarItem = ({ icon, label, isClipped, to }: SidebarExplorerItem) => {
     const navigate = useNavigate();
     const location = useLocation();
     const ItemComponent = isClipped ? ItemIconAndTextCliped : ItemIconAndText;

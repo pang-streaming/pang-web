@@ -27,7 +27,7 @@ export const StreamingPage: React.FC = () => {
   ];
 
   const handleStartStream = () => {
-    console.log('스트리밍 시작');
+    // 스트리밍 시작 로직
   };
 
   const handleSettingsChange = (field: keyof StreamingSettings, value: string) => {

@@ -40,7 +40,7 @@ export const DashboardPage: FC = () => {
     ];
 
     const handleUpload = () => {
-        console.log('Upload clicked');
+        // 업로드 처리 로직
     };
 
     return (
