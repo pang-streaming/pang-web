@@ -76,29 +76,27 @@ jobs:
         with:
           name: build-artifacts
 
-      # 파일 전송을 위한 SSH 설정 (openssh 형식 직접 설정)
-      - name: SSH 키 설정 및 전송
-        run: |
-          # GitHub Actions runner에 openssh 설치 확인
-          sudo apt-get update && sudo apt-get install -y openssh-client
-          
-          # PEM 파일 생성
-          mkdir -p ~/.ssh
-          printenv SSH_KEY > ~/.ssh/deploy_key.pem
-          chmod 600 ~/.ssh/deploy_key.pem
-          
-          # 호스트 키 스캔
-          ssh-keyscan -t rsa,ed25519 ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
-          
-          # SCP로 파일 전송
-          scp -i ~/.ssh/deploy_key.pem build-artifacts.zip ec2-user@${{ secrets.EC2_HOST }}:/home/ec2-user/deploy/
-        env:
-          SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+      # 파일 전송을 위한 SCP 액션
+      - name: EC2로 파일 전송
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          source: build-artifacts.zip
+          target: /home/ec2-user/deploy
+          debug: true
       
-      # 원격 배포 스크립트 실행
+      # 원격 명령 실행을 위한 SSH 액션
       - name: 원격 배포 스크립트 실행
-        run: |
-          ssh -i ~/.ssh/deploy_key.pem ec2-user@${{ secrets.EC2_HOST }} '
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
             cd /home/ec2-user/deploy
             
             unzip -o build-artifacts.zip
@@ -115,4 +113,3 @@ jobs:
             sudo systemctl reload nginx
             
             echo "[Deploy] EC2 배포 완료: $(date)"
-          '
