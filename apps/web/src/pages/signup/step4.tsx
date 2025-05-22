@@ -14,7 +14,7 @@ import {
   HintText,
 } from "../signup.style";
 
-import { FiLock } from "react-icons/fi";
+// import { FiLock } from "react-icons/fi";
 import { StepDots } from "./stepDots";
 import logo from "../../assets/logo.svg";
 
@@ -59,7 +59,7 @@ export const Step4 = () => {
             <div style={{ flex: 1 }}>
               {/* 비밀번호 입력 */}
               <EmailInputWrapper>
-                <FiLock size={20} color="#999" />
+                {/*<FiLock size={20} color="#999" />*/}
                 <EmailInput
                   type="password"
                   placeholder="비밀번호 (8자 이상)"
@@ -70,7 +70,7 @@ export const Step4 = () => {
 
               {/* 비밀번호 확인 */}
               <EmailInputWrapper style={{ marginTop: "20px" }}>
-                <FiLock size={20} color="#999" />
+                {/*<FiLock size={20} color="#999" />*/}
                 <EmailInput
                   type="password"
                   placeholder="비밀번호 확인"

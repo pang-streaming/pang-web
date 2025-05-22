@@ -1,9 +1,5 @@
 import React from "react";
-import {
-  CategoryContainer,
-  CategoryGrid,
-  CategoryTitle,
-} from "./category_box/category.style";
+import { CategoryContainer, CategoryGrid, CategoryTitle } from "./category_box/category.style";
 import CategoryBox from "./category_box/category_box";
 
 const CategoryPage = () => {

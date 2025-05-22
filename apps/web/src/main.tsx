@@ -1,8 +1,8 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { ThemeProvider } from "styled-components";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { theme } from "@repo/ui/theme";
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { Layout } from './components/layout/layout';
 import { NotFound } from './pages/notfound/notFound';
 
@@ -14,6 +14,9 @@ import { Step2 } from "./pages/signup/step2";
 import { Step3 } from "./pages/signup/step3";
 import { Step4 } from "./pages/signup/step4";
 import { Complete } from "./pages/signup/complete";
+import {Following} from "./pages/follow/following.tsx";
+import CategoryPage from "./pages/category/category_page.tsx";
+import {LiveDetail} from "./pages/livedetail/livedetail.tsx";
 
 function App() {
   const location = useLocation();
@@ -44,6 +47,9 @@ function App() {
         <Layout>
           <Routes>
             <Route path="/" element={<Main />} />
+            <Route path="/category" element={<CategoryPage/>}/>
+            <Route path='/follow' element={<Following/>} />
+            <Route path='/livedetail' element={<LiveDetail/>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>

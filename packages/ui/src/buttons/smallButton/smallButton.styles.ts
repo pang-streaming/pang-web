@@ -2,9 +2,11 @@ import { styled, keyframes } from "styled-components";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { ButtonContainerProps } from "./smallButton.props";
 
-export const ButtonConatiner = styled.div<ButtonContainerProps>`
+export const ButtonConatiner = styled.button<ButtonContainerProps>`
   display: inline-flex;
   width: fit-content;
+  outline: none;
+  border: none;
   min-width: ${({label}) => 15*label.length}px;
   justify-content: center;
   align-items: center;  

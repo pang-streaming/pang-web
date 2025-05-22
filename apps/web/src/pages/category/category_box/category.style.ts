@@ -1,5 +1,4 @@
-import { MdPadding } from "react-icons/md";
-import { WiDayThunderstorm } from "react-icons/wi";
+
 import styled from "styled-components";
 
 export const CategoryContainer = styled.div`

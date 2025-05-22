@@ -1,9 +1,16 @@
 import { useState } from "react";
 import {ButtonProps} from "./smallButton.props"
 import {ButtonConatiner, ButtonText, Spinning} from "./smallButton.styles"
+import { useNavigate } from "react-router-dom";
+
 
 export const SmallButton = ({ label, disabled, onClick }: ButtonProps) => {
   const [isLoading, setIsLoading] = useState(false)
+  const navigate = useNavigate()
+
+  const toLogin = () => {
+    navigate('/signup')
+  }
 
   const buttonHandler = async () => {
     // 버튼 클릭 이벤트와 비활성화 되지 않았을시에만 작동
@@ -26,7 +33,7 @@ export const SmallButton = ({ label, disabled, onClick }: ButtonProps) => {
 
   return (
     <ButtonConatiner
-      onClick={buttonHandler}
+      onClick={toLogin}
       label={label}
       isLoading={isLoading}
       isDisabled={disabled}

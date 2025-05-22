@@ -21,10 +21,7 @@ import {
 } from "./login.style";
 
 import Logo from "../../assets/logo.svg";
-
-import { FiUser, FiLock } from "react-icons/fi";
-import { FaApple } from "react-icons/fa";
-import { FcGoogle } from "react-icons/fc";
+import { FiUser } from "react-icons/fi";
 
 export const Login = () => {
   const [username, setUsername] = useState("");

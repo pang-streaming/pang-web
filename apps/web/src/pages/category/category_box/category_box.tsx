@@ -1,20 +1,12 @@
 import React from "react";
+
+import * as S from "./category.style";
 import { CategoryChipProps } from "./category.props";
-import {
-  CategoryBoxThumbnail,
-  CategoryBoxTitle,
-  CategoryChip,
-  CategoryInfo,
-  CatgoryBoxContainer,
-  ChipCountText,
-  LiveCountText,
-} from "./category.style";
 
 const CategoryBox = ({
   categoryChipCount,
   categoryLiveCount,
   categoryTitle,
-  categoryThumbnail
 }: CategoryChipProps) => {
 
   const formattedChipCount = new Intl.NumberFormat().format(categoryChipCount);
@@ -22,15 +14,15 @@ const CategoryBox = ({
 
   return (
     <>
-      <CatgoryBoxContainer>
-        <CategoryBoxThumbnail>
-          <CategoryChip><ChipCountText>{formattedChipCount}</ChipCountText></CategoryChip>
-        </CategoryBoxThumbnail>
-        <CategoryInfo>
-          <CategoryBoxTitle>{categoryTitle}</CategoryBoxTitle>
-          <LiveCountText>라이브 {categoryLiveCount}개</LiveCountText>
-        </CategoryInfo>
-      </CatgoryBoxContainer>
+      <S.CatgoryBoxContainer>
+        <S.CategoryBoxThumbnail>
+          <S.CategoryChip><S.ChipCountText>{formattedChipCount}</S.ChipCountText></S.CategoryChip>
+        </S.CategoryBoxThumbnail>
+        <S.CategoryInfo>
+          <S.CategoryBoxTitle>{categoryTitle}</S.CategoryBoxTitle>
+          <S.LiveCountText>라이브 {categoryLiveCount}개</S.LiveCountText>
+        </S.CategoryInfo>
+      </S.CatgoryBoxContainer>
     </>
   );
 };
