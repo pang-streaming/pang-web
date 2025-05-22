@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { RiDashboardFill, RiLiveFill, RiMoneyDollarCircleFill, RiGroupFill, RiFileList2Fill } from 'react-icons/ri';
 import { BaseSidebar, SidebarContainer, ItemIconAndText, ItemIconAndTextCliped } from './sidebar.style';

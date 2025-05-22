@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { FaVideo, FaMicrophone, FaPlus, FaTimes, FaPlay, FaEye, FaSmile, FaChevronLeft, FaArrowRight, FaCrown } from 'react-icons/fa';
 import * as S from './streaming.style';
 

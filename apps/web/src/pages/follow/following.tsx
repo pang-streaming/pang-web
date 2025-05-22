@@ -1,8 +1,7 @@
-import {FollowingContainer, FollowingStreamersContainer, FollowingTitle, LiveContainer} from "./following.style.ts";
+import {FollowingContainer, FollowingStreamersContainer, FollowingTitle} from "./following.style.ts";
 import {LiveCard} from "../explore/livecard/livecard.tsx";
 import dlook from "../../assets/dlook.png"
 import { FollowingCard } from "../../components/followingcard/followingcard.tsx";
-import { useState } from "react";
 import { GridContainer } from "../main/main.style.ts";
 import { useNavigate } from "react-router-dom";
 
