@@ -1,0 +1,103 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: [main]          # main 브랜치에 푸시될 때만 실행
+  pull_request:
+    branches: [main]          # PR 시에도 빌드 검증
+  workflow_dispatch:         # 수동 실행 옵션
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 코드 체크아웃   
+        uses: actions/checkout@v4
+        
+      - name: Node.js 설치  
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          
+      - name: PNPM 설치       
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9.0.0
+          
+      - name: 의존성 설치      
+        run: pnpm install
+        
+      - name: 린트 및 타입 검사   
+        run: |
+          pnpm lint
+          pnpm check-types
+          
+      - name: 빌드             
+        run: pnpm build
+        # env:
+        #   VITE_API_URL: ${{ secrets.VITE_API_URL }} 아직 없음
+          
+      - name: 빌드 결과 압축    
+        run: |
+          zip -r build-artifacts.zip apps/web/dist apps/streamer/dist
+
+      - name: 아티팩트 업로드   
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: build-artifacts.zip
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'  # main 브랜치에서만 배포
+    steps:
+      - name: 코드 체크아웃       # (선택) 원격 스크립트 참조 등을 위해 코드도 체크아웃
+        uses: actions/checkout@v4
+        
+      - name: 아티팩트 다운로드    # 빌드된 zip 파일을 가져옵니다
+        uses: actions/download-artifact@v3
+        with:
+          name: build-artifacts
+
+      - name: EC2로 파일 전송       # scp 액션을 사용해 EC2에 빌드 결과물 전송
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.EC2_HOST }}       # EC2 퍼블릭 IP 또는 도메인
+          username: ec2-user                  # EC2 사용자 (예: ubuntu, ec2-user)
+          key: ${{ secrets.EC2_SSH_KEY }}     # PEM 키 (GitHub Secrets에 저장)
+          port: 22
+          source: "build-artifacts.zip"       # 로컬에 있는 zip 파일
+          target: "/home/ec2-user/deploy"     # EC2에서 받을 디렉터리
+
+      - name: 원격 배포 스크립트 실행  # SSH로 접속해 배포 명령 직접 실행
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            set -e                                          # 오류 시 즉시 종료
+            cd /home/ec2-user                               # ec2-user 홈 디렉토리로 이동
+
+            # 배포용 폴더가 없으면 생성
+            mkdir -p /home/ec2-user/deploy                  
+            cd /home/ec2-user/deploy                        # 배포 폴더로 이동
+            
+            unzip -o build-artifacts.zip                    # 새 빌드 결과물 압축 해제
+            rm build-artifacts.zip                          # 압축 파일 제거
+            
+            # --- 서비스별 파일 복사 및 정리 ---
+            # 웹 앱 정리 및 복사 (예: /var/www/html)
+            sudo rm -rf /var/www/html/*
+            sudo cp -r apps/web/dist/* /var/www/html/
+            
+            # 스트리머 앱 정리 및 복사 (예: /var/www/streamer)
+            sudo rm -rf /var/www/streamer/*
+            sudo cp -r apps/streamer/dist/* /var/www/streamer/
+            
+            # --- 웹 서버 재시작 (Nginx 예시) ---
+            sudo systemctl reload nginx                     # 설정 재적용 및 서비스 재시작
+            
+            echo "[Deploy] EC2 배포 완료: $(date)"
