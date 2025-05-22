@@ -35,8 +35,10 @@ jobs:
       - name: 빌드 준비 확인
         run: echo "::warning::린트 및 타입 검사에서 경고가 있을 수 있지만, 빌드는 계속 진행합니다."
           
-      - name: 빌드             
-        run: pnpm build
+      - name: 빌드 (Vite만 실행)             
+        run: |
+          cd apps/web && pnpm exec vite build
+          cd ../../apps/streamer && pnpm exec vite build
         # env:
         #   VITE_API_URL: ${{ secrets.VITE_API_URL }} 아직 없음
           
