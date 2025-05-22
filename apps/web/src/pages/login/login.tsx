@@ -21,13 +21,15 @@ import {
 } from "./login.style";
 
 import Logo from "../../assets/logo.svg";
-import { FiUser } from "react-icons/fi";
+import { FiUser, FiLock } from "react-icons/fi";
+import { FaApple } from "react-icons/fa6";
+import { FcGoogle } from "react-icons/fc";
+
 
 export const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  // 아이디, 비밀번호 둘 다 입력됐을 때만 활성화
   const isActive = username.trim() !== "" && password.trim() !== "";
 
   return (
