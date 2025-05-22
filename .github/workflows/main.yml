@@ -27,7 +27,7 @@ jobs:
       - name: 의존성 설치      
         run: |
           pnpm install --no-frozen-lockfile
-          pnpm add js-confetti -w
+          pnpm add js-confetti react-router-dom react-icons styled-components @types/styled-components -w
         
       - name: 린트 및 타입 검사   
         run: |
@@ -46,7 +46,16 @@ jobs:
           
       - name: 빌드 결과 압축    
         run: |
-          zip -r build-artifacts.zip apps/web/dist apps/streamer/dist
+          # 빌드 결과물 확인 및 압축
+          if [ -d "apps/web/dist" ] && [ -d "apps/streamer/dist" ]; then
+            echo "빌드 결과물 확인 완료"
+            zip -r build-artifacts.zip apps/web/dist apps/streamer/dist
+          else
+            echo "빌드 결과물 확인 실패. 폴더 구조 확인:"
+            ls -la apps/web/
+            ls -la apps/streamer/
+            exit 1
+          fi
 
       - name: 아티팩트 업로드   
         uses: actions/upload-artifact@v4
