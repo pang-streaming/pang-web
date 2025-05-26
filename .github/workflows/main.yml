@@ -98,6 +98,27 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
           script: |
+            echo "[Deploy] Node.js 및 PM2 설치 시작"
+            
+            # Node.js 설치 확인 및 설치
+            if ! command -v node &> /dev/null; then
+              echo "Node.js 설치 중..."
+              curl -sL https://rpm.nodesource.com/setup_20.x | sudo bash -
+              sudo yum install -y nodejs
+              echo "Node.js $(node -v) 설치 완료"
+            else
+              echo "Node.js $(node -v) 이미 설치됨"
+            fi
+            
+            # PM2 설치 확인 및 설치
+            if ! command -v pm2 &> /dev/null; then
+              echo "PM2 설치 중..."
+              sudo npm install -g pm2
+              echo "PM2 $(pm2 -v) 설치 완료"
+            else
+              echo "PM2 $(pm2 -v) 이미 설치됨"
+            fi
+            
             mkdir -p /home/ec2-user/deploy
             cd /home/ec2-user/deploy
             
