@@ -94,6 +94,14 @@ jobs:
             cd /home/ec2-user/deploy
             unzip -o build-artifacts.zip || true
             rm build-artifacts.zip
-                   
+
+            # web 정적 파일 복사
+            sudo mkdir -p /usr/share/nginx/html
+            sudo cp -r apps/web/dist/* /usr/share/nginx/html/
+
+            # streamer 정적 파일 복사
+            sudo mkdir -p /usr/share/nginx/streamer
+            sudo cp -r apps/streamer/dist/* /usr/share/nginx/streamer/
+
             # Nginx 재시작
             docker exec nginx nginx -s reload || true
