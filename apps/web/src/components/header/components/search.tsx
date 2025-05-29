@@ -5,8 +5,8 @@ import { IoIosSearch } from "react-icons/io";
 export const SearchBar = () => {
     return (
         <SearchView>
-            <SearchInput placeholder='검색어를 입력해주세요!'></SearchInput>
-            <IoIosSearch size={22} color={theme.primary500}></IoIosSearch>
+            <SearchInput placeholder='검색어를 입력해주세요!' />
+            <IoIosSearch size={22} color={theme.primary500} />
         </SearchView>
     )
 }

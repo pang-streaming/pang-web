@@ -1,14 +1,14 @@
 import styled from "styled-components";
 
 interface BaseSidebarProps {
-    isClipped: boolean;
+    $isClipped: boolean;
 }
 
 export const BaseSidebar = styled.div<BaseSidebarProps>`
     position: fixed;
     top: 72px;
     left: 0;
-    width: ${(props) => (props.isClipped ? "72px" : "240px")};
+    width: ${(props) => (props.$isClipped ? "72px" : "240px")};
     height: calc(100vh - 72px);
     background-color: #1a1a1a;
     border-right: 1px solid #2a2a2a;
@@ -20,14 +20,14 @@ export const SidebarContainer = styled.div`
 `;
 
 interface SidebarItemProps {
-    isSelected: boolean;
+    $isSelected: boolean;
 }
 
 export const SidebarItem = styled.div<SidebarItemProps>`
     padding: 12px 24px;
     cursor: pointer;
-    color: ${props => props.isSelected ? '#ffffff' : '#888888'};
-    background-color: ${props => props.isSelected ? '#2a2a2a' : 'transparent'};
+    color: ${props => props.$isSelected ? '#ffffff' : '#888888'};
+    background-color: ${props => props.$isSelected ? '#2a2a2a' : 'transparent'};
     transition: all 0.2s ease;
 
     &:hover {
@@ -36,14 +36,14 @@ export const SidebarItem = styled.div<SidebarItemProps>`
     }
 `;
 
-export const ItemIconAndText = styled.div<{ isSelected: boolean }>`
+export const ItemIconAndText = styled.div<{ $isSelected: boolean }>`
     display: flex;
     align-items: center;
     gap: 12px;
     padding: 12px 24px;
     cursor: pointer;
-    color: ${(props) => (props.isSelected ? "#ffffff" : "#888888")};
-    background-color: ${(props) => (props.isSelected ? "#2a2a2a" : "transparent")};
+    color: ${(props) => (props.$isSelected ? "#ffffff" : "#888888")};
+    background-color: ${(props) => (props.$isSelected ? "#2a2a2a" : "transparent")};
     transition: all 0.2s ease;
 
     svg {

@@ -94,17 +94,6 @@ jobs:
             cd /home/ec2-user/deploy
             unzip -o build-artifacts.zip || true
             rm build-artifacts.zip
-            
-            # 파일 복사
-            sudo rm -rf /var/www/html/* || true
-            [ -d "apps/web/dist" ] && sudo cp -r apps/web/dist/* /var/www/html/ || true
-            
-            sudo rm -rf /var/www/streamer/* || true
-            [ -d "apps/streamer/dist" ] && sudo cp -r apps/streamer/dist/* /var/www/streamer/ || true
-            
+                   
             # Nginx 재시작
-            if docker ps | grep -q nginx; then
-              docker exec nginx nginx -s reload || true
-            else
-              sudo systemctl reload nginx || true
-            fi
+            docker exec nginx nginx -s reload || true

@@ -21,7 +21,7 @@ export const GlobalStyle = createGlobalStyle`
 
 export const Container = styled.div<ClippedSidebar>`
     display: grid;
-    grid-template-columns: ${({ isClipped }) => isClipped ? 80 : 240}px 1fr;
+    grid-template-columns: ${({ $isClipped }) => $isClipped ? 80 : 240}px 1fr;
     grid-template-rows: 65px 1fr;
     height: 100vh;
     overflow: hidden;

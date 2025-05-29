@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 
 export const SmallButton = ({ label, disabled, onClick }: ButtonProps) => {
-  const [isLoading, setIsLoading] = useState(false)
+  const [$isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
 
   const toLogin = () => {
@@ -16,7 +16,7 @@ export const SmallButton = ({ label, disabled, onClick }: ButtonProps) => {
     // 버튼 클릭 이벤트와 비활성화 되지 않았을시에만 작동
     if (onClick && !disabled) { 
       // 이미 버튼이 불러 와졌다면
-      if (isLoading)
+      if ($isLoading)
         return;
       
       // 버튼 로딩 상태 변경
@@ -35,10 +35,10 @@ export const SmallButton = ({ label, disabled, onClick }: ButtonProps) => {
     <ButtonConatiner
       onClick={toLogin}
       label={label}
-      isLoading={isLoading}
+      $isLoading={$isLoading}
       isDisabled={disabled}
     >
-      { !isLoading ? 
+      { !$isLoading ? 
         <ButtonText>
           {label}
         </ButtonText>

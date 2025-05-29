@@ -27,11 +27,11 @@ import { FiUser, FiLock } from "react-icons/fi";
 import { FaApple } from "react-icons/fa6";
 import { FcGoogle } from "react-icons/fc";
 import { login } from "../../services/auth";
+
 export const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
   const navigate = useNavigate();
 
   const isActive = email.trim() !== "" && password.trim() !== "";
@@ -40,18 +40,18 @@ export const Login = () => {
     if (!isActive) return;
 
     setLoading(true);
-    setErrorMsg("");
 
     try {
-      const data = await login(email, password);
+      const data = await login(email, password) as { token: string } | null;
 
-      localStorage.setItem("token", data.token);
+      if (data && data.token) {
+  localStorage.setItem("token", data.token);
+  navigate("/");
+}
 
       navigate("/");
     } catch (error: any) {
-      setErrorMsg(
-        error.response?.data?.message || error.message || "로그인 실패"
-      );
+      // 에러 메시지 처리가 필요하다면 여기에 추가
     } finally {
       setLoading(false);
     }

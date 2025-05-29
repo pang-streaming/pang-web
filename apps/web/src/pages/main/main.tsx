@@ -32,7 +32,7 @@ export const Main = () => {
     return (
             <FollowingContainer>
               <MainLiveCard 
-                thumbnail={dlook}
+                $thumbnail={dlook}
                 profileImage={dlook}
                 streamerName="파뿌리"
                 followerCount={18.2}
