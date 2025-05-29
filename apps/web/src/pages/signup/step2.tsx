@@ -1,17 +1,4 @@
-import {
-  HeaderWrap,
-  NextButton,
-  SignupBox,
-  SignupBoxElemContainer,
-  SignupBoxTitle,
-  SignUpContainer,
-  SignupWrap,
-  EmailInput,
-  EmailInputWrapper,
-  SendButton,
-  HintText,
-  NextButtonWrapper,
-} from "../signup.style";
+import * as S from "../signup.style";
 
 import logo from "../../assets/logo.svg";
 import { useNavigate } from "react-router-dom";
@@ -57,57 +44,57 @@ export const Step2 = () => {
   };
 
   return (
-    <SignUpContainer>
-      <HeaderWrap>
+    <S.SignUpContainer>
+      <S.HeaderWrap>
         <img src={logo} />
-      </HeaderWrap>
-      <SignupWrap>
-        <SignupBox>
-          <SignupBoxElemContainer>
+      </S.HeaderWrap>
+      <S.SignupWrap>
+        <S.SignupBox>
+          <S.SignupBoxElemContainer>
             {/* 고정 제목 */}
-            <SignupBoxTitle>
+            <S.SignupBoxTitle>
               이메일 입력한 후,
               <br />
               이메일 인증을 진행해주세요
-            </SignupBoxTitle>
+            </S.SignupBoxTitle>
 
             {/* 중간 컨텐츠 영역 */}
             <div style={{ flex: 1 }}>
-              <EmailInputWrapper>
+              <S.EmailInputWrapper>
                 <FiUser size={20} color="#999" />
-                <EmailInput
+                <S.EmailInput
                   type="email"
                   placeholder="이메일을 입력해주세요"
                   value={email}
                   onChange={handleEmailChange}
                 />
-                <SendButton onClick={handleSendEmail} disabled={!emailValid}>
+                <S.SendButton onClick={handleSendEmail} disabled={!emailValid}>
                   <IoIosSend size={20} />
-                </SendButton>
-              </EmailInputWrapper>
+                </S.SendButton>
+              </S.EmailInputWrapper>
 
-              <HintText>
+              <S.HintText>
                 인증 메일 발송 버튼을 눌러 인증을 진행해주세요.
-              </HintText>
+              </S.HintText>
             </div>
 
             {/* 고정 버튼 */}
-            <NextButtonWrapper>
-              <NextButton
+            <S.NextButtonWrapper>
+              <S.NextButton
                 onClick={handleClick}
                 disabled={!emailValid}
                 $active={emailValid}
               >
                 다음 →
-              </NextButton>
-            </NextButtonWrapper>
+              </S.NextButton>
+            </S.NextButtonWrapper>
 
             <div style={{ marginTop: "24px", textAlign: "center" }}>
               <StepDots activeStep={2} />
             </div>
-          </SignupBoxElemContainer>
-        </SignupBox>
-      </SignupWrap>
-    </SignUpContainer>
+          </S.SignupBoxElemContainer>
+        </S.SignupBox>
+      </S.SignupWrap>
+    </S.SignUpContainer>
   );
 };
