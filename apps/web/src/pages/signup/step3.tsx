@@ -19,10 +19,12 @@ import {
   import { useState } from "react";
   import { FiUser } from "react-icons/fi";
   import { MdCheck } from "react-icons/md";
-  // import { IoIosSend } from "react-icons/io";
+import { useSignup } from "./signup-context";
+
   
   export const Step3 = () => {
     const navigate = useNavigate();
+    const { setSignupData } = useSignup();
   
     const [id, setId] = useState("");
     const [isChecked, setIsChecked] = useState(false);
@@ -38,11 +40,13 @@ import {
   
     const handleNextClick = () => {
       if (isChecked) {
+        setSignupData({ id }); 
         navigate("/signup/step4");
       } else {
         alert("아이디 중복 체크를 완료해주세요.");
       }
     };
+  
   
     return (
       <SignUpContainer>
@@ -58,7 +62,6 @@ import {
                 <br />
                 아이디 중복 체크를 진행해주세요
               </SignupBoxTitle>
-              {/* 중간 컨텐츠 영역 */}
               <div style={{ flex: 1 }}>
                 <EmailInputWrapper>
                   <FiUser size={20} color="#999" />
@@ -76,7 +79,6 @@ import {
                   아이디 중복 체크 버튼을 눌러 중복 체크를 진행해주세요.
                 </HintText>
               </div>
-              {/* 고정 버튼 */}
               <NextButtonWrapper>
                 <NextButton
                   onClick={handleNextClick}
@@ -87,7 +89,6 @@ import {
                 </NextButton>
               </NextButtonWrapper>
               
-              {/* Step Dots */}
               <div style={{ marginTop: "24px", textAlign: "center" }}>
                 <StepDots activeStep={3} />
               </div>

@@ -42,9 +42,7 @@ export const Main = () => {
               />
                 <FollowingTitle>이 방송 어때요?</FollowingTitle>
                 <GridContainer>
-                        {lives.map(() => (
-                                <LiveCard profileImage={dlook} title="안녕하세요" streamerName="김강연" />
-                            ))}
+                       
                 </GridContainer>
             </FollowingContainer>
     )
