@@ -1,6 +1,5 @@
-import { useNavigate } from "react-router-dom";
-import {LiveCardProps} from "./livecard.props.ts";
-import {Thumbnail, LiveCardContainer, LiveInfo, LiveTitle, ProfileImage, StreamerName, TitleContainer, Spacer} from "./livecard.style.ts";
+import { Video } from "../../../types/main.ts";
+import * as S from "./livecard.style.ts";
 
 export const LiveCard = ({ streamImage, profileImage, title, nickname }: LiveCardProps) => {
 

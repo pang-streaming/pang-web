@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from "react";
-import JSConfetti from "js-confetti";
+import { useEffect, useState } from "react";
+
+
+
 import logo2 from "../../assets/pang-emotion-logo.png";
 import { useNavigate } from "react-router-dom";
 
@@ -10,6 +12,7 @@ import {
   CompleteContainer,
   SuccessMessage,
 } from "../signup.style";
+import JSConfetti from "js-confetti";
 
 export const Complete = () => {
   const [showConfetti, setShowConfetti] = useState(true);

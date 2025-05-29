@@ -12,15 +12,15 @@ import { ItemIconAndTextCliped, ItemIconAndText, SidebarContainer, BaseSidebar, 
 import { SidebarExplorerItem, SidebarProps } from "./sidebar.props";
 import { Link } from 'react-router-dom';
 
-export const SidebarItem = ({ id, icon, label, isClipped, to }: SidebarExplorerItem) => {
+export const SidebarItem = ({ id, icon, label, $isClipped, to }: SidebarExplorerItem) => {
     const { setSelected, selected } = useSidebarStore();
-    const isSelected = (selected == id)
+    const $isSelected = (selected == id)
 
     let displayLabel = label.replace(" ", "\n");
-    if (isClipped) {
+    if ($isClipped) {
         return <Fragment>
             <Link to={to} style={{textDecoration:"none"}}>
-                <ItemIconAndTextCliped isSelected={isSelected} onClick={() => setSelected(id)}>
+                <ItemIconAndTextCliped $isSelected={$isSelected} onClick={() => setSelected(id)}>
                     {icon}
                     <div>
                         {displayLabel}
@@ -30,7 +30,7 @@ export const SidebarItem = ({ id, icon, label, isClipped, to }: SidebarExplorerI
         </Fragment>
     }else{
         return <Link to={to} style={{textDecoration:"none"}}>
-            <ItemIconAndText isSelected={isSelected} onClick={() => setSelected(id)}>
+            <ItemIconAndText $isSelected={$isSelected} onClick={() => setSelected(id)}>
                 {icon} {label.replace(" ", "")}
             </ItemIconAndText>
         </Link>
@@ -41,7 +41,7 @@ export const SidebarItem = ({ id, icon, label, isClipped, to }: SidebarExplorerI
 
 
 
-export const SidebarMainNav = ({isClipped}:SidebarProps) =>{
+export const SidebarMainNav = ({$isClipped}:SidebarProps) => {
     const { selected } = useSidebarStore();
     const SidebarList = [
         {
@@ -73,7 +73,7 @@ export const SidebarMainNav = ({isClipped}:SidebarProps) =>{
             label: '충전',
             to: "/pung",
             icon:(
-                <img src={ selected == "pung" ? pung_primary : !isClipped ? pung : pung_gray} width={24}></img>
+                <img src={ selected == "pung" ? pung_primary : !$isClipped ? pung : pung_gray} width={24}></img>
             )
         },
     ]
@@ -82,7 +82,7 @@ export const SidebarMainNav = ({isClipped}:SidebarProps) =>{
         <SidebarContainer>
             { 
                 SidebarList.map(element => (
-                    <SidebarItem id={element.id} to={element.to} label={element.label} icon={element.icon} isClipped={isClipped}/>
+                    <SidebarItem key={element.id} id={element.id} to={element.to} label={element.label} icon={element.icon} $isClipped={$isClipped}/>
                 ))
             }   
             
@@ -91,11 +91,11 @@ export const SidebarMainNav = ({isClipped}:SidebarProps) =>{
 }
 
 export const Sidebar = () => {
-    const { isClipped, setIsClipped } = useSidebarStore();
+    const { $isClipped: storeIsClipped, setIsClipped } = useSidebarStore();
     return (
         <BaseSidebar>
             <HeaderLogoContainer>
-                <PiList onClick={()=>{setIsClipped(!isClipped)}} style={{marginLeft:28}} size={24}/>
+                <PiList onClick={()=>{setIsClipped(!storeIsClipped)}} style={{marginLeft:28}} size={24}/>
                 <img 
                     width={130} 
                     src={logo} 
@@ -103,7 +103,7 @@ export const Sidebar = () => {
                     alt='Pang-Logo'
                 />
             </HeaderLogoContainer>
-            <SidebarMainNav isClipped={isClipped}/>
+            <SidebarMainNav $isClipped={storeIsClipped}/>
         </BaseSidebar>
     )
 }
