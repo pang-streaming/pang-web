@@ -26,14 +26,36 @@ import Logo from "../../assets/logo.svg";
 import { FiUser, FiLock } from "react-icons/fi";
 import { FaApple } from "react-icons/fa6";
 import { FcGoogle } from "react-icons/fc";
-
-
+import { login } from "../../services/auth";
 export const Login = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
   const navigate = useNavigate();
 
-  const isActive = username.trim() !== "" && password.trim() !== "";
+  const isActive = email.trim() !== "" && password.trim() !== "";
+
+  const handleLogin = async () => {
+    if (!isActive) return;
+
+    setLoading(true);
+    setErrorMsg("");
+
+    try {
+      const data = await login(email, password);
+
+      localStorage.setItem("token", data.token);
+
+      navigate("/");
+    } catch (error: any) {
+      setErrorMsg(
+        error.response?.data?.message || error.message || "로그인 실패"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <LoginWrapper>
@@ -59,8 +81,8 @@ export const Login = () => {
 
           <LoginInputRight
             placeholder="아이디를 입력해주세요"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </LoginInputContainer>
 
@@ -89,8 +111,14 @@ export const Login = () => {
           />
         </LoginInputContainer>
 
-        <LoginButton disabled={!isActive} isActive={isActive}>
-          <LoginButtonText>로그인</LoginButtonText>
+        <LoginButton
+          disabled={!isActive || loading}
+          isActive={isActive}
+          onClick={handleLogin}
+        >
+          <LoginButtonText>
+            {loading ? "로그인 중..." : "로그인"}
+          </LoginButtonText>
         </LoginButton>
 
         <LoginDivider />
@@ -108,7 +136,6 @@ export const Login = () => {
             </SignUpLink>
           </SignUpText>
         </div>
-
       </LeftSection>
 
       <RightSection />

@@ -13,13 +13,13 @@ import {
   EmailInput,
   HintText,
 } from "../signup.style";
-
-// import { FiLock } from "react-icons/fi";
 import { StepDots } from "./stepDots";
 import logo from "../../assets/logo.svg";
+import { useSignup } from "./signup-context";
 
 export const Step4 = () => {
   const navigate = useNavigate();
+  const { setSignupData } = useSignup(); 
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -38,6 +38,7 @@ export const Step4 = () => {
       return;
     }
 
+    setSignupData({ password });
     navigate("/signup/complete");
   };
 

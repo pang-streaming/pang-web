@@ -12,6 +12,7 @@
     "@repo/api": "workspace:*",
     "@repo/store": "workspace:*",
     "@repo/ui": "workspace:*",
+    "js-confetti": "^0.12.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
