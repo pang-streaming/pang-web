@@ -2,16 +2,16 @@ import styled from "styled-components";
 import { MainLiveProps } from "./mainlivecard.props";
 
 export const MainLiveContainer = styled.div<Pick<MainLiveProps, 'thumbnail'>>`
-  width: 97%;
-  height: 340px;
-  background-image: url(${(props) => props.thumbnail});
-  background-size: cover;
-  background-position: center;
-  border-radius: 12px;
-  display: flex;
-  flex-direction: column;
-  padding: 12px;
-  margin-bottom: 60px;
+    width: 97%;
+    height: 340px;
+    background-image: url(${(props) => props.thumbnail});
+    background-size: cover;
+    background-position: center;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    margin-bottom: 60px;
 `
 
 
