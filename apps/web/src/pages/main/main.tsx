@@ -1,91 +1,60 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
-
-import { FollowingContainer, FollowingTitle } from "../follow/following.style"
-import { GridContainer } from "./main.style"
-import { LiveCard } from "../explore/livecard/livecard"
-import { MainLiveCard } from "../explore/livecard/mainlivecard/mainlivecard"
-
-export interface LiveStream {
-    nickname: string;
-    profileImage: string;
-    badgeImage: string;
-    title: string;
-    streamImage: string;
-    streamUrl: string;
-}
+import { FollowingContainer, FollowingTitle } from "../follow/following.style";
+import { GridContainer } from "./main.style";
+import dlook from "../../assets/dlook.png";
+import { MainLiveCard } from "../explore/livecard/mainlivecard/mainlivecard";
+import { InitModal } from "./widgets/init-modal";
 
 export const Main = () => {
-    const [lives, setLives] = useState<LiveStream[]>([]);
-    const [popularLives, setPopularLives] = useState<LiveStream[]>([]);
-    const [currentPopularIndex, setCurrentPopularIndex] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-    useEffect(() => {
-        const fetchLiveStreams = async () => {
-            try {
-                const response = await axios.get("http://9fc2-221-168-22-205.ngrok-free.app/stream/items");
-                if (Array.isArray(response.data)) {
-                    setLives(response.data);
-                }
-            } catch (error) {
-                console.error("라이브 스트림 불러오기 실패:", error);
-            }
-        };
+  useEffect(() => {
+    setIsModalOpen(true); // 첫 렌더 시 모달 열기
+  }, []);
 
-        const fetchPopularStreams = async () => {
-            try {
-                const response = await axios.get("http://9fc2-221-168-22-205.ngrok-free.app/stream/items/popular");
-                if (Array.isArray(response.data)) {
-                    setPopularLives(response.data.slice(0, 3));
-                }
-            } catch (error) {
-                console.error("인기 라이브 불러오기 실패:", error);
-            }
-        };
+  const lives = [
+    {
+      id: 1,
+      profileImage: dlook,
+      streamerName: "먼지오빠",
+      title: "안녕하세요",
+    },
+    {
+      id: 2,
+      profileImage: dlook,
+      streamerName: "먼지오빠",
+      title: "안녕하세요",
+    },
+    {
+      id: 3,
+      profileImage: dlook,
+      streamerName: "먼지오빠",
+      title: "안녕하세요",
+    },
+  ];
 
-        fetchLiveStreams();
-        fetchPopularStreams();
-    }, []);
+  return (
+    <FollowingContainer>
+      <MainLiveCard
+        thumbnail={dlook}
+        profileImage={dlook}
+        streamerName="파뿌리"
+        followerCount={18.2}
+        viewerCount={201}
+        category="마인크래프트"
+        badge={true}
+      />
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentPopularIndex(prev => (prev + 1) % popularLives.length);
-        }, 5000);
+      <FollowingTitle>이 방송 어때요?</FollowingTitle>
 
-        return () => clearInterval(interval); // cleanup
-    }, [popularLives]);
+      <GridContainer>
+        {/* lives.map 돌리면서 라이브 카드들 렌더링 가능 */}
+      </GridContainer>
 
-    const currentPopularLive = popularLives[currentPopularIndex];
-
-    return (
-        <FollowingContainer>
-                {currentPopularLive && (
-                    <MainLiveCard
-                        streamImage={currentPopularLive.streamImage}
-                        profileImage={currentPopularLive.profileImage}
-                        nickname={currentPopularLive.nickname}
-                        badgeImage={currentPopularLive.badgeImage}
-                        title={currentPopularLive.title}
-                        streamUrl={currentPopularLive.streamUrl}
-                        // followerCount={18.2}
-                        // viewerCount={201}
-                        // category="마인크래프트"
-                    />
-                )}
-                <FollowingTitle>이 방송 어때요?</FollowingTitle>
-            <GridContainer>
-                {lives.map((live) => (
-                    <LiveCard
-                        key={live.nickname}
-                        profileImage={live.profileImage}
-                        title={live.title}
-                        nickname={live.nickname}
-                        badgeImage={live.badgeImage}
-                        streamImage={live.streamImage}
-                        streamUrl={live.streamUrl}
-                    />
-                ))}
-            </GridContainer>
-            </FollowingContainer>
-    )
-}
+      <InitModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <h2>환영합니다!</h2>
+        <p>로그인 후 처음 보는 모달입니다.</p>
+      </InitModal>
+    </FollowingContainer>
+  );
+};
