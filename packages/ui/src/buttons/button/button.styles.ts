@@ -2,7 +2,7 @@ import { styled, keyframes } from "styled-components";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { ButtonContainerProps } from "./button.props";
 
-export const ButtonConatiner = styled.div<ButtonContainerProps>`
+export const ButtonConatiner = styled.button<ButtonContainerProps>`
   width: 100%;
   height: 55px;
   background-color: ${(props) => props.theme.primary500};
@@ -15,7 +15,7 @@ export const ButtonConatiner = styled.div<ButtonContainerProps>`
     filter: brightness(0.8);
   }
 
-  ${({ isLoading }) => isLoading && `
+  ${({ $isLoading }) => $isLoading && `
     filter: brightness(0.8);
   `}
   ${({ isDisabled }) => isDisabled && `

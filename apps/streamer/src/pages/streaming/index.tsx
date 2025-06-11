@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { FaVideo, FaMicrophone, FaPlus, FaTimes, FaPlay, FaEye, FaSmile, FaChevronLeft, FaArrowRight, FaCrown } from 'react-icons/fa';
 import * as S from './streaming.style';
 
@@ -27,7 +27,7 @@ export const StreamingPage: React.FC = () => {
   ];
 
   const handleStartStream = () => {
-    console.log('스트리밍 시작');
+    // 스트리밍 시작 로직
   };
 
   const handleSettingsChange = (field: keyof StreamingSettings, value: string) => {

@@ -9,11 +9,11 @@ import { FiUser, FiLock } from "react-icons/fi";
 import { FaApple } from "react-icons/fa6";
 import { FcGoogle } from "react-icons/fc";
 import { login } from "../../services/auth";
+
 export const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
   const navigate = useNavigate();
 
   const isActive = email.trim() !== "" && password.trim() !== "";
