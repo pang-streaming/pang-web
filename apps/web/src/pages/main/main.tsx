@@ -3,35 +3,18 @@ import { FollowingContainer, FollowingTitle } from "../follow/following.style";
 import { GridContainer } from "./main.style";
 import dlook from "../../assets/dlook.png";
 import { MainLiveCard } from "../explore/livecard/mainlivecard/mainlivecard";
-import { InitModal } from "./widgets/init-modal";
+import { InitModal } from "./widgets/init-modal/init-modal";
+
 
 export const Main = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    setIsModalOpen(true); // 첫 렌더 시 모달 열기
+    setIsModalOpen(true);
   }, []);
 
-  const lives = [
-    {
-      id: 1,
-      profileImage: dlook,
-      streamerName: "먼지오빠",
-      title: "안녕하세요",
-    },
-    {
-      id: 2,
-      profileImage: dlook,
-      streamerName: "먼지오빠",
-      title: "안녕하세요",
-    },
-    {
-      id: 3,
-      profileImage: dlook,
-      streamerName: "먼지오빠",
-      title: "안녕하세요",
-    },
-  ];
+  const userid = localStorage.getItem("userid") || "사용자";
+
 
   return (
     <FollowingContainer>
@@ -52,8 +35,7 @@ export const Main = () => {
       </GridContainer>
 
       <InitModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <h2>환영합니다!</h2>
-        <p>로그인 후 처음 보는 모달입니다.</p>
+        <span>{userid}님의<br/>나이와 성별을 선택해주세요!</span>
       </InitModal>
     </FollowingContainer>
   );
