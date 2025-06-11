@@ -16,7 +16,7 @@ import {
 import { StepDots } from "./stepDots";
 import logo from "../../assets/logo.svg";
 import { useSignup } from "./signup-context";
-import api from "../../api/api"; // 추가
+import api from "../../api/api"; 
 
 export const Step4 = () => {
   const navigate = useNavigate();
@@ -39,7 +39,6 @@ export const Step4 = () => {
       return;
     }
 
-    // 비밀번호 상태 저장
     setSignupData({ password });
 
     try {
@@ -51,7 +50,7 @@ export const Step4 = () => {
 
       alert("회원가입 성공!");
       console.log(`서버 응답 : ${response.data}`)
-      navigate("/login");
+      navigate("/signup/complete");
     } catch (error) {
       console.error(error);
       alert("회원가입 실패! 다시 시도해주세요.");

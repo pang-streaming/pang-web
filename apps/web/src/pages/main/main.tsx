@@ -35,7 +35,6 @@ export const Main = () => {
       </GridContainer>
 
       <InitModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <span>{userid}님의<br/>나이와 성별을 선택해주세요!</span>
       </InitModal>
     </FollowingContainer>
   );

@@ -2,11 +2,7 @@
 import styled from "styled-components";
 import { ModalSection } from "../modal-section/modal-section";
 
-interface InitModalStep1Props {
-  onNext: () => void;
-}
-
-export const InitModalStep1 = ({ onNext }: InitModalStep1Props) => {
+export const InitModalStep1 = () => {
   const userid = localStorage.getItem("userid") || "사용자";
 
   return (
@@ -14,11 +10,12 @@ export const InitModalStep1 = ({ onNext }: InitModalStep1Props) => {
       <Title>
         {userid}님의
         <br />
-        나이와 성별을 입력해주세요
+        나이와 성별을 선택해주세요
       </Title>
-      <ModalSection />
-      <ModalSection />
-      <NextButton onClick={onNext}>다음</NextButton>
+      <ModalSectionContainer>
+        <ModalSection isAge={true}/>
+        <ModalSection isAge={false}/>
+      </ModalSectionContainer>
     </Container>
   );
 };
@@ -28,7 +25,7 @@ const Container = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
 `;
 
@@ -39,20 +36,11 @@ const Title = styled.span`
   text-align: left;
 `;
 
-const NextButton = styled.button`
-  margin-top: 20px;
+const ModalSectionContainer = styled.div`
   width: 100%;
-  height: 53px;
-  background: #ff0055;
-  border: none;
-  outline: none;
-  color: white;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 18px;
-
-  &:hover {
-    background: #c70039;
-  }
+  height: 114px;
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 `;

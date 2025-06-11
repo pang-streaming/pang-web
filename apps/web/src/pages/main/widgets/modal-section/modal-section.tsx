@@ -1,18 +1,35 @@
 import styled from "styled-components";
+import Calander from "../../../../assets/loginIcon/calander.svg";
+import Gender from "../../../../assets/loginIcon/gender.svg";
+import { GenderPicker } from "./gender-section";
+import { AgeSection } from "./age-section";
 
 
+export const ModalSection = ({ isAge }: { isAge: boolean }) => {
+  return (
+    <ModalSectionContainer>
+      <img src={isAge ? Calander : Gender} />
+      <ModalSectionDivider />
+      {isAge ? <AgeSection /> : <GenderPicker />}
+    </ModalSectionContainer>
+  );
+};
 
-export const ModalSection = () => {
-    return (
-        <ModalSectionContainer>
-            
-        </ModalSectionContainer>
-    );
-}
+const ModalSectionContainer = styled.div`
+  width: 100%;
+  height: 50px;
+  border-radius: 8px;
+  background-color: #262626;
+  box-sizing: border-box;
+  padding: 15px 18px;
+  display: flex;
+  align-items: center;
+`;
 
-export const ModalSectionContainer = styled.div`
-    width: 100%;
-    height: 50px;
-    border-radius: 8px;
-    background-color: #262626;
-`
+const ModalSectionDivider = styled.div`
+  width: 1px;
+  height: 90%;
+  background-color: #737373;
+  margin-left: 18px;
+  margin-right: 22px;
+`;

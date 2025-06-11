@@ -6,6 +6,7 @@ import { InitModalStep2 } from "./init-modal-step2";
 interface InitModalProps {
   isOpen: boolean;
   onClose: () => void;
+  children?: React.ReactNode; 
 }
 
 export const InitModal = ({ isOpen, onClose }: InitModalProps) => {
@@ -18,15 +19,14 @@ export const InitModal = ({ isOpen, onClose }: InitModalProps) => {
   return (
     <ModalOverlay onClick={onClose}>
       <ModalContent onClick={(e) => e.stopPropagation()}>
-        {step === 1 && <InitModalStep1 onNext={handleNext} />}
-        {step === 2 && <InitModalStep2 onClose={onClose} onPrev={() => setStep(1)} />}
+        {step === 1 && <InitModalStep1 />}
+        {step === 2 && <InitModalStep2 />}
 
-        {/* step에 따라 버튼 다르게 보여주기 */}
         <ButtonWrapper>
           {step === 1 ? (
             <NextButton onClick={handleNext}>다음</NextButton>
           ) : (
-            <CloseButton onClick={onClose}>닫기</CloseButton>
+            <CloseButton onClick={onClose}>완료</CloseButton>
           )}
         </ButtonWrapper>
 
@@ -71,6 +71,8 @@ const StepIndicator = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
+  position: absolute;
+  bottom: 21px;
 `;
 
 const Circle = styled.div<{ active: boolean }>`
@@ -85,23 +87,9 @@ const Circle = styled.div<{ active: boolean }>`
   font-weight: bold;
 `;
 
-// export const CloseButton = styled.button`
-//   width: 100%;
-//   height: 53px;
-//   background: #ff0055;
-//   border: none;
-//   outline: none;
-//   color: white;
-//   border-radius: 8px;
-//   cursor: pointer;
-//   &:hover {
-//     background: #c4c4c4;
-//   }
-// `;
-
 const ButtonWrapper = styled.div`
   width: 100%;
-  margin-top: 20px;
+  margin-top: 108px;
 `;
 
 // 공통 스타일로 재활용 가능한 버튼들

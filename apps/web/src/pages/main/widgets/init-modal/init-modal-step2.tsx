@@ -1,19 +1,33 @@
-interface InitModalStep2Props {
-  onPrev: () => void;
-  onClose: () => void;
-}
+import styled from "styled-components";
+import { CategorySelector } from "./category-selector";
 
-export const InitModalStep2 = ({ onPrev, onClose }: InitModalStep2Props) => {
+export const InitModalStep2 = () => {
+  const userid = localStorage.getItem("userid") || "사용자";
+
   return (
-    <div>
-      <h2>당신의 취향을 선택해주세요</h2>
-      {/* 예시 */}
-      <label><input type="checkbox" /> 게임</label>
-      <label><input type="checkbox" /> 음악</label>
-      <div>
-        <button onClick={onPrev}>이전</button>
-        <button onClick={onClose}>완료</button>
-      </div>
-    </div>
+    <Container>
+      <Title>
+        {userid}님의
+        <br />
+        당신의 취향을 선택해주세요
+      </Title>
+      <CategorySelector />
+    </Container>
   );
 };
+
+const Container = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+const Title = styled.span`
+  width: 100%;
+  font-size: 24px;
+  font-weight: 800;
+  text-align: left;
+`;
