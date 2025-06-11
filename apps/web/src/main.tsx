@@ -19,6 +19,7 @@ import { Following } from "./pages/follow/following.tsx";
 import CategoryPage from "./pages/category/category_page.tsx";
 import { LiveDetail } from "./pages/livedetail/livedetail.tsx";
 import { SignupProvider } from "./pages/signup/signup-context.tsx";
+import { AppRoutes } from "./routes.tsx";
 
 function App() {
   const location = useLocation();
@@ -75,7 +76,7 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ThemeProvider theme={theme}>
       <BrowserRouter>
-        <AppRoutes />
+        <App />
       </BrowserRouter>
     </ThemeProvider>
   </StrictMode>

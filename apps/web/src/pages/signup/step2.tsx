@@ -6,7 +6,6 @@ import { StepDots } from "./stepDots";
 import { useState } from "react";
 import { FiUser } from "react-icons/fi";
 import { IoIosSend } from "react-icons/io";
-import api from "../../api/api";
 import { useSignup } from "./signup-context";
 
 export const Step2 = () => {
@@ -21,19 +20,6 @@ export const Step2 = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     setEmailValid(emailRegex.test(value));
   };
-
-  // const handleSendEmail = async () => {
-  //   if (!emailValid) return;
-
-  //   try {
-  //     const res = await api.post("/auth/send-email", { email });
-  //     alert("인증 메일이 발송되었습니다.");
-  //   } catch (err) {
-  //     alert("인증 메일 발송 실패!");
-  //     console.error(err);
-  //   }
-  // };
-
   const { setSignupData } = useSignup();
 
   const handleClick = () => {
