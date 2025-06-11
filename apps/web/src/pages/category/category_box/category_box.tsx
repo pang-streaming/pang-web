@@ -1,5 +1,3 @@
-import React from "react";
-
 import * as S from "./category.style";
 import { CategoryChipProps } from "./category.props";
 

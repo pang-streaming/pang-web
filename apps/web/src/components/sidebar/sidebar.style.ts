@@ -16,7 +16,7 @@ export const ItemIconAndText = styled.div<SidebarItemProps>`
     text-align: center;
     cursor: pointer;
 
-    ${({ isSelected }) => isSelected && `
+    ${({ $isSelected }) => $isSelected && `
         background-color: ${theme.netural800};
         color: ${theme.primary500} !important;
     ` };
@@ -39,7 +39,7 @@ export const ItemIconAndTextCliped = styled.div<SidebarItemProps>`
     white-space: pre-wrap;
 
     color: #989898;
-    ${({ isSelected }) => isSelected && `
+    ${({ $isSelected }) => $isSelected && `
         color: ${theme.primary500};
     ` };
     cursor: pointer;
@@ -61,13 +61,13 @@ export const HeaderLogoContainer = styled.div`
     height: 64px;
     width: 240px;
     border-bottom: 1px solid ${(props)=>props.theme.gray700};
-    background-color: ${(props)=> props.theme.netural900};
+    background-color: ${(props)=> props.theme.netural800};
 `
 
 export const BaseSidebar = styled.div`
     grid-row: span 2;
     color: #fff;
-    background-color: ${(props)=> props.theme.netural900};
+    background-color: ${(props)=> props.theme.netural800};
     height: calc(100% - 64px);
     overscroll-behavior: none;
     position: relative;

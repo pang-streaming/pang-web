@@ -5,11 +5,11 @@ import useSidebarStore from '../../stores/useSidebarStore';
 import { LayoutProps } from './layout.props';
 
 export const Layout = ({children}:LayoutProps) => {
-    const {isClipped} = useSidebarStore()
+    const {$isClipped} = useSidebarStore()
     return (
         <>
             <GlobalStyle />
-            <Container isClipped={isClipped}>
+            <Container $isClipped={$isClipped}>
                 <Sidebar/>
                 <Header/>
                 <Content>

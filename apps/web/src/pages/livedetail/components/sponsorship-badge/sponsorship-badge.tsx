@@ -1,4 +1,4 @@
-import React from 'react'
+
 import { SponsorshipProps } from './sponsorship-badge.props'
 import {  BadgeRankingContainer, FisrtBadgePungCount, FisrtBadgeViewerName, FistBadgeRankingColumn, RemainBadgePungCount, RemainBadgeViewerName,  } from './sponsorship-badge.style'
 import badge1 from '../../../../assets/sponsorship-badge1.svg'
