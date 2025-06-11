@@ -163,40 +163,40 @@ export const NextButton = styled.button<{ $active: boolean }>`
 `;
 
 export const CheckboxLabel = styled.label`
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    position: relative;
-    padding-left: 40px;
-    user-select: none;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  padding-left: 40px;
+  user-select: none;
 `;
 
 export const Checkbox = styled.input.attrs({ type: "checkbox" })`
-    opacity: 0;
+  opacity: 0;
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  cursor: pointer;
+
+  &:checked ~ .custom-checkbox {
+    background-color: #f37;
+    border-color: #f37;
+  }
+
+  &:checked ~ .custom-checkbox::after {
+    content: "";
     position: absolute;
-    left: 0;
-    top: 0;
-    height: 100%;
-    width: 100%;
-    cursor: pointer;
-
-    &:checked ~ .custom-checkbox {
-        background-color: #f37;
-        border-color: #f37;
-    }
-
-    &:checked ~ .custom-checkbox::after {
-        content: "";
-        position: absolute;
-        left: 5.5px;
-        top: 2px;
-        width: 6px;
-        height: 11px;
-        border: solid white;
-        border-width: 0 3px 3px 0;
-        transform: rotate(45deg);
-        border-radius: 1px;
-    }
+    left: 5.5px;
+    top: 2px;
+    width: 6px;
+    height: 11px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+    border-radius: 1px;
+  }
 `;
 
 // 가짜 체크박스

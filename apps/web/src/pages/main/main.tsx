@@ -23,7 +23,7 @@ export const Main = () => {
     useEffect(() => {
         const fetchLiveStreams = async () => {
             try {
-                const response = await axios.get("http://9fc2-221-168-22-205.ngrok-free.app/stream/items");
+                const response = await axios.get("http://15.164.53.239/stream/items");
                 if (Array.isArray(response.data)) {
                     setLives(response.data);
                 }
@@ -34,7 +34,7 @@ export const Main = () => {
 
         const fetchPopularStreams = async () => {
             try {
-                const response = await axios.get("http://9fc2-221-168-22-205.ngrok-free.app/stream/items/popular");
+                const response = await axios.get("http://15.164.53.239/stream/items/popular");
                 if (Array.isArray(response.data)) {
                     setPopularLives(response.data.slice(0, 3));
                 }
