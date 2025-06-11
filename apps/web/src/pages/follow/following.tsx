@@ -136,7 +136,7 @@ export const Following = () => {
             <GridContainer>
                 {lives.map((live) => (
                     <div onClick={() => handleClickLive(live)}>
-                        <LiveCard profileImage={dlook} title={live.title} streamerName={live.streamerName} />
+                        {/* <LiveCard profileImage={dlook} title={live.title} streamerName={live.streamerName} /> */}
                     </div>
                     ))}
             </GridContainer>  
@@ -144,7 +144,7 @@ export const Following = () => {
             <GridContainer>
                 {lives.map((live) => (
                     <div onClick={() => handleClickLive(live)}>
-                        <LiveCard profileImage={dlook} title={live.title} streamerName={live.streamerName} />
+                        {/* <LiveCard profileImage={dlook} title={live.title} streamerName={live.streamerName} /> */}
                     </div>
                     ))}
             </GridContainer>    

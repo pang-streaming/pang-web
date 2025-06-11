@@ -6,7 +6,6 @@ import { StepDots } from "./stepDots";
 import { useState } from "react";
 import { FiUser } from "react-icons/fi";
 import { IoIosSend } from "react-icons/io";
-import api from "../../api/api";
 import { useSignup } from "./signup-context";
 
 export const Step2 = () => {
@@ -21,23 +20,11 @@ export const Step2 = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     setEmailValid(emailRegex.test(value));
   };
-
-  const handleSendEmail = async () => {
-    if (!emailValid) return;
-
-    try {
-      const res = await api.post("/auth/send-email", { email });
-      alert("인증 메일이 발송되었습니다.");
-    } catch (err) {
-      alert("인증 메일 발송 실패!");
-      console.error(err);
-    }
-  };
-
   const { setSignupData } = useSignup();
 
   const handleClick = () => {
     if (emailValid) {
+      console.log(email)
       setSignupData({ email });
       navigate("/signup/step3");
     }
@@ -51,14 +38,12 @@ export const Step2 = () => {
       <S.SignupWrap>
         <S.SignupBox>
           <S.SignupBoxElemContainer>
-            {/* 고정 제목 */}
             <S.SignupBoxTitle>
               이메일 입력한 후,
               <br />
               이메일 인증을 진행해주세요
             </S.SignupBoxTitle>
 
-            {/* 중간 컨텐츠 영역 */}
             <div style={{ flex: 1 }}>
               <S.EmailInputWrapper>
                 <FiUser size={20} color="#999" />
@@ -68,7 +53,7 @@ export const Step2 = () => {
                   value={email}
                   onChange={handleEmailChange}
                 />
-                <S.SendButton onClick={handleSendEmail} disabled={!emailValid}>
+                <S.SendButton disabled={!emailValid}>
                   <IoIosSend size={20} />
                 </S.SendButton>
               </S.EmailInputWrapper>
@@ -78,7 +63,6 @@ export const Step2 = () => {
               </S.HintText>
             </div>
 
-            {/* 고정 버튼 */}
             <S.NextButtonWrapper>
               <S.NextButton
                 onClick={handleClick}
@@ -98,3 +82,5 @@ export const Step2 = () => {
     </S.SignUpContainer>
   );
 };
+
+

@@ -1,26 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
-import {
-  DividerText,
-  LeftSection,
-  LoginButton,
-  SignUpText,
-  SignUpLink,
-  LoginButtonText,
-  LoginDividerContainer,
-  LoginDividerWrapper,
-  LoginInputContainer,
-  LoginInputIcon,
-  LoginInputLeft,
-  LoginInputRight,
-  LoginLogo,
-  LoginWrapper,
-  OauthContainer,
-  OauthWrapper,
-  SectionDivider,
-  RightSection,
-} from "./login.style";
+import * as S from "./login.style";
 
 import Logo from "../../assets/logo.svg";
 import { FiUser, FiLock } from "react-icons/fi";
@@ -42,32 +24,42 @@ export const Login = () => {
     setLoading(true);
 
     try {
-      const data = await login(email, password) as { token: string } | null;
-
-      if (data && data.token) {
-  localStorage.setItem("token", data.token);
-  navigate("/");
-}
-
+      const data = await login(email, password);
+      localStorage.setItem("token", data.accessToken);
       navigate("/");
     } catch (error: any) {
-      // 에러 메시지 처리가 필요하다면 여기에 추가
+      const status = error.response?.status;
+      const message = error.response?.data?.message || error.message || "";
+
+      if (status === 401) {
+        toast.error("비밀번호가 일치하지 않습니다.");
+      } else if (
+        message.includes(
+          'Cannot invoke "com.pangapiserver.domain.user.entity.UserEntity.getPassword()" because "user" is null'
+        )
+      ) {
+        toast.error("등록된 사용자가 없습니다.");
+      } else {
+        toast.error(message || "로그인 실패");
+      }
     } finally {
       setLoading(false);
     }
   };
-
+  useEffect(() => {
+    console.log(import.meta.env.VITE_API_URL);
+  }, []);
   return (
-    <LoginWrapper>
-      <LeftSection>
-        <LoginLogo src={Logo} alt="로고" />
+    <S.LoginWrapper>
+      <S.LeftSection>
+        <S.LoginLogo src={Logo} alt="로고" />
 
-        <LoginInputContainer>
-          <LoginInputLeft>
-            <LoginInputIcon>
+        <S.LoginInputContainer>
+          <S.LoginInputLeft>
+            <S.LoginInputIcon>
               <FiUser size={20} color="#666" />
-            </LoginInputIcon>
-          </LoginInputLeft>
+            </S.LoginInputIcon>
+          </S.LoginInputLeft>
 
           <div
             style={{
@@ -76,22 +68,22 @@ export const Login = () => {
               alignItems: "center",
             }}
           >
-            <SectionDivider />
+            <S.SectionDivider />
           </div>
 
-          <LoginInputRight
+          <S.LoginInputRight
             placeholder="아이디를 입력해주세요"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-        </LoginInputContainer>
+        </S.LoginInputContainer>
 
-        <LoginInputContainer>
-          <LoginInputLeft>
-            <LoginInputIcon>
+        <S.LoginInputContainer>
+          <S.LoginInputLeft>
+            <S.LoginInputIcon>
               <FiLock size={20} color="#666" />
-            </LoginInputIcon>
-          </LoginInputLeft>
+            </S.LoginInputIcon>
+          </S.LoginInputLeft>
 
           <div
             style={{
@@ -100,64 +92,64 @@ export const Login = () => {
               alignItems: "center",
             }}
           >
-            <SectionDivider />
+            <S.SectionDivider />
           </div>
 
-          <LoginInputRight
+          <S.LoginInputRight
             placeholder="비밀번호를 입력해주세요"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-        </LoginInputContainer>
+        </S.LoginInputContainer>
 
-        <LoginButton
+        <S.LoginButton
           disabled={!isActive || loading}
           isActive={isActive}
           onClick={handleLogin}
         >
-          <LoginButtonText>
+          <S.LoginButtonText>
             {loading ? "로그인 중..." : "로그인"}
-          </LoginButtonText>
-        </LoginButton>
+          </S.LoginButtonText>
+        </S.LoginButton>
 
         <LoginDivider />
 
-        <OauthContainer>
+        <S.OauthContainer>
           <OauthBox logo="apple" />
           <OauthBox logo="google" />
-        </OauthContainer>
+        </S.OauthContainer>
 
         <div style={{ marginTop: "30px" }}>
-          <SignUpText>
+          <S.SignUpText>
             가입된 계정이 없으신가요?{" "}
-            <SignUpLink onClick={() => navigate("/signup")}>
+            <S.SignUpLink onClick={() => navigate("/signup")}>
               회원가입
-            </SignUpLink>
-          </SignUpText>
+            </S.SignUpLink>
+          </S.SignUpText>
         </div>
-      </LeftSection>
+      </S.LeftSection>
 
-      <RightSection />
-    </LoginWrapper>
+      <S.RightSection />
+    </S.LoginWrapper>
   );
 };
 
 const LoginDivider = () => {
   return (
-    <LoginDividerWrapper>
-      <LoginDividerContainer />
-      <DividerText>또는</DividerText>
-      <LoginDividerContainer />
-    </LoginDividerWrapper>
+    <S.LoginDividerWrapper>
+      <S.LoginDividerContainer />
+      <S.DividerText>또는</S.DividerText>
+      <S.LoginDividerContainer />
+    </S.LoginDividerWrapper>
   );
 };
 
 const OauthBox = ({ logo }: { logo: "apple" | "google" }) => {
   return (
-    <OauthWrapper>
+    <S.OauthWrapper>
       {logo === "apple" && <FaApple size={28} />}
       {logo === "google" && <FcGoogle size={28} />}
-    </OauthWrapper>
+    </S.OauthWrapper>
   );
 };

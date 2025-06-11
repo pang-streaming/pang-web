@@ -94,6 +94,6 @@ jobs:
             cd /home/ec2-user/deploy
             unzip -o build-artifacts.zip || true
             rm build-artifacts.zip
-                   
+
             # Nginx 재시작
             docker exec nginx nginx -s reload || true
