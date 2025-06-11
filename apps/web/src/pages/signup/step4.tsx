@@ -16,10 +16,11 @@ import {
 import { StepDots } from "./stepDots";
 import logo from "../../assets/logo.svg";
 import { useSignup } from "./signup-context";
+import api from "../../api/api"; // 추가
 
 export const Step4 = () => {
   const navigate = useNavigate();
-  const { setSignupData } = useSignup(); 
+  const { signupData, setSignupData } = useSignup();
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -27,7 +28,7 @@ export const Step4 = () => {
   const isPasswordValid = password.length >= 8;
   const isMatch = password === confirmPassword;
 
-  const handleNextClick = () => {
+  const handleNextClick = async () => {
     if (!isPasswordValid) {
       alert("비밀번호는 최소 8자 이상이어야 합니다.");
       return;
@@ -38,8 +39,23 @@ export const Step4 = () => {
       return;
     }
 
+    // 비밀번호 상태 저장
     setSignupData({ password });
-    navigate("/signup/complete");
+
+    try {
+      const response = await api.post("/auth/register", {
+        email: signupData.email,
+        id: signupData.id,
+        password,
+      });
+
+      alert("회원가입 성공!");
+      console.log(`서버 응답 : ${response.data}`)
+      navigate("/login");
+    } catch (error) {
+      console.error(error);
+      alert("회원가입 실패! 다시 시도해주세요.");
+    }
   };
 
   return (
@@ -56,11 +72,8 @@ export const Step4 = () => {
               <br />
               다시 한번 입력해주세요
             </SignupBoxTitle>
-            {/* 중간 컨텐츠 영역 */}
             <div style={{ flex: 1 }}>
-              {/* 비밀번호 입력 */}
               <EmailInputWrapper>
-                {/*<FiLock size={20} color="#999" />*/}
                 <EmailInput
                   type="password"
                   placeholder="비밀번호 (8자 이상)"
@@ -69,9 +82,7 @@ export const Step4 = () => {
                 />
               </EmailInputWrapper>
 
-              {/* 비밀번호 확인 */}
               <EmailInputWrapper style={{ marginTop: "20px" }}>
-                {/*<FiLock size={20} color="#999" />*/}
                 <EmailInput
                   type="password"
                   placeholder="비밀번호 확인"
@@ -80,13 +91,11 @@ export const Step4 = () => {
                 />
               </EmailInputWrapper>
 
-              {/* 힌트 */}
               <HintText>
                 비밀번호는 최소 8자 이상이며, 두 비밀번호가 일치해야 합니다.
               </HintText>
             </div>
 
-            {/* 다음 버튼 */}
             <NextButtonWrapper>
               <NextButton
                 $active={isPasswordValid && isMatch}
@@ -96,7 +105,6 @@ export const Step4 = () => {
               </NextButton>
             </NextButtonWrapper>
 
-            {/* 인디케이터 */}
             <div style={{ marginTop: "24px", textAlign: "center" }}>
               <StepDots activeStep={4} />
             </div>

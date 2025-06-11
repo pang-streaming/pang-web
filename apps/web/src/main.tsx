@@ -5,7 +5,8 @@ import { theme } from "@repo/ui/theme";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { Layout } from "./components/layout/layout";
 import { NotFound } from "./pages/notfound/notFound";
-
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./index.css";
 import { Main } from "./pages/main/main";
 import { Login } from "./pages/login/login";
@@ -35,7 +36,15 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <SignupProvider>
-        {" "}
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          closeOnClick
+          pauseOnHover
+          draggable
+          theme="colored"
+        />
         {isNoLayout ? (
           <Routes>
             <Route path="/login" element={<Login />} />
