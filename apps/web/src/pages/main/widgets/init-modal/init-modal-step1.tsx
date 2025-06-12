@@ -1,6 +1,6 @@
-// InitModalStep1.tsx
 import styled from "styled-components";
 import { ModalSection } from "../modal-section/modal-section";
+
 
 export const InitModalStep1 = () => {
   const userid = localStorage.getItem("userid") || "사용자";

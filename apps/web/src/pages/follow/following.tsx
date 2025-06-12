@@ -1,5 +1,4 @@
 import {FollowingContainer, FollowingStreamersContainer, FollowingTitle} from "./following.style.ts";
-import {LiveCard} from "../explore/livecard/livecard.tsx";
 import dlook from "../../assets/dlook.png"
 import { FollowingCard } from "../../components/followingcard/followingcard.tsx";
 import { GridContainer } from "../main/main.style.ts";

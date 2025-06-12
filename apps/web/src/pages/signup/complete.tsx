@@ -1,7 +1,4 @@
 import { useEffect, useState } from "react";
-
-
-
 import logo2 from "../../assets/pang-emotion-logo.png";
 import { useNavigate } from "react-router-dom";
 

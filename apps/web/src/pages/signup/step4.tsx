@@ -1,22 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  HeaderWrap,
-  NextButtonWrapper,
-  NextButton,
-  SignupBox,
-  SignupBoxElemContainer,
-  SignupWrap,
-  SignUpContainer,
-  SignupBoxTitle,
-  EmailInputWrapper,
-  EmailInput,
-  HintText,
-} from "../signup.style";
+import * as S from "../signup.style";
 import { StepDots } from "./stepDots";
 import logo from "../../assets/logo.svg";
 import { useSignup } from "./signup-context";
-import api from "../../api/api"; 
+import api from "../../api/api";
 
 export const Step4 = () => {
   const navigate = useNavigate();
@@ -48,8 +36,12 @@ export const Step4 = () => {
         password,
       });
 
+      if (response.data.success === false) {
+        alert(`회원가입 실패: ${response.data.message}`);
+        return;
+      }
+
       alert("회원가입 성공!");
-      console.log(`서버 응답 : ${response.data}`)
       navigate("/signup/complete");
     } catch (error) {
       console.error(error);
@@ -58,58 +50,59 @@ export const Step4 = () => {
   };
 
   return (
-    <SignUpContainer>
-      <HeaderWrap>
+    <S.SignUpContainer>
+      <S.HeaderWrap>
         <img src={logo} alt="logo" />
-      </HeaderWrap>
+      </S.HeaderWrap>
 
-      <SignupWrap>
-        <SignupBox>
-          <SignupBoxElemContainer>
-            <SignupBoxTitle>
+      <S.SignupWrap>
+        <S.SignupBox>
+          <S.SignupBoxElemContainer>
+            <S.SignupBoxTitle>
               비밀번호를 입력하고
               <br />
               다시 한번 입력해주세요
-            </SignupBoxTitle>
+            </S.SignupBoxTitle>
+
             <div style={{ flex: 1 }}>
-              <EmailInputWrapper>
-                <EmailInput
+              <S.EmailInputWrapper>
+                <S.EmailInput
                   type="password"
                   placeholder="비밀번호 (8자 이상)"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
-              </EmailInputWrapper>
+              </S.EmailInputWrapper>
 
-              <EmailInputWrapper style={{ marginTop: "20px" }}>
-                <EmailInput
+              <S.EmailInputWrapper style={{ marginTop: "20px" }}>
+                <S.EmailInput
                   type="password"
                   placeholder="비밀번호 확인"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                 />
-              </EmailInputWrapper>
+              </S.EmailInputWrapper>
 
-              <HintText>
+              <S.HintText>
                 비밀번호는 최소 8자 이상이며, 두 비밀번호가 일치해야 합니다.
-              </HintText>
+              </S.HintText>
             </div>
 
-            <NextButtonWrapper>
-              <NextButton
+            <S.NextButtonWrapper>
+              <S.NextButton
                 $active={isPasswordValid && isMatch}
                 onClick={handleNextClick}
               >
                 회원가입 →
-              </NextButton>
-            </NextButtonWrapper>
+              </S.NextButton>
+            </S.NextButtonWrapper>
 
             <div style={{ marginTop: "24px", textAlign: "center" }}>
               <StepDots activeStep={4} />
             </div>
-          </SignupBoxElemContainer>
-        </SignupBox>
-      </SignupWrap>
-    </SignUpContainer>
+          </S.SignupBoxElemContainer>
+        </S.SignupBox>
+      </S.SignupWrap>
+    </S.SignUpContainer>
   );
 };
