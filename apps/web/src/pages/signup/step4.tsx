@@ -1,25 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  HeaderWrap,
-  NextButtonWrapper,
-  NextButton,
-  SignupBox,
-  SignupBoxElemContainer,
-  SignupWrap,
-  SignUpContainer,
-  SignupBoxTitle,
-  EmailInputWrapper,
-  EmailInput,
-  HintText,
-} from "../signup.style";
-
-// import { FiLock } from "react-icons/fi";
+import * as S from "../signup.style";
 import { StepDots } from "./stepDots";
 import logo from "../../assets/logo.svg";
+import { useSignup } from "./signup-context";
+import api from "../../api/api";
 
 export const Step4 = () => {
   const navigate = useNavigate();
+  const { signupData, setSignupData } = useSignup();
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -27,7 +16,7 @@ export const Step4 = () => {
   const isPasswordValid = password.length >= 8;
   const isMatch = password === confirmPassword;
 
-  const handleNextClick = () => {
+  const handleNextClick = async () => {
     if (!isPasswordValid) {
       alert("비밀번호는 최소 8자 이상이어야 합니다.");
       return;
@@ -38,70 +27,82 @@ export const Step4 = () => {
       return;
     }
 
-    navigate("/signup/complete");
+    setSignupData({ password });
+
+    try {
+      const response = await api.post("/auth/register", {
+        email: signupData.email,
+        id: signupData.id,
+        password,
+      });
+
+      if (response.data.success === false) {
+        alert(`회원가입 실패: ${response.data.message}`);
+        return;
+      }
+
+      alert("회원가입 성공!");
+      navigate("/signup/complete");
+    } catch (error) {
+      console.error(error);
+      alert("회원가입 실패! 다시 시도해주세요.");
+    }
   };
 
   return (
-    <SignUpContainer>
-      <HeaderWrap>
+    <S.SignUpContainer>
+      <S.HeaderWrap>
         <img src={logo} alt="logo" />
-      </HeaderWrap>
+      </S.HeaderWrap>
 
-      <SignupWrap>
-        <SignupBox>
-          <SignupBoxElemContainer>
-            <SignupBoxTitle>
+      <S.SignupWrap>
+        <S.SignupBox>
+          <S.SignupBoxElemContainer>
+            <S.SignupBoxTitle>
               비밀번호를 입력하고
               <br />
               다시 한번 입력해주세요
-            </SignupBoxTitle>
-            {/* 중간 컨텐츠 영역 */}
+            </S.SignupBoxTitle>
+
             <div style={{ flex: 1 }}>
-              {/* 비밀번호 입력 */}
-              <EmailInputWrapper>
-                {/*<FiLock size={20} color="#999" />*/}
-                <EmailInput
+              <S.EmailInputWrapper>
+                <S.EmailInput
                   type="password"
                   placeholder="비밀번호 (8자 이상)"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
-              </EmailInputWrapper>
+              </S.EmailInputWrapper>
 
-              {/* 비밀번호 확인 */}
-              <EmailInputWrapper style={{ marginTop: "20px" }}>
-                {/*<FiLock size={20} color="#999" />*/}
-                <EmailInput
+              <S.EmailInputWrapper style={{ marginTop: "20px" }}>
+                <S.EmailInput
                   type="password"
                   placeholder="비밀번호 확인"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                 />
-              </EmailInputWrapper>
+              </S.EmailInputWrapper>
 
-              {/* 힌트 */}
-              <HintText>
+              <S.HintText>
                 비밀번호는 최소 8자 이상이며, 두 비밀번호가 일치해야 합니다.
-              </HintText>
+              </S.HintText>
             </div>
 
-            {/* 다음 버튼 */}
-            <NextButtonWrapper>
-              <NextButton
+            <S.NextButtonWrapper>
+              <S.NextButton
                 $active={isPasswordValid && isMatch}
                 onClick={handleNextClick}
               >
                 회원가입 →
-              </NextButton>
-            </NextButtonWrapper>
+              </S.NextButton>
+            </S.NextButtonWrapper>
 
-            {/* 인디케이터 */}
             <div style={{ marginTop: "24px", textAlign: "center" }}>
               <StepDots activeStep={4} />
             </div>
-          </SignupBoxElemContainer>
-        </SignupBox>
-      </SignupWrap>
-    </SignUpContainer>
+          </S.SignupBoxElemContainer>
+        </S.SignupBox>
+      </S.SignupWrap>
+    </S.SignUpContainer>
   );
 };

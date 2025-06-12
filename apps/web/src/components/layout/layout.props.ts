@@ -1,7 +1,7 @@
 import { ReactNode } from "react"
 
 export interface ClippedSidebar {
-    isClipped?: boolean
+    $isClipped?: boolean
 }
 
 export interface LayoutProps {

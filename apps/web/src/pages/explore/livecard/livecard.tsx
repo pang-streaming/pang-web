@@ -1,19 +1,27 @@
 import { useNavigate } from "react-router-dom";
-import {LiveCardProps} from "./livecard.props.ts";
-import {Thumbnail, LiveCardContainer, LiveInfo, LiveTitle, ProfileImage, StreamerName, TitleContainer, Spacer} from "./livecard.style.ts";
+import { Video } from "../../../types/video.ts";
+import * as S from './livecard.style.ts';
 
-export const LiveCard = ({ profileImage, title, streamerName }: LiveCardProps) => {
+export const LiveCard = ({ streamImage, profileImage, title, nickname }: Video) => {
+
+    const navigate = useNavigate();
+
+    const goToStream = () => {
+        navigate(`/livedetail`);
+
+    }
+
     return (
-        <LiveCardContainer>
-            <Thumbnail src={profileImage}/>
-                <Spacer />
-            <LiveInfo>
-                <ProfileImage src={profileImage}/>
-                <TitleContainer>
-                    <LiveTitle>{title}</LiveTitle>
-                    <StreamerName>{streamerName}</StreamerName>
-                </TitleContainer>
-            </LiveInfo>
-        </LiveCardContainer>
+        <S.LiveCardContainer onClick={goToStream}>
+            <S.Thumbnail src={streamImage}/>
+                <S.Spacer />
+            <S.LiveInfo>
+                <S.ProfileImage src={profileImage}/>
+                <S.TitleContainer>
+                    <S.LiveTitle>{title}</S.LiveTitle>
+                    <S.StreamerName>{nickname}</S.StreamerName>
+                </S.TitleContainer>
+            </S.LiveInfo>
+        </S.LiveCardContainer>
     )
 }

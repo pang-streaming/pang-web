@@ -6,6 +6,6 @@ export interface ButtonProps {
 
 export interface ButtonContainerProps{
   label: string;
-  isLoading?: boolean;
+  $isLoading?: boolean;
   isDisabled?: boolean;
 }

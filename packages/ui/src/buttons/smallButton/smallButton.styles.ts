@@ -19,7 +19,7 @@ export const ButtonConatiner = styled.button<ButtonContainerProps>`
   &:hover{
     filter: brightness(0.8);
   }
-  ${({ isLoading }) => isLoading && `
+  ${({ $isLoading }) => $isLoading && `
     filter: brightness(0.8);
   `}
   ${({ isDisabled }) => isDisabled && `

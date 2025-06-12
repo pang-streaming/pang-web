@@ -1,8 +1,6 @@
-import {FollowingContainer, FollowingStreamersContainer, FollowingTitle, LiveContainer} from "./following.style.ts";
-import {LiveCard} from "../explore/livecard/livecard.tsx";
+import {FollowingContainer, FollowingStreamersContainer, FollowingTitle} from "./following.style.ts";
 import dlook from "../../assets/dlook.png"
 import { FollowingCard } from "../../components/followingcard/followingcard.tsx";
-import { useState } from "react";
 import { GridContainer } from "../main/main.style.ts";
 import { useNavigate } from "react-router-dom";
 
@@ -137,7 +135,7 @@ export const Following = () => {
             <GridContainer>
                 {lives.map((live) => (
                     <div onClick={() => handleClickLive(live)}>
-                        <LiveCard profileImage={dlook} title={live.title} streamerName={live.streamerName} />
+                        {/* <LiveCard profileImage={dlook} title={live.title} streamerName={live.streamerName} /> */}
                     </div>
                     ))}
             </GridContainer>  
@@ -145,7 +143,7 @@ export const Following = () => {
             <GridContainer>
                 {lives.map((live) => (
                     <div onClick={() => handleClickLive(live)}>
-                        <LiveCard profileImage={dlook} title={live.title} streamerName={live.streamerName} />
+                        {/* <LiveCard profileImage={dlook} title={live.title} streamerName={live.streamerName} /> */}
                     </div>
                     ))}
             </GridContainer>    

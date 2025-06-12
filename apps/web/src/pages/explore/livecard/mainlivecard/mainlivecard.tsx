@@ -1,44 +1,46 @@
-import { MainLiveProps } from "./mainlivecard.props"
-import { BadgeStatusContainer, CategoryText, CheckBadge, FollowCount, LiveChip, LiveChipText, LiveStatusContainer, MainLiveContainer, MainStreamerName, StreamInfo, ViewCount } from "./mainlivecard.style"
-import Badge from '../../../../assets/badge.png'
-import { ProfileImage, Spacer,  } from "../livecard.style"
-import {  useNavigate } from "react-router-dom"
+import * as S from "./mainlivecard.style";
+import * as LC from "../livecard.style";
+import Badge from "../../../../assets/badge.png";
+import { useNavigate } from "react-router-dom";
+import { Video } from "../../../../types/video";
+
 export const MainLiveCard = ({
-    thumbnail,
-    profileImage,
-    streamerName,
-    followerCount,
-    viewerCount,
-    category,
-    badge
-}:MainLiveProps) => {
+  nickname,
+  profileImage,
+  badgeImage,
+  title,
+  streamImage,
+  streamUrl,
+}: Video) => {
+  const navigate = useNavigate();
 
-    const navigate = useNavigate();
+  const clickLive = () => {
+    navigate("/livedetail");
+  };
 
-    const clickLive = () => {
-        navigate('/livedetail');
-    }
+  return (
+    <S.MainLiveContainer thumbnail={streamImage} onClick={clickLive}>
+      <S.LiveStatusContainer>
+        <S.LiveChip>
+          <S.LiveChipText>LIVE</S.LiveChipText>
+        </S.LiveChip>
+        <S.ViewCount>0명 시청중</S.ViewCount>
+      </S.LiveStatusContainer>
 
-    return (
-            <MainLiveContainer thumbnail={thumbnail} onClick={clickLive}>
-                <LiveStatusContainer>
-                    <LiveChip>
-                        <LiveChipText>LIVE</LiveChipText>
-                    </LiveChip>
-                    <ViewCount>{viewerCount}명 시청중</ViewCount>
-                </LiveStatusContainer>
-                <CategoryText>{category}</CategoryText>
-                <Spacer />
-                <StreamInfo>
-                <ProfileImage src={profileImage}/>
-                <div style={{display:'flex', flexDirection: 'column', marginBottom: 10}}>
-                <BadgeStatusContainer>
-                    <MainStreamerName>{streamerName}</MainStreamerName>
-                    {badge && <CheckBadge src={Badge} />}
-                </BadgeStatusContainer>
-                <FollowCount>팔로워 {followerCount}명</FollowCount>
-                </div>
-                </StreamInfo>
-            </MainLiveContainer>
-    )
-}
+      <S.CategoryText>category</S.CategoryText>
+
+      <LC.Spacer />
+
+      <S.StreamInfo>
+        <LC.ProfileImage src={profileImage} />
+        <div style={{ display: "flex", flexDirection: "column", marginBottom: 10 }}>
+          <S.BadgeStatusContainer>
+            <S.MainStreamerName>{nickname}</S.MainStreamerName>
+            {badgeImage && <S.CheckBadge src={Badge} />}
+          </S.BadgeStatusContainer>
+          <S.FollowCount>팔로워 0명</S.FollowCount>
+        </div>
+      </S.StreamInfo>
+    </S.MainLiveContainer>
+  );
+};
