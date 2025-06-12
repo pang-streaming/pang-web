@@ -1,7 +1,8 @@
 import { useEffect } from "react"
 import useSidebarStore from "../../stores/useSidebarStore"
-import styled from "styled-components"
 import logo from "../../assets/pang-emotion-logo.png"
+import styled from "styled-components"
+
 
 const Container = styled.div`
     position: absolute;
@@ -13,7 +14,7 @@ const Container = styled.div`
 
 const Title = styled.div`
     font-size: 24px;
-    color: ${((props)=> props.theme.primary500)};
+    color: blue;
     font-weight: 700;
 `
 
