@@ -92,7 +92,6 @@ const ButtonWrapper = styled.div`
   margin-top: 108px;
 `;
 
-// 공통 스타일로 재활용 가능한 버튼들
 const CloseButton = styled.button`
   width: 100%;
   height: 53px;
