@@ -11,15 +11,15 @@ export interface LoginResponse {
 }
 
 export const login = async (
-  id: string,
-  password: string
+    id: string,
+    password: string
 ): Promise<LoginResponse> => {
   const response = await api.post("/auth/login", { id, password });
-  const { accessToken, refreshToken } = response.data;
+
+  const { accessToken, refreshToken } = response.data.data;
 
   localStorage.setItem("accessToken", accessToken);
   localStorage.setItem("refreshToken", refreshToken);
-
 
   return { accessToken, refreshToken };
 };
