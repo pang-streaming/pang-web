@@ -39,6 +39,8 @@ jobs:
         run: echo "::warning::빌드 진행 중"
 
       - name: 앱 빌드 (Turbo)
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
         run: |
           pnpm turbo run build --no-cache || true
           
