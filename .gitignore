@@ -7,6 +7,8 @@ Icon
 .Spotlight-V100
 .Trashes
 
+pnpm-lock.yaml
+
 # Windows system files
 Thumbs.db
 ehthumbs.db
