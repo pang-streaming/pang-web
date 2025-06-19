@@ -17,6 +17,9 @@ export const Main = () => {
 
   useEffect(() => {
     const getVideos = async () => {
+      const token = localStorage.getItem("accessToken");
+      console.log("함수 실행");
+      console.log(`토큰 : ${token}`);
       console.log("fetchVideos 요청 보냄");
       const result = await fetchVideos();
       console.log("받아온 영상:", result);
@@ -30,7 +33,7 @@ export const Main = () => {
       console.log("fetchPopularVideos 요청 보냄");
       const result = await fetchPopularVideos();
       console.log("받아온 인기영상:", result);
-      setVideos(result);
+      setPopularVideos(result);
     };
     getPopularVideos();
   }, []);

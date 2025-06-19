@@ -22,7 +22,11 @@ api.interceptors.request.use((config) => {
 
 export default api;
 
-export const signup = async (userInfo: { email: string; id: string; password: string }) => {
+export const signup = async (userInfo: {
+  email: string;
+  id: string;
+  password: string;
+}) => {
   const res = await api.post("/auth/register", userInfo);
   return res.data;
 };
