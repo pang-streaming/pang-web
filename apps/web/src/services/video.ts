@@ -6,6 +6,7 @@ export const fetchVideos = async (): Promise<Video[]> => {
   try {
     const res = await api.get("/stream/items");
     console.log(res.data);
+    console.log("비디오 가져오기 성공:");
     return res.data;
   } catch (error) {
     console.error("비디오 가져오기 실패:", error);
