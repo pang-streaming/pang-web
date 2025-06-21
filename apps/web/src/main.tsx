@@ -19,7 +19,8 @@ import { Following } from "./pages/follow/following.tsx";
 import CategoryPage from "./pages/category/category_page.tsx";
 import { LiveDetail } from "./pages/livedetail/livedetail.tsx";
 import { SignupProvider } from "./pages/signup/signup-context.tsx";
-import { AppRoutes } from "./routes.tsx";
+import { MyPage } from "./pages/mypage/mypage.tsx";
+// import { AppRoutes } from "./routes.tsx";
 
 function App() {
   const location = useLocation();
@@ -63,6 +64,7 @@ function App() {
               <Route path="/category" element={<CategoryPage />} />
               <Route path="/follow" element={<Following />} />
               <Route path="/livedetail" element={<LiveDetail />} />
+              <Route path="/mypage" element={<MyPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Layout>
