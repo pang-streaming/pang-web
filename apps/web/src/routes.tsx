@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { Layout } from "./components/layout/layout";
 import { NotFound } from "./pages/notfound/notFound";
 import { Main } from "./pages/main/main";
@@ -13,6 +13,7 @@ import { Following } from "./pages/follow/following";
 import CategoryPage from "./pages/category/category_page";
 import { LiveDetail } from "./pages/livedetail/livedetail";
 import { SignupProvider } from "./pages/signup/signup-context";
+import { MyPage } from "./pages/mypage/mypage.tsx";
 
 export const AppRoutes: FC = () => (
   <SignupProvider>
@@ -57,6 +58,14 @@ export const AppRoutes: FC = () => (
             <LiveDetail />
           </Layout>
         }
+      />
+      <Route
+          path="/mypage"
+          element={
+            <Layout>
+                <MyPage />
+            </Layout>
+          }
       />
       {/* NotFound for all other routes */}
       <Route path="*" element={<NotFound />} />

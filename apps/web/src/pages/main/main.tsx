@@ -5,6 +5,7 @@ import { InitModal } from "./widgets/init-modal/init-modal";
 import { fetchPopularVideos, fetchVideos } from "../../services/video";
 import { Video } from "../../types/video";
 import { LiveCard } from "../explore/livecard/livecard";
+import {fetchMyInfo} from "../../services/user.ts";
 
 export const Main = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -26,6 +27,15 @@ export const Main = () => {
       setVideos(result);
     };
     getVideos();
+  }, []);
+
+  useEffect(() => {
+    const getUserInfo = async () => {
+      const result = await fetchMyInfo();
+      console.log(`내 정보 :`);
+      console.log(result);
+    }
+    getUserInfo()
   }, []);
 
   useEffect(() => {
