@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "outDir": "dist"
+  },
+  "include": ["src", "src/buttons/index.ts"],
+  "exclude": ["node_modules", "dist"]
+}

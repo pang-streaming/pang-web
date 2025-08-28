@@ -1,8 +1,11 @@
 {
-  "name": "web",
+  "name": "@pang/shared",
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "exports": {
+    "./ui": "./src/ui/index.ts"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
@@ -10,13 +13,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tanstack/react-query": "^5.85.5",
-    "axios": "^1.11.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "styled-components": "^6.1.19",
-    "@pang/shared": "workspace:*"
-
+    "styled-components": "^6.1.19"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
