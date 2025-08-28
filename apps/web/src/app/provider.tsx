@@ -3,7 +3,7 @@ import { queryClient } from "../shared/lib/query-client"
 import { ThemeProvider } from "styled-components"
 import { theme } from "@pang/shared/ui"
 
-export const Provider = (children:React.ReactNode) => {
+export const Provider = ({children}: {children: React.ReactNode}) => {
     return <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={theme}>
             {children}

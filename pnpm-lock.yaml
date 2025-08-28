@@ -20,15 +20,24 @@ importers:
 
   apps/streammer:
     dependencies:
+      '@pang/shared':
+        specifier: workspace:*
+        version: link:../../shared
       '@tanstack/react-query':
         specifier: ^5.85.5
         version: 5.85.5(react@19.1.1)
+      axios:
+        specifier: ^1.11.0
+        version: 1.11.0
       react:
         specifier: ^19.1.1
         version: 19.1.1
       react-dom:
         specifier: ^19.1.1
         version: 19.1.1(react@19.1.1)
+      styled-components:
+        specifier: ^6.1.19
+        version: 6.1.19(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
     devDependencies:
       '@eslint/js':
         specifier: ^9.33.0
