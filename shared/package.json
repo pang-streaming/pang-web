@@ -7,10 +7,7 @@
     "./ui": "./src/ui/index.ts"
   },
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "lint": "eslint ."
   },
   "dependencies": {
     "react": "^19.1.1",
