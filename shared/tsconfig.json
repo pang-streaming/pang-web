@@ -1,11 +1,8 @@
 {
   "compilerOptions": {
-    "outDir": "dist",
-    "baseUrl": ".",
+    "baseUrl": "./src",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["./*"]
     }
-  },
-  "include": ["src", "src/buttons/index.ts"],
-  "exclude": ["node_modules", "dist"]
+  }
 }

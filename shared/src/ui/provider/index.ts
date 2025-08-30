@@ -1,1 +1,1 @@
-export * from "./provider/customThemeProvider";
+export * from "./customThemeProvider.tsx";
