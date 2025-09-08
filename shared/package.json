@@ -1,12 +1,11 @@
 {
   "name": "@pang/shared",
   "private": true,
-  "version": "1.0.1",
+  "version": "1.0.2",
   "type": "module",
   "exports": {
     "./theme": "./src/ui/theme/index.ts",
-    "./shared": "./src/ui/provider/index.ts"
-
+    "./ui": "./src/ui/index.ts"
   },
   "scripts": {
     "lint": "eslint ."

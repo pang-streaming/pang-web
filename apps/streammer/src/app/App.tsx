@@ -1,6 +1,5 @@
-// import {SegmentButton} from "@pang/shared/ui/buttons/segmentButton.tsx";
-import {CustomThemeProvider} from "@pang/shared/shared";
 import styled from "styled-components";
+import {CustomThemeProvider, SegmentButton} from "@pang/shared/ui";
 
 const TestContainer = styled.div`
   width: 100px;
@@ -12,7 +11,7 @@ function App() {
   return (
       <CustomThemeProvider>
         <TestContainer />
-        {/*<SegmentButton tabs={["Home", "About"]} onClick={(tabs) => {console.log(tabs);}} />*/}
+        <SegmentButton tabs={["s", "About"]} onClick={(tabs) => {console.log(tabs);}} />
       </CustomThemeProvider>
   )
 }
