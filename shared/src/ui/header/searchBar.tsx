@@ -26,7 +26,6 @@ const SearchBarLabel = styled.label`
 	cursor: pointer;
 `;
 
-
 const SearchBarContainer = styled.div`
 	align-items: center;
     position: relative;

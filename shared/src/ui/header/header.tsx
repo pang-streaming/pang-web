@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { IoMenu } from "react-icons/io5";
 import {SearchBar} from "./searchBar";
+import Logo from "./pang.svg?react";
 
 interface HeaderProps {
 	onClickMenu: () => void;
@@ -10,6 +11,7 @@ export const Header = ({onClickMenu}: HeaderProps) => {
 	return (
 		<HeaderContainer>
 			<SidebarToggleButton size={28} onClick={onClickMenu}/>
+			<Logo/>
 			<SearchBar/>
 			<SidebarToggleButton size={28} onClick={onClickMenu}/>
 		</HeaderContainer>
