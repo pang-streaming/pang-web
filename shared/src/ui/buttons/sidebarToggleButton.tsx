@@ -13,17 +13,6 @@ export const SidebarToggleButton = ({onClick}: SidebarToggleButtonProps) => {
 	)
 }
 
-// export const SidebarToggleButton = styled(IoMenu)`
-//     cursor: pointer;
-// 	padding: 6px;
-// 	border-radius: ${({theme}) => theme.borders.large};
-//     color: ${({ theme }) => theme.colors.button.active};
-//
-//     &:hover {
-//         background-color: ${({theme}) => theme.colors.hover.light};
-//     }
-// `
-
 const ButtonContent = styled.button`
     border: none;
     cursor: pointer;
