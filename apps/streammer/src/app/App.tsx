@@ -1,12 +1,12 @@
 import {Route, Routes} from 'react-router-dom';
-import {AuthLayout, CustomThemeProvider, DefaultLayout, SegmentButton} from "@pang/shared/ui";
+import {AuthLayout, CustomThemeProvider, DefaultLayout} from "@pang/shared/ui";
 
 function App() {
     return (
         <CustomThemeProvider>
             <Routes>
                 <Route element={<DefaultLayout />}>
-                    <Route path="/" element={<SegmentButton text="사용 내역" isActive={false} onClick={() => console.log("asdasd")}/>} />
+                    <Route path="/" element={<h1>홈</h1>} />
                     <Route path="/explore" element={<h1>Explore</h1>} />
                     <Route path="/category" element={<h1>카테고리</h1>} />
                     <Route path="/follow" element={<h1>팔로우</h1>} />
