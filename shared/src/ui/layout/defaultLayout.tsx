@@ -1,4 +1,4 @@
-import {Outlet, Route, Routes, useLocation, useNavigate} from "react-router-dom";
+import {Outlet} from "react-router-dom";
 import {useState} from "react";
 import {CustomThemeProvider} from "../provider/customThemeProvider";
 import {Sidebar} from "../sidebar/sidebar";
@@ -7,12 +7,9 @@ import styled from "styled-components";
 
 export const DefaultLayout = () => {
 	const [tabs, setTabs] = useState(false);
-	const navigate = useNavigate();
-	const location = useLocation();
-
 	return (
 		<CustomThemeProvider>
-			<Sidebar isSidebarOpen={tabs} onClickMenu={() => setTabs(!tabs)} activeItem={location.pathname} moveLocation={navigate}>
+			<Sidebar isSidebarOpen={tabs} onClickMenu={() => setTabs(!tabs)}>
 				{/*팔로워 목록 리스트*/}
 			</Sidebar>
 			<Header onClickMenu={() => setTabs(!tabs)}/>

@@ -8,21 +8,23 @@ import {HiOutlineBell, HiOutlineMoon} from "react-icons/hi";
 import {FiVideo} from "react-icons/fi";
 import {useThemeStore} from "../../store/theme/themeStore";
 import {LoginButton} from "../buttons/loginButton";
+import React from "react";
+import {useNavigate} from "react-router-dom";
 
 interface HeaderProps {
 	onClickMenu: () => void;
 }
 
 export const Header = ({onClickMenu}: HeaderProps) => {
+	const navigate = useNavigate();
 	const {mode, toggleTheme} = useThemeStore()
-
 	const DarkLightModeIcon = mode === 'dark' ? PiSunBold : HiOutlineMoon;
 
 	return (
 		<HeaderContainer>
 			<LogoWrapper>
 				<SidebarToggleButton size={28} onClick={onClickMenu}/>
-				<Logo/>
+				<Logo onClick={() => navigate('/')} cursor="pointer"/>
 			</LogoWrapper>
 			<SearchBar/>
 			<ButtonWrapper>

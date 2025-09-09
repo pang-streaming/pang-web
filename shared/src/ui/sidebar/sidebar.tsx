@@ -3,26 +3,28 @@ import Logo from "../../asset/logo/pang.svg?react";
 import {SidebarToggleButton} from "../buttons/sidebarToggleButton";
 import {SidebarItems} from "./sidebar.constant";
 import React from "react";
+import {useLocation, useNavigate} from "react-router-dom";
 
 interface SidebarProps {
 	isSidebarOpen: boolean;
 	onClickMenu: () => void;
 	children?: React.ReactNode;
-	activeItem?: string;
-	moveLocation: (location: string) => void;
 }
 
-export const Sidebar = ({isSidebarOpen, onClickMenu, activeItem, moveLocation, children}: SidebarProps) => {
+export const Sidebar = ({isSidebarOpen, onClickMenu, children}: SidebarProps) => {
+	const navigate = useNavigate();
+	const location = useLocation();
+
 	return (
 		<SidebarContainer isSidebarOpen={isSidebarOpen}>
 			<SidebarHeaderWrapper isSidebarOpen={isSidebarOpen}>
 				<SidebarToggleButton onClick={onClickMenu}/>
-				<Logo/>
+				<Logo onClick={() => navigate('/')} cursor="pointer"/>
 			</SidebarHeaderWrapper>
 			<SidebarItemWrapper>
 				{
 					SidebarItems.map((item) => (
-						<SidebarItemButton key={item.id} isSidebarOpen={isSidebarOpen} isActive={activeItem === item.path} onClick={() => moveLocation(item.path)}>
+						<SidebarItemButton key={item.id} isSidebarOpen={isSidebarOpen} isActive={location.pathname === item.path} onClick={() => navigate(item.path)}>
 							{item.icon}
 							{isSidebarOpen && <SidebarItemButtonInfo>{item.name}</SidebarItemButtonInfo>}
 						</SidebarItemButton>
@@ -90,10 +92,9 @@ const SidebarContainer = styled.aside<{isSidebarOpen: boolean}>`
     position: fixed;
     top: 0;
     left: 0;
-    width: ${({isSidebarOpen}) => isSidebarOpen ? "240px" : "80px"};
+    width: ${({isSidebarOpen}) => isSidebarOpen ? 240 : 80}px;
     height: 100vh;
     background-color: ${({theme}) => theme.colors.background.normal};
-    color: white;
     display: flex;
     flex-direction: column;
     z-index: ${({isSidebarOpen}) => isSidebarOpen ? 20 : "auto"};

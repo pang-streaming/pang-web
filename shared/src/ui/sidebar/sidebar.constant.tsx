@@ -1,4 +1,4 @@
-import React from "react";
+import {ReactNode} from "react";
 import {PiBroadcastBold} from "react-icons/pi";
 import Bomb from "../../asset/icons/bomb.svg?react";
 import Category from "../../asset/icons/category.svg?react";
@@ -7,7 +7,7 @@ import {IoSearch} from "react-icons/io5";
 
 interface SidebarItem {
 	id: string;
-	icon: React.ReactNode;
+	icon: ReactNode;
 	name: string;
 	path: string;
 }
