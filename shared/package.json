@@ -1,12 +1,11 @@
 {
   "name": "@pang/shared",
   "private": true,
-  "version": "1.0.1",
+  "version": "1.0.2",
   "type": "module",
   "exports": {
     "./theme": "./src/ui/theme/index.ts",
-    "./shared": "./src/ui/provider/index.ts"
-
+    "./ui": "./src/ui/index.ts"
   },
   "scripts": {
     "lint": "eslint ."
@@ -15,7 +14,9 @@
     "@swc/helpers": "^0.5.17",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "react-icons": "^5.5.0",
     "styled-components": "^6.1.19",
+    "vite-plugin-svgr": "^4.5.0",
     "zustand": "^5.0.8"
   },
   "devDependencies": {

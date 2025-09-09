@@ -1,10 +1,8 @@
 import { defineConfig } from "vite";
-import path from "node:path";
+import svgr from "vite-plugin-svgr";
 
 export default defineConfig({
-	resolve: {
-		alias: {
-			"@": path.resolve(__dirname, "./src"), // shared/src 기준
-		},
-	},
+	plugins: [
+		svgr(),
+	],
 });
