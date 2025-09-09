@@ -96,5 +96,5 @@ const SidebarContainer = styled.aside<{isSidebarOpen: boolean}>`
     color: white;
     display: flex;
     flex-direction: column;
-	${({isSidebarOpen}) => (isSidebarOpen && "z-index: 20")}
+    z-index: ${({isSidebarOpen}) => isSidebarOpen ? 20 : "auto"};
 `
