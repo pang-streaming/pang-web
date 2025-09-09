@@ -1,22 +1,55 @@
 import styled from "styled-components";
 import { IoMenu } from "react-icons/io5";
 import {SearchBar} from "./searchBar";
-import Logo from "./pang.svg?react";
+import { PiSunBold } from "react-icons/pi";
+import Logo from "../../asset/logo/pang.svg?react";
+import {HeaderButton} from "./headerButton";
+import {HiOutlineBell, HiOutlineMoon} from "react-icons/hi";
+import {FiVideo} from "react-icons/fi";
+import {useThemeStore} from "../../store/theme/themeStore";
+import {LoginButton} from "../buttons/loginButton";
 
 interface HeaderProps {
 	onClickMenu: () => void;
 }
 
 export const Header = ({onClickMenu}: HeaderProps) => {
+	const {mode, toggleTheme} = useThemeStore()
+
+	const DarkLightModeIcon = mode === 'dark' ? PiSunBold : HiOutlineMoon;
+
 	return (
 		<HeaderContainer>
-			<SidebarToggleButton size={28} onClick={onClickMenu}/>
-			<Logo/>
+			<LogoWrapper>
+				<SidebarToggleButton size={28} onClick={onClickMenu}/>
+				<Logo/>
+			</LogoWrapper>
 			<SearchBar/>
-			<SidebarToggleButton size={28} onClick={onClickMenu}/>
+			<ButtonWrapper>
+				<HeaderButton Icon={FiVideo}/>
+				<HeaderButton Icon={HiOutlineBell}/>
+				<HeaderButton Icon={DarkLightModeIcon} onClick={toggleTheme}/>
+				<LoginButton/>
+			</ButtonWrapper>
 		</HeaderContainer>
 	)
 }
+
+const LogoWrapper = styled.div`
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	gap: 24px;
+`;
+
+const ButtonWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+`
 
 const SidebarToggleButton = styled(IoMenu)`
     cursor: pointer;

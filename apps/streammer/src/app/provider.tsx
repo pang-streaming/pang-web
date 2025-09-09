@@ -1,14 +1,11 @@
 import { QueryClientProvider } from "@tanstack/react-query"
 import { queryClient } from "../shared/lib/query-client"
-import { ThemeProvider } from "styled-components"
-import {lightTheme} from "@pang/shared/theme";
-
-
+import {CustomThemeProvider} from "@pang/shared/ui";
 
 export const Provider = ({children}: {children: React.ReactNode}) => {
     return <QueryClientProvider client={queryClient}>
-        <ThemeProvider theme={lightTheme}>
+        <CustomThemeProvider>
             {children}
-        </ThemeProvider>
+        </CustomThemeProvider>
     </QueryClientProvider>
 }

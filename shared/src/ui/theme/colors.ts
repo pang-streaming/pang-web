@@ -30,7 +30,7 @@ export const lightColors: Colors = {
 	button: {active: "#000000", disabled: "#888888", normal: "#555555"},
 	common: {black: "#000000", white: "#FFFFFF"},
 	hover: {normal: "#FF6699", light: "#F5F5F5", dark: "#990033"},
-	primary: {light: "#FFE6EE", normal: "#FF3377", dark: "#CC0044"},
+	primary: {light: "#FFCCDD", normal: "#FF0055", dark: "#990033"},
 	secondary: {light: "#D4C1FF", normal: "#8833FF", dark: "#5500CC"},
 	status: {negative: "#DF0000", neutral: "#E6C200", positive: "#39A01D"},
 	text: {subtitle: "#6E6E6E", normal: "#171717", placeholder: "#9CA3AF"},
