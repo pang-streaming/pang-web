@@ -21,7 +21,7 @@ export const DefaultLayout = () => {
 }
 
 const MainContainer = styled.main`
-    margin-top: 66px;
-    margin-left: 80px;
     padding: 0;
+    margin-top: 67px;
+    margin-left: 72px;
 `

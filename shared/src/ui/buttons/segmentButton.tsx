@@ -14,8 +14,6 @@ export const SegmentButton = ({tabs, onClick}: SegmentButtonProps) => {
 	)
 };
 
-export default SegmentButton;
-
 interface SegmentButtonProps {
 	tabs: string[],
 	onClick: (tab: string) => void
