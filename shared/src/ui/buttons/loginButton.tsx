@@ -9,6 +9,7 @@ export const LoginButton = () => {
 }
 
 const LoginButtonContent = styled.button`
+	user-select: none;
     border: none;
     cursor: pointer;
 	font-size: 16px;

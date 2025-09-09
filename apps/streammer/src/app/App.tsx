@@ -5,7 +5,7 @@ function App() {
     return (
         <CustomThemeProvider>
             <Routes>
-                <Route element={<DefaultLayout />}>
+                <Route element={<DefaultLayout type={'streamer'} />}>
                     <Route path="/" element={<h1>홈</h1>} />
                     <Route path="/explore" element={<h1>Explore</h1>} />
                     <Route path="/category" element={<h1>카테고리</h1>} />
