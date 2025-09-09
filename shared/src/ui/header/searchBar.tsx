@@ -35,6 +35,7 @@ const SearchBarContent = styled.input`
 	&:focus {
 		outline: none;
 	}
+    user-select: none;
 	color: ${({theme}) => theme.colors.text.normal};
 	width: 615px;
 	height: 40px;

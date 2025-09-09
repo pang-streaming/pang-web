@@ -3,7 +3,7 @@ import { IoMenu } from "react-icons/io5";
 import {SearchBar} from "./searchBar";
 import { PiSunBold } from "react-icons/pi";
 import Logo from "../../asset/logo/pang.svg?react";
-import {HeaderButton} from "./headerButton";
+import {HeaderButton} from "../buttons/headerButton";
 import {HiOutlineBell, HiOutlineMoon} from "react-icons/hi";
 import {FiVideo} from "react-icons/fi";
 import {useThemeStore} from "../../store/theme/themeStore";
@@ -41,6 +41,7 @@ const LogoWrapper = styled.div`
 	align-items: center;
 	justify-content: center;
 	gap: 24px;
+	margin-right: 36px;
 `;
 
 const ButtonWrapper = styled.div`

@@ -1,16 +1,19 @@
 import styled from "styled-components";
 import {CustomThemeProvider, Header, Sidebar} from "@pang/shared/ui";
+import {useState} from "react";
 
 function App() {
-  return (
-      <CustomThemeProvider>
-          <Sidebar/>
-          <Header onClickMenu={() => {console.log('hi')}}/>
-          <MainContainer>
-              hi
-          </MainContainer>
-      </CustomThemeProvider>
-  )
+    const [tabs, setTabs] = useState(false);
+
+    return (
+        <CustomThemeProvider>
+            <Sidebar isSidebarOpen={tabs} onClickMenu={() => {setTabs(!tabs);}}/>
+            <Header onClickMenu={() => {setTabs(!tabs);}}/>
+            <MainContainer>
+                hi
+            </MainContainer>
+        </CustomThemeProvider>
+)
 }
 
 const MainContainer = styled.main`
