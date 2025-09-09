@@ -1,32 +1,22 @@
-import styled from "styled-components";
-import {Route, Routes, useLocation, useNavigate} from 'react-router-dom';
-import {CustomThemeProvider, Header, Sidebar} from "@pang/shared/ui";
-import {useState} from "react";
+import {Route, Routes} from 'react-router-dom';
+import {AuthLayout, CustomThemeProvider, DefaultLayout} from "@pang/shared/ui";
 
 function App() {
-    const [tabs, setTabs] = useState(false);
-    const navigate = useNavigate();
-    const location = useLocation();
-
     return (
         <CustomThemeProvider>
-            <Sidebar isSidebarOpen={tabs} onClickMenu={() => {setTabs(!tabs);}} activeItem={location.pathname} moveLocation={navigate}>
-                {/*팔로워 목록 리스트*/}
-            </Sidebar>
-            <Header onClickMenu={() => {setTabs(!tabs);}}/>
-            <MainContainer>
-                <Routes>
-                    <Route path={'/explore'} element={<h1>asd</h1>}/>
-                </Routes>
-            </MainContainer>
+            <Routes>
+                <Route element={<DefaultLayout />}>
+                    <Route path="/explore" element={<h1>Explore</h1>} />
+                    <Route path="/" element={<h1>홈</h1>} />
+                </Route>
+
+                <Route element={<AuthLayout />}>
+                    <Route path="/login" element={<h1>로그인 페이지</h1>} />
+                    <Route path="/signup" element={<h1>회원가입 페이지</h1>} />
+                </Route>
+            </Routes>
         </CustomThemeProvider>
 )
 }
-
-const MainContainer = styled.main`
-    margin-top: 66px;
-    margin-left: 80px;
-    padding: 0;
-`
 
 export default App
