@@ -1,41 +1,45 @@
 import styled from "styled-components";
-import {useState} from "react";
-import React from "react";
-
-export const SegmentButton = ({tabs, onClick}: SegmentButtonProps) => {
-	const [active, setActive] = useState(tabs[0]);
-
-	return (
-		<SegmentContainer>
-			{tabs.map((tab) => (
-				<TabButton onClick={() => {setActive(tab); onClick(tab);}} isActive={tab === active}>{tab}</TabButton>
-			))}
-		</SegmentContainer>
-	)
-};
 
 interface SegmentButtonProps {
-	tabs: string[],
-	onClick: (tab: string) => void
+	text: string;
+	isActive?: boolean;
+	onClick: () => void;
 }
 
-const SegmentContainer = styled.div`
-  display: flex;
-	width: 100%;
-	align-items: center;
-	justify-content: start;
-`;
+export const SegmentButton = ({text, isActive = false, onClick}: SegmentButtonProps) => {
+	return (
+		<SegmentButtonContainer isActive={isActive} onClick={onClick}>
+			{text}
+			<SegmentButtonBottomBar isActive={isActive}/>
+		</SegmentButtonContainer>
+	)
+}
 
-const TabButton = styled.button<{isActive: boolean}>`
-	background: none;
-    border: none;
+const SegmentButtonBottomBar = styled.div<{isActive: boolean}>`
+	height: 4px;
+	width: 80%;
+	background-color: ${({theme, isActive}) => isActive ? theme.colors.primary.normal : "none"};
+	border-radius: ${({theme}) => theme.borders.maximum};
+`
+
+const SegmentButtonContainer = styled.span<{isActive: boolean}>`
+    user-select : none;
     cursor: pointer;
-    color: ${({ theme, isActive }) => isActive ? theme.colors.primary.normal : theme.colors.primary.normal};
-    
-	font-size: 24px;
-	&:hover {
-        color: ${({ theme }) => theme.colors.primary.normal};
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1px;
+    width: fit-content;
+    align-items: center;
+
+    font-size: 24px;
+    color: ${({theme, isActive}) => isActive ? theme.colors.primary.normal : theme.colors.button.disabled};
+
+    &:hover {
+        color: ${({theme}) => theme.colors.text.normal};
     }
-	
-    border-bottom: ${({theme, isActive}) => isActive && theme.colors.primary.normal} 4px solid;
+
+    &:hover ${SegmentButtonBottomBar} {
+        background-color: ${({theme}) => theme.colors.text.normal};
+    }
 `
