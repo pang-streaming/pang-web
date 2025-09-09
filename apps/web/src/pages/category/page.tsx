@@ -1,0 +1,69 @@
+import React from "react";
+import CategoryBox from "./ui/category-box";
+
+export const Category = () => {
+  return (
+    <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+      <CategoryBox
+        categoryChipCount={126315}
+        categoryLiveCount={201}
+        categoryTitle="게임"
+      />
+      <CategoryBox
+        categoryChipCount={126315}
+        categoryLiveCount={201}
+        categoryTitle="음악"
+      />
+      <CategoryBox
+        categoryChipCount={126315}
+        categoryLiveCount={201}
+        categoryTitle="스포츠"
+      />
+      <CategoryBox
+        categoryChipCount={126315}
+        categoryLiveCount={201}
+        categoryTitle="일상"
+      />
+      <CategoryBox
+        categoryChipCount={126315}
+        categoryLiveCount={201}
+        categoryTitle="ASMR"
+      />
+      <CategoryBox
+        categoryChipCount={126315}
+        categoryLiveCount={201}
+        categoryTitle="버추얼"
+      />
+      <CategoryBox
+        categoryChipCount={126315}
+        categoryLiveCount={201}
+        categoryTitle="게임"
+      />
+      <CategoryBox
+        categoryChipCount={126315}
+        categoryLiveCount={201}
+        categoryTitle="음악"
+      />
+      <CategoryBox
+        categoryChipCount={126315}
+        categoryLiveCount={201}
+        categoryTitle="스포츠"
+      />
+      <CategoryBox
+        categoryChipCount={126315}
+        categoryLiveCount={201}
+        categoryTitle="일상"
+      />
+      <CategoryBox
+        categoryChipCount={126315}
+        categoryLiveCount={201}
+        categoryTitle="ASMR"
+      />
+      <CategoryBox
+        categoryChipCount={126315}
+        categoryLiveCount={201}
+        categoryTitle="버추얼"
+      />
+    </div>
+  );
+};
