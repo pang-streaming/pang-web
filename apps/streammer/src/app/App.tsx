@@ -1,19 +1,22 @@
 import styled from "styled-components";
-import {CustomThemeProvider, SegmentButton} from "@pang/shared/ui";
-
-const TestContainer = styled.div`
-  width: 100px;
-  height: 100px;
-  background-color: ${({theme}) => theme.colors.primary.normal};
-`
+import {CustomThemeProvider, Header, Sidebar} from "@pang/shared/ui";
 
 function App() {
   return (
       <CustomThemeProvider>
-        <TestContainer />
-        <SegmentButton tabs={["s", "About"]} onClick={(tabs) => {console.log(tabs);}} />
+          <Sidebar/>
+          <Header onClickMenu={() => {console.log('hi')}}/>
+          <MainContainer>
+              hi
+          </MainContainer>
       </CustomThemeProvider>
   )
 }
+
+const MainContainer = styled.main`
+    margin-top: 66px;
+    margin-left: 80px;
+    padding: 0;
+`
 
 export default App
