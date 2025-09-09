@@ -1,17 +1,19 @@
 import styled from "styled-components";
-import Logo from "../../asset/logo/pang.svg?react";
 import {SidebarToggleButton} from "../buttons/sidebarToggleButton";
-import {SidebarItems} from "./sidebar.constant";
+import {SidebarItem} from "./sidebar.constant";
 import React from "react";
 import {useLocation, useNavigate} from "react-router-dom";
+import {PangLogo} from "../../asset/logo/pangLogo";
 
 interface SidebarProps {
 	isSidebarOpen: boolean;
 	onClickMenu: () => void;
+	sidebarItems: SidebarItem[];
+	type: 'streamer' | 'user';
 	children?: React.ReactNode;
 }
 
-export const Sidebar = ({isSidebarOpen, onClickMenu, children}: SidebarProps) => {
+export const Sidebar = ({isSidebarOpen, onClickMenu, sidebarItems, children, type}: SidebarProps) => {
 	const navigate = useNavigate();
 	const location = useLocation();
 
@@ -19,11 +21,11 @@ export const Sidebar = ({isSidebarOpen, onClickMenu, children}: SidebarProps) =>
 		<SidebarContainer isSidebarOpen={isSidebarOpen}>
 			<SidebarHeaderWrapper isSidebarOpen={isSidebarOpen}>
 				<SidebarToggleButton onClick={onClickMenu}/>
-				<Logo onClick={() => navigate('/')} cursor="pointer"/>
+				<PangLogo type={type} onClick={() => navigate('/')} cursor="pointer"/>
 			</SidebarHeaderWrapper>
 			<SidebarItemWrapper>
 				{
-					SidebarItems.map((item) => (
+					sidebarItems.map((item) => (
 						<SidebarItemButton key={item.id} isSidebarOpen={isSidebarOpen} isActive={location.pathname === item.path} onClick={() => navigate(item.path)}>
 							{item.icon}
 							{isSidebarOpen && <SidebarItemButtonInfo>{item.name}</SidebarItemButtonInfo>}

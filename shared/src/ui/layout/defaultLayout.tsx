@@ -4,15 +4,22 @@ import {CustomThemeProvider} from "../provider/customThemeProvider";
 import {Sidebar} from "../sidebar/sidebar";
 import {Header} from "../header/header";
 import styled from "styled-components";
+import {streamerSidebarItems, userSidebarItems} from "../sidebar/sidebar.constant";
 
-export const DefaultLayout = () => {
+interface DefaultLayoutProps {
+	type: 'streamer' | 'user';
+}
+
+export const DefaultLayout = ({type}: DefaultLayoutProps) => {
 	const [tabs, setTabs] = useState(false);
+	const sidebarItems = type === 'streamer' ? streamerSidebarItems : userSidebarItems;
+
 	return (
 		<CustomThemeProvider>
-			<Sidebar isSidebarOpen={tabs} onClickMenu={() => setTabs(!tabs)}>
+			<Sidebar isSidebarOpen={tabs} onClickMenu={() => setTabs(!tabs)} sidebarItems={sidebarItems} type={type}>
 				{/*팔로워 목록 리스트*/}
 			</Sidebar>
-			<Header onClickMenu={() => setTabs(!tabs)}/>
+			<Header onClickMenu={() => setTabs(!tabs)} type={type}/>
 			<MainContainer>
 				<Outlet/>
 			</MainContainer>
