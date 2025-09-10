@@ -53,7 +53,7 @@ export const Step4 = () => {
   return (
     <S.SignUpContainer>
       <S.HeaderWrap>
-        <img src={logo} alt="logo" />
+        <img src={Logo} alt="logo" />
       </S.HeaderWrap>
 
       <S.SignupWrap>

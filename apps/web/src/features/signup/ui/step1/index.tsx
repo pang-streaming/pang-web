@@ -33,7 +33,7 @@ export const Step1 = () => {
   return (
     <S.SignUpContainer>
       <S.HeaderWrap>
-        <img src={logo} />
+        <img src={Logo} />
       </S.HeaderWrap>
       <S.SignupWrap>
         <S.SignupBox>
