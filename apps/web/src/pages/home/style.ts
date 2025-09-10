@@ -10,7 +10,7 @@ export const Container = styled.div`
 export const Title = styled.span`
   font-size: ${({ theme }) => theme.font.xxLarge};
   font-weight: 600;
-  color: ${({ theme }) => theme.colors.common.white};
+  color: ${({ theme }) => theme.colors.text.normal};
 `;
 
 
