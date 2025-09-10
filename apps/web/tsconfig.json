@@ -8,7 +8,7 @@
   },
   "references": [
     { "path": "../../shared" },
-    { "path": "./tsconfig.app.json" },
+    // { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }
   ],
   "include": [
@@ -16,5 +16,5 @@
     "**/*.tsx",
     "**/*.png",
     "**/*.svg"
-  ]
+, "src/features/follow/ui/following-card/index.tsx"  ]
 }
