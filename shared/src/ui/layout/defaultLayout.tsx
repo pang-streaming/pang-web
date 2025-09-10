@@ -1,31 +1,34 @@
-import { Outlet } from "react-router-dom";
-import { ReactNode, useState } from "react";
-import { CustomThemeProvider } from "../provider/customThemeProvider";
-import { Sidebar } from "../sidebar/sidebar";
-import { Header } from "../header/header";
+import {Outlet} from "react-router-dom";
+import {useState} from "react";
+import {CustomThemeProvider} from "../provider/customThemeProvider";
+import {Sidebar} from "../sidebar/sidebar";
+import {Header} from "../header/header";
 import styled from "styled-components";
+import {streamerSidebarItems, userSidebarItems} from "../sidebar/sidebar.constant";
 
 interface DefaultLayoutProps {
-  children: ReactNode;
+	type: 'streamer' | 'user';
 }
-export const DefaultLayout = ({ children }: DefaultLayoutProps) => {
-  const [tabs, setTabs] = useState(false);
-  return (
-    <CustomThemeProvider>
-      <Sidebar isSidebarOpen={tabs} onClickMenu={() => setTabs(!tabs)}>
-        {/*팔로워 목록 리스트*/}
-      </Sidebar>
-      <Header onClickMenu={() => setTabs(!tabs)} />
-      <MainContainer>
-        {/* <Outlet /> */}
-        {children}
-      </MainContainer>
-    </CustomThemeProvider>
-  );
-};
+
+export const DefaultLayout = ({type}: DefaultLayoutProps) => {
+	const [tabs, setTabs] = useState(false);
+	const sidebarItems = type === 'streamer' ? streamerSidebarItems : userSidebarItems;
+
+	return (
+		<CustomThemeProvider>
+			<Sidebar isSidebarOpen={tabs} onClickMenu={() => setTabs(!tabs)} sidebarItems={sidebarItems} type={type}>
+				{/*팔로워 목록 리스트*/}
+			</Sidebar>
+			<Header onClickMenu={() => setTabs(!tabs)} type={type}/>
+			<MainContainer>
+				<Outlet/>
+			</MainContainer>
+		</CustomThemeProvider>
+	)
+}
 
 const MainContainer = styled.main`
-  margin-top: 66px;
-  margin-left: 80px;
-  padding: 40px;
-`;
+    padding: 0;
+    margin-top: 67px;
+    margin-left: 80px;
+`

@@ -13,7 +13,7 @@ export interface Colors {
 }
 
 export const darkColors: Colors = {
-	button: {active: "#FFFFFF", disabled: "#C4C4C4", normal: "#A3A3A3"},
+	button: {active: "#FFFFFF", disabled: "#404040", normal: "#A3A3A3"},
 	common: {black: "#000000", white: "#FFFFFF"},
 	hover: {normal: "#CC0044", light: "#262626", dark: "#990033"},
 	primary: {light: "#FFCCDD", normal: "#FF0055", dark: "#990033"},
@@ -27,7 +27,7 @@ export const darkColors: Colors = {
 }
 
 export const lightColors: Colors = {
-	button: {active: "#000000", disabled: "#888888", normal: "#555555"},
+	button: {active: "#000000", disabled: "#D4D4D4", normal: "#555555"},
 	common: {black: "#000000", white: "#FFFFFF"},
 	hover: {normal: "#FF6699", light: "#F5F5F5", dark: "#990033"},
 	primary: {light: "#FFCCDD", normal: "#FF0055", dark: "#990033"},
