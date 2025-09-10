@@ -4,7 +4,7 @@ import { ThemeProvider } from "styled-components"
 import { ToastContainer } from "react-toastify";
 import { darkTheme } from "../../../../shared/src/ui/theme/index";
 import { BrowserRouter } from "react-router-dom";
-import { GlobalStyle } from "@pang/shared/ui";
+import { CustomThemeProvider, GlobalStyle } from "@pang/shared/ui";
 
 
 
@@ -13,7 +13,7 @@ import { GlobalStyle } from "@pang/shared/ui";
 export const Provider = ({children}: {children: React.ReactNode}) => {
     return <QueryClientProvider client={queryClient}>
     <GlobalStyle />
-      <ThemeProvider theme={darkTheme}>
+      <CustomThemeProvider>
         {/* <BrowserRouter>
         <SocketProvider>
           <SignupProvider>
@@ -31,6 +31,6 @@ export const Provider = ({children}: {children: React.ReactNode}) => {
         {/* </SignupProvider>
         </SocketProvider>
       </BrowserRouter> */}
-      </ThemeProvider>
+      </CustomThemeProvider>
   </QueryClientProvider>
 }
