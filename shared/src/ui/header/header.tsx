@@ -1,8 +1,7 @@
 import styled from "styled-components";
 import { IoMenu } from "react-icons/io5";
 import {SearchBar} from "./searchBar";
-import { PiSunBold } from "react-icons/pi";
-import Logo from "../../asset/logo/pang.svg?react";
+import {PiMonitorBold, PiSunBold} from "react-icons/pi";
 import {HeaderButton} from "../buttons/headerButton";
 import {HiOutlineBell, HiOutlineMoon} from "react-icons/hi";
 import {FiVideo} from "react-icons/fi";
@@ -10,25 +9,28 @@ import {useThemeStore} from "../../store/theme/themeStore";
 import {LoginButton} from "../buttons/loginButton";
 import React from "react";
 import {useNavigate} from "react-router-dom";
+import {PangLogo} from "../../asset/logo/pangLogo";
 
 interface HeaderProps {
 	onClickMenu: () => void;
+	type: 'streamer' | 'user';
 }
 
-export const Header = ({onClickMenu}: HeaderProps) => {
+export const Header = ({onClickMenu, type}: HeaderProps) => {
 	const navigate = useNavigate();
 	const {mode, toggleTheme} = useThemeStore()
 	const DarkLightModeIcon = mode === 'dark' ? PiSunBold : HiOutlineMoon;
+	const MoveButton = type === 'user' ? FiVideo : PiMonitorBold;
 
 	return (
 		<HeaderContainer>
 			<LogoWrapper>
 				<SidebarToggleButton size={28} onClick={onClickMenu}/>
-				<Logo onClick={() => navigate('/explore')} cursor="pointer"/>
+				<PangLogo type={type} onClick={() => navigate('/')} cursor="pointer"/>
 			</LogoWrapper>
-			<SearchBar/>
+			{type === 'user' && <SearchBar/>}
 			<ButtonWrapper>
-				<HeaderButton Icon={FiVideo}/>
+				<HeaderButton Icon={MoveButton}/>
 				<HeaderButton Icon={HiOutlineBell}/>
 				<HeaderButton Icon={DarkLightModeIcon} onClick={toggleTheme}/>
 				<LoginButton/>

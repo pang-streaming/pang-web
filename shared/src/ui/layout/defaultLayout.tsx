@@ -4,10 +4,8 @@ import { CustomThemeProvider } from "../provider/customThemeProvider";
 import { Sidebar } from "../sidebar/sidebar";
 import { Header } from "../header/header";
 import styled from "styled-components";
+import {streamerSidebarItems, userSidebarItems} from "../sidebar/sidebar.constant";
 
-interface DefaultLayoutProps {
-  children: ReactNode;
-}
 export const DefaultLayout = ({ children }: DefaultLayoutProps) => {
   const [tabs, setTabs] = useState(false);
   return (
@@ -25,7 +23,7 @@ export const DefaultLayout = ({ children }: DefaultLayoutProps) => {
 };
 
 const MainContainer = styled.main`
-  margin-top: 66px;
-  margin-left: 80px;
-  padding: 40px;
-`;
+    padding: 0;
+    margin-top: 67px;
+    margin-left: 80px;
+`
