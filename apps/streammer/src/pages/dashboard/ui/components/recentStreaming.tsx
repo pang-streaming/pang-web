@@ -13,17 +13,17 @@ interface RecentStreamingProps {
   onViewStream: (id: string) => void;
 }
 
-export const RecentStreaming: React.FC<RecentStreamingProps> = (props: RecentStreamingProps) => {
+export const RecentStreaming: React.FC<RecentStreamingProps> = ({ streams, onViewStream }: RecentStreamingProps) => {
   return (
     <StreamingContainer>
       <SectionTitle>최근 스트리밍 라이브</SectionTitle>
       <StreamList>
-        {props.streams.map(stream => (
+        {streams.map(stream => (
           <RecentStreamCard 
             key={stream.id} 
             title={stream.title} 
             date={stream.date}
-            onViewClick={() => props.onViewStream(stream.id)}
+            onViewClick={() => onViewStream(stream.id)}
           />
         ))}
       </StreamList>

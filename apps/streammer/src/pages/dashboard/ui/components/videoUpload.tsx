@@ -5,7 +5,7 @@ interface VideoUploadProps {
   onUploadClick: () => void;
 }
 
-export const VideoUpload: React.FC<VideoUploadProps> = (props: VideoUploadProps) => {
+export const VideoUpload: React.FC<VideoUploadProps> = ({ onUploadClick }: VideoUploadProps) => {
   return (
     <UploadContainer>
       <SectionTitle>동영상 업로드</SectionTitle>
@@ -14,7 +14,7 @@ export const VideoUpload: React.FC<VideoUploadProps> = (props: VideoUploadProps)
           <UploadIcon />
         </UploadIconWrapper>
         <UploadText>내 동영상을 간편하게 업로드 하세요</UploadText>
-        <UploadButton onClick={props.onUploadClick}>업로드 하기</UploadButton>
+        <UploadButton onClick={onUploadClick}>업로드 하기</UploadButton>
       </UploadBox>
     </UploadContainer>
   );

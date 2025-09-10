@@ -7,14 +7,14 @@ interface RecentStreamCardProps {
   onViewClick: () => void;
 }
 
-export const RecentStreamCard: React.FC<RecentStreamCardProps> = (props: RecentStreamCardProps) => {
+export const RecentStreamCard: React.FC<RecentStreamCardProps> = ({ title, date, onViewClick }: RecentStreamCardProps) => {
   return (
     <StreamCardContainer>
       <StreamCardInfo>
-        <StreamTitle>{props.title}</StreamTitle>
-        <StreamDate>{props.date}</StreamDate>
+        <StreamTitle>{title}</StreamTitle>
+        <StreamDate>{date}</StreamDate>
       </StreamCardInfo>
-      <ViewButton onClick={props.onViewClick}>다시보기</ViewButton>
+      <ViewButton onClick={onViewClick}>다시보기</ViewButton>
     </StreamCardContainer>
   );
 };
