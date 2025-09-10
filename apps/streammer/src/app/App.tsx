@@ -9,7 +9,7 @@ import { ContentPage } from "@/pages/content";
 function App() {
     return (
         <Routes>
-            <Route element={<DefaultLayout type={'streamer'} streamerLogo={<StreamerLogoStyled />} />}>
+            <Route element={<DefaultLayout type={'streamer'} />}>
                 <Route path="/" element={<DashboardPage />} />
                 <Route path="/dashboard" element={<DashboardPage />} />
                 <Route path="/revenue" element={<RevenuePage />} />
