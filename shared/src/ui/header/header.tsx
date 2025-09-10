@@ -24,7 +24,7 @@ export const Header = ({onClickMenu}: HeaderProps) => {
 		<HeaderContainer>
 			<LogoWrapper>
 				<SidebarToggleButton size={28} onClick={onClickMenu}/>
-				<Logo onClick={() => navigate('/')} cursor="pointer"/>
+				<Logo onClick={() => navigate('/explore')} cursor="pointer"/>
 			</LogoWrapper>
 			<SearchBar/>
 			<ButtonWrapper>
