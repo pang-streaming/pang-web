@@ -1,6 +1,6 @@
 import type { Video } from "../../model/type";
 import * as S from "./style";
-import normalProfile from "../../../../app/assets/images/normal_profile.svg";
+import normalProfile from "@/app/assets/images/normal_profile.svg";
 
 interface VideoCardProps extends Video {
   type?: "normal" | "big";

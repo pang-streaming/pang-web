@@ -5,7 +5,7 @@ export interface FollowingCardProps {
     followerCount: number;
 }
 import * as S from "./style";
-import normalProfile from "../../../../app/assets/images/normal_profile.svg";
+import normalProfile from "@/app/assets/images/normal_profile.svg";
 
 export const FollowingCard = ({
   profileImage,

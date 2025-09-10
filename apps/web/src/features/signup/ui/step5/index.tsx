@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import logo2 from "../../../../app/assets/pang-emotion-logo.png";
 import { useNavigate } from "react-router-dom";
-import * as S from '../../../../pages/signup/style';
+import * as S from '@/pages/signup/style';
 
 import JSConfetti from "js-confetti";
 

@@ -8,7 +8,7 @@ import { FaApple } from "react-icons/fa6";
 import { FcGoogle } from "react-icons/fc";
 
 import * as S from './style'
-import Logo from "../../../../app/assets/logo.svg";
+import Logo from "@/app/assets/logo.svg";
 import { loginUser } from "../../api/login-api";
 
 export const LoginForm = () => {

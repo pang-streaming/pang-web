@@ -1,5 +1,5 @@
-import * as S from '../../../../pages/signup/style';
-import logo from "../../../../app/assets/logo.svg";
+import * as S from '@/pages/signup/style';
+import Logo from "@/app/assets/logo.svg";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { FiUser } from "react-icons/fi";

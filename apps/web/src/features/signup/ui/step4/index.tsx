@@ -1,10 +1,10 @@
 import { useState } from "react";
-import logo from "../../../../app/assets/logo.svg";
+import Logo from "@/app/assets/logo.svg";
 
 import { useNavigate } from "react-router-dom";
 import { useSignup } from "../../../auth/model/signup-context";
 import api from "../../../../api/api";
-import * as S from '../../../../pages/signup/style';
+import * as S from '@/pages/signup/style';
 import { StepDots } from "../step-dots";
 
 export const Step4 = () => {
