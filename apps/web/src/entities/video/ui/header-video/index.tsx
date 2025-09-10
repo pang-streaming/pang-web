@@ -76,7 +76,7 @@ const HeaderVideoContainer = styled.div`
     position: relative;
 	border-radius: 20px;
 	margin-bottom: 35px;
-	background-color: ${({theme}) => theme.colors.content.dark};
+	background-color: ${({theme}) => theme.colors.text.subtitle};
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
