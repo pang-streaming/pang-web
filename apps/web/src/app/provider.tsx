@@ -4,7 +4,8 @@ import { ThemeProvider } from "styled-components"
 import { ToastContainer } from "react-toastify";
 import { darkTheme } from "../../../../shared/src/ui/theme/index";
 import { BrowserRouter } from "react-router-dom";
-import { GlobalStyle } from "./GlobalStyle";
+import { GlobalStyle } from "@pang/shared/ui";
+
 
 
 
