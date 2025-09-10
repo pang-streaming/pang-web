@@ -63,7 +63,6 @@ export const Spacer = styled.div`
 
 export const BigLiveCardContainer = styled.div`
   padding: 22px;
-  width: 100%;
   height: 340px;
   position: relative;
   border-radius: 20px;

@@ -28,7 +28,24 @@ export const DefaultLayout = ({type}: DefaultLayoutProps) => {
 }
 
 const MainContainer = styled.main`
-    padding: 0;
+    flex: 1;
+    min-height: calc(100vh - 67px);
     margin-top: 67px;
     margin-left: 80px;
+    padding: 1em;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+
+    & > * {
+        width: 100%;
+        margin: 0 auto;
+        flex: 1;
+    }
+	
+    @media (min-width: 2000px) {
+        & > * {
+            max-width: 1950px;
+        }
+    }
 `
