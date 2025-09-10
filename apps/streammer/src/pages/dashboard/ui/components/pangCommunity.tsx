@@ -11,9 +11,7 @@ interface PangCommunityProps {
   messages: MessageItem[];
 }
 
-export const PangCommunity: React.FC<PangCommunityProps> = ({
-  messages
-}) => {
+export const PangCommunity: React.FC<PangCommunityProps> = (props: PangCommunityProps) => {
   return (
     <MessagesContainer>
       <SectionHeader>
@@ -21,7 +19,7 @@ export const PangCommunity: React.FC<PangCommunityProps> = ({
         <SectionTitle>팡커뮤</SectionTitle>
       </SectionHeader>
       <MessagesList>
-        {messages.map((message) => (
+        {props.messages.map((message) => (
           <MessageItem key={message.id}>
             <MessageContent>{message.content}</MessageContent>
             <MessageDate>{message.date}</MessageDate>

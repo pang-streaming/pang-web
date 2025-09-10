@@ -1,5 +1,4 @@
 import React from 'react';
-import { DashboardLayout } from './components/dashboardLayout';
 import { RecentStreaming } from './components/recentStreaming';
 import type { StreamItem } from './components/recentStreaming';
 import { SubscriberStats } from './components/subscriberStats';
@@ -39,7 +38,7 @@ const DashboardPage: React.FC = () => {
 
   return (
     <PageContainer>
-      <DashboardLayout>
+      <DashboardContainer>
         <RecentStreamingSection>
           <RecentStreaming 
             streams={recentStreams} 
@@ -71,7 +70,7 @@ const DashboardPage: React.FC = () => {
             onUploadClick={handleUploadClick}
           />
         </UploadSection>
-      </DashboardLayout>
+      </DashboardContainer>
     </PageContainer>
   );
 };
@@ -80,6 +79,28 @@ const PageContainer = styled.div`
   width: 100%;
   min-height: calc(100vh - 66px);
   padding-top: 16px;
+  padding-bottom: 16px;
+`;
+
+const DashboardContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    "recent notices"
+    "stats community"
+    "upload community";
+  gap: 20px;
+  padding: 24px;
+  
+  @media (max-width: ${({ theme }) => theme.breakpoint.tablet}) {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "recent"
+      "stats"
+      "notices"
+      "upload"
+      "community";
+  }
 `;
 
 const RecentStreamingSection = styled.div`

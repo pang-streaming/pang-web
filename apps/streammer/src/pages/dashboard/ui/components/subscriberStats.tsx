@@ -6,10 +6,7 @@ interface SubscriberStatsProps {
   increasedCount: number;
 }
 
-export const SubscriberStats: React.FC<SubscriberStatsProps> = ({
-  totalCount,
-  increasedCount
-}) => {
+export const SubscriberStats: React.FC<SubscriberStatsProps> = (props: SubscriberStatsProps) => {
   return (
     <StatsContainer>
       <StatsHeader>
@@ -17,11 +14,11 @@ export const SubscriberStats: React.FC<SubscriberStatsProps> = ({
         <StatsTitle>구독자 현황</StatsTitle>
       </StatsHeader>
       <CountDisplay>
-        <TotalCount>{totalCount.toLocaleString()}</TotalCount>
+        <TotalCount>{props.totalCount.toLocaleString()}</TotalCount>
         <CountTag>총 구독자</CountTag>
       </CountDisplay>
       <IncreasedInfo>
-        <IncreasedCount>+{increasedCount}</IncreasedCount>
+        <IncreasedCount>+{props.increasedCount}</IncreasedCount>
         <IncreasedText>이번 주 신규</IncreasedText>
       </IncreasedInfo>
     </StatsContainer>

@@ -13,20 +13,17 @@ interface RecentStreamingProps {
   onViewStream: (id: string) => void;
 }
 
-export const RecentStreaming: React.FC<RecentStreamingProps> = ({
-  streams,
-  onViewStream
-}) => {
+export const RecentStreaming: React.FC<RecentStreamingProps> = (props: RecentStreamingProps) => {
   return (
     <StreamingContainer>
       <SectionTitle>최근 스트리밍 라이브</SectionTitle>
       <StreamList>
-        {streams.map(stream => (
+        {props.streams.map(stream => (
           <RecentStreamCard 
             key={stream.id} 
             title={stream.title} 
             date={stream.date}
-            onViewClick={() => onViewStream(stream.id)}
+            onViewClick={() => props.onViewStream(stream.id)}
           />
         ))}
       </StreamList>
@@ -46,7 +43,7 @@ const StreamingContainer = styled.div`
 `;
 
 const SectionTitle = styled.h3`
-  font-size: 18px;
+  font-size: ${({ theme }) => theme.font.xLarge};
   font-weight: 600;
   color: ${({ theme }) => theme.colors.text.normal};
   margin: 0 0 16px 0;

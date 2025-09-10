@@ -11,9 +11,7 @@ interface NotificationsProps {
   notifications: NotificationItem[];
 }
 
-export const Notifications: React.FC<NotificationsProps> = ({
-  notifications
-}) => {
+export const Notifications: React.FC<NotificationsProps> = (props: NotificationsProps) => {
   return (
     <NotificationContainer>
       <SectionHeader>
@@ -21,7 +19,7 @@ export const Notifications: React.FC<NotificationsProps> = ({
         <SectionTitle>공지사항</SectionTitle>
       </SectionHeader>
       <NotificationsList>
-        {notifications.map((notification) => (
+        {props.notifications.map((notification) => (
           <NotificationItem key={notification.id}>
             <NotificationTitle>{notification.title}</NotificationTitle>
             <NotificationDate>{notification.date}</NotificationDate>
