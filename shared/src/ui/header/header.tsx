@@ -9,7 +9,6 @@ import {useThemeStore} from "../../store/theme/themeStore";
 import {LoginButton} from "../buttons/loginButton";
 import {useNavigate} from "react-router-dom";
 import {PangLogo} from "../../asset/logo/pangLogo";
-import normalProfile from "../../asset/logo/normal_profile.svg"
 
 interface HeaderProps {
 	onClickMenu: () => void;
@@ -24,11 +23,6 @@ export const Header = ({onClickMenu, type}: HeaderProps) => {
 
 	const token = localStorage.getItem('token');
 	const isLoggedIn = !!token;
-	const normalProfileSrc: string = normalProfile;
-
-	const handleProfile = () => {
-		navigate("/mypage")
-	}
 
 	return (
 		<HeaderContainer>
@@ -41,21 +35,11 @@ export const Header = ({onClickMenu, type}: HeaderProps) => {
 				<HeaderButton Icon={MoveButton}/>
 				<HeaderButton Icon={HiOutlineBell}/>
 				<HeaderButton Icon={DarkLightModeIcon} onClick={toggleTheme}/>
-				{isLoggedIn ? (
-					<LoginButton/>
-				) : (
-					<ProfileImage src={normalProfileSrc} onClick={handleProfile}/>
-				)}
+				<LoginButton isLoggedIn={isLoggedIn}/>
 			</ButtonWrapper>
 		</HeaderContainer>
 	)
 }
-
-export const ProfileImage = styled.img`
-  width: 36px;
-  height: 36px;
-  border-radius: ${({theme}) => theme.borders.maximum};
-`;
 
 const LogoWrapper = styled.div`
 	display: flex;
