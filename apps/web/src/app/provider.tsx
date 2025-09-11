@@ -1,36 +1,24 @@
 import { QueryClientProvider } from "@tanstack/react-query"
 import { queryClient } from "@/shared/lib/query-client"
-import { ThemeProvider } from "styled-components"
 import { ToastContainer } from "react-toastify";
-import { darkTheme } from "../../../../shared/src/ui/theme/index";
 import { BrowserRouter } from "react-router-dom";
 import { CustomThemeProvider, GlobalStyle } from "@pang/shared/ui";
+import {ReactNode} from "react";
 
-
-
-
-
-export const Provider = ({children}: {children: React.ReactNode}) => {
+export const Provider = ({children}: {children: ReactNode}) => {
     return <QueryClientProvider client={queryClient}>
-    <GlobalStyle />
-      <CustomThemeProvider>
-        {/* <BrowserRouter>
-        <SocketProvider>
-          <SignupProvider>
-          */}
-            <ToastContainer
-              position="top-right"
-              autoClose={3000}
-              hideProgressBar={false}
-              closeOnClick
-              pauseOnHover
-              draggable
-              theme="colored"
-            /> 
-        <BrowserRouter>{children}</BrowserRouter>
-        {/* </SignupProvider>
-        </SocketProvider>
-      </BrowserRouter> */}
-      </CustomThemeProvider>
+		<CustomThemeProvider>
+			<GlobalStyle />
+			<ToastContainer
+		        position="top-right"
+		        autoClose={3000}
+		        hideProgressBar={false}
+		        closeOnClick
+		        pauseOnHover
+		        draggable
+		        theme="colored"
+		    />
+			<BrowserRouter>{children}</BrowserRouter>
+		</CustomThemeProvider>
   </QueryClientProvider>
 }
