@@ -7,9 +7,9 @@ import {HiOutlineBell, HiOutlineMoon} from "react-icons/hi";
 import {FiVideo} from "react-icons/fi";
 import {useThemeStore} from "../../store/theme/themeStore";
 import {LoginButton} from "../buttons/loginButton";
-import React from "react";
 import {useNavigate} from "react-router-dom";
 import {PangLogo} from "../../asset/logo/pangLogo";
+import normalProfile from "../../asset/logo/normal_profile.svg"
 
 interface HeaderProps {
 	onClickMenu: () => void;
@@ -22,6 +22,14 @@ export const Header = ({onClickMenu, type}: HeaderProps) => {
 	const DarkLightModeIcon = mode === 'dark' ? PiSunBold : HiOutlineMoon;
 	const MoveButton = type === 'user' ? FiVideo : PiMonitorBold;
 
+	const token = localStorage.getItem('token');
+	const isLoggedIn = !!token;
+	const normalProfileSrc: string = normalProfile;
+
+	const handleProfile = () => {
+		navigate("/mypage")
+	}
+
 	return (
 		<HeaderContainer>
 			<LogoWrapper>
@@ -33,11 +41,21 @@ export const Header = ({onClickMenu, type}: HeaderProps) => {
 				<HeaderButton Icon={MoveButton}/>
 				<HeaderButton Icon={HiOutlineBell}/>
 				<HeaderButton Icon={DarkLightModeIcon} onClick={toggleTheme}/>
-				<LoginButton/>
+				{isLoggedIn ? (
+					<LoginButton/>
+				) : (
+					<ProfileImage src={normalProfileSrc} onClick={handleProfile}/>
+				)}
 			</ButtonWrapper>
 		</HeaderContainer>
 	)
 }
+
+export const ProfileImage = styled.img`
+  width: 36px;
+  height: 36px;
+  border-radius: ${({theme}) => theme.borders.maximum};
+`;
 
 const LogoWrapper = styled.div`
 	display: flex;

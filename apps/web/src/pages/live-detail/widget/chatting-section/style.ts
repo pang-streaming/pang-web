@@ -2,7 +2,8 @@ import styled from "styled-components";
 import chattingArrow from "../../../../app/assets/chatting-arrow.svg";
 
 export const Container = styled.div`
-  width: 335px;
+  width:535px;
+  margin: 20px;
   height: 700px;
   display: flex;
   flex-direction: column;

@@ -60,6 +60,7 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   padding: 0 12px;
+  box-sizing: border-box;
 `;
 export const Input = styled.input`
   outline: none;
