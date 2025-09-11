@@ -77,9 +77,6 @@ const DashboardPage: React.FC = () => {
 
 const PageContainer = styled.div`
   width: 100%;
-  min-height: calc(100vh - 66px);
-  padding-top: 16px;
-  padding-bottom: 16px;
 `;
 
 const DashboardContainer = styled.div`
