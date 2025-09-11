@@ -3,10 +3,6 @@ import type { Video } from "../../model/type";
 import * as S from "./style";
 import normalProfile from "@/app/assets/images/normal_profile.svg";
 
-interface VideoCardProps extends Video {
-  type?: "normal" | "big";
-}
-
 export const VideoCard = ({
   streamId,
   title,
@@ -14,38 +10,17 @@ export const VideoCard = ({
   username,
   nickname,
   profileImage,
-  type = "normal",
-}: VideoCardProps) => {
-  const navigate = useNavigate();
-  const handleOnClickVideoCard = () => {
-    console.log(streamId);
-    navigate(`/livedetail?streamId=${streamId}`);
-  };
-  if (type === "big") {
-    return (
-      <S.BigLiveCardContainer onClick={handleOnClickVideoCard}>
-        <S.CategoryTitle>마인크래프트</S.CategoryTitle>
-        <S.LiveInfo>
-          <S.ProfileImage src={profileImage || normalProfile} />
-          <S.TitleContainer>
-            <S.LiveTitle>{title}</S.LiveTitle>
-            <S.StreamerName>{nickname}</S.StreamerName>
-          </S.TitleContainer>
-        </S.LiveInfo>
-      </S.BigLiveCardContainer>
-    );
-  }
-
-  return (
-    <S.LiveCardContainer onClick={handleOnClickVideoCard}>
-      <S.EmptyText>방송 준비중입니다.</S.EmptyText>
-      <S.LiveInfo>
-        <S.ProfileImage src={profileImage || normalProfile} />
-        <S.TitleContainer>
-          <S.LiveTitle>{title}</S.LiveTitle>
-          <S.StreamerName>{nickname}</S.StreamerName>
-        </S.TitleContainer>
-      </S.LiveInfo>
-    </S.LiveCardContainer>
-  );
+}: Video) => {
+	return (
+		<S.LiveCardContainer onClick={() => {}}>
+			<S.EmptyText>방송 준비중입니다.</S.EmptyText>
+			<S.LiveInfo>
+				<S.ProfileImage src={profileImage || normalProfile} />
+				<S.TitleContainer>
+					<S.LiveTitle>{title}</S.LiveTitle>
+					<S.StreamerName>{nickname}</S.StreamerName>
+				</S.TitleContainer>
+			</S.LiveInfo>
+		</S.LiveCardContainer>
+	);
 };

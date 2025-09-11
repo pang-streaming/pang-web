@@ -11,7 +11,6 @@ export const Explore = () => {
         username="강연"
         nickname="강연"
         profileImage=""
-        type="big"
       />
       <S.Title>이 방송 어때요?</S.Title>
       <S.GridContainer>
@@ -22,7 +21,6 @@ export const Explore = () => {
           username="강연"
           nickname="강연"
           profileImage=""
-          type="normal"
         />
       </S.GridContainer>
     </S.Container>
