@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import type { Video } from "../../model/type";
 import * as S from "./style";
 import normalProfile from "@/app/assets/images/normal_profile.svg";
@@ -13,7 +12,9 @@ export const VideoCard = ({
 }: Video) => {
 	return (
 		<S.LiveCardContainer onClick={() => {}}>
-			<S.EmptyText>방송 준비중입니다.</S.EmptyText>
+			<S.VideoContainer>
+				{/*<S.Thumbnail/>*/}
+			</S.VideoContainer>
 			<S.LiveInfo>
 				<S.ProfileImage src={profileImage || normalProfile} />
 				<S.TitleContainer>

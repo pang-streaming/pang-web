@@ -1,18 +1,22 @@
 import styled from "styled-components";
 
 export const LiveCardContainer = styled.div`
-  width: 100%;
-  height: 313px;
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 35px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 12px;
+    overflow: hidden;
+	gap: 12px;
 `;
 
-export const Thumbnail = styled.img`
-  width: 100%;
-  height: 204px;
-  border-radius: 20px;
-`;
+export const VideoContainer = styled.div`
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	aspect-ratio: 16 / 9;
+	border-radius: ${({theme}) => theme.borders.xlarge};
+	background-color: ${({theme}) => theme.colors.text.subtitle};
+`
 
 export const ProfileImage = styled.img`
   width: 50px;
@@ -20,16 +24,6 @@ export const ProfileImage = styled.img`
   border-radius: 50px;
   margin-right: 8px;
   margin-bottom: 7px;
-`;
-
-export const EmptyText = styled.span`
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: ${({ theme }) => theme.colors.text.subtitle};
-  border-radius: 12px;
-  margin-bottom: 10px;
 `;
 
 export const LiveTitle = styled.span`

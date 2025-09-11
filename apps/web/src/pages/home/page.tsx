@@ -34,7 +34,7 @@ export const Home = () => {
     <S.Container>
 	    <HeaderVideo videos={videos}/>
         <S.Title>이 방송 어때요?</S.Title>
-        <S.GridContainer>
+        <S.LiveListContainer>
             <VideoCard
                 streamId="11"
                 title="title"
@@ -43,7 +43,71 @@ export const Home = () => {
                 nickname="강연"
                 profileImage=""
             />
-        </S.GridContainer>
+            <VideoCard
+                streamId="11"
+                title="title"
+                url=""
+                username="강연"
+                nickname="강연"
+                profileImage=""
+            />
+            <VideoCard
+                streamId="11"
+                title="title"
+                url=""
+                username="강연"
+                nickname="강연"
+                profileImage=""
+            />
+            <VideoCard
+                streamId="11"
+                title="title"
+                url=""
+                username="강연"
+                nickname="강연"
+                profileImage=""
+            />
+            <VideoCard
+                streamId="11"
+                title="title"
+                url=""
+                username="강연"
+                nickname="강연"
+                profileImage=""
+            />
+            <VideoCard
+                streamId="11"
+                title="title"
+                url=""
+                username="강연"
+                nickname="강연"
+                profileImage=""
+            />
+            <VideoCard
+                streamId="11"
+                title="title"
+                url=""
+                username="강연"
+                nickname="강연"
+                profileImage=""
+            />
+            <VideoCard
+                streamId="11"
+                title="title"
+                url=""
+                username="강연"
+                nickname="강연"
+                profileImage=""
+            />
+            <VideoCard
+                streamId="11"
+                title="title"
+                url=""
+                username="강연"
+                nickname="강연"
+                profileImage=""
+            />
+        </S.LiveListContainer>
     </S.Container>
   );
 };
