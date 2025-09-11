@@ -17,13 +17,13 @@ export const VideoCard = ({
   type = "normal",
 }: VideoCardProps) => {
   const navigate = useNavigate();
-  const goToStream = () => {
+  const handleOnClickVideoCard = () => {
     console.log(streamId);
     navigate(`/livedetail?streamId=${streamId}`);
   };
   if (type === "big") {
     return (
-      <S.BigLiveCardContainer onClick={goToStream}>
+      <S.BigLiveCardContainer onClick={handleOnClickVideoCard}>
         <S.CategoryTitle>마인크래프트</S.CategoryTitle>
         <S.LiveInfo>
           <S.ProfileImage src={profileImage || normalProfile} />
@@ -37,7 +37,7 @@ export const VideoCard = ({
   }
 
   return (
-    <S.LiveCardContainer onClick={goToStream}>
+    <S.LiveCardContainer onClick={handleOnClickVideoCard}>
       <S.EmptyText>방송 준비중입니다.</S.EmptyText>
       <S.LiveInfo>
         <S.ProfileImage src={profileImage || normalProfile} />
