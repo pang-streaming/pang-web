@@ -1,34 +1,44 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { Route, Routes } from "react-router-dom";
+import { NotFound } from "@/pages/not-found/page";
+import { Explore } from "@/pages/explore/page";
+import { Category } from "@/pages/category/page";
+import { Following } from "@/pages/following/page";
+import { Charge } from "@/pages/charge/page";
+import { Login } from "@/pages/login/page";
+import { Step1 } from "@/features/signup/ui/step1";
+import { Step2 } from "@/features/signup/ui/step2";
+import { Step3 } from "@/features/signup/ui/step3";
+import { SignupProvider } from "@/features/auth/model/signup-context";
+import { Step4 } from "@/features/signup/ui/step4";
+import { Complete } from "@/features/signup/ui/step5";
+import {AuthLayout, DefaultLayout} from "@pang/shared/ui";
+import {Home} from "@/pages/home/page";
+// import { LiveDetail } from "@/pages/live-detail/page";
 
 function App() {
-  const [count, setCount] = useState(0)
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>      
-    </>
-  )
+    <SignupProvider>
+	    <Routes>
+		    <Route element={<DefaultLayout type="user" />}>
+			    <Route path="/" element={<Home />} />
+			    <Route path="/explore" element={<Explore />} />
+			    <Route path="/category" element={<Category />} />
+			    <Route path="/follow" element={<Following />} />
+			    <Route path="/cash" element={<Charge />} />
+			    {/*<Route path="/livedetail" element={<LiveDetail/>}/>*/}
+		    </Route>
+		    <Route element={<AuthLayout />}>
+			    <Route path="/login" element={<Login />} />
+			    <Route path="/signup" element={<Step1 />} />
+			    <Route path="/signup/step2" element={<Step2 />} />
+			    <Route path="/signup/step3" element={<Step3 />} />
+			    <Route path="/signup/step4" element={<Step4/>} />
+			    <Route path="/signup/complete" element={<Complete/>} />
+			    <Route path="*" element={<NotFound />} />
+		    </Route>
+	    </Routes>
+    </SignupProvider>
+  );
 }
 
-
-export default App
+export default App;

@@ -10,7 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-  },
-  "devDependencies": {
+    "@mux/mux-video-react": "^0.27.0",
+    "hls.js": "^1.6.12",
+    "js-confetti": "^0.13.1",
+    "react-toastify": "^11.0.5",
+    "socket.io-client": "^4.8.1"
   }
 }

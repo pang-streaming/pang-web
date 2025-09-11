@@ -1,8 +1,12 @@
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 export const LoginButton = () => {
+	const navigate = useNavigate();
 	return (
-		<LoginButtonContent>
+		<LoginButtonContent onClick={() => {
+			navigate("/login")
+		}}>
 			로그인
 		</LoginButtonContent>
 	)
