@@ -4,9 +4,9 @@ import Bomb from "../../asset/icons/bomb.svg?react";
 import Category from "../../asset/icons/category.svg?react";
 import Heart from "../../asset/icons/heart.svg?react";
 import Budget from "../../asset/icons/budget.svg?react";
-import {IoSearch, IoSpeedometerOutline} from "react-icons/io5";
+import {IoSearch} from "react-icons/io5";
 import {FaTowerBroadcast} from "react-icons/fa6";
-import {MdOutlinePermMedia} from "react-icons/md";
+import {MdDashboard, MdOutlinePermMedia} from "react-icons/md";
 
 export interface SidebarItem {
 	id: string;
@@ -51,7 +51,7 @@ export const userSidebarItems: SidebarItem[] = [
 export const streamerSidebarItems: SidebarItem[] = [
 	{
 		id: 'dashboard',
-		icon: <IoSpeedometerOutline size={26}/>,
+		icon: <MdDashboard size={26}/>,
 		name: '대시보드',
 		path: '/dashboard'
 	},
@@ -62,9 +62,9 @@ export const streamerSidebarItems: SidebarItem[] = [
 		path: "/streaming",
 	},
 	{
-		id: "budget",
+		id: "revenue",
 		name: "수익관리",
-		path: "/budget",
+		path: "/revenue",
 		icon: <Budget/>,
 	},
 	{

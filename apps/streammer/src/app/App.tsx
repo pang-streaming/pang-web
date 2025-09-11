@@ -1,24 +1,22 @@
 import {Route, Routes} from 'react-router-dom';
-import {AuthLayout, CustomThemeProvider, DefaultLayout} from "@pang/shared/ui";
+import {DefaultLayout} from "@pang/shared/ui";
+import { DashboardPage } from "@/pages/dashboard";
+import { RevenuePage } from "@/pages/revenue";
+import { StreamingPage } from "@/pages/streaming";
+import { ContentPage } from "@/pages/content";
+
 
 function App() {
     return (
-        <CustomThemeProvider>
-            <Routes>
-                <Route element={<DefaultLayout type={'streamer'} />}>
-                    <Route path="/" element={<h1>홈</h1>} />
-                    <Route path="/explore" element={<h1>Explore</h1>} />
-                    <Route path="/category" element={<h1>카테고리</h1>} />
-                    <Route path="/follow" element={<h1>팔로우</h1>} />
-                    <Route path="/cash" element={<h1>펑</h1>} />
-                </Route>
-
-                <Route element={<AuthLayout />}>
-                    <Route path="/login" element={<h1>로그인 페이지</h1>} />
-                    <Route path="/signup" element={<h1>회원가입 페이지</h1>} />
-                </Route>
-            </Routes>
-        </CustomThemeProvider>
+        <Routes>
+            <Route element={<DefaultLayout type={'streamer'} />}>
+                <Route path="/" element={<DashboardPage />} />
+                <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/revenue" element={<RevenuePage />} />
+                <Route path="/streaming" element={<StreamingPage />} />
+                <Route path="/content" element={<ContentPage />} />
+            </Route>
+        </Routes>
 )
 }
 
