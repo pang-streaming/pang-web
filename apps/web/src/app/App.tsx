@@ -11,9 +11,9 @@ import { Step3 } from "../features/signup/ui/step3";
 import { SignupProvider } from "../features/auth/model/signup-context";
 import { Step4 } from "../features/signup/ui/step4";
 import { Complete } from "../features/signup/ui/step5";
-import { ChattingSection } from "../pages/live-detail/widget/chatting-section";
 import { DefaultLayout } from "@pang/shared/ui";
 import { LiveDetail } from "@/pages/live-detail/page";
+import { Mypage } from "@/pages/mypage/page";
 
 function App() {
   const location = useLocation();
@@ -36,22 +36,22 @@ function App() {
           <Route path="/signup" element={<Step1 />} />
           <Route path="/signup/step2" element={<Step2 />} />
           <Route path="/signup/step3" element={<Step3 />} />
-          <Route path="/signup/step4" element={<Step4/>} />
-          <Route path="/signup/complete" element={<Complete/>} />
+          <Route path="/signup/step4" element={<Step4 />} />
+          <Route path="/signup/complete" element={<Complete />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       ) : (
-        <DefaultLayout>
         <Routes>
-          <Route path="/explore" element={<Explore />} />
-          <Route path="/category" element={<Category />} />
-          <Route path="/follow" element={<Following />} />
-          <Route path="/cash" element={<Charge />} />
-          <Route path="/livedetail" element={<LiveDetail/>} />
-          //삭제
-          <Route path="*" element={<NotFound />} />
+          <Route element={<DefaultLayout type={"user"} />}>
+            <Route path="/explore" element={<Explore />} />
+            <Route path="/category" element={<Category />} />
+            <Route path="/follow" element={<Following />} />
+            <Route path="/cash" element={<Charge />} />
+            <Route path="/livedetail" element={<LiveDetail />} />
+            <Route path="/mypage" element={<Mypage />} />
+            <Route path="*" element={<NotFound />} />
+          </Route>
         </Routes>
-        </DefaultLayout>
       )}
     </SignupProvider>
   );

@@ -2,7 +2,7 @@
 import styled from "styled-components";
 import { LuArrowRightToLine } from "react-icons/lu";
 import MuxVideo from "@mux/mux-video-react";
-import Pause from "../../assets/icons/pause.svg";
+import Pause from "@/app/assets/pause.svg";
 
 export const LiveDetailContainer = styled.div`
   width: 100%;
@@ -35,7 +35,7 @@ export const FollowButton = styled.button`
   border-radius: 12px;
   outline: none;
   border: none;
-  background-color: white;
+  background-color: ${({theme}) => theme.colors.secondary.normal};
   display: flex;
   align-items: center;
   gap: 6px;
@@ -46,12 +46,12 @@ export const FollowButton = styled.button`
 export const FollowButtonText = styled.span`
   font-size: 14px;
   font-weight: 700;
-  color: white;
+  color: ${({theme}) => theme.colors.common.white};
   flex-shrink: 0;
 `;
 export const VideoWrapper = styled.div`
   position: relative;
-  width: 70%;
+  width: 100%;
   border-radius: 20px;
 
   @media (max-width: 768px) {
@@ -61,7 +61,9 @@ export const VideoWrapper = styled.div`
 
 export const VideoContainer = styled.div`
   width: 100%;
-
+  height: 450px;
+  background-color: #a3a3a3;
+  border-radius: 20px;
 
 
 `;
@@ -217,7 +219,7 @@ export const BottomController = styled.div<{ $isVisible: boolean }>`
   opacity: ${(props) => (props.$isVisible ? 1 : 0)};
   transition: all 0.4s ease;
 
-  z-index: 2;
+  z-index: 999;
   pointer-events: ${(props) => (props.$isVisible ? "auto" : "none")};
 `;
 

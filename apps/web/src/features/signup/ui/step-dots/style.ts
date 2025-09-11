@@ -11,10 +11,10 @@ export const StepIndicator = styled.div`
   gap: 10px;
 `;
 
-export const StepCircle = styled.div<{ isActive: boolean }>`
+export const StepCircle = styled.div<{ $isActive: boolean }>`
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: ${({ isActive }) => (isActive ? "#F37" : "#404040")};
+  background-color: ${({ $isActive }) => ($isActive ? "#F37" : "#404040")};
   transition: background-color 0.3s;
 `;

@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import type { Video } from "../../model/type";
 import * as S from "./style";
 import normalProfile from "@/app/assets/images/normal_profile.svg";
@@ -15,9 +16,14 @@ export const VideoCard = ({
   profileImage,
   type = "normal",
 }: VideoCardProps) => {
+  const navigate = useNavigate();
+  const goToStream = () => {
+    console.log(streamId);
+    navigate(`/livedetail?streamId=${streamId}`);
+  };
   if (type === "big") {
     return (
-      <S.BigLiveCardContainer>
+      <S.BigLiveCardContainer onClick={goToStream}>
         <S.CategoryTitle>마인크래프트</S.CategoryTitle>
         <S.LiveInfo>
           <S.ProfileImage src={profileImage || normalProfile} />
@@ -30,9 +36,8 @@ export const VideoCard = ({
     );
   }
 
-  // 기존 normal 타입은 그대로
   return (
-    <S.LiveCardContainer onClick={() => {}}>
+    <S.LiveCardContainer onClick={goToStream}>
       <S.EmptyText>방송 준비중입니다.</S.EmptyText>
       <S.LiveInfo>
         <S.ProfileImage src={profileImage || normalProfile} />

@@ -2,7 +2,8 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import type { Socket } from "socket.io-client";
 
-const SocketContext: React.Context<Socket | null> = createContext<Socket | null>(null);
+
+const SocketContext: React.Context<Socket | null | undefined> = createContext<Socket | null | undefined>(undefined);
 
 function SocketProvider({ children }: React.PropsWithChildren) {
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -42,7 +43,7 @@ function SocketProvider({ children }: React.PropsWithChildren) {
 
 function useSocket(): Socket | null {
   const context = useContext(SocketContext);
-  if (context === null) {
+  if (context === undefined) {
     throw new Error('useSocket must be used within a SocketProvider');
   }
   return context;

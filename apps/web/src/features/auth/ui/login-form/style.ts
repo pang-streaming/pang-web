@@ -70,21 +70,21 @@ export const SectionDivider = styled.div`
   background-color: #737373;
 `;
 
-export const LoginButton = styled.button<{ isActive: boolean }>`
+export const LoginButton = styled.button<{ $isActive: boolean }>`
   margin-top: 21px;
   margin-bottom: 47px;
   width: 90%;
   height: 50px;
   border-radius: 8px;
-  background-color: ${({ isActive }) => (isActive ? "#e03456" : "#404040")};
-  color: ${({ isActive }) => (isActive ? "white" : "#999")};
+  background-color: ${({ $isActive }) => ($isActive ? "#e03456" : "#404040")};
+  color: ${({ $isActive }) => ($isActive ? "white" : "#999")};
   outline: none;
   border: none;
-  cursor: ${({ isActive }) => (isActive ? "pointer" : "default")};
+  cursor: ${({ $isActive }) => ($isActive ? "pointer" : "default")};
   transition: background-color 0.2s ease;
 
   &:hover {
-    background-color: ${({ isActive }) => (isActive ? "#c92e4a" : "#404040")};
+    background-color: ${({ $isActive }) => ($isActive ? "#c92e4a" : "#404040")};
   }
 `;
 

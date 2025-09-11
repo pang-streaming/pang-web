@@ -9,7 +9,7 @@ import { FcGoogle } from "react-icons/fc";
 
 import * as S from './style'
 import Logo from "@/app/assets/logo.svg";
-import { loginUser } from "../../api/login-api";
+import { loginUser } from "@/features/auth/api/login-api";
 
 export const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -17,10 +17,10 @@ export const LoginForm = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const isActive = email.trim() !== "" && password.trim() !== "";
+  const $isActive = email.trim() !== "" && password.trim() !== "";
 
   const handleLogin = async () => {
-    if (!isActive) return;
+    if (!$isActive) return;
 
     setLoading(true);
     try {
@@ -82,8 +82,8 @@ export const LoginForm = () => {
           />
         </S.LoginInputContainer>
         <S.LoginButton
-          disabled={!isActive || loading}
-          isActive={isActive}
+          disabled={!$isActive || loading}
+          $isActive={$isActive}
           onClick={handleLogin}
         >
           <S.LoginButtonText>
