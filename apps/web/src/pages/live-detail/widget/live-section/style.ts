@@ -293,9 +293,6 @@ export const ChattingViewer = styled.div`
   margin-bottom: 10px;
 `;
 
-export function randomColor() {
-  return "#" + Math.floor(Math.random() * 16777215).toString(16);
-}
 export const ChattingViewerName = styled.span`
   font-size: 14px;
   font-weight: 800;

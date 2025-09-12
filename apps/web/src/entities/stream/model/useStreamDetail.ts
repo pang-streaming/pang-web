@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { LiveStreamDetailData } from "../../../pages/live-detail/widget/live-section/types";
-import { fetchLiveStreamDetail } from "../../../pages/live-detail/widget/live-section/services/stream";
+import { LiveStreamDetailData } from "./type";
+import { fetchLiveStreamDetail } from "../api";
 
 export function useStreamDetail(streamId?: string) {
   const [streamData, setStreamData] = useState<LiveStreamDetailData | undefined>();

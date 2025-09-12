@@ -58,7 +58,6 @@ export const LiveSection = () => {
   const { followerCount, isFollowing, isLoading, toggleFollow } = useFollowInfo(streamData?.nickname);
 
   const [currentTime, setCurrentTime] = useState(0);
-  const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -83,17 +82,6 @@ export const LiveSection = () => {
   };
   const colorMapRef = useRef<Map<string, string>>(new Map());
 
-  const getColorForViewer = (viewerName: string) => {
-    if (!colorMapRef.current.has(viewerName)) {
-      const randomColor =
-        "#" +
-        Math.floor(Math.random() * 16777215)
-          .toString(16)
-          .padStart(6, "0");
-      colorMapRef.current.set(viewerName, randomColor);
-    }
-    return colorMapRef.current.get(viewerName)!;
-  };
 
   const navigate = useNavigate();
   return (

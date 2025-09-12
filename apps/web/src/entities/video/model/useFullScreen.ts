@@ -8,11 +8,9 @@ export function useFullScreen(targetContainerRef: RefObject<HTMLElement | null>)
     if (document.fullscreenElement) {
       document.exitFullscreen();
     } else {
-      container.requestFullscreen().catch(() => {});
+      container.requestFullscreen();
     }
   }, [targetContainerRef]);
 
   return { handleFullScreen };
 }
-
-

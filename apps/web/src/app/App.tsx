@@ -13,6 +13,8 @@ import { Step4 } from "@/features/signup/ui/step4";
 import { Complete } from "@/features/signup/ui/step5";
 import {AuthLayout, DefaultLayout} from "@pang/shared/ui";
 import {Home} from "@/pages/home/page";
+import { MyPage } from "@/pages/mypage/page";
+import { LiveDetail } from "@/pages/live-detail/page";
 // import { LiveDetail } from "@/pages/live-detail/page";
 
 function App() {
@@ -25,6 +27,8 @@ function App() {
 			    <Route path="/category" element={<Category />} />
 			    <Route path="/follow" element={<Following />} />
 			    <Route path="/cash" element={<Charge />} />
+			    <Route path="/mypage" element={<MyPage />} />
+			    <Route path="/livedetail" element={<LiveDetail />} />
 			    {/*<Route path="/livedetail" element={<LiveDetail/>}/>*/}
 		    </Route>
 		    <Route element={<AuthLayout />}>
