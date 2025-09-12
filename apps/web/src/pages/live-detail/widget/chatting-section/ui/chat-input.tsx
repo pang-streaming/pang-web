@@ -65,6 +65,7 @@ const Container = styled.div`
 export const Input = styled.input`
   outline: none;
   border: none;
+  width: 80%;
   background-color: transparent;
   border-radius: 8px;
   margin-right: auto;

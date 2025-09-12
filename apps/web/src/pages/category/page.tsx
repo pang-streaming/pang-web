@@ -1,4 +1,5 @@
 import React from "react";
+import { TabTitleText } from "@/shared/ui/tab-title-text";
 import { CategoryBox } from "./ui/category-box";
 import styled from "styled-components";
 import {IoSearch} from "react-icons/io5";
@@ -27,9 +28,7 @@ const categories: CategoryItem[] = [
 export const Category = () => {
 	return (
 		<CategoryWrapper>
-			<CategoryHeader>
-				<CategoryTitle>카테고리</CategoryTitle>
-			</CategoryHeader>
+			<TabTitleText>카테고리</TabTitleText>
 			<CategoryContainer>
 				{categories.map((category, index) => (
 					<CategoryBox

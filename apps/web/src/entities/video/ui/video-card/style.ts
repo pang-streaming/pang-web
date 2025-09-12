@@ -33,6 +33,17 @@ export const ProfileImage = styled.img`
 margin-bottom: 7px;
 `;
 
+export const EmptyText = styled.span`
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: ${({ theme }) => theme.colors.text.subtitle};
+  color: ${({theme}) => theme.colors.common.white};
+  border-radius: 12px;
+  margin-bottom: 10px;
+`;
+
 export const LiveTitle = styled.span`
 	font-size: ${({theme}) => theme.font.xLarge};
 	font-weight: 600;

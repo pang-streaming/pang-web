@@ -5,7 +5,7 @@ import {HeaderVideo} from "@/entities/video/ui/header-video";
 export const Home = () => {
 	const videos = [
 		{
-			streamId: "11",
+			streamId: "10",
 			title: "안녕하세요",
 			url: "",
 			username: "강연",

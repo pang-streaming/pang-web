@@ -1,28 +1,40 @@
 import styled from "styled-components";
 import { IoMenu } from "react-icons/io5";
-import {SearchBar} from "./searchBar";
-import {PiMonitorBold, PiSunBold} from "react-icons/pi";
-import {HeaderButton} from "../buttons/headerButton";
-import {HiOutlineBell, HiOutlineMoon} from "react-icons/hi";
-import {FiVideo} from "react-icons/fi";
-import {useThemeStore} from "../../store/theme/themeStore";
-import {LoginButton} from "../buttons/loginButton";
-import {useNavigate} from "react-router-dom";
-import {PangLogo} from "../../asset/logo/pangLogo";
+import { SearchBar } from "./searchBar";
+import { PiMonitorBold, PiSunBold } from "react-icons/pi";
+import { HeaderButton } from "../buttons/headerButton";
+import { HiOutlineBell, HiOutlineMoon } from "react-icons/hi";
+import { FiVideo } from "react-icons/fi";
+import { useThemeStore } from "../../store/theme/themeStore";
+import { LoginButton } from "../buttons/loginButton";
+import { useNavigate } from "react-router-dom";
+import { PangLogo } from "../../asset/logo/pangLogo";
+import normalProfile from "../../asset/logo/normal_profile.svg";
+import { useEffect } from "react";
 
 interface HeaderProps {
-	onClickMenu: () => void;
-	type: 'streamer' | 'user';
+  onClickMenu: () => void;
+  type: "streamer" | "user";
 }
 
-export const Header = ({onClickMenu, type}: HeaderProps) => {
-	const navigate = useNavigate();
-	const {mode, toggleTheme} = useThemeStore()
-	const DarkLightModeIcon = mode === 'dark' ? PiSunBold : HiOutlineMoon;
-	const MoveButton = type === 'user' ? FiVideo : PiMonitorBold;
+export const Header = ({ onClickMenu, type }: HeaderProps) => {
+  const navigate = useNavigate();
+  const { mode, toggleTheme } = useThemeStore();
+  const DarkLightModeIcon = mode === "dark" ? PiSunBold : HiOutlineMoon;
+  const MoveButton = type === "user" ? FiVideo : PiMonitorBold;
 
-	const token = localStorage.getItem('token');
-	const isLoggedIn = !!token;
+  const token = localStorage.getItem("accessToken");
+  const isLoggedIn = !!token;
+  const normalProfileSrc: string = normalProfile;
+
+  const handleProfile = () => {
+    navigate("/mypage");
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    console.log({ hasToken: token !== null });
+  }, []);
 
 	return (
 		<HeaderContainer>
@@ -61,25 +73,25 @@ const ButtonWrapper = styled.div`
 const SidebarToggleButton = styled(IoMenu)`
     cursor: pointer;
 	padding: 6px;
-	border-radius: ${({theme}) => theme.borders.large};
+	border-radius: ${({ theme }) => theme.borders.large};
     color: ${({ theme }) => theme.colors.button.active};
 
-    &:hover {
-        background-color: ${({theme}) => theme.colors.hover.light};
-    }
-`
+	&:hover {
+	background-color: ${({ theme }) => theme.colors.hover.light};
+	}
+`;
 
 const HeaderContainer = styled.header`
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 66px;
-    padding: 0 22px;
-    background-color: ${({theme}) => theme.colors.background.normal};
-    border-bottom: 1px solid ${({theme}) => theme.colors.border.light};
-    display: flex;
-    align-items: center;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 66px;
+	padding: 0 22px;
+	background-color: ${({ theme }) => theme.colors.background.normal};
+	border-bottom: 1px solid ${({ theme }) => theme.colors.border.light};
+	display: flex;
+	align-items: center;
 	justify-content: space-between;
-    z-index: 10;
+	z-index: 10;
 `;
