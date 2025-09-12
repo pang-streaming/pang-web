@@ -20,12 +20,22 @@ export const DefaultLayout = ({type}: DefaultLayoutProps) => {
 				{/*팔로워 목록 리스트*/}
 			</Sidebar>
 			<Header onClickMenu={() => setTabs(!tabs)} type={type}/>
+			{ tabs && <BlurContainer/> }
 			<MainContainer>
 				<Outlet/>
 			</MainContainer>
 		</CustomThemeProvider>
 	)
 }
+
+const BlurContainer = styled.div`
+	position: fixed;
+	width: 100vw;
+	height: 100vh;
+	top: 0;
+	background-color: rgba(0, 0, 0, 0.6);
+	z-index: 11;
+`;
 
 const MainContainer = styled.main`
     flex: 1;
