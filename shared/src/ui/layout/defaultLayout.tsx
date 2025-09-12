@@ -20,7 +20,7 @@ export const DefaultLayout = ({type}: DefaultLayoutProps) => {
 				{/*팔로워 목록 리스트*/}
 			</Sidebar>
 			<Header onClickMenu={() => setTabs(!tabs)} type={type}/>
-			{ tabs && <BlurContainer/> }
+			{ tabs && <BlurContainer onClick={() => setTabs(false)}/> }
 			<MainContainer>
 				<Outlet/>
 			</MainContainer>
@@ -42,7 +42,7 @@ const MainContainer = styled.main`
     min-height: calc(100vh - 67px);
     margin-top: 67px;
     margin-left: 80px;
-    padding: 1em;
+    padding: 1.2em;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;

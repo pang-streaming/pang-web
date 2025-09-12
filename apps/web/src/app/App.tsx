@@ -29,6 +29,7 @@ function App() {
 			    <Route path="/cash" element={<Charge />} />
 			    <Route path="/mypage" element={<MyPage />} />
 			    {/*<Route path="/livedetail" element={<LiveDetail/>}/>*/}
+			    <Route path="*" element={<NotFound />} />
 		    </Route>
 		    <Route element={<FullScreenLayout type={"user"} />}>
 			    <Route path="/livedetail" element={<LiveDetail />} />

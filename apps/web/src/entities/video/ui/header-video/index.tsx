@@ -93,6 +93,10 @@ const HeaderVideoContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+	
+	&:hover {
+		cursor: pointer;
+	}
 `;
 
 const StreamingTitle = styled.span`

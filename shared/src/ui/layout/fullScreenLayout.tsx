@@ -19,7 +19,7 @@ export const FullScreenLayout = ({type}: DefaultLayoutProps) => {
 			<Sidebar isSidebarOpen={tabs} onClickMenu={() => setTabs(!tabs)} sidebarItems={sidebarItems} type={type}>
 			</Sidebar>
 			<Header onClickMenu={() => setTabs(!tabs)} type={type}/>
-			{ tabs && <BlurContainer/> }
+			{ tabs && <BlurContainer onClick={() => setTabs(false)}/> }
 			<MainContainer>
 				<Outlet/>
 			</MainContainer>

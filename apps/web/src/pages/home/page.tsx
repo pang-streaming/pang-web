@@ -1,6 +1,7 @@
 import * as S from "./style";
 import {VideoCard} from "@/entities/video/ui/video-card";
 import {HeaderVideo} from "@/entities/video/ui/header-video";
+import {TabTitleText} from "@/shared/ui/tab-title-text";
 
 export const Home = () => {
 	const videos = [
@@ -33,7 +34,7 @@ export const Home = () => {
 	return (
     <S.Container>
 	    <HeaderVideo videos={videos}/>
-        <S.Title>이 방송 어때요?</S.Title>
+        <TabTitleText>이 방송 어때요?</TabTitleText>
         <S.LiveListContainer>
             <VideoCard
                 streamId="11"
