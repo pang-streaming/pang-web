@@ -9,7 +9,6 @@ import { useThemeStore } from "../../store/theme/themeStore";
 import { LoginButton } from "../buttons/loginButton";
 import { useNavigate } from "react-router-dom";
 import { PangLogo } from "../../asset/logo/pangLogo";
-import normalProfile from "../../asset/logo/normal_profile.svg";
 import { useEffect } from "react";
 
 interface HeaderProps {
@@ -18,23 +17,18 @@ interface HeaderProps {
 }
 
 export const Header = ({ onClickMenu, type }: HeaderProps) => {
-  const navigate = useNavigate();
-  const { mode, toggleTheme } = useThemeStore();
-  const DarkLightModeIcon = mode === "dark" ? PiSunBold : HiOutlineMoon;
-  const MoveButton = type === "user" ? FiVideo : PiMonitorBold;
+	const navigate = useNavigate();
+	const { mode, toggleTheme } = useThemeStore();
+	const DarkLightModeIcon = mode === "dark" ? PiSunBold : HiOutlineMoon;
+	const MoveButton = type === "user" ? FiVideo : PiMonitorBold;
 
-  const token = localStorage.getItem("accessToken");
-  const isLoggedIn = !!token;
-  const normalProfileSrc: string = normalProfile;
+	const token = localStorage.getItem("accessToken");
+	const isLoggedIn = token != null;
 
-  const handleProfile = () => {
-    navigate("/mypage");
-  };
-
-  useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    console.log({ hasToken: token !== null });
-  }, []);
+	useEffect(() => {
+		const token = localStorage.getItem("accessToken");
+		console.log({ hasToken: token !== null });
+	}, []);
 
 	return (
 		<HeaderContainer>
@@ -42,7 +36,7 @@ export const Header = ({ onClickMenu, type }: HeaderProps) => {
 				<SidebarToggleButton size={28} onClick={onClickMenu}/>
 				<PangLogo type={type} onClick={() => navigate('/')} cursor="pointer"/>
 			</LogoWrapper>
-			{type === 'user' && <SearchBar/>}
+			{type === "user" && <SearchBar/>}
 			<ButtonWrapper>
 				<HeaderButton Icon={MoveButton}/>
 				<HeaderButton Icon={HiOutlineBell}/>
