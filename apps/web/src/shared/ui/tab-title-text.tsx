@@ -1,10 +1,8 @@
-
-
 import styled from 'styled-components'
 
-export const TabTitleText = ({text}: {text: string}) => {
+export const TabTitleText = ({children}: {children: string}) => {
   return (
-    <Title>{text}</Title>
+    <Title>{children}</Title>
   )
 }
 

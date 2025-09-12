@@ -1,8 +1,7 @@
 import React from "react";
-import { TabTitleText } from "@/shared/ui/tab-title-text";
 import { CategoryBox } from "./ui/category-box";
 import styled from "styled-components";
-import {IoSearch} from "react-icons/io5";
+import {TabTitleText} from "@/shared/ui/tab-title-text";
 
 interface CategoryItem {
 	categoryTitle: string;
@@ -49,19 +48,6 @@ const CategoryWrapper = styled.div`
     gap: 12px;
 `;
 
-const CategoryHeader = styled.div`
-    display: flex;
-    align-items: center;
-	justify-content: start;
-    color: ${({theme}) => theme.colors.text.normal};
-    gap: 2px;
-`;
-
-const CategoryTitle = styled.span`
-	color: ${({theme}) => theme.colors.text.normal};
-	font-size: ${({theme}) => theme.font.xxLarge};
-	font-weight: 600;
-`;
 
 const CategoryContainer = styled.div`
     display: flex;
