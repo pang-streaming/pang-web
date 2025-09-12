@@ -1,51 +1,49 @@
 // ChattingSection.tsx
-import { useMessages } from "./model/useChatMessages";
+import { useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import * as S from "./style";
 import { ChatInput } from "./ui/chat-input";
-
-
+import { useChat } from "./model/useChat";
 
 export const ChattingSection = () => {
-  const { messages, handleSend, messagesEndRef } = useMessages();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const streamId = String(queryParams.get("streamId") ?? "");
 
+  const { chatList, setChat, sendMessage } = useChat(streamId);
 
-  const colors = ["#FF6B6B", "#6BCB77", "#4D96FF", "#FFD93D", "#A66DD4"];
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
-  const getColorForNickname = (nickname: string) => {
-    const index = nickname
-      .split("")
-      .reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    return colors[index % colors.length];
-  };
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chatList.length]);
 
   return (
+    <S.Container>
+      <S.ChattingHeader>
+        <S.ChattingArrow />
+        <span style={{ fontSize: 15, fontWeight: 700, color: "#a3a3a3" }}>
+          채팅
+        </span>
+      </S.ChattingHeader>
 
-      <S.Container>
-        <S.ChattingHeader>
-          <S.ChattingArrow />
-          <span style={{ fontSize: 15, fontWeight: 700, color: "#a3a3a3" }}>
-            채팅
-          </span>
-        </S.ChattingHeader>
+      <S.ChatMessages>
+        {chatList.map((item, index) => (
+          <S.MessageRow key={index}>
+            <S.Nickname style={{ color: item.color }}>
+              {item.viewerName ?? "익명"}
+            </S.Nickname>
+            <S.Message>{item.chatting}</S.Message>
+          </S.MessageRow>
+        ))}
+        <div ref={messagesEndRef} />
+      </S.ChatMessages>
 
-        <S.ChatMessages>
-          {messages.map((msg, index) => {
-            const nickname = "강연";
-            const nicknameColor = getColorForNickname(nickname);
-            return (
-              <S.MessageRow key={index}>
-                <S.Nickname style={{ color: nicknameColor }}>
-                  {nickname}
-                </S.Nickname>
-                <S.Message>{msg}</S.Message>
-              </S.MessageRow>
-            );
-          })}
-          <div ref={messagesEndRef} />
-        </S.ChatMessages>
-
-        <ChatInput onSend={handleSend} />
-      </S.Container>
-
+      <ChatInput
+        onSend={(message: string) => {
+          sendMessage(message);
+        }}
+      />
+    </S.Container>
   );
 };

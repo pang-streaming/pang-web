@@ -116,8 +116,8 @@ const Circle = styled.div<{ active: boolean }>`
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: ${({ active }) => (active ? "#FF0055" : "#525252")};
-  color: ${({ theme }) => theme.primaryTextColor};
+  background: ${({ active, theme }) => (active ? theme.colors.primary.normal : "#525252")};
+  color: ${({ theme }) => theme.colors.common.white};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -132,7 +132,7 @@ const ButtonWrapper = styled.div`
 const CloseButton = styled.button`
   width: 100%;
   height: 53px;
-  background: #ff0055;
+  background: ${({theme}) => theme.colors.primary.normal};
   border: none;
   outline: none;
   color: white;
@@ -147,7 +147,7 @@ const CloseButton = styled.button`
 `;
 
 const NextButton = styled(CloseButton)`
-  background: #ff0055;
+  background: ${({theme}) => theme.colors.primary.normal};
 
   &:hover {
     background: #c70039;

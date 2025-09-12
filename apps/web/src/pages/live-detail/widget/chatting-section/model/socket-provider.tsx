@@ -10,6 +10,8 @@ function SocketProvider({ children }: React.PropsWithChildren) {
 
   useEffect(() => {
     const newSocket = io(import.meta.env.VITE_SOCKET_URL, {
+      transports:["websocket"],
+      secure: true,
       autoConnect: true,
     });
 

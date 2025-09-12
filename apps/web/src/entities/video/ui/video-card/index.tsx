@@ -11,16 +11,21 @@ export const VideoCard = ({
   nickname,
   profileImage,
 }: Video) => {
-	return (
-		<S.LiveCardContainer onClick={() => {}}>
-			<S.EmptyText>방송 준비중입니다.</S.EmptyText>
-			<S.LiveInfo>
-				<S.ProfileImage src={profileImage || normalProfile} />
-				<S.TitleContainer>
-					<S.LiveTitle>{title}</S.LiveTitle>
-					<S.StreamerName>{nickname}</S.StreamerName>
-				</S.TitleContainer>
-			</S.LiveInfo>
-		</S.LiveCardContainer>
-	);
+  const navigate = useNavigate();
+  const handleOnClickVideoCard = () => {
+    console.log(streamId);
+    navigate(`/livedetail?streamId=${streamId}`);
+  };
+  return (
+    <S.LiveCardContainer onClick={handleOnClickVideoCard}>
+      <S.EmptyText>방송 준비중입니다.</S.EmptyText>
+      <S.LiveInfo>
+        <S.ProfileImage src={profileImage || normalProfile} />
+        <S.TitleContainer>
+          <S.LiveTitle>{title}</S.LiveTitle>
+          <S.StreamerName>{nickname}</S.StreamerName>
+        </S.TitleContainer>
+      </S.LiveInfo>
+    </S.LiveCardContainer>
+  );
 };

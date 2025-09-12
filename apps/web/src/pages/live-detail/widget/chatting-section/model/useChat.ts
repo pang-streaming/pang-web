@@ -15,7 +15,17 @@ export const useChat = (streamId: string) => {
   const [chat, setChat] = useState("");
 
   useEffect(() => {
-    socket?.emit("join_room", streamId);
+    if (!socket || !streamId) return;
+
+    const join = () => {
+      socket.emit("join_room", streamId);
+    };
+
+    if (socket.connected) {
+      join();
+    }
+
+    socket.on("connect", join);
     const handleChatMessage = (data: any) => {
       setChatList((prev) => [
         ...prev,
@@ -30,20 +40,25 @@ export const useChat = (streamId: string) => {
     socket?.on("chat_message", handleChatMessage);
 
     return () => {
-      socket?.off("chat_message", handleChatMessage);
+      socket.off("connect", join);
+      socket.off("chat_message", handleChatMessage);
     };
   }, [socket, streamId]);
 
-  const sendMessage = () => {
+  const sendMessage = (overrideMessage?: string) => {
+    if (!socket || !socket.connected) return;
     const token = localStorage.getItem("accessToken");
-    const trimmedMessage = chat.trim();
+    const messageToSend = overrideMessage ?? chat;
+    const trimmedMessage = messageToSend.trim();
     if (!trimmedMessage || !token) return;
-    socket?.emit("chat_message", {
+    socket.emit("chat_message", {
       token,
       message: trimmedMessage,
       roomId: streamId,
     });
-    setChat("");
+    if (overrideMessage === undefined) {
+      setChat("");
+    }
   };
 
   return { chat, setChat, chatList, sendMessage };
