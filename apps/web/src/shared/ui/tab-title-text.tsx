@@ -11,4 +11,5 @@ const Title = styled.div`
     font-size: ${({theme}) => theme.font.xxxLarge};
     font-weight: bold;
     color: ${({theme}) => theme.colors.text.normal};
+
 `
