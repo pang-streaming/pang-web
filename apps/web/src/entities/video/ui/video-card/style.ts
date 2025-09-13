@@ -30,7 +30,7 @@ export const ProfileImage = styled.img`
 	height: 45px;
 	border-radius: ${({theme}) => theme.borders.maximum};
 	margin-right: 8px;
-margin-bottom: 7px;
+	margin-bottom: 7px;
 `;
 
 export const EmptyText = styled.span`

@@ -1,5 +1,3 @@
-
-
 export interface Video {
     streamId:string,
     title:string
