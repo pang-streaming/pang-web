@@ -3,35 +3,12 @@ import { queryClient } from "@/shared/lib/query-client";
 import { ToastContainer } from "react-toastify";
 import { BrowserRouter } from "react-router-dom";
 import { CustomThemeProvider, GlobalStyle } from "@pang/shared/ui";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode } from "react";
 import { InitModal } from "@/widgets/init-modal/_index";
-import { fetchMyInfo } from "@/entities/user/api/api";
-import { User } from "@/entities/user/model/type";
+import { useProvider } from "./hooks/useProvider";
 
 export const Provider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User>();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await fetchMyInfo();
-        setUser(res.data);
-
-        const hasCompletedInitialSetup = localStorage.getItem(
-          "hasCompletedInitialSetup"
-        );
-
-        if (!hasCompletedInitialSetup || !res.data.age || !res.data.gender) {
-          setIsModalOpen(true);
-        }
-      } catch (error) {
-        console.error("유저 정보 가져오기 실패:", error);
-      }
-    };
-
-    fetchUser();
-  }, []);
+  const { user, isModalOpen, closeModal } = useProvider();
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -51,10 +28,7 @@ export const Provider = ({ children }: { children: ReactNode }) => {
           {user && (
             <InitModal
               isOpen={isModalOpen}
-              onClose={() => {
-                setIsModalOpen(false);
-                localStorage.setItem("hasCompletedInitialSetup", "true");
-              }}
+              onClose={closeModal}
               username={user?.username}
             />
           )}
