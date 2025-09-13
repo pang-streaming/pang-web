@@ -1,11 +1,6 @@
 import * as S from "./style";
-import { VideoCard } from "@/entities/video/ui/video-card";
 import { HeaderVideo } from "@/entities/video/ui/header-video";
 import { TabTitleText } from "@/shared/ui/tab-title-text";
-import { useEffect, useState } from "react";
-import { InitModal } from "@/widgets/init-modal/_index";
-import { fetchMyInfo } from "@/entities/user/api/api";
-import { User } from "@/entities/user/model/type";
 import {VideoItem, VideoList} from "@/shared/ui/video/VideoList";
 
 const liveVideos: VideoItem[] = [
@@ -122,26 +117,8 @@ export const Home = () => {
     },
   ];
 
-  const [user, setUser] = useState<User>();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  useEffect(() => {
-
-    const fetchUser = async () => {
-      const res = await fetchMyInfo();
-      setUser(res.data);
-	  setIsModalOpen(true);
-    };
-
-    fetchUser();
-  }, []);
-
   return (
     <S.Container>
-	    { user && <InitModal
-		    isOpen={isModalOpen}
-		    onClose={() => setIsModalOpen(false)}
-		    username={user?.username}
-	    />}
       <HeaderVideo videos={videos} />
       <TabTitleText>이 방송 어때요?</TabTitleText>
       <VideoList videos={liveVideos}/>
