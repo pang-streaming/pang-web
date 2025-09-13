@@ -21,5 +21,3 @@ export function useStreamDetail(streamId?: string) {
 
   return { streamData };
 }
-
-

@@ -5,7 +5,7 @@ export interface Colors {
 	text: { normal: string; placeholder: string; subtitle: string; };
 	button: { normal: string; disabled: string; active: string; };
 	status: { positive: string; neutral: string; negative: string; };
-	common: { white: string; black: string; };
+	common: { white: string; black: string; grey: string; };
 	background: { normal: string; light: string; dark: string; };
 	content: { normal: string; dark: string; light: string; };
 	stroke: { light: string; normal: string; dark: string; };
@@ -14,7 +14,7 @@ export interface Colors {
 
 export const darkColors: Colors = {
 	button: {active: "#FFFFFF", disabled: "#404040", normal: "#A3A3A3"},
-	common: {black: "#000000", white: "#FFFFFF"},
+	common: {black: "#000000", white: "#FFFFFF", grey: "#777777"},
 	hover: {normal: "#CC0044", light: "#262626", dark: "#990033"},
 	primary: {light: "#FFCCDD", normal: "#FF0055", dark: "#990033"},
 	secondary: {light: "#9A57FF", normal: "#6600FF", dark: "#290066"},
@@ -28,7 +28,7 @@ export const darkColors: Colors = {
 
 export const lightColors: Colors = {
 	button: {active: "#000000", disabled: "#D4D4D4", normal: "#555555"},
-	common: {black: "#000000", white: "#FFFFFF"},
+	common: {black: "#000000", white: "#FFFFFF", grey: "#777777"},
 	hover: {normal: "#FF6699", light: "#F5F5F5", dark: "#990033"},
 	primary: {light: "#FFCCDD", normal: "#FF0055", dark: "#990033"},
 	secondary: {light: "#9A57FF", normal: "#6600FF", dark: "#290066"},

@@ -1,16 +1,23 @@
 import styled from "styled-components";
-import chattingArrow from "../../../../app/assets/chatting-arrow.svg";
 
-export const Container = styled.div`
+export const ChattingContainer = styled.div`
+	right: 0;
+	margin-right: 15px;
+	box-sizing: border-box;
+  padding: 20px;
 	width:435px;
-	margin: 20px;
-	height: 700px;
+	min-height: 700px;
+	max-height: calc(100vh - 4em - 67px);
 	display: flex;
 	flex-direction: column;
-	border-radius: 20px;
-	border: 1px solid #404040;
-	position: relative;
+	border-radius: ${({theme}) => theme.borders.xxlarge};
+	border: 1px solid ${({theme}) => theme.colors.border.normal};
+	position: fixed;
 	background-color: ${({theme}) => theme.colors.background.normal};
+
+  ::-webkit-scrollbar {
+      display: none;
+  }
 `;
 
 export const ChatMessages = styled.div`
@@ -26,24 +33,21 @@ margin-top: 50px;
 export const ChattingHeader = styled.div`
   position: absolute;
   top: 0;
+  left: 0;
+  padding: 0 20px;
+  box-sizing: border-box;
   width: 100%;
   height: 50px;
-  background-color: transparent;
-  border-bottom: 1px solid #404040;
-  border-top-right-radius: 20px;
-  border-top-left-radius: 20px;
+  border-bottom: 1px solid ${({theme}) => theme.colors.border.normal};
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
+	color: ${({theme}) => theme.colors.text.normal};
 `;
 
-export const ChattingArrow = styled.img.attrs({
-  src: chattingArrow,
-  alt: "뒤로가기",
-})`
-  position: absolute;
-  left: 10px;
-  cursor: pointer;
+export const ChattingHeaderText = styled.span`
+  font-size: ${({theme}) => theme.font.medium};
+  font-weight: 800;
 `;
 
 export const MessageRow = styled.div`
@@ -53,14 +57,13 @@ export const MessageRow = styled.div`
 `;
 
 export const Nickname = styled.span`
-  font-weight: 600;
-  font-size: 13px;
+  font-weight: 800;
+  font-size: ${({theme}) => theme.font.large};
 `;
 
 export const Message = styled.div`
-  border-radius: 8px;
-  color: #fff;
-  font-size: 14px;
+  color: ${({theme}) => theme.colors.text.normal};
+  font-size: ${({theme}) => theme.font.medium};
   align-self: flex-start;
   word-break: break-word;
 `;

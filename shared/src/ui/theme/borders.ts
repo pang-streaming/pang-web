@@ -3,6 +3,7 @@ export interface Borders {
 	medium: string;
 	large: string;
 	xlarge: string;
+	xxlarge: string;
 	maximum: string;
 }
 
@@ -11,5 +12,6 @@ export const borders: Borders = {
 	medium: '6px',
 	large: '8px',
 	xlarge: '10px',
+	xxlarge: '20px',
 	maximum: '50px',
 };

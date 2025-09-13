@@ -50,11 +50,11 @@ export const Home = () => {
 
   return (
     <S.Container>
-      <InitModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        username={user?.username}
-      />
+	    { user && <InitModal
+		    isOpen={isModalOpen}
+		    onClose={() => setIsModalOpen(false)}
+		    username={user?.username}
+	    />}
       <HeaderVideo videos={videos} />
       <TabTitleText>이 방송 어때요?</TabTitleText>
       <S.LiveListContainer>

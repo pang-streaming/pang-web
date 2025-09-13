@@ -42,7 +42,7 @@ const MainContainer = styled.main`
     min-height: calc(100vh - 67px);
     margin-top: 67px;
     margin-left: 80px;
-    padding: 1.2em;
+    padding: 2em;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -53,7 +53,7 @@ const MainContainer = styled.main`
         flex: 1;
     }
 	
-    @media (min-width: 2000px) {
+    @media (min-width: 2100px) {
         & > * {
             max-width: 1950px;
         }

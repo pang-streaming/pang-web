@@ -50,9 +50,29 @@ const CategoryWrapper = styled.div`
 
 
 const CategoryContainer = styled.div`
-    display: flex;
-    flex-wrap: wrap;
-    column-gap: 10px;
-    row-gap: 30px;
-    align-content: flex-start;
+    display: grid;
+    gap: 20px;
+    width: 100%;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    @media (min-width: 800px) {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    @media (min-width: 1200px) {
+        grid-template-columns: repeat(5, 1fr);
+    }
+
+    @media (min-width: 1600px) {
+        grid-template-columns: repeat(6, 1fr);
+    }
+
+    @media (min-width: 1900px) {
+        grid-template-columns: repeat(7, 1fr);
+    }
+
+    @media (min-width: 2090px) {
+        grid-template-columns: repeat(8, 1fr);
+    }
 `;
