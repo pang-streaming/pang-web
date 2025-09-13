@@ -7,7 +7,7 @@ import { ListHeader } from "./widget/list-header";
 export const Charge = () => {
   return (
     <div>
-      <TabTitleText children="MY 펑" />
+      <TabTitleText>My 펑</TabTitleText>
 
       <S.Contaienr>
         <S.ChargeBoxRow>

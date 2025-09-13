@@ -10,6 +10,7 @@ import { FcGoogle } from "react-icons/fc";
 import * as S from './style'
 import Logo from "@/app/assets/logo.svg";
 import { loginUser } from "@/features/auth/api/login-api";
+import { useTheme } from "styled-components";
 
 export const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -119,9 +120,12 @@ const LoginDivider = () => (
   </S.LoginDividerWrapper>
 );
 
-const OauthBox = ({ logo }: { logo: "apple" | "google" }) => (
-  <S.OauthWrapper>
-    {logo === "apple" && <FaApple size={28} color='white'/>}
-    {logo === "google" && <FcGoogle size={28} />}
-  </S.OauthWrapper>
-);
+const OauthBox = ({ logo }: { logo: "apple" | "google" }) => {
+  const theme = useTheme();
+  return (
+    <S.OauthWrapper>
+      {logo === "apple" && <FaApple size={28} color={theme.colors.text.normal} />}
+      {logo === "google" && <FcGoogle size={28} />}
+    </S.OauthWrapper>
+  );
+};

@@ -7,7 +7,7 @@ import { SettingsMenu } from "./widget/settings-menu";
 export const MyPage = ({}) => {
   return (
     <div>
-      <TabTitleText children="MY" />
+      <TabTitleText>MY</TabTitleText>
       <S.Contaienr>
         <MyInfoSection />
         <MyPungSection />
