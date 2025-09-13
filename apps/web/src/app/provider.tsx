@@ -12,14 +12,14 @@ export const Provider = ({children}: {children: ReactNode}) => {
 			<GlobalStyle />
 			<SocketProvider>
 				<ToastContainer
-			        position="top-right"
-			        autoClose={3000}
-			        hideProgressBar={false}
-			        closeOnClick
-			        pauseOnHover
-			        draggable
-			        theme="colored"
-			    />
+	        position="top-right"
+	        autoClose={3000}
+	        hideProgressBar={false}
+	        closeOnClick
+	        pauseOnHover
+	        draggable
+	        theme="colored"
+		    />
 				<BrowserRouter>{children}</BrowserRouter>
 			</SocketProvider>
 		</CustomThemeProvider>

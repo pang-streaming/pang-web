@@ -15,7 +15,6 @@ import {AuthLayout, DefaultLayout, FullScreenLayout} from "@pang/shared/ui";
 import {Home} from "@/pages/home/page";
 import { MyPage } from "@/pages/mypage/page";
 import { LiveDetail } from "@/pages/live-detail/page";
-// import { LiveDetail } from "@/pages/live-detail/page";
 
 function App() {
   return (
@@ -28,7 +27,6 @@ function App() {
 			    <Route path="/follow" element={<Following />} />
 			    <Route path="/cash" element={<Charge />} />
 			    <Route path="/mypage" element={<MyPage />} />
-			    {/*<Route path="/livedetail" element={<LiveDetail/>}/>*/}
 			    <Route path="*" element={<NotFound />} />
 		    </Route>
 		    <Route element={<FullScreenLayout type={"user"} />}>

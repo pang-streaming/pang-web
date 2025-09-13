@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import Pause from "@/app/assets/pause.svg";
+import Pause from "@/app/assets/pause.svg?react";
 import { VideoControls } from "./video-controlls";
 import { useHlsPlayer } from "@/entities/stream/model/useHlsPlayer";
 import * as V from "@/entities/video/model/index";
@@ -43,7 +43,7 @@ export const VideoPlayer = ({ streamUrl }: VideoPlayerProps) => {
         )}
         {pause && (
           <S.VideoCenterController>
-            <img src={Pause} alt="pause" />
+            <Pause/>
           </S.VideoCenterController>
         )}
         <VideoControls

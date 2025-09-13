@@ -2,8 +2,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { FaChevronLeft } from "react-icons/fa6";
 import { useIsMobile } from "@/entities/video/model/useIsMobile";
 import { useStreamDetail } from "./model/useStreamDetail";
-import * as V from "./widget/index";
 import * as S from "./style";
+import {StreamInfo, VideoPlayer} from "@/pages/live-detail/widget/live-section/widget";
 
 export const LiveSection = () => {
   const location = useLocation();
@@ -17,8 +17,8 @@ export const LiveSection = () => {
     <S.LiveDetailContainer>
       {isMobile && <FaChevronLeft size={24} onClick={() => navigate("/")} />}
       <S.VideoWrapper>
-        <V.VideoPlayer streamUrl={streamData?.url} />
-        <V.StreamInfo
+        <VideoPlayer streamUrl={streamData?.url} />
+        <StreamInfo
           title={streamData?.title}
           nickname={streamData?.nickname}
         />

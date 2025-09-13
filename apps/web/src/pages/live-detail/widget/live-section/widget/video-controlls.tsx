@@ -1,11 +1,11 @@
-import { useEffect, useState, useRef } from "react";
-import Pause from "@/app/assets/pause.svg";
-import Resume from "@/app/assets/resume.svg";
-import Sound from "@/app/assets/sound.svg";
-import Muted from "@/app/assets/sound-muted.svg";
-import Controller from "@/app/assets/controller.svg";
-import Pip from "@/app/assets/pip.svg";
-import FullScreen from "@/app/assets/full-screen.svg";
+import { useEffect, useState } from "react";
+import Pause from "@/app/assets/pause.svg?react";
+import Resume from "@/app/assets/resume.svg?react";
+import Sound from "@/app/assets/sound.svg?react";
+import Muted from "@/app/assets/sound-muted.svg?react";
+import Controller from "@/app/assets/controller.svg?react";
+import Pip from "@/app/assets/pip.svg?react";
+import FullScreen from "@/app/assets/full-screen.svg?react";
 import { CustomSlider } from "../../chatting-section/ui/custom-slider";
 import * as S from '../style';
 
@@ -58,37 +58,35 @@ export const VideoControls = ({
     const pad = (n: number) => String(n).padStart(2, "0");
     return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
   };
+	
+	const SoundMuteButton = muted || volume === 0 ? Muted : Sound;
 
   return (
     <>
-      <S.BottomController $isVisible={isVisible}>
+      <S.BottomController isVisible={isVisible}>
         <S.LeftIconContainer>
-          <img src={pause ? Pause : Resume} alt="" />
-          <span>{formatTime(currentTime)}</span>
-          <img
-            src={muted || volume === 0 ? Muted : Sound}
-            alt=""
-            onClick={onToggleMuted}
-          />
+	        {pause ? <Pause/> : <Resume/>}
+	        {formatTime(currentTime)}
+	        <SoundMuteButton onClick={onToggleMuted}/>
           <CustomSlider value={volume} onChange={onUpdateVolume} />
         </S.LeftIconContainer>
         <S.RightIconContainer>
-          <img src={Controller} alt="" />
-          <img src={Pip} alt="" onClick={onPip} />
-          <img src={FullScreen} alt="" onClick={onFullScreen} />
+          <Controller />
+          <Pip onClick={onPip} />
+          <FullScreen onClick={onFullScreen} />
         </S.RightIconContainer>
       </S.BottomController>
 
       {isMobile && (
         <S.BottomControllerMobile>
           <S.LeftIconContainer>
-            <img src={pause ? Pause : Resume} alt="" />
+	          {pause ? <Pause/> : <Resume/>}
             <span>{formatTime(currentTime)}</span>
           </S.LeftIconContainer>
           <S.RightIconContainer>
-            <img src={Controller} alt="" />
-            <img src={Pip} alt="" onClick={onPip} />
-            <img src={FullScreen} alt="" onClick={onFullScreen} />
+            <Controller />
+            <Pip onClick={onPip} />
+            <FullScreen onClick={onFullScreen} />
           </S.RightIconContainer>
         </S.BottomControllerMobile>
       )}

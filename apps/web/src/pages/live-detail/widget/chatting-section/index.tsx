@@ -3,6 +3,8 @@ import { useLocation } from "react-router-dom";
 import * as S from "./style";
 import { ChatInput } from "./ui/chat-input";
 import { useChat } from "./model/useChat";
+import ChattingArrow from "@/app/assets/chatting-arrow.svg?react";
+import {GoKebabHorizontal} from "react-icons/go";
 
 export const ChattingSection = () => {
   const location = useLocation();
@@ -12,18 +14,19 @@ export const ChattingSection = () => {
   const { chatList, setChat, sendMessage } = useChat(streamId);
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
-
+  
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatList.length]);
 
   return (
-    <S.Container>
+    <S.ChattingContainer>
       <S.ChattingHeader>
-        <S.ChattingArrow />
-        <span style={{ fontSize: 15, fontWeight: 700, color: "#a3a3a3" }}>
+        <ChattingArrow />
+        <S.ChattingHeaderText>
           채팅
-        </span>
+        </S.ChattingHeaderText>
+        <GoKebabHorizontal />
       </S.ChattingHeader>
 
       <S.ChatMessages>
@@ -43,6 +46,6 @@ export const ChattingSection = () => {
           sendMessage(message);
         }}
       />
-    </S.Container>
+    </S.ChattingContainer>
   );
 };

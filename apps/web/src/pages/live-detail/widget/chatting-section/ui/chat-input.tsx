@@ -1,8 +1,7 @@
-// ui/chat-input.tsx
 import { useState } from "react";
 import styled from "styled-components";
-import emoji from "../../../../../app/assets/emoji.svg";
-import airplane from "../../../../../app/assets/airplane.svg";
+import Emoji from "@/app/assets/emoji.svg?react";
+import Airplane from "@/app/assets/airplane.svg?react";
 
 interface ChatInputProps {
   onSend: (message: string) => void;
@@ -38,7 +37,7 @@ export const ChatInput = ({ onSend }: ChatInputProps) => {
     <Container>
       <Input
         type="text"
-        placeholder="채팅창 문구"
+        placeholder="채팅을 입력해주세요"
         value={text}
         onChange={(e) => setText(e.target.value)}
         onKeyDown={inputEnter}
@@ -53,36 +52,19 @@ export const ChatInput = ({ onSend }: ChatInputProps) => {
 
 const Container = styled.div`
   width: 100%;
-  height: 46px;
-  border-top: 1px solid #404040;
-  background-color: ${({theme}) => theme.colors.background.normal};
-  border-radius: 20px;
+  background-color: ${({theme}) => theme.colors.content.normal};
+  border-radius: ${({theme}) => theme.borders.large};
   display: flex;
   align-items: center;
-  padding: 0 12px;
+  padding: 12px;
   box-sizing: border-box;
+  color: ${({theme}) => theme.colors.text.normal};
+  justify-content: space-between;
 `;
 export const Input = styled.input`
   outline: none;
   border: none;
   width: 80%;
   background-color: transparent;
-  border-radius: 8px;
-  margin-right: auto;
   color: ${({theme}) => theme.colors.text.normal};
-`;
-
-export const Emoji = styled.img.attrs({
-  src: emoji,
-  alt: "이모지",
-})`
-  cursor: pointer;
-`;
-
-export const Airplane = styled.img.attrs({
-  src: airplane,
-  alt: "보내기",
-})`
-  cursor: pointer;
-  margin-left: 8px;
 `;
