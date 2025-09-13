@@ -4,13 +4,11 @@ import { ToastContainer } from "react-toastify";
 import { BrowserRouter } from "react-router-dom";
 import { CustomThemeProvider, GlobalStyle } from "@pang/shared/ui";
 import {ReactNode} from "react";
-import { SocketProvider } from "@/pages/live-detail/widget/chatting-section/model/socket-provider";
 
 export const Provider = ({children}: {children: ReactNode}) => {
     return <QueryClientProvider client={queryClient}>
 		<CustomThemeProvider>
 			<GlobalStyle />
-			<SocketProvider>
 				<ToastContainer
 	        position="top-right"
 	        autoClose={3000}
@@ -21,7 +19,6 @@ export const Provider = ({children}: {children: ReactNode}) => {
 	        theme="colored"
 		    />
 				<BrowserRouter>{children}</BrowserRouter>
-			</SocketProvider>
 		</CustomThemeProvider>
   </QueryClientProvider>
 }

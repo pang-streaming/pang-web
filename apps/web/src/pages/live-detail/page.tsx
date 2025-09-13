@@ -5,10 +5,12 @@ import styled from "styled-components";
 
 export const LiveDetail = () => {
   return (
-    <LiveDetailContainer>
-      <LiveSection />
-      <ChattingSection />
-    </LiveDetailContainer>
+    <SocketProvider>
+      <LiveDetailContainer>
+        <LiveSection />
+        <ChattingSection />
+      </LiveDetailContainer>
+    </SocketProvider>
   );
 };
 
