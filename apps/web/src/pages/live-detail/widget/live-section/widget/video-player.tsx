@@ -4,23 +4,22 @@ import { VideoControls } from "./video-controlls";
 import { useHlsPlayer } from "@/entities/stream/model/useHlsPlayer";
 import * as V from "@/entities/video/model/index";
 import * as S from "../style";
+import {useHover, useVolume, useFullScreen} from "@/entities/video/model";
 
 interface VideoPlayerProps {
   streamUrl?: string;
+  isMobile: boolean;
 }
 
-export const VideoPlayer = ({ streamUrl }: VideoPlayerProps) => {
-  const [hoverRef, hover] = V.useHover<HTMLDivElement>();
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const { volume, muted, updateVolume, toggleMuted } = V.useVolume(videoRef);
+export const VideoPlayer = ({ streamUrl, isMobile }: VideoPlayerProps) => {
+  const [hoverRef, hover] = useHover<HTMLDivElement>();
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { volume, muted, updateVolume, toggleMuted } = useVolume(videoRef);
   const [pause, setPause] = useState(false);
-
-  const { handleFullScreen } = V.useFullScreen(containerRef);
+  const { handleFullScreen } = useFullScreen(containerRef);
   const videoReady = V.useVideoReady(videoRef);
   const { handlePip } = V.usePip(videoRef, videoReady);
-  const isMobile = V.useIsMobile();
-
   useHlsPlayer(videoRef, streamUrl);
 
   const handlePause = () => {

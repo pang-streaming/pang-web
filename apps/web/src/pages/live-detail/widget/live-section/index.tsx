@@ -16,13 +16,13 @@ export const LiveSection = () => {
   return (
     <S.LiveDetailContainer>
       {isMobile && <FaChevronLeft size={24} onClick={() => navigate("/")} />}
-      <S.VideoWrapper>
-        <VideoPlayer streamUrl={streamData?.url} />
+      <S.ContentWrapper>
+        <VideoPlayer streamUrl={streamData?.url} isMobile={isMobile} />
         <StreamInfo
           title={streamData?.title}
           nickname={streamData?.nickname}
         />
-      </S.VideoWrapper>
+      </S.ContentWrapper>
     </S.LiveDetailContainer>
   );
 };

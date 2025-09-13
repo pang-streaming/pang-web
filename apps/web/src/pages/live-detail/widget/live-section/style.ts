@@ -1,4 +1,3 @@
-
 import styled from "styled-components";
 import MuxVideo from "@mux/mux-video-react";
 
@@ -8,42 +7,10 @@ export const LiveDetailContainer = styled.div`
 	flex-direction: row;
 `;
 
-export const StreamerInfo = styled.div`
+export const ContentWrapper = styled.div`
 	display: flex;
-	align-items: center;
-	gap: 8px;
-	margin-top: 10px;
-`;
-
-export const StreamTitle = styled.span`
-	font-size: 24px;
-	font-weight: 600;
-	color: white;
-`;
-export const FollowButton = styled.button`
-	padding: 0 12px;
-	height: 31px;
-	border-radius: 12px;
-	outline: none;
-	border: none;
-	background-color: ${({theme}) => theme.colors.secondary.normal};
-	display: flex;
-	align-items: center;
-	gap: 6px;
-	white-space: nowrap;
-	flex-shrink: 0;
-`;
-
-export const FollowButtonText = styled.span`
-	font-size: 14px;
-	font-weight: 700;
-	color: ${({theme}) => theme.colors.common.white};
-	flex-shrink: 0;
-`;
-export const VideoWrapper = styled.div`
-	position: relative;
+	flex-direction: column;
 	width: 100%;
-	border-radius: 20px;
 `;
 
 export const VideoContainer = styled.div`
@@ -86,6 +53,7 @@ export const VideoCenterController = styled.div`
 	transform: translate(-50%, -50%);
 	z-index: 5;
 	pointer-events: none;
+	color: ${({theme}) => theme.colors.common.white};
 	
 	img {
 		width: 60px;
@@ -143,27 +111,44 @@ export const BottomController = styled.div<{ isVisible: boolean }>`
     height: 50px;
     box-sizing: border-box;
     padding: 0 22px;
-
+		
+		color: ${({theme}) => theme.colors.common.white};
+		
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(47, 47, 47, 0.7));
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(47, 47, 47, 0.3));
     border-radius: 0 0 20px 20px;
 
     opacity: ${(props) => (props.isVisible ? 1 : 0)};
     transition: all 0.3s ease;
     z-index: 12;
-		user-select: none;
+    user-select: none;
     pointer-events: ${(props) => (props.isVisible ? "auto" : "none")};
 `;
 
 export const LeftIconContainer = styled.div`
 	display: flex;
+	flex-direction: row;
 	align-items: center;
 	gap: 22px;
+	justify-content: center;
+	text-align: center;
 `;
 export const RightIconContainer = styled.div`
 	display: flex;
 	align-items: center;
 	gap: 24px;
+`;
+
+export const VolumeIconWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+
+  &:hover {
+    cursor: pointer;
+  }
 `;

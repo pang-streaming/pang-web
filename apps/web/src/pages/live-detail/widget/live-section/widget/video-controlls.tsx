@@ -6,8 +6,9 @@ import Muted from "@/app/assets/sound-muted.svg?react";
 import Controller from "@/app/assets/controller.svg?react";
 import Pip from "@/app/assets/pip.svg?react";
 import FullScreen from "@/app/assets/full-screen.svg?react";
-import { CustomSlider } from "../../chatting-section/ui/custom-slider";
+import { Slider } from "../../chatting-section/ui/slider";
 import * as S from '../style';
+import styled from "styled-components";
 
 interface VideoControlsProps {
   isVisible: boolean;
@@ -66,14 +67,16 @@ export const VideoControls = ({
       <S.BottomController isVisible={isVisible}>
         <S.LeftIconContainer>
 	        {pause ? <Pause/> : <Resume/>}
-	        {formatTime(currentTime)}
-	        <SoundMuteButton onClick={onToggleMuted}/>
-          <CustomSlider value={volume} onChange={onUpdateVolume} />
+          <FrontMatter>{formatTime(currentTime)}</FrontMatter>
+          <S.VolumeIconWrapper onClick={onToggleMuted}>
+	          <SoundMuteButton/>
+          </S.VolumeIconWrapper>
+          <Slider value={volume} onChange={onUpdateVolume} />
         </S.LeftIconContainer>
         <S.RightIconContainer>
-          <Controller />
-          <Pip onClick={onPip} />
-          <FullScreen onClick={onFullScreen} />
+          <ControllerIcon />
+          <PipIcon onClick={onPip} />
+          <FullScreenIcon onClick={onFullScreen} />
         </S.RightIconContainer>
       </S.BottomController>
 
@@ -84,12 +87,34 @@ export const VideoControls = ({
             <span>{formatTime(currentTime)}</span>
           </S.LeftIconContainer>
           <S.RightIconContainer>
-            <Controller />
-            <Pip onClick={onPip} />
-            <FullScreen onClick={onFullScreen} />
+            <ControllerIcon />
+            <PipIcon onClick={onPip} />
+            <FullScreenIcon onClick={onFullScreen} />
           </S.RightIconContainer>
         </S.BottomControllerMobile>
       )}
     </>
   );
 };
+
+const ControllerIcon = styled(Controller)`
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+const PipIcon = styled(Pip)`
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+const FullScreenIcon = styled(FullScreen)`
+  &:hover {
+    cursor: pointer;
+  }
+`
+
+const FrontMatter = styled.span`
+  vertical-align: baseline;
+`;
