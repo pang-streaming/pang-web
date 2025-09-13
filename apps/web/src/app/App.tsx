@@ -15,18 +15,20 @@ import {AuthLayout, DefaultLayout} from "@pang/shared/ui";
 import {Home} from "@/pages/home/page";
 import { MyPage } from "@/pages/mypage/page";
 import { LiveDetail } from "@/pages/live-detail/page";
+import {ProfilePage} from "@/pages/profile/page";
 
 function App() {
   return (
     <SignupProvider>
 	    <Routes>
-		    <Route element={<DefaultLayout type="user" />}>
+		    <Route element={<DefaultLayout type="user"/>}>
 			    <Route path="/" element={<Home />} />
 			    <Route path="/explore" element={<Explore />} />
 			    <Route path="/category" element={<Category />} />
 			    <Route path="/follow" element={<Following />} />
 			    <Route path="/cash" element={<Charge />} />
 			    <Route path="/mypage" element={<MyPage />} />
+			    <Route path="/profile/:id" element={<ProfilePage/>}/>
 			    <Route path="*" element={<NotFound />} />
 		    </Route>
 		    <Route element={<DefaultLayout type={"user"} full />}>

@@ -32,7 +32,7 @@ const SegmentButtonContainer = styled.span<{isActive: boolean}>`
     width: fit-content;
     align-items: center;
 
-    font-size: 24px;
+    font-size: ${({theme}) => theme.font.xLarge};
 		font-weight: bold;
     color: ${({theme, isActive}) => isActive ? theme.colors.primary.normal : theme.colors.button.disabled};
 		padding: 5px 12px;
