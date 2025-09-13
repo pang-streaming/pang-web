@@ -11,7 +11,7 @@ import { Step3 } from "@/features/signup/ui/step3";
 import { SignupProvider } from "@/features/auth/model/signup-context";
 import { Step4 } from "@/features/signup/ui/step4";
 import { Complete } from "@/features/signup/ui/step5";
-import {AuthLayout, DefaultLayout, FullScreenLayout} from "@pang/shared/ui";
+import {AuthLayout, DefaultLayout} from "@pang/shared/ui";
 import {Home} from "@/pages/home/page";
 import { MyPage } from "@/pages/mypage/page";
 import { LiveDetail } from "@/pages/live-detail/page";
@@ -29,7 +29,7 @@ function App() {
 			    <Route path="/mypage" element={<MyPage />} />
 			    <Route path="*" element={<NotFound />} />
 		    </Route>
-		    <Route element={<FullScreenLayout type={"user"} />}>
+		    <Route element={<DefaultLayout type={"user"} full />}>
 			    <Route path="/livedetail" element={<LiveDetail />} />
 		    </Route>
 		    <Route element={<AuthLayout />}>

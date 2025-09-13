@@ -3,13 +3,13 @@ import styled from "styled-components";
 interface SubmitButtonProps {
 	disabled?: boolean;
 	onClick?: () => void;
-	text: string;
+	children: string;
 }
 
-export const SubmitButton = ({disabled = false, onClick, text}: SubmitButtonProps) => {
+export const SubmitButton = ({disabled = false, onClick, children}: SubmitButtonProps) => {
 	return (
 		<SubmitButtonContent disabled={disabled} onClick={onClick}>
-			{text}
+			{children}
 		</SubmitButtonContent>
 	)
 }
