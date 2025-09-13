@@ -6,6 +6,94 @@ import { useEffect, useState } from "react";
 import { InitModal } from "@/widgets/init-modal/_index";
 import { fetchMyInfo } from "@/entities/user/api/api";
 import { User } from "@/entities/user/model/type";
+import {VideoItem, VideoList} from "@/shared/ui/video/VideoList";
+
+const liveVideos: VideoItem[] = [
+	{
+		streamId: "11",
+		title: "하하ㅑ",
+		url: "",
+		username: "강연",
+		nickname: "강연"
+	},
+	{
+		streamId: "12",
+		title: "하하ㅑ",
+		url: "",
+		username: "강연",
+		nickname: "강연"
+	},
+	{
+		streamId: "13",
+		title: "하하ㅑ",
+		url: "",
+		username: "강연",
+		nickname: "강연"
+	},
+	{
+		streamId: "14",
+		title: "하하ㅑ",
+		url: "",
+		username: "강연",
+		nickname: "강연"
+	},
+	{
+		streamId: "15",
+		title: "하하ㅑ",
+		url: "",
+		username: "강연",
+		nickname: "강연"
+	},
+	{
+		streamId: "16",
+		title: "하하ㅑ",
+		url: "",
+		username: "강연",
+		nickname: "강연"
+	},
+	{
+		streamId: "17",
+		title: "하하ㅑ",
+		url: "",
+		username: "강연",
+		nickname: "강연"
+	},
+	{
+		streamId: "18",
+		title: "하하ㅑ",
+		url: "",
+		username: "강연",
+		nickname: "강연"
+	},
+	{
+		streamId: "19",
+		title: "하하ㅑ",
+		url: "",
+		username: "강연",
+		nickname: "강연"
+	},
+	{
+		streamId: "20",
+		title: "하하ㅑ",
+		url: "",
+		username: "강연",
+		nickname: "강연"
+	},
+	{
+		streamId: "21",
+		title: "하하ㅑ",
+		url: "",
+		username: "강연",
+		nickname: "강연"
+	},
+	{
+		streamId: "22",
+		title: "하하ㅑ",
+		url: "",
+		username: "강연",
+		nickname: "강연"
+	},
+]
 
 export const Home = () => {
   const videos = [
@@ -57,80 +145,7 @@ export const Home = () => {
 	    />}
       <HeaderVideo videos={videos} />
       <TabTitleText>이 방송 어때요?</TabTitleText>
-      <S.LiveListContainer>
-        <VideoCard
-          streamId="11"
-          title="title"
-          url=""
-          username="강연"
-          nickname="강연"
-          profileImage=""
-        />
-        <VideoCard
-          streamId="11"
-          title="title"
-          url=""
-          username="강연"
-          nickname="강연"
-          profileImage=""
-        />
-        <VideoCard
-          streamId="11"
-          title="title"
-          url=""
-          username="강연"
-          nickname="강연"
-          profileImage=""
-        />
-        <VideoCard
-          streamId="11"
-          title="title"
-          url=""
-          username="강연"
-          nickname="강연"
-          profileImage=""
-        />
-        <VideoCard
-          streamId="11"
-          title="title"
-          url=""
-          username="강연"
-          nickname="강연"
-          profileImage=""
-        />
-        <VideoCard
-          streamId="11"
-          title="title"
-          url=""
-          username="강연"
-          nickname="강연"
-          profileImage=""
-        />
-        <VideoCard
-          streamId="11"
-          title="title"
-          url=""
-          username="강연"
-          nickname="강연"
-          profileImage=""
-        />
-        <VideoCard
-          streamId="11"
-          title="title"
-          url=""
-          username="강연"
-          nickname="강연"
-          profileImage=""
-        />
-        <VideoCard
-          streamId="11"
-          title="title"
-          url=""
-          username="강연"
-          nickname="강연"
-          profileImage=""
-        />
-      </S.LiveListContainer>
+      <VideoList videos={liveVideos}/>
     </S.Container>
   );
 };

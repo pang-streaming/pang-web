@@ -26,8 +26,8 @@ export const VideoContainer = styled.div`
 `
 
 export const ProfileImage = styled.img`
-	width: 50px;
-	height: 50px;
+	width: 45px;
+	height: 45px;
 	border-radius: ${({theme}) => theme.borders.maximum};
 	margin-right: 8px;
 margin-bottom: 7px;
