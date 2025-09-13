@@ -3,6 +3,7 @@ import { useFollowInfo } from "../model/useFollowInfo";
 import {IoHeart} from "react-icons/io5";
 import {IoMdHeartEmpty} from "react-icons/io";
 import styled from "styled-components";
+import {FollowButton} from "@/shared/ui/button/follow-button";
 
 interface StreamInfoProps {
   title?: string;
@@ -23,15 +24,7 @@ export const StreamInfo = ({ title, nickname }: StreamInfoProps) => {
             <FollowerCount>팔로워 {followerCount.toLocaleString()}명</FollowerCount>
           </UserInfoWrapper>
         </UserContainer>
-        <FollowButton
-          onClick={toggleFollow}
-          disabled={isLoading}
-        >
-          {isFollowing ? <IoHeart size={20} /> : <IoMdHeartEmpty size={20} />}
-          <FollowButtonText>
-            {isFollowing ? "언팔로우" : "팔로우"}
-          </FollowButtonText>
-        </FollowButton>
+        <FollowButton isFollowing={isFollowing} onClick={toggleFollow} disabled={isLoading}/>
       </StreamerInfoContainer>
     </StreamInfoContainer>
   );
@@ -98,30 +91,4 @@ const FollowerCount = styled.span`
   color: ${({theme}) => theme.colors.text.subtitle};
   font-size: ${({theme}) => theme.font.medium};
   padding: 5px 10px;
-`;
-
-const FollowButton = styled.button`
-	padding: 0 12px;
-	height: 31px;
-	border-radius: ${({theme}) => theme.borders.medium};
-	outline: none;
-	border: none;
-	background-color: ${({theme}) => theme.colors.secondary.normal};
-	display: flex;
-	align-items: center;
-	gap: 6px;
-	white-space: nowrap;
-	flex-shrink: 0;
-	color: ${({theme}) => theme.colors.common.white};
-  
-  &:hover {
-    cursor: pointer;
-  }
-`;
-
-const FollowButtonText = styled.span`
-	font-size: 14px;
-	font-weight: 700;
-	color: ${({theme}) => theme.colors.common.white};
-	flex-shrink: 0;
 `;

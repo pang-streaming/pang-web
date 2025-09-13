@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, {css} from "styled-components";
 import {VideoCard} from "@/entities/video/ui/video-card";
 
 export interface VideoItem {
@@ -12,11 +12,12 @@ export interface VideoItem {
 
 interface VideoListProps {
 	videos: VideoItem[];
+	maxColumns?: number;
 }
 
-export const VideoList = ({videos}: VideoListProps) => {
+export const VideoList = ({videos, maxColumns}: VideoListProps) => {
 	return (
-		<VideoListContainer>
+		<VideoListContainer maxColumns={maxColumns}>
 			{videos.map((video) => (
 				<VideoCard
 					streamId={video.streamId}
@@ -31,30 +32,21 @@ export const VideoList = ({videos}: VideoListProps) => {
 	);
 }
 
-const VideoListContainer = styled.div`
-	display: grid;
-    gap: 20px;
-    width: 100%;
+const breakpoints = [800, 1200, 1600, 1900, 2090];
 
-    grid-template-columns: repeat(1, 1fr);
+const VideoListContainer = styled.div<{maxColumns?: number}>`
+  display: grid;
+  gap: 20px;
+  width: 100%;
+  grid-template-columns: repeat(1, 1fr);
 
-    @media (min-width: 800px) {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    @media (min-width: 1200px) {
-        grid-template-columns: repeat(3, 1fr);
-    }
-
-    @media (min-width: 1600px) {
-        grid-template-columns: repeat(4, 1fr);
-    }
-	
-	@media (min-width: 1900px) {
-		grid-template-columns: repeat(5, 1fr);
-	}
-	
-    @media (min-width: 2090px) {
-        grid-template-columns: repeat(6, 1fr);
-    }
+  ${({ maxColumns = 6 }) => css`
+    ${breakpoints.slice(0, maxColumns - 1).map(
+	(bp, i) => css`
+        @media (min-width: ${bp}px) {
+          grid-template-columns: repeat(${Math.min(i + 2, maxColumns)}, 1fr);
+        }
+      `
+)}
+  `}
 `;

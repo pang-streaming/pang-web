@@ -2,12 +2,14 @@ import { Video } from "@/entities/video/model/type";
 import styled from "styled-components";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import normalProfile from "@/app/assets/images/normal_profile.svg";
 
 interface HeaderVideoProps {
   videos: Video[];
+  hideProfile?: boolean;
 }
 
-export const HeaderVideo = ({ videos }: HeaderVideoProps) => {
+export const HeaderVideo = ({ videos, hideProfile }: HeaderVideoProps) => {
   const [activeVideo, setActiveVideo] = useState<number>(0);
   const { title, nickname, profileImage } = videos[activeVideo];
 
@@ -26,26 +28,28 @@ export const HeaderVideo = ({ videos }: HeaderVideoProps) => {
         </LiveContainer>
         <StreamingTitle>{title}</StreamingTitle>
       </LiveCardContainer>
-      <LiveInfoContainer>
-        <ProfileImage src={profileImage} />
-        <TitleContainer>
-          <StreamerName>{nickname}</StreamerName>
-          <StreamerFollower>12.1만명</StreamerFollower>
-        </TitleContainer>
-        <StreamersContainer>
-          {videos.map((video, index) => (
-            <Streamer
-              key={index}
-              isActive={index === activeVideo}
-              onClick={(e) => {
-                e.stopPropagation(); 
-                setActiveVideo(index);
-              }}
-              src={video.profileImage}
-            />
-          ))}
-        </StreamersContainer>
-      </LiveInfoContainer>
+	    { !hideProfile &&
+		  <LiveInfoContainer>
+		    <ProfileImage src={profileImage || normalProfile}/>
+		    <TitleContainer>
+			  <StreamerName>{nickname}</StreamerName>
+			  <StreamerFollower>12.1만명</StreamerFollower>
+		    </TitleContainer>
+		    <StreamersContainer>
+			  {videos.map((video, index) => (
+			    <Streamer
+			      key={index}
+			      isActive={index === activeVideo}
+			      onClick={(e) => {
+				    e.stopPropagation();
+					setActiveVideo(index);
+				  }}
+				  src={video.profileImage || normalProfile}
+			    />
+		      ))}
+		    </StreamersContainer>
+		  </LiveInfoContainer>
+		}
     </HeaderVideoContainer>
   );
 };

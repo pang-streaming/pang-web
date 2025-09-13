@@ -17,12 +17,13 @@ import { MyPage } from "@/pages/mypage/page";
 import { LiveDetail } from "@/pages/live-detail/page";
 import { Store } from "@/pages/store/page";
 import { StoreDetail } from "@/pages/store-detail/page";
+import {ProfilePage} from "@/pages/profile/page";
 
 function App() {
   return (
     <SignupProvider>
 	    <Routes>
-		    <Route element={<DefaultLayout type="user" />}>
+		    <Route element={<DefaultLayout type="user"/>}>
 			    <Route path="/" element={<Home />} />
 			    <Route path="/explore" element={<Explore />} />
 			    <Route path="/category" element={<Category />} />
@@ -31,6 +32,7 @@ function App() {
 			    <Route path="/mypage" element={<MyPage />} />
 			    <Route path="/store" element={<Store />} />
 			    <Route path="/store-detail" element={<StoreDetail />} />
+			    <Route path="/profile/:id" element={<ProfilePage/>}/>
 			    <Route path="*" element={<NotFound />} />
 		    </Route>
 		    <Route element={<DefaultLayout type={"user"} full />}>

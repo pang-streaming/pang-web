@@ -97,8 +97,7 @@ export const Home = () => {
       title: "안녕하세요",
       url: "",
       username: "강연",
-      nickname: "강연",
-      profileImage: "https://picsum.photos/200",
+      nickname: "강연"
     },
     {
       streamId: "12",
