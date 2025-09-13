@@ -23,12 +23,8 @@ export const Header = ({ onClickMenu, type }: HeaderProps) => {
 	const MoveButton = type === "user" ? FiVideo : PiMonitorBold;
 
 	const token = localStorage.getItem("accessToken");
-	const isLoggedIn = token != null;
+	const isLoggedIn = token == null;
 
-	useEffect(() => {
-		const token = localStorage.getItem("accessToken");
-		console.log({ hasToken: token !== null });
-	}, []);
 
 	return (
 		<HeaderContainer>

@@ -10,7 +10,7 @@ export const Container = styled.div`
 	border-radius: 20px;
 	border: 1px solid #404040;
 	position: relative;
-	background-color: #000;
+	background-color: ${({theme}) => theme.colors.background.normal};
 `;
 
 export const ChatMessages = styled.div`

@@ -50,9 +50,10 @@ const Container = styled.div`
 
 const Title = styled.span`
   width: 100%;
-  font-size: 24px;
+  font-size : ${({theme}) => theme.font.xxLarge};
   font-weight: 800;
   text-align: left;
+  color: ${({theme}) => theme.colors.common.white};
 `;
 
 const ModalSectionContainer = styled.div`

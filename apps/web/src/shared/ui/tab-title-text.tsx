@@ -7,8 +7,8 @@ export const TabTitleText = ({children}: {children: string}) => {
 }
 
 const Title = styled.div`
-    margin-bottom: 4px;
+    margin-bottom: 16px;
     font-size: ${({theme}) => theme.font.xxLarge};
     font-weight: 600;
-    color: ${({theme}) => theme.colors.common.white};
+    color: ${({theme}) => theme.colors.text.normal};
 `

@@ -55,7 +55,7 @@ const Container = styled.div`
   width: 100%;
   height: 46px;
   border-top: 1px solid #404040;
-  background-color: #111;
+  background-color: ${({theme}) => theme.colors.background.normal};
   border-radius: 20px;
   display: flex;
   align-items: center;
@@ -69,7 +69,7 @@ export const Input = styled.input`
   background-color: transparent;
   border-radius: 8px;
   margin-right: auto;
-  color: #fff;
+  color: ${({theme}) => theme.colors.text.normal};
 `;
 
 export const Emoji = styled.img.attrs({

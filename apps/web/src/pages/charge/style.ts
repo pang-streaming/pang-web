@@ -5,7 +5,7 @@ export const Contaienr = styled.div`
   height: 650px;
   padding: 44px 44px 0 44px;
   border-radius: 20px;
-  background-color: ${({ theme }) => theme.colors.background.light};
+  background-color: ${({ theme }) => theme.colors.background.normal};
 `;
 
 export const ChargeBoxRow = styled.div`

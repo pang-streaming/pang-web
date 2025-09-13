@@ -4,6 +4,7 @@ import { useState } from "react";
 import { formatBirthToDate } from "./ui/modal-section/age-section";
 import { InitModalStep1 } from "./first-modal";
 import { InitModalStep2 } from "./second-modal";
+import { updateMyInfo } from "@/entities/user/api/api";
 
 interface InitModalProps {
   isOpen: boolean;
@@ -19,8 +20,6 @@ export const InitModal = ({ isOpen, onClose, username }: InitModalProps) => {
   const [step, setStep] = useState(1);
 
   if (!isOpen) return null;
-  console.log("birth:", birth);
-  console.log("gender:", gender);
 
   const handleNext = async () => {
     if (!birth || !gender) {
@@ -37,7 +36,7 @@ export const InitModal = ({ isOpen, onClose, username }: InitModalProps) => {
     console.log("요청 보낼 생년월일:", formattedBirth); 
 
     try {
-    //   await updateMyInfo("", formattedBirth, gender);
+      await updateMyInfo("", formattedBirth, gender);
       setStep((prev) => prev + 1);
     } catch (err) {
       console.error("업데이트 실패:", err);

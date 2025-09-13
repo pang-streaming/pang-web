@@ -47,5 +47,5 @@ const Text = styled.span`
   margin-right: auto;
   font-size: ${({ theme }) => theme.font.xxLarge};
   font-weight: 600;
-  color: ${({ theme }) => theme.colors.common.white};
+  color: ${({ theme }) => theme.colors.text.normal};
 `;

@@ -1,8 +1,8 @@
 import styled from "styled-components";
-import Calander from "../../../../assets/loginIcon/calander.svg";
-import Gender from "../../../../assets/loginIcon/gender.svg";
 import { GenderPicker } from "./gender-section";
 import { AgeSection } from "./age-section";
+import genderIcon from '@/app/assets/gender.svg';
+import calendarIcon from '@/app/assets/calander.svg';
 
 export const ModalSection = ({
   isAge,
@@ -19,7 +19,7 @@ export const ModalSection = ({
 }) => {
   return (
     <ModalSectionContainer>
-      <img src={isAge ? Calander : Gender} />
+      <img src={isAge ? calendarIcon : genderIcon} />
       <ModalSectionDivider />
       {isAge ? (
         <AgeSection birth={birth || ""} setBirth={setBirth!} />
