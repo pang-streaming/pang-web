@@ -14,7 +14,7 @@ export const Title = styled.span`
 `;
 
 
-export const LiveListContainer = styled.div`
+export const VideoListContainer = styled.div`
 	display: grid;
     gap: 20px;
     width: 100%;

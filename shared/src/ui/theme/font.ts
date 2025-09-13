@@ -5,6 +5,7 @@ export interface FontSizes {
 	large: string;
 	xLarge: string;
 	xxLarge: string;
+	xxxLarge: string;
 }
 
 export const fontSizes: FontSizes = {
@@ -14,4 +15,5 @@ export const fontSizes: FontSizes = {
 	large: '16px',
 	xLarge: '18px',
 	xxLarge: '24px',
+	xxxLarge: '28px',
 };
