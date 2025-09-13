@@ -4,7 +4,7 @@ import Bomb from "../../asset/icons/bomb.svg?react";
 import Category from "../../asset/icons/category.svg?react";
 import Heart from "../../asset/icons/heart.svg?react";
 import Budget from "../../asset/icons/budget.svg?react";
-import {IoSearch} from "react-icons/io5";
+import {IoSearch, IoStorefrontOutline} from "react-icons/io5";
 import {FaTowerBroadcast} from "react-icons/fa6";
 import {MdDashboard, MdOutlinePermMedia} from "react-icons/md";
 
@@ -19,7 +19,7 @@ export const userSidebarItems: SidebarItem[] = [
 	{
 		id: 'explore',
 		icon: <PiBroadcastBold size={28}/>,
-		name: '스트리머',
+		name: '탐색',
 		path: '/explore'
 	},
 	{
@@ -41,10 +41,10 @@ export const userSidebarItems: SidebarItem[] = [
 		icon: <Bomb width={28} height={28}/>,
 	},
 	{
-		id: "search",
-		name: "검색",
-		path: "/search",
-		icon: <IoSearch size={28}/>,
+		id: "store",
+		name: "상점",
+		path: "/store",
+		icon: <IoStorefrontOutline size={28} />,
 	},
 ]
 

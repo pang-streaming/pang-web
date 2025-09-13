@@ -4,7 +4,7 @@ export const GlobalStyle = createGlobalStyle`
 	body {
 		box-sizing: border-box;
 		margin: 0;
-		padding: 40px;
+		padding: 0;
 		background-color: ${({theme}) => theme.colors.background.normal};
 	}
 `;

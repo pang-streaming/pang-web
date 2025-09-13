@@ -1,14 +1,17 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import NormalProfile from "../../asset/logo/normal_profile.svg?react"
 
-export const LoginButton = () => {
+interface LoginButtonProps {
+	isLoggedIn: boolean;
+}
+
+export const LoginButton = ({isLoggedIn}: LoginButtonProps) => {
 	const navigate = useNavigate();
 	return (
-		<LoginButtonContent onClick={() => {
-			navigate("/login")
-		}}>
-			로그인
-		</LoginButtonContent>
+		isLoggedIn ? (
+			<LoginButtonContent onClick={() => {navigate("/login")}}>로그인</LoginButtonContent>
+		) : (<ProfileImage onClick={() => {navigate("/mypage")}}/>)
 	)
 }
 
@@ -28,3 +31,13 @@ const LoginButtonContent = styled.button`
 		background-color: ${({theme}) => theme.colors.hover.normal};
 	}
 `
+
+export const ProfileImage = styled(NormalProfile)`
+  width: 36px;
+  height: 36px;
+  border-radius: ${({theme}) => theme.borders.maximum};
+	&:hover {
+		cursor: pointer;
+		opacity: 0.8;
+	}
+`;

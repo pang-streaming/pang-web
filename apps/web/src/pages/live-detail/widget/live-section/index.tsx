@@ -154,7 +154,6 @@ export const LiveSection = () => {
             justifyContent: "space-between",
           }}
         >
-
      
           <S.StreamTitle>{streamData?.title ?? "제목 없는 방송"}</S.StreamTitle>
 

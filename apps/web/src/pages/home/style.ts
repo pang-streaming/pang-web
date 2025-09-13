@@ -1,22 +1,43 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
-  width: 100%;
-  display: flex;
-  gap: 20px;
-  flex-direction: column;
+	width: 100%;
+	display: flex;
+	gap: 20px;
+	flex-direction: column;
 `;
 
 export const Title = styled.span`
-  font-size: ${({ theme }) => theme.font.xxLarge};
-  font-weight: 600;
-  color: ${({ theme }) => theme.colors.text.normal};
+	font-size: ${({ theme }) => theme.font.xxLarge};
+	font-weight: 600;
+	color: ${({ theme }) => theme.colors.text.normal};
 `;
 
 
-export const GridContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(383px, 1fr));
-  row-gap: 30px;
-  column-gap: 30px;
+export const LiveListContainer = styled.div`
+	display: grid;
+    gap: 20px;
+    width: 100%;
+
+    grid-template-columns: repeat(1, 1fr);
+
+    @media (min-width: 800px) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (min-width: 1200px) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    @media (min-width: 1600px) {
+        grid-template-columns: repeat(4, 1fr);
+    }
+	
+	@media (min-width: 1900px) {
+		grid-template-columns: repeat(5, 1fr);
+	}
+	
+    @media (min-width: 2090px) {
+        grid-template-columns: repeat(6, 1fr);
+    }
 `;

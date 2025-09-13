@@ -35,7 +35,7 @@ export const lightColors: Colors = {
 	status: {negative: "#DF0000", neutral: "#E6C200", positive: "#39A01D"},
 	text: {subtitle: "#6E6E6E", normal: "#171717", placeholder: "#9CA3AF"},
 	background: {light: "#FFFFFF", normal: "#FCFCFC", dark: "#E5E5E5"},
-	content: {light: "#F9F9F9", normal: "#EFEFEF", dark: "#DEDEDE"},
+	content: {light: "#F9F9F9", normal: "#F2F2F2", dark: "#DEDEDE"},
 	stroke: {light: "#444444", normal: "#777777", dark: "#E0E0E0"},
 	border: {light: "#F1F5F9", normal: "#777777", dark: "#E0E0E0"}
 }

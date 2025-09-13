@@ -2,15 +2,15 @@ import styled from "styled-components";
 import chattingArrow from "../../../../app/assets/chatting-arrow.svg";
 
 export const Container = styled.div`
-  width:535px;
-  margin: 20px;
-  height: 700px;
-  display: flex;
-  flex-direction: column;
-  border-radius: 20px;
-  border: 1px solid #404040;
-  position: relative;
-  background-color: #000;
+	width:435px;
+	margin: 20px;
+	height: 700px;
+	display: flex;
+	flex-direction: column;
+	border-radius: 20px;
+	border: 1px solid #404040;
+	position: relative;
+	background-color: #000;
 `;
 
 export const ChatMessages = styled.div`
