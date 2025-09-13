@@ -121,7 +121,7 @@ const LoginDivider = () => (
 
 const OauthBox = ({ logo }: { logo: "apple" | "google" }) => (
   <S.OauthWrapper>
-    {logo === "apple" && <FaApple size={28} />}
+    {logo === "apple" && <FaApple size={28} color='white'/>}
     {logo === "google" && <FcGoogle size={28} />}
   </S.OauthWrapper>
 );

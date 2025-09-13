@@ -5,7 +5,7 @@ import * as S from "./style";
 export const Explore = () => {
   return (
     <S.Container>
-      <S.Title>이 방송 어때요?</S.Title>
+      <TabTitleText children="이 방송 어때요?" />
       <S.GridContainer>
         <VideoCard
           streamId="11"
@@ -15,7 +15,7 @@ export const Explore = () => {
           nickname="강연"
           profileImage=""
         />
-         <VideoCard
+        <VideoCard
           streamId="11"
           title="title"
           url=""
@@ -23,7 +23,7 @@ export const Explore = () => {
           nickname="강연"
           profileImage=""
         />
-         <VideoCard
+        <VideoCard
           streamId="11"
           title="title"
           url=""

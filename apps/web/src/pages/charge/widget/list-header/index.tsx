@@ -23,6 +23,6 @@ const Container = styled.div`
 
 const Item = styled.span<{ $ratio: number }>`
   flex: ${({ $ratio }) => $ratio};
-  color: white;
-  text-align: center; // 글자 가운데 정렬 (필요 시)
+  color: ${({ theme }) => theme.colors.text.normal};
+  text-align: center;
 `;

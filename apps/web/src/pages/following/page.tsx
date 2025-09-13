@@ -4,7 +4,7 @@ import { TabTitleText } from "@/shared/ui/tab-title-text";
 export const Following = () => {
   return (
     <div>
-      <TabTitleText text="팔로잉"/>
+      <TabTitleText children="팔로잉"/>
       <div style={{display:'flex', gap: 40}}>
       <FollowingCard streamerName="대듀" followerCount={10} />
       <FollowingCard streamerName="상은" followerCount={10} />

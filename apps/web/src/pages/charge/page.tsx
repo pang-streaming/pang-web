@@ -7,7 +7,7 @@ import { ListHeader } from "./widget/list-header";
 export const Charge = () => {
   return (
     <div>
-      <TabTitleText text="MY 펑" />
+      <TabTitleText children="MY 펑" />
 
       <S.Contaienr>
         <S.ChargeBoxRow>
@@ -19,7 +19,7 @@ export const Charge = () => {
           <SegmentButton text="구매 내역" onClick={() => {}} />
         </S.SegmentButtonRow>
         <ListHeader >
-          
+
         </ListHeader>
       </S.Contaienr>
     </div>
