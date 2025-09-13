@@ -19,7 +19,7 @@ export const userSidebarItems: SidebarItem[] = [
 	{
 		id: 'explore',
 		icon: <PiBroadcastBold size={28}/>,
-		name: '스트리머',
+		name: '탐색',
 		path: '/explore'
 	},
 	{

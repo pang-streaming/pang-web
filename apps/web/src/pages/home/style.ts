@@ -32,4 +32,12 @@ export const LiveListContainer = styled.div`
     @media (min-width: 1600px) {
         grid-template-columns: repeat(4, 1fr);
     }
+	
+	@media (min-width: 1900px) {
+		grid-template-columns: repeat(5, 1fr);
+	}
+	
+    @media (min-width: 2090px) {
+        grid-template-columns: repeat(6, 1fr);
+    }
 `;
