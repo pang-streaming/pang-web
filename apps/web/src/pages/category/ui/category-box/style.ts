@@ -2,22 +2,23 @@ import styled from "styled-components";
 
 export const CategoryBoxThumbnail = styled.div`
 	width: 100%;
-	height: 280px;
+	aspect-ratio: 205 / 280;
 	background-color: ${({theme}) => theme.colors.content.normal};
-	border-radius: 10px;
+	border-radius: ${({theme}) => theme.borders.xlarge};
 	margin-bottom: 10px;
 `;
 
 export const CategoryContainer = styled.div`
-	width: 205px;
-	height: 335px;
-	border-radius: 10px;
+	aspect-ratio: 41/67;
+	border-radius: ${({theme}) => theme.borders.xlarge};
 	background-color: transparent;
 	display: flex;
 	flex-direction: column;
-	&:hover {
-		border: 3px solid ${({theme}) => theme.colors.primary.normal};
-		box-sizing: border-box;
+    box-sizing: border-box;
+    border: 3px solid transparent;
+    &:hover {
+		border-color: ${({theme}) => theme.colors.primary.normal};
+	    cursor: pointer;
 	}
 `;
 
@@ -32,7 +33,7 @@ export const CategoryChip = styled.div`
 	width: 59px;
 	height: 20px;
 	background-color: ${({theme}) => theme.colors.secondary.normal};
-	border-radius: 5px;
+	border-radius: ${({theme}) => theme.borders.small};
 	display: flex;
 	justify-content: center;
 	align-items: center;

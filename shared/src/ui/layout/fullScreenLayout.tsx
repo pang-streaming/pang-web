@@ -41,7 +41,7 @@ const MainContainer = styled.main`
     min-height: calc(100vh - 67px);
     margin-top: 67px;
     margin-left: 80px;
-    padding: 1em;
+    padding: 2em;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
