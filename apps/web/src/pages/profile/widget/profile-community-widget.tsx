@@ -153,14 +153,14 @@ const WriteTime = styled.span`
 `
 
 const LikeWrapper = styled.div`
-	display: flex;
+	color: ${({theme}) => theme.colors.text.normal};
+  display: flex;
 	flex-direction: row;
 	align-items: center;
 	gap: 2px;
 `
 
 const Like = styled.span`
-    color: ${({theme}) => theme.colors.text.normal};
     font-size: ${({theme}) => theme.font.medium};
     font-weight: 700;
 `

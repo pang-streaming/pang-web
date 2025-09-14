@@ -1,8 +1,8 @@
 import { Video } from "@/entities/video/model/type";
 import styled from "styled-components";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import normalProfile from "@/app/assets/images/normal_profile.svg";
+import {useVideoCard} from "@/entities/video/hooks/useVideoCard";
 
 interface HeaderVideoProps {
   videos: Video[];
@@ -11,13 +11,8 @@ interface HeaderVideoProps {
 
 export const HeaderVideo = ({ videos, hideProfile }: HeaderVideoProps) => {
   const [activeVideo, setActiveVideo] = useState<number>(0);
-  const { title, nickname, profileImage } = videos[activeVideo];
-
-  const navigate = useNavigate();
-  const handleOnClickVideoCard = () => {
-    const streamId = videos[activeVideo].streamId;
-    navigate(`/livedetail?streamId=${streamId}`);
-  };
+  const { title, nickname, username, streamId, profileImage } = videos[activeVideo];
+	const {handleOnClickVideoCard, handleOnClickProfile} = useVideoCard({streamId, username});
 
   return (
     <HeaderVideoContainer onClick={handleOnClickVideoCard}>
@@ -30,7 +25,7 @@ export const HeaderVideo = ({ videos, hideProfile }: HeaderVideoProps) => {
       </LiveCardContainer>
 	    { !hideProfile &&
 		  <LiveInfoContainer>
-		    <ProfileImage src={profileImage || normalProfile}/>
+		    <ProfileImage src={profileImage || normalProfile} onClick={handleOnClickProfile}/>
 		    <TitleContainer>
 			  <StreamerName>{nickname}</StreamerName>
 			  <StreamerFollower>12.1만명</StreamerFollower>
@@ -115,6 +110,9 @@ const ProfileImage = styled.img`
   border-radius: ${({ theme }) => theme.borders.maximum};
   margin-right: 8px;
   margin-bottom: 7px;
+	&:hover {
+			opacity: 0.8;
+	}
 `;
 
 const StreamerName = styled.span`

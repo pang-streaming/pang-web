@@ -1,7 +1,7 @@
-import { useNavigate } from "react-router-dom";
 import type { Video } from "../../model/type";
 import * as S from "./style";
 import normalProfile from "@/app/assets/images/normal_profile.svg";
+import {useVideoCard} from "@/entities/video/hooks/useVideoCard";
 
 export const VideoCard = ({
   streamId,
@@ -11,11 +11,7 @@ export const VideoCard = ({
   nickname,
   profileImage,
 }: Video) => {
-	const navigate = useNavigate();
-	const handleOnClickVideoCard = () => {
-		console.log(streamId);
-		navigate(`/livedetail?streamId=${streamId}`);
-	};
+	const {handleOnClickVideoCard, handleOnClickProfile} = useVideoCard({streamId, username});
 
 	return (
 		<S.LiveCardContainer  onClick={handleOnClickVideoCard}>
@@ -23,7 +19,7 @@ export const VideoCard = ({
 				{/*<S.Thumbnail/>*/}
 			</S.VideoContainer>
 			<S.LiveInfo>
-				<S.ProfileImage src={profileImage || normalProfile} />
+				<S.ProfileImage src={profileImage || normalProfile} onClick={handleOnClickProfile} />
 				<S.TitleContainer>
 					<S.LiveTitle>{title}</S.LiveTitle>
 					<S.StreamerName>{nickname}</S.StreamerName>

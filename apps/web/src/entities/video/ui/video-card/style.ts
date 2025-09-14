@@ -31,6 +31,9 @@ export const ProfileImage = styled.img`
 	border-radius: ${({theme}) => theme.borders.maximum};
 	margin-right: 8px;
 	margin-bottom: 7px;
+	&:hover {
+			opacity: 0.8;
+	}
 `;
 
 export const EmptyText = styled.span`

@@ -17,8 +17,9 @@ export const LoginButton = ({isLoggedIn}: LoginButtonProps) => {
 
 const LoginButtonContent = styled.button`
 	user-select: none;
-    border: none;
-    cursor: pointer;
+  border: none;
+  cursor: pointer;
+	font-weight: bold;
 	font-size: 16px;
 	color: ${({theme}) => theme.colors.common.white};
 	background-color: ${({theme}) => theme.colors.primary.normal};
