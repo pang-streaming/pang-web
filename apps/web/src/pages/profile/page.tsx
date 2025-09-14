@@ -7,6 +7,7 @@ import {useState} from "react";
 import {ProfileHomeWidget} from "@/pages/profile/widget/profile-home-widget";
 import {ProfileVideoWidget} from "@/pages/profile/widget/profile-video-widget";
 import {ProfileCommunityWidget} from "@/pages/profile/widget/profile-community-widget";
+import {ProfileInfoWidget} from "@/pages/profile/widget/profile-info-widget";
 
 const segments: Segment[] = [
 	{
@@ -48,6 +49,7 @@ export const ProfilePage = () => {
 			{activeTabId === 'home' && <ProfileHomeWidget/>}
 			{activeTabId === 'video' && <ProfileVideoWidget/>}
 			{activeTabId === 'community' && <ProfileCommunityWidget/>}
+			{activeTabId === 'info' && <ProfileInfoWidget/>}
 		</ProfileContainer>
 	)
 }
