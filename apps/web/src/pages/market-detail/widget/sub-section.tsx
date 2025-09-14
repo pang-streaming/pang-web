@@ -9,8 +9,8 @@ export const SubSection = () => {
     <Container>
       <HeartBox />
       <RightIcons>
-	      <IconButton Icon={IoShareSocialOutline} onClick={() => console.log("asd")}/>
-	      <IconButton Icon={GoKebabHorizontal} onClick={() => console.log("asd")}/>
+	      <IconButton Icon={IoShareSocialOutline} onClick={() => console.log("공유")}/>
+	      <IconButton Icon={GoKebabHorizontal} onClick={() => console.log("더보기 신고하기")}/>
       </RightIcons>
     </Container>
   );
