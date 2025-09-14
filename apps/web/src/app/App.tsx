@@ -10,7 +10,7 @@ import { Step2 } from "@/features/signup/ui/step2";
 import { Step3 } from "@/features/signup/ui/step3";
 import { SignupProvider } from "@/features/auth/model/signup-context";
 import { Step4 } from "@/features/signup/ui/step4";
-import { Complete } from "@/features/signup/ui/step5";
+import { Complete } from "@/features/signup/ui/complate";
 import {AuthLayout, DefaultLayout} from "@pang/shared/ui";
 import {Home} from "@/pages/home/page";
 import { MyPage } from "@/pages/mypage/page";
@@ -18,6 +18,7 @@ import { LiveDetail } from "@/pages/live-detail/page";
 import { Store } from "@/pages/store/page";
 import { StoreDetail } from "@/pages/store-detail/page";
 import {ProfilePage} from "@/pages/profile/page";
+import { SignupRouter } from "@/features/signup/signup-router";
 
 function App() {
   return (
@@ -40,11 +41,9 @@ function App() {
 		    </Route>
 		    <Route element={<AuthLayout />}>
 			    <Route path="/login" element={<Login />} />
-			    <Route path="/signup" element={<Step1 />} />
-			    <Route path="/signup/step2" element={<Step2 />} />
-			    <Route path="/signup/step3" element={<Step3 />} />
-			    <Route path="/signup/step4" element={<Step4/>} />
-			    <Route path="/signup/complete" element={<Complete/>} />
+				<Route path="/signup" element={<SignupRouter />} />
+				<Route path="/complate" element={<Complete />} />
+
 			    <Route path="*" element={<NotFound />} />
 		    </Route>
 	    </Routes>

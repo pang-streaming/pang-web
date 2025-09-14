@@ -26,7 +26,7 @@ export const Step1 = () => {
 
   const handleClick = () => {
     if (termsChecked && privacyChecked) {
-      navigate("/signup/step2");
+      navigate("/signup?step=2");
     }
   };
 

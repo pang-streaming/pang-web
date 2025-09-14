@@ -1,20 +1,20 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useSearchParams } from 'react-router-dom';
 import SignupLayout from './signup-layout';
 import { Step1 } from './ui/step1';
 import { Step2 } from './ui/step2';
 import { Step3 } from './ui/step3';
+import { Step4 } from './ui/step4';
+import { Complete } from './ui/complate';
 
+export const SignupRouter = () => {
+  const [searchParams] = useSearchParams();
+  const step = searchParams.get("step");
 
-export default function SignupRouter() {
-    return (
-        <Routes>
-            <Route path="/signup" element={<SignupLayout />}>
-                <Route index element={<Step1 />} />
-                <Route path="/step2" element={<Step2 />} />
-                <Route path="/step3" element={<Step3 />} />
-                <Route path="/step4" element={<></>} />
-                <Route path="/complete" element={<></>} />
-            </Route>
-        </Routes>
-    );
+  switch (step) {
+    case "1": return <Step1 />;
+    case "2": return <Step2 />;
+    case "3": return <Step3 />;
+    case "4": return <Step4 />;
+    default: return <Step1 />;
+  }
 }

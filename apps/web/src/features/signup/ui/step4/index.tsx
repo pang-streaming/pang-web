@@ -43,7 +43,7 @@ export const Step4 = () => {
       }
 
       alert("회원가입 성공!");
-      navigate("/signup/complete");
+      navigate("/complate");
     } catch (error) {
       console.error(error);
       alert("회원가입 실패! 다시 시도해주세요.");
