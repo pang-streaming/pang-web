@@ -5,9 +5,12 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { StepDots } from '../step-dots';
 
+import { useRegisterStore } from '@/features/auth/store/register-store';
 
 export const Step1 = () => {
   const navigate = useNavigate();
+
+  const {setStep} = useRegisterStore()
 
   const [allChecked, setAllChecked] = useState(false);
   const [termsChecked, setTermsChecked] = useState(false);
@@ -26,6 +29,7 @@ export const Step1 = () => {
 
   const handleClick = () => {
     if (termsChecked && privacyChecked) {
+      setStep(2)
       navigate("/signup?step=2");
     }
   };
