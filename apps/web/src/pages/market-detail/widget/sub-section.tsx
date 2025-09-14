@@ -1,15 +1,16 @@
-import share from "@/app/assets/share.svg";
-import more from "@/app/assets/more.svg";
 import styled from "styled-components";
 import { HeartBox } from "../ui/heart-box";
+import {GoKebabHorizontal} from "react-icons/go";
+import {IconButton} from "@pang/shared/ui";
+import {IoShareSocialOutline} from "react-icons/io5";
 
 export const SubSection = () => {
   return (
     <Container>
       <HeartBox />
       <RightIcons>
-        <Icon src={share}/>
-        <Icon src={more} />
+	      <IconButton Icon={IoShareSocialOutline} onClick={() => console.log("asd")}/>
+	      <IconButton Icon={GoKebabHorizontal} onClick={() => console.log("asd")}/>
       </RightIcons>
     </Container>
   );
@@ -25,10 +26,4 @@ const RightIcons = styled.div`
   gap: 25px;
   display: flex;
   justify-content: space-between;
-`;
-
-const Icon = styled.img`
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
 `;

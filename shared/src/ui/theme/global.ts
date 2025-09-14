@@ -9,7 +9,7 @@ export const GlobalStyle = createGlobalStyle`
 		padding: 0;
 		background-color: ${({theme}) => theme.colors.background.normal};
 		//font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-		line-height: 1.3;
+		line-height: 1.2;
 		-webkit-font-smoothing: antialiased;
 		-moz-osx-font-smoothing: grayscale;
 	}

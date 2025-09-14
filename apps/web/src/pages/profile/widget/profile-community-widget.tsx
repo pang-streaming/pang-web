@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import SmallHeart from "@/app/assets/smallHeart.svg?react";
+import {CommunityItem} from "@/features/community/ui/community-item";
 
 export const ProfileCommunityWidget = () => {
 	return (
@@ -13,20 +13,13 @@ export const ProfileCommunityWidget = () => {
 				<WriteButton>글쓰기 +</WriteButton>
 			</CommunityTagWrapper>
 			<CommunityItemList>
-				<CommunityItem isNotification={true}>
-					<LeftInfoWrapper>
-						<Index isNotification={true}>공지</Index>
-						<Title>개인사정으로 인한 휴방 안내</Title>
-					</LeftInfoWrapper>
-					<RightInfoWrapper>
-						<Author>강연</Author>
-						<WriteTime>25.9.2.</WriteTime>
-						<LikeWrapper>
-							<SmallHeart/>
-							<Like>294</Like>
-						</LikeWrapper>
-					</RightInfoWrapper>
-				</CommunityItem>
+				<CommunityItem isNotification={true} />
+				<CommunityItem isNotification={false} />
+				<CommunityItem isNotification={false} />
+				<CommunityItem isNotification={false} />
+				<CommunityItem isNotification={false} />
+				<CommunityItem isNotification={false} />
+				<CommunityItem isNotification={false} />
 			</CommunityItemList>
 		</CommunityContainer>
 	)
@@ -77,7 +70,7 @@ const WriteButton = styled.button`
 	color: ${({theme}) => theme.colors.common.white};
 	cursor: pointer;
 	font-size: ${({theme}) => theme.font.medium};
-	font-weight: 500;
+	font-weight: bold;
 	&:hover {
 			background-color: ${({theme}) => theme.colors.hover.normal};
 	}
@@ -90,77 +83,3 @@ const CommunityItemList = styled.div`
 	justify-content: flex-start;
 	gap: 2px;
 `;
-
-const CommunityItem = styled.div<{isNotification: boolean}>`
-	width: 100%;
-	display: flex;
-  flex-direction: row;
-	align-items: center;
-	justify-content: space-between;
-	padding: 15px;
-	background-color: ${({theme, isNotification}) =>
-	  isNotification
-	  ? `${theme.colors.secondary.normal}35`
-	  : "transparent"
-	};
-	border-radius: ${({theme}) => theme.borders.xlarge};
-	cursor: pointer;
-`
-
-const LeftInfoWrapper = styled.div`
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	gap: 50px;
-`
-
-const Index = styled.span<{isNotification: boolean}>`
-	width: 35px;
-	font-size: ${({theme}) => theme.font.large};
-	font-weight: 700;
-	padding: 4px 10px;
-	background-color: ${({theme, isNotification}) => isNotification ? theme.colors.secondary.normal : theme.colors.common.grey};
-	text-align: center;
-	border-radius: ${({theme}) => theme.borders.medium};
-	color: ${({theme}) => theme.colors.common.white};
-`;
-
-const Title = styled.span`
-	color: ${({theme}) => theme.colors.text.normal};
-	font-size: ${({theme}) => theme.font.large};
-	font-weight: 700;
-`
-
-const RightInfoWrapper = styled.div`
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: space-between;
-	gap: 77px;
-	margin-right: 50px;
-`
-
-const Author = styled.span`
-	color: ${({theme}) => theme.colors.text.normal};
-	font-size: ${({theme}) => theme.font.large};
-	font-weight: 700;
-`
-
-const WriteTime = styled.span`
-  color: ${({theme}) => theme.colors.text.normal};
-  font-size: ${({theme}) => theme.font.large};
-  font-weight: 700;
-`
-
-const LikeWrapper = styled.div`
-	color: ${({theme}) => theme.colors.text.normal};
-  display: flex;
-	flex-direction: row;
-	align-items: center;
-	gap: 2px;
-`
-
-const Like = styled.span`
-    font-size: ${({theme}) => theme.font.medium};
-    font-weight: 700;
-`
