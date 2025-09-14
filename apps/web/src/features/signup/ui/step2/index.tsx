@@ -4,12 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { FiUser } from "react-icons/fi";
 import { IoIosSend } from "react-icons/io";
-import { useSignup } from "../../../auth/model/signup-context";
 import { StepDots } from "../step-dots";
+import { useRegisterStore } from '@/features/auth/store/register-store';
 
 export const Step2 = () => {
   const navigate = useNavigate();
-  const { setSignupData } = useSignup();
+  const { setEmail: storeEmail, setStep } = useRegisterStore();
 
   const [email, setEmail] = useState("");
   const [emailValid, setEmailValid] = useState(false);
@@ -22,7 +22,8 @@ export const Step2 = () => {
 
   const handleClick = () => {
     if (emailValid) {
-      setSignupData({ email });
+      storeEmail(email);
+      setStep(3)
       navigate("/signup?step=3");
     }
   };

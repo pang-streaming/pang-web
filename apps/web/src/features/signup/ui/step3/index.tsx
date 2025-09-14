@@ -5,13 +5,13 @@ import { useState } from "react";
 import { FiUser } from "react-icons/fi";
 import { MdCheck } from "react-icons/md";
 
-import { useSignup } from '../../../auth/model/signup-context';
+import { useRegisterStore } from '@/features/auth/store/register-store';
 import { StepDots } from '../step-dots';
 
 
 export const Step3 = () => {
   const navigate = useNavigate();
-  const { setSignupData } = useSignup();
+  const { setId: storeId, setStep } = useRegisterStore();
 
   const [id, setId] = useState("");
   const [isChecked, setIsChecked] = useState(false);
@@ -26,7 +26,8 @@ export const Step3 = () => {
 
   const handleNextClick = () => {
     if (isChecked) {
-      setSignupData({ id });
+      storeId(id);
+      setStep(4)
       navigate("/signup?step=4");
     } else {
       alert("아이디 중복 체크를 완료해주세요.");

@@ -2,14 +2,14 @@ import { useState } from "react";
 import Logo from "@/app/assets/logo.svg";
 
 import { useNavigate } from "react-router-dom";
-import { useSignup } from "../../../auth/model/signup-context";
+import { useRegisterStore } from '@/features/auth/store/register-store';
 import api from "../../../../api/api";
 import * as S from '@/pages/signup/style';
 import { StepDots } from "../step-dots";
 
 export const Step4 = () => {
   const navigate = useNavigate();
-  const { signupData, setSignupData } = useSignup();
+  const {email, id , setPassword : storePassword, reset } = useRegisterStore();
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -28,12 +28,12 @@ export const Step4 = () => {
       return;
     }
 
-    setSignupData({ password });
+    storePassword(password);
 
     try {
       const response = await api.post("/auth/register", {
-        email: signupData.email,
-        id: signupData.id,
+        email,
+        id,
         password,
       });
 
@@ -44,6 +44,7 @@ export const Step4 = () => {
 
       alert("회원가입 성공!");
       navigate("/complete");
+      reset()
     } catch (error) {
       console.error(error);
       alert("회원가입 실패! 다시 시도해주세요.");
