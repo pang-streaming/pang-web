@@ -23,7 +23,7 @@ export const Step2 = () => {
   const handleClick = () => {
     if (emailValid) {
       setSignupData({ email });
-      navigate("/signup/step3");
+      navigate("/signup?step=3");
     }
   };
 

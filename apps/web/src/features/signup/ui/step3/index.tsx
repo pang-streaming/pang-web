@@ -27,7 +27,7 @@ export const Step3 = () => {
   const handleNextClick = () => {
     if (isChecked) {
       setSignupData({ id });
-      navigate("/signup/step4");
+      navigate("/signup?step=4");
     } else {
       alert("아이디 중복 체크를 완료해주세요.");
     }
