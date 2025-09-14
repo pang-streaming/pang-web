@@ -1,9 +1,12 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaChevronLeft } from "react-icons/fa6";
-import { useIsMobile } from "@/entities/video/model/useIsMobile";
+import { useIsMobile } from "@/entities/video/hooks/useIsMobile";
 import { useStreamDetail } from "./model/useStreamDetail";
 import * as S from "./style";
-import {StreamInfo, VideoPlayer} from "@/pages/live-detail/widget/live-section/widget";
+import {
+  StreamInfo,
+  VideoPlayer,
+} from "@/pages/live-detail/widget/live-section/widget";
 
 export const LiveSection = () => {
   const location = useLocation();
@@ -11,16 +14,23 @@ export const LiveSection = () => {
   const streamId = String(queryParams.get("streamId"));
   const navigate = useNavigate();
 
-  const { streamData } = useStreamDetail(streamId);
+  const { streamData, isLoading } = useStreamDetail(streamId);
   const isMobile = useIsMobile();
+
+  if (isLoading || !streamData) {
+    return <div>로딩중...</div>;
+  }
+
   return (
     <S.LiveDetailContainer>
       {isMobile && <FaChevronLeft size={24} onClick={() => navigate("/")} />}
       <S.ContentWrapper>
-        <VideoPlayer streamUrl={streamData?.url} isMobile={isMobile} />
+        <VideoPlayer streamUrl={streamData.url} isMobile={isMobile} />
         <StreamInfo
-          title={streamData?.title}
-          nickname={streamData?.nickname}
+          streamId={streamId}
+          username={streamData.username}
+          title={streamData.title}
+          nickname={streamData.nickname}
         />
       </S.ContentWrapper>
     </S.LiveDetailContainer>

@@ -4,23 +4,27 @@ import {IoHeart} from "react-icons/io5";
 import {IoMdHeartEmpty} from "react-icons/io";
 import styled from "styled-components";
 import {FollowButton} from "@/shared/ui/button/follow-button";
+import {useVideoCard} from "@/entities/video/hooks/useVideoCard";
 
 interface StreamInfoProps {
+	streamId: string;
+	username: string;
   title?: string;
   nickname?: string;
 }
 
-export const StreamInfo = ({ title, nickname }: StreamInfoProps) => {
+export const StreamInfo = ({ streamId, username, title, nickname }: StreamInfoProps) => {
   const { followerCount, isFollowing, isLoading, toggleFollow } = useFollowInfo(nickname);
-
+	const {handleOnClickProfile} = useVideoCard({streamId, username});
+	
   return (
     <StreamInfoContainer>
       <StreamTitle>{title ?? "제목 없는 방송"}</StreamTitle>
       <StreamerInfoContainer>
         <UserContainer>
-          <UserProfile src={nomalProfile}/>
+          <UserProfile src={nomalProfile} onClick={handleOnClickProfile}/>
           <UserInfoWrapper>
-            <UserName>{nickname || "unknown_user"}</UserName>
+            <UserName onClick={handleOnClickProfile}>{nickname || "unknown_user"}</UserName>
             <FollowerCount>팔로워 {followerCount.toLocaleString()}명</FollowerCount>
           </UserInfoWrapper>
         </UserContainer>

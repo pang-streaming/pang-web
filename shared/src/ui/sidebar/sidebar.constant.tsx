@@ -43,7 +43,7 @@ export const userSidebarItems: SidebarItem[] = [
 	{
 		id: "store",
 		name: "상점",
-		path: "/store",
+		path: "/market",
 		icon: <IoStorefrontOutline size={28} />,
 	},
 ]

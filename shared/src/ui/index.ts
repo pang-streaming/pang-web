@@ -8,6 +8,7 @@ export * from "./layout/authLayout";
 export * from "./buttons/segmentButton";
 export * from "./buttons/submitButton";
 export * from "./buttons/segmentButtonGroup";
+export * from "./buttons/iconButton"
 
 //style
 export * from "./theme/global";

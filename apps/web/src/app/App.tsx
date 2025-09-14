@@ -15,8 +15,8 @@ import {AuthLayout, DefaultLayout} from "@pang/shared/ui";
 import {Home} from "@/pages/home/page";
 import { MyPage } from "@/pages/mypage/page";
 import { LiveDetail } from "@/pages/live-detail/page";
-import { Store } from "@/pages/store/page";
-import { StoreDetail } from "@/pages/store-detail/page";
+import { Market } from "@/pages/market/page";
+import { StoreDetail } from "@/pages/market-detail/page";
 import {ProfilePage} from "@/pages/profile/page";
 import { SignupRouter } from "@/features/signup/signup-router";
 
@@ -31,8 +31,8 @@ function App() {
 			    <Route path="/follow" element={<Following />} />
 			    <Route path="/cash" element={<Charge />} />
 			    <Route path="/mypage" element={<MyPage />} />
-			    <Route path="/store" element={<Store />} />
-			    <Route path="/store-detail" element={<StoreDetail />} />
+			    <Route path="/market" element={<Market />} />
+			    <Route path="/market-detail" element={<StoreDetail />} />
 			    <Route path="/profile/:id" element={<ProfilePage/>}/>
 			    <Route path="*" element={<NotFound />} />
 		    </Route>

@@ -10,22 +10,21 @@ export const TagBox = ({ text }: { text: string }) => {
 
 const Container = styled.div`
   padding: 16px 40px;
-  height: 20px;
-  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 12px;
-  background-color: #1e1e1e;
-  white-space: nowrap;            
+  border-radius: ${({theme}) => theme.borders.large};
+  background-color: ${({theme}) => theme.colors.content.normal};
+  white-space: nowrap;
+	color: ${({theme}) => theme.colors.text.normal};
+	cursor: pointer;
   &:hover {
-    background-color: #353535;
+    background-color: ${({theme}) => theme.colors.hover.light};
   }
 `;
 
 const Text = styled.span`
-  font-size: 15px;
-  font-weight: 400;
-  color: #d9d9d9;
+  font-size: ${({theme}) => theme.font.large};
+	font-weight: 700;
   user-select: none;
 `;

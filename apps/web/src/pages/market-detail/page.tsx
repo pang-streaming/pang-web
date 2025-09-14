@@ -1,11 +1,15 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import * as S from "./style";
-
-import down from "@/app/assets/chevron-down.svg";
 import { SubSection } from "./widget/sub-section";
 import { Divider } from "./ui/divider";
-import { formattedPrice } from "../store/util/formatted-price";
+import { formattedPrice } from "@/pages/market/util/formatted-price";
 import { IconButton } from "./ui/icon-button";
+import normalProfile from "@/app/assets/images/normal_profile.svg";
+import {IoChevronDown} from "react-icons/io5";
+import {SubmitButton} from "@pang/shared/ui";
+import Buy from "@/app/assets/shopping-cart.svg?react";
+import Gift from "@/app/assets/gift.svg?react";
+
 export const StoreDetail = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -29,26 +33,21 @@ export const StoreDetail = () => {
           <S.ProductImage src={state.image} />
           <S.ProductInfoSection>
             <S.UserInfoContainer>
-              <S.UserAvatar />
+              <S.UserAvatar src={normalProfile} />
               <S.Username>Siromori</S.Username>
             </S.UserInfoContainer>
             <S.ProductTitle>{state.name}</S.ProductTitle>
             <S.Spacer />
-
             <SubSection />
-            <Divider color="#404040" verticalPadding={20} />
+            <Divider verticalPadding={20} />
             <S.Price>{formattedPrice(state.price)}원</S.Price>
-            <IconButton type="buy" />
-            <IconButton type="gift" />
+	          <SubmitButton Icon={Buy}>상품 구매하기</SubmitButton>
+	          <SubmitButton Icon={Gift} type={'alternative'}>기프트 보내기</SubmitButton>
           </S.ProductInfoSection>
         </S.ProductContainer>
-        <S.DetailButtonContainer
-          onClick={() => {
-            console.log("상품 상세설명보기");
-          }}
-        >
+        <S.DetailButtonContainer onClick={() => {console.log("상품 상세설명보기");}}>
           <S.DetailButtonText>상품 상세설명 더보기</S.DetailButtonText>
-          <S.DetailButtonIcon src={down} alt="" />
+	        <IoChevronDown />
         </S.DetailButtonContainer>
       </S.ProductContainerWrap>
     </S.Container>
