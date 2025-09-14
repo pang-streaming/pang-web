@@ -15,7 +15,7 @@ export interface Colors {
 export const darkColors: Colors = {
 	button: {active: "#FFFFFF", disabled: "#404040", normal: "#A3A3A3"},
 	common: {black: "#000000", white: "#FFFFFF", grey: "#777777"},
-	hover: {normal: "#CC0044", light: "#262626", dark: "#990033"},
+	hover: {normal: "#CC0044", light: "#353535", dark: "#990033"},
 	primary: {light: "#FFCCDD", normal: "#FF0055", dark: "#990033"},
 	secondary: {light: "#9A57FF", normal: "#6600FF", dark: "#290066"},
 	status: {negative: "#FF1600", neutral: "#FFD600", positive: "#64CD32"},

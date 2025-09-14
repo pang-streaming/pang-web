@@ -1,27 +1,34 @@
 import { TabTitleText } from "@/shared/ui/tab-title-text";
 import * as S from "./style";
-import { SegmentButton } from "@pang/shared/ui";
+import {Segment, SegmentButtonGroup} from "@pang/shared/ui";
 import { ChargeBox } from "./widget/charge-box";
 import { ListHeader } from "./widget/list-header";
+
+const segments: Segment[] = [
+	{
+		id: 'use',
+		name: "사용내역"
+	},
+	{
+		id: 'buy',
+		name: "구매내역"
+	},
+]
 
 export const Charge = () => {
   return (
     <div>
       <TabTitleText>My 펑</TabTitleText>
 
-      <S.Contaienr>
+      <S.Container>
         <S.ChargeBoxRow>
           <ChargeBox type="mypung" />
           <ChargeBox type="chargepung" />
         </S.ChargeBoxRow>
-        <S.SegmentButtonRow>
-          <SegmentButton text="사용 내역" onClick={() => {}} />
-          <SegmentButton text="구매 내역" onClick={() => {}} />
-        </S.SegmentButtonRow>
+	      <SegmentButtonGroup segments={segments}/>
         <ListHeader >
-
         </ListHeader>
-      </S.Contaienr>
+      </S.Container>
     </div>
   );
 };

@@ -1,26 +1,33 @@
 import { useNavigate } from "react-router-dom";
 import * as S from './style';
-import Dice from "@/app/assets/dice.svg";
-import Audio from "@/app/assets/audio.svg";
-import Star from "@/app/assets/star.svg";
-import Book from "@/app/assets/book.svg";
-import Music from "@/app/assets/music.svg";
-import Stars from "@/app/assets/stars.svg";
-import Game from "@/app/assets/game.svg";
+import Dice from "@/app/assets/dice.svg?react";
+import Audio from "@/app/assets/audio.svg?react";
+import Star from "@/app/assets/star.svg?react";
+import Book from "@/app/assets/book.svg?react";
+import Music from "@/app/assets/music.svg?react";
+import Stars from "@/app/assets/stars.svg?react";
+import Game from "@/app/assets/game.svg?react";
 import { CategoryBox } from "./ui/category-box";
 import { TagBox } from "./ui/tag-box";
 import { ProductCard } from "./ui/product-card";
 import { useEffect, useState } from "react";
 import { Product } from "@/entities/product/model/type";
 import { TabTitleText } from "@/shared/ui/tab-title-text";
-// import { fetchProducts } from "@/entities/product/api";
 
-export const Store = () => {
+export const Market = () => {
   const navigate = useNavigate();
   const categoryList = [
     { text: "3D 모델", icon: Dice },
     { text: "오디오 굿즈", icon: Audio },
     { text: "굿즈", icon: Star },
+    { text: "소설 및 만화", icon: Book },
+    { text: "소설 및 만화", icon: Book },
+    { text: "소설 및 만화", icon: Book },
+    { text: "소설 및 만화", icon: Book },
+    { text: "소설 및 만화", icon: Book },
+    { text: "소설 및 만화", icon: Book },
+    { text: "소설 및 만화", icon: Book },
+    { text: "소설 및 만화", icon: Book },
     { text: "소설 및 만화", icon: Book },
     { text: "음악", icon: Music },
     { text: "일러스트", icon: Stars },
@@ -31,6 +38,13 @@ export const Store = () => {
   const tagList: string[] = [
     "VTuber",
     "3D 모델링",
+    "애니메이션",
+    "애니메이션",
+    "애니메이션",
+    "애니메이션",
+    "애니메이션",
+    "애니메이션",
+    "애니메이션",
     "애니메이션",
     "커스텀캐릭터",
     "보컬로이드",
@@ -49,7 +63,7 @@ export const Store = () => {
   const dummyProducts: Product[] = [
     { id: "1", name: "귀여운 VTuber 굿즈", price: 12000, image: "https://picsum.photos/200" },
     { id: "2", name: "3D 모델링 캐릭터", price: 30000, image: "https://picsum.photos/350" },
-    { id: "3", name: "한정판 일러스트", price: 18000, image: "https://picsum.photos/400" },
+    { id: "3", name: "한정판 일러스트 인데 이게 정말 좋은 희귀한 한정판 일러스트입니다. 진짜 대박이에요", price: 18000, image: "https://picsum.photos/400" },
   ];
 
   const [products, setProducts] = useState<Product[]>(dummyProducts);
@@ -70,35 +84,35 @@ export const Store = () => {
   */
 
   return (
-    <S.Container>
+    <S.MarketContainer>
       <TabTitleText>카테고리</TabTitleText>
-      <S.CategoryGrid>
+      <S.CategoryWrapper>
         {categoryList.map((c, idx) => (
-          <CategoryBox key={idx} text={c.text} icon={c.icon} />
+          <CategoryBox key={idx} text={c.text} Icon={c.icon} />
         ))}
-      </S.CategoryGrid>
-      <TabTitleText>인기 태그</TabTitleText>
-
-      <S.TagGrid>
+      </S.CategoryWrapper>
+      
+	    <TabTitleText>인기 태그</TabTitleText>
+      <S.TagWrapper>
         {tagList.map((t, idx) => (
           <TagBox key={idx} text={t} />
         ))}
-      </S.TagGrid>
+      </S.TagWrapper>
+	    
       <TabTitleText>마켓 인기 상품</TabTitleText>
-
-      <S.ProductGrid>
-        {products.map((p) => (
+      <S.ProductWrapper>
+        {products.map((product) => (
           <ProductCard
-            key={p.id}
-            image={p.image}
-            title={p.name}
-            price={p.price}
+            key={product.id}
+            image={product.image}
+            title={product.name}
+            price={product.price}
             onClick={() =>
-                navigate("/store-detail", { state: p })
+                navigate("/market-detail", { state: product })
             }
           />
         ))}
-      </S.ProductGrid>
-    </S.Container>
+      </S.ProductWrapper>
+    </S.MarketContainer>
   );
 };

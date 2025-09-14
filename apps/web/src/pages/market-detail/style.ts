@@ -5,35 +5,17 @@ export const Container = styled.div`
 `;
 
 export const ProductContainerWrap = styled.div`
-  flex: 1;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  background-color: ${({ theme }) => theme.colors.background.normal};
-  border-radius: 12px;
-
-  @media (max-width: 768px) {
-    border-radius: 8px;
-  }
+	align-items: center;
 `;
 
 export const ProductContainer = styled.div`
-  gap: 85px;
-  padding: 25px 111px;
-  height: 486px;
-  flex: 1;
+	width: 100%;
+  padding: 20px 120px;
   display: flex;
-
-  @media (max-width: 1024px) {
-    gap: 40px;
-    padding: 24px 48px;
-  }
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    gap: 16px;
-    padding: 16px;
-    height: auto;
-  }
+  box-sizing: border-box;
 `;
 
 export const ProductImage = styled.img`
@@ -41,36 +23,15 @@ export const ProductImage = styled.img`
   height: 400px;
   object-fit: cover;
   border-radius: 12px;
-
-  @media (max-width: 1024px) {
-    width: 320px;
-    height: 320px;
-  }
-
-  @media (max-width: 768px) {
-    width: 100%;
-    height: auto;
-    max-height: 260px;
-    border-radius: 8px;
-  }
 `;
 
 export const ProductInfoSection = styled.div`
-  flex: 1;
-  padding: 0 100px;
+  padding: 0 50px;
+	width: 100%;
   height: 400px;
   justify-content: space-between;
   display: flex;
   flex-direction: column;
-
-  @media (max-width: 1024px) {
-    padding: 0 40px;
-  }
-
-  @media (max-width: 768px) {
-    padding: 0;
-    height: auto;
-  }
 `;
 
 export const Price = styled.span`
@@ -93,7 +54,7 @@ export const BackButton = styled.button`
   border-radius: 8px;
   border: none;
   background: #2a2a2a;
-  color: #ffffff;
+  color: ${({theme}) => theme.colors.text.normal};
   cursor: pointer;
 `;
 
@@ -104,7 +65,7 @@ export const Fallback = styled.div`
   align-items: center;
   justify-content: center;
   gap: 12px;
-  color: #ffffff;
+  color: ${({theme}) => theme.colors.text.normal};
 `;
 
 export const UserInfoContainer = styled.div`
@@ -114,21 +75,21 @@ export const UserInfoContainer = styled.div`
   margin-bottom: 30px;
 `;
 
-export const UserAvatar = styled.div`
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background-color: white;
+export const UserAvatar = styled.img`
+  width: 45px;
+  height: 45px;
+  border-radius: ${({theme}) => theme.borders.maximum};
+  background-color: ${({theme}) => theme.colors.background.dark};
 `;
 
 export const Username = styled.span`
-  font-size: 16px;
-  font-weight: 400;
+  font-size: ${({theme}) => theme.font.xLarge};
+	font-weight: 600;
   color: ${({theme}) => theme.colors.text.normal};
 `;
 
 export const ProductTitle = styled.span`
-  font-size: 24px;
+  font-size: ${({theme}) => theme.font.xxLarge};
   font-weight: 700;
   color: ${({theme}) => theme.colors.text.normal};
 `;
@@ -139,17 +100,22 @@ export const Spacer = styled.div`
 
 export const DetailButtonContainer = styled.div`
   display: flex;
-  justify-content: center;
+	flex-direction: row;
+	justify-content: center;
   margin-bottom: 20px;
-  gap: 10px;
+  gap: 3px;
   cursor: pointer;
+  color: ${({theme}) => theme.colors.text.normal};
+	width: fit-content;
+	padding: 8px 12px;
+	border-radius: ${({theme}) => theme.borders.medium};
+	&:hover {
+			background-color: ${({theme}) => theme.colors.hover.light};
+	}
 `;
 
 export const DetailButtonText = styled.span`
-  color: #d4d4d4;
-  font-size: 12px;
-  font-weight: 400;
-`;
-
-export const DetailButtonIcon = styled.img`
+  font-size: ${({theme}) => theme.font.medium};
+  font-weight: 500;
+	user-select: none;
 `;

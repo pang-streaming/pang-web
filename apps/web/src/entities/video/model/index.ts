@@ -1,8 +1,8 @@
 
 
-export * from './useFullScreen';
-export * from './useHover';
-export * from './useIsMobile';
-export * from './usePip';
-export * from './useVideoReady';
-export * from './useVolume';
+export * from '../hooks/useFullScreen';
+export * from '../hooks/useHover';
+export * from '../hooks/useIsMobile';
+export * from '../hooks/usePip';
+export * from '../hooks/useVideoReady';
+export * from '../hooks/useVolume';

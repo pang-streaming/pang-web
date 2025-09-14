@@ -4,7 +4,7 @@ import { MyInfoSection } from "./widget/my-info-section";
 import { MyPungSection } from "./widget/my-pung-section";
 import { SettingsMenu } from "./widget/settings-menu";
 
-export const MyPage = ({}) => {
+export const MyPage = () => {
   return (
     <div>
       <TabTitleText>MY</TabTitleText>
