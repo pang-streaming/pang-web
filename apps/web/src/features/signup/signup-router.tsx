@@ -4,7 +4,7 @@ import { Step1 } from './ui/step1';
 import { Step2 } from './ui/step2';
 import { Step3 } from './ui/step3';
 import { Step4 } from './ui/step4';
-import { Complete } from './ui/complate';
+import { Complete } from './ui/complete';
 
 export const SignupRouter = () => {
   const [searchParams] = useSearchParams();

@@ -10,7 +10,7 @@ import { Step2 } from "@/features/signup/ui/step2";
 import { Step3 } from "@/features/signup/ui/step3";
 import { SignupProvider } from "@/features/auth/model/signup-context";
 import { Step4 } from "@/features/signup/ui/step4";
-import { Complete } from "@/features/signup/ui/complate";
+import { Complete } from "@/features/signup/ui/complete";
 import {AuthLayout, DefaultLayout} from "@pang/shared/ui";
 import {Home} from "@/pages/home/page";
 import { MyPage } from "@/pages/mypage/page";
@@ -42,7 +42,7 @@ function App() {
 		    <Route element={<AuthLayout />}>
 			    <Route path="/login" element={<Login />} />
 				<Route path="/signup" element={<SignupRouter />} />
-				<Route path="/complate" element={<Complete />} />
+				<Route path="/complete" element={<Complete />} />
 
 			    <Route path="*" element={<NotFound />} />
 		    </Route>
