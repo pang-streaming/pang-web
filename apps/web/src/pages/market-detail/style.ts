@@ -54,7 +54,11 @@ export const BackButton = styled.button`
   border-radius: 8px;
   border: none;
   background: #2a2a2a;
+<<<<<<< Updated upstream:apps/web/src/pages/market-detail/style.ts
   color: ${({theme}) => theme.colors.text.normal};
+=======
+  color: ${({theme})=>theme.colors.text.normal};
+>>>>>>> Stashed changes:apps/web/src/pages/store-detail/style.ts
   cursor: pointer;
 `;
 
@@ -65,7 +69,11 @@ export const Fallback = styled.div`
   align-items: center;
   justify-content: center;
   gap: 12px;
+<<<<<<< Updated upstream:apps/web/src/pages/market-detail/style.ts
   color: ${({theme}) => theme.colors.text.normal};
+=======
+  color: ${({theme})=>theme.colors.text.normal};;
+>>>>>>> Stashed changes:apps/web/src/pages/store-detail/style.ts
 `;
 
 export const UserInfoContainer = styled.div`

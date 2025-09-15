@@ -12,11 +12,7 @@ export const useProvider = () => {
         const res = await fetchMyInfo();
         setUser(res.data);
 
-        const hasCompletedInitialSetup = localStorage.getItem(
-          "hasCompletedInitialSetup"
-        );
-
-        if (!hasCompletedInitialSetup || !res.data.age || !res.data.gender) {
+        if (res.data.gender === null) {
           setIsModalOpen(true);
         }
       } catch (error) {
@@ -29,7 +25,6 @@ export const useProvider = () => {
 
   const closeModal = () => {
     setIsModalOpen(false);
-    localStorage.setItem("hasCompletedInitialSetup", "true");
   };
 
   return {
