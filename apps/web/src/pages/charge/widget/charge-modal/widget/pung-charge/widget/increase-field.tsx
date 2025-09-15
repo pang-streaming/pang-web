@@ -3,15 +3,24 @@ import styled from "styled-components";
 import { AmountChip } from "../ui/amount-chip";
 import { PungField } from "../ui/pung-field";
 
-export const IncreaseField = () => {
+interface IncreaseFieldProps {
+  pungAmount: number;
+  onPungChange: (amount: number) => void;
+}
+
+export const IncreaseField = ({ pungAmount, onPungChange }: IncreaseFieldProps) => {
+  const handleChipClick = (amount: number) => {
+    onPungChange(pungAmount + amount);
+  };
+
   return (
     <Container>
-      <PungField />
+      <PungField pungAmount={pungAmount} />
       <AmountChipRow>
-        <AmountChip amount={1000} />
-        <AmountChip amount={5000} />
-        <AmountChip amount={10000} />
-        <AmountChip amount={5000} />
+        <AmountChip amount={1000} onClick={() => handleChipClick(1000)} />
+        <AmountChip amount={5000} onClick={() => handleChipClick(5000)} />
+        <AmountChip amount={10000} onClick={() => handleChipClick(10000)} />
+        <AmountChip amount={50000} onClick={() => handleChipClick(50000)} />
       </AmountChipRow>
     </Container>
   );

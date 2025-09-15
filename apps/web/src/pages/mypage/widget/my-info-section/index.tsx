@@ -41,7 +41,7 @@ export const MyInfoSection = () => {
         <S.Nickname>{user?.username}</S.Nickname>
         <S.Email>{user?.email}</S.Email>
         <S.StatusMessage>
-          먼지는 엄청 커다란 민덕간식을 좋아해요
+          {user?.description}
         </S.StatusMessage>
       </S.UserInfoSection>
     </S.Container>

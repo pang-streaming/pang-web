@@ -9,7 +9,7 @@ export const InitModalStep2 = ({username}:{username?:string}) => {
       <Title>
         {username}님의
         <br />
-        당신의 취향을 선택해주세요
+        취향을 선택해주세요
       </Title>
       <CategorySelector />
     </Container>
@@ -27,7 +27,8 @@ const Container = styled.div`
 
 const Title = styled.span`
   width: 100%;
-  font-size: 24px;
+  color: ${({theme}) => theme.colors.text.normal};
+  font-size: ${({theme}) =>theme.font.xxLarge};
   font-weight: 800;
   text-align: left;
 `;

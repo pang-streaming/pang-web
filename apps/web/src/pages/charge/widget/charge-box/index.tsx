@@ -27,18 +27,28 @@ export const ChargeBox = ({ type }: ChargeBoxProps) => {
             <span style={{ fontSize: 32 }}>💣</span>
           </StrokeCircle>
         ) : (
-          <img src={charge} style={{ marginRight: 20 }} />
+          <div style={{ position: "relative", display: "inline-block", marginRight: 20 }}>
+            <img src={charge} />
+            <span
+              style={{
+                position: "absolute",
+                top: "47%",
+                left: "50%",
+                fontSize: 32,
+                transform: "translate(-50%, -50%)",
+              }}
+            >
+              💣
+            </span>
+          </div>
         )}
         <Text>{type === "mypung" ? "보유중인 펑 : 300개" : "펑 자동충전"}</Text>
         <ChargeButton onClick={handleChargeClick}>충전하기</ChargeButton>
       </Container>
-      
+
       {isModalOpen && (
         <ModalOverlay>
-          <ChargeModal 
-            initialType="pung-charge" 
-            onClose={handleCloseModal}
-          />
+          <ChargeModal initialType="pung-charge" onClose={handleCloseModal} />
         </ModalOverlay>
       )}
     </>
@@ -56,12 +66,12 @@ const Container = styled.div`
   border: 1px solid ${({ theme }) => theme.colors.stroke.normal};
 `;
 const StrokeCircle = styled.div`
-  width: 75px;
+  width: 45px;
   margin-right: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 75px;
+  height: 45px;
   border-radius: 50%;
   background-color: transparent;
   border: 1px solid ${({ theme }) => theme.colors.stroke.normal};

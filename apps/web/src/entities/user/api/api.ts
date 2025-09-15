@@ -14,7 +14,8 @@ export const updateMyInfo = async (
   age: string,
   gender: string,
   profileImage?: string,
-  bannerImage?: string
+  bannerImage?: string,
+  description?: string
 ): Promise<UserResponse> => {
   const data = {
     nickname,
@@ -22,8 +23,8 @@ export const updateMyInfo = async (
     gender,
     profileImage,
     bannerImage,
+    description
   };
   const res = await api.patch("/user", data);
   return res.data;
 };
-

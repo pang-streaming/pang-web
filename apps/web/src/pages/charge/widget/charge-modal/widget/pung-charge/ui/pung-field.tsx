@@ -1,13 +1,17 @@
 import React from "react";
 import styled from "styled-components";
 
-export const PungField = () => {
+interface PungFieldProps {
+  pungAmount: number;
+}
+
+export const PungField = ({ pungAmount }: PungFieldProps) => {
   return (
     <Wrapper>
         <Text>충전할 펑</Text>
       <Container>
         <span style={{ fontSize: 20 }}>💣</span>
-        <Field>1000</Field>
+        <Field>{pungAmount.toLocaleString()}</Field>
       </Container>
     </Wrapper>
   );

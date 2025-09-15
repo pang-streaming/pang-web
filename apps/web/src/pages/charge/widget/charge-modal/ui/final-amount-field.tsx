@@ -4,11 +4,18 @@
 import { formattedPrice } from '@/pages/market/util/formatted-price'
 import styled from 'styled-components'
 
-export const FinalAmountField = () => {
+interface FinalAmountFieldProps {
+  pungAmount: number;
+}
+
+export const FinalAmountField = ({ pungAmount }: FinalAmountFieldProps) => {
+  // 충전할 펑 + 10% 수수료
+  const totalAmount = Math.floor(pungAmount * 1.1);
+  
   return (
     <Container>
         <LeftText>최종 결제금액</LeftText>
-        <RightText>{formattedPrice(1100)}원</RightText>
+        <RightText>{formattedPrice(totalAmount)}원</RightText>
     </Container>
   )
 }
