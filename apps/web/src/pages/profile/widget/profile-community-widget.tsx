@@ -1,15 +1,27 @@
 import styled from "styled-components";
 import {CommunityItem} from "@/features/community/ui/community-item";
+import {Tag, TagButton} from "@pang/shared/ui";
+
+const tags: Tag[] = [
+	{
+		id: 'all',
+		name: '전체'
+	},
+	{
+		id: 'community',
+		name: '자유게시판'
+	},
+	{
+		id: 'notification',
+		name: '공지글'
+	},
+]
 
 export const ProfileCommunityWidget = () => {
 	return (
 		<CommunityContainer>
 			<CommunityTagWrapper>
-				<CommunityTagList>
-					<CommunityTag selected>전체</CommunityTag>
-					<CommunityTag>자유게시판</CommunityTag>
-					<CommunityTag>공지글</CommunityTag>
-				</CommunityTagList>
+				<TagButton tags={tags} defaultTagId={'all'}/>
 				<WriteButton>글쓰기 +</WriteButton>
 			</CommunityTagWrapper>
 			<CommunityItemList>

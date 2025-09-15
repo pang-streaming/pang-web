@@ -14,6 +14,7 @@ import { Market } from "@/pages/market/page";
 import { StoreDetail } from "@/pages/market-detail/page";
 import {ProfilePage} from "@/pages/profile/page";
 import { SignupRouter } from "@/features/signup/signup-router";
+import {CategoryDetail} from "@/pages/category-detail/page";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
 			<Route path="/" element={<Home />} />
 			<Route path="/explore" element={<Explore />} />
 			<Route path="/category" element={<Category />} />
+			<Route path="/category-detail" element={<CategoryDetail/>}/>
 			<Route path="/follow" element={<Following />} />
 			<Route path="/cash" element={<Charge />} />
 			<Route path="/mypage" element={<MyPage />} />

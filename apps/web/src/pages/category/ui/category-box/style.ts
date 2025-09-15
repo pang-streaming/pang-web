@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const CategoryBoxThumbnail = styled.div`
 	width: 100%;
-	aspect-ratio: 205 / 280;
+	aspect-ratio: 41 / 56;
 	background-color: ${({theme}) => theme.colors.content.normal};
 	border-radius: ${({theme}) => theme.borders.xlarge};
 	margin-bottom: 10px;

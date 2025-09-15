@@ -26,7 +26,7 @@ export const Sidebar = ({isSidebarOpen, onClickMenu, sidebarItems, children, typ
 			<SidebarItemWrapper>
 				{
 					sidebarItems.map((item) => (
-						<SidebarItemButton key={item.id} isSidebarOpen={isSidebarOpen} $isActive={location.pathname === item.path} onClick={() => navigate(item.path)}>
+						<SidebarItemButton key={item.id} isSidebarOpen={isSidebarOpen} isActive={location.pathname.includes(item.path)} onClick={() => navigate(item.path)}>
 							{item.icon}
 							{isSidebarOpen && <SidebarItemButtonInfo>{item.name}</SidebarItemButtonInfo>}
 						</SidebarItemButton>
@@ -52,15 +52,15 @@ const SidebarItemButtonInfo = styled.span`
     text-align: center;
 `
 
-const SidebarItemButton = styled.button<{isSidebarOpen: boolean, $isActive: boolean}>`
+const SidebarItemButton = styled.button<{isSidebarOpen: boolean, isActive: boolean}>`
     border: none;
     cursor: pointer;
     height: 40px;
     margin: 0 20px;
     width: ${({isSidebarOpen}) => isSidebarOpen ? 200 : 40}px;
     border-radius: ${({theme}) => theme.borders.large};
-    color: ${({theme, $isActive}) => $isActive ? theme.colors.primary.normal : theme.colors.button.active};
-    background: ${({theme, $isActive}) => $isActive && theme.colors.hover.light} none;
+    color: ${({theme, isActive}) => isActive ? theme.colors.primary.normal : theme.colors.button.active};
+    background: ${({theme, isActive}) => isActive && theme.colors.hover.light} none;
     gap: 20px;
     display: flex;
     flex-direction: row;
