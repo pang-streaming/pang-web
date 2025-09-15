@@ -1,43 +1,41 @@
-import React from "react";
-import styled from "styled-components";
 import { CardElem } from "./ui/card-elem";
-import kbank from "@/app/assets/payment/kbank.svg";
-import kakaobank from "@/app/assets/payment/kakaobank.svg";
-import tossbank from "@/app/assets/payment/tossbank.svg";
-import sinhanbank from "@/app/assets/payment/sinhanbank.svg";
+import { paymentIcons } from "@/app/assets/payment";
+import * as DC from '@dnd-kit/core';
+import * as DS from '@dnd-kit/sortable';
+import * as S from './style'
+import { useDnd, CardData } from "./hook/useDnd";
+
 export const CardListSection = () => {
+  const initialCards: CardData[] = [
+    { id: '1', image: paymentIcons.kbank, cardName: "케이뱅크 체크" },
+    { id: '2', image: paymentIcons.kakaobank, cardName: "카카오뱅크 체크" },
+    { id: '3', image: paymentIcons.tossbank, cardName: "신한 SOL 체크" },
+    { id: '4', image: paymentIcons.sinhanbank, cardName: "토스카드" },
+  ];
+
+  const { cards, sensors, handleDragEnd } = useDnd(initialCards);
+
   return (
-    <Container>
-      <Title>카드 목록</Title>
-      <CardListContainer>
-        <CardElem image={kbank} cardName="케이뱅크 체크" />
-        <CardElem image={kakaobank} cardName="카카오뱅크 체크" />
-        <CardElem image={tossbank} cardName="신한 SOL 체크" />
-        <CardElem image={sinhanbank} cardName="토스카드" />
-      </CardListContainer>
-    </Container>
+    <S.Container>
+      <S.Title>카드 목록</S.Title>
+      <S.CardListContainer>
+        <DC.DndContext
+          sensors={sensors}
+          collisionDetection={DC.closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <DS.SortableContext items={cards} strategy={DS.verticalListSortingStrategy}>
+            {cards.map((card) => (
+              <CardElem
+                key={card.id}
+                id={card.id}
+                image={card.image}
+                cardName={card.cardName}
+              />
+            ))}
+          </DS.SortableContext>
+        </DC.DndContext>
+      </S.CardListContainer>
+    </S.Container>
   );
 };
-
-const Container = styled.div`
-  padding: 18px 15px 12px 15px;
-  border-radius: ${({ theme }) => theme.borders.large};
-  border: 1px solid ${({ theme }) => theme.colors.content.normal};
-`;
-
-const Title = styled.div`
-  font-size: ${({ theme }) => theme.font.medium};
-  font-weight: 600;
-  color: ${({ theme }) => theme.colors.text.subtitle};
-  width: 100%;
-  margin-bottom: 5px;
-`;
-const CardListContainer = styled.div`
-  padding: 15px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  border-radius: ${({ theme }) => theme.borders.small};
-  background-color: ${({ theme }) => theme.colors.background.normal};
-  align-items: flex-start;
-`;

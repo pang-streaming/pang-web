@@ -28,7 +28,7 @@ const Container = styled.div`
 const Title = styled.span`
   font-size: 20px;
   font-weight: 900;
-  color: #f2f2f2;
+  color: ${({theme})=>theme.colors.text.normal};
 `;
 const Icon = styled.img`
   position: absolute;

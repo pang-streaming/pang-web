@@ -10,6 +10,11 @@ interface ChargeModalProps {
 
 export const ChargeModal = ({ initialType = "pung-charge", onClose }: ChargeModalProps) => {
   const [currentType, setCurrentType] = useState<"pung-charge" | "payment-choice" | "payment-add">(initialType);
+  const [pungAmount, setPungAmount] = useState(1000);
+
+  const handlePungChange = (amount: number) => {
+    setPungAmount(amount);
+  };
 
   const handleToPaymentChoice = () => {
     setCurrentType("payment-choice");
@@ -38,9 +43,9 @@ export const ChargeModal = ({ initialType = "pung-charge", onClose }: ChargeModa
       </Header>
       <S.Content>
         {currentType === "pung-charge" ? (
-          <C.PungCharge toPaymentChoice={handleToPaymentChoice} />
+          <C.PungCharge pungAmount={pungAmount} onPungChange={handlePungChange} toPaymentChoice={handleToPaymentChoice} />
         ) : currentType === "payment-choice" ? (
-          <C.PaymentChoice toPaymentAdd={handleToPaymentAdd} onBackToPungCharge={handleBackToPungCharge} />
+          <C.PaymentChoice pungAmount={pungAmount} toPaymentAdd={handleToPaymentAdd} onBackToPungCharge={handleBackToPungCharge} />
         ) : (
           <C.PaymentAdd onBackToPaymentChoice={handleBackToPaymentChoice} />
         )}
