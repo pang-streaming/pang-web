@@ -19,6 +19,7 @@ import { Market } from "@/pages/market/page";
 import { StoreDetail } from "@/pages/market-detail/page";
 import {ProfilePage} from "@/pages/profile/page";
 import { SignupRouter } from "@/features/signup/signup-router";
+import { ChargeModal } from "@/pages/charge/widget/charge-modal";
 
 function App() {
   return (
