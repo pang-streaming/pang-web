@@ -25,13 +25,13 @@ export const Provider = ({ children }: { children: ReactNode }) => {
         />
         <BrowserRouter>
           {children}
-          {/* {user && (
+          {user && (
             <InitModal
               isOpen={isModalOpen}
               onClose={closeModal}
               username={user?.username}
             />
-          )} */}
+          )}
         </BrowserRouter>
       </CustomThemeProvider>
     </QueryClientProvider>

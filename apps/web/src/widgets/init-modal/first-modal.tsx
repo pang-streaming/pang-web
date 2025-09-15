@@ -1,7 +1,4 @@
-
-
 import styled from "styled-components";
-import { useEffect } from "react";
 import { ModalSection } from "./ui/modal-section/modal-section";
 
 interface Props {
@@ -19,11 +16,6 @@ export const InitModalStep1 = ({
   gender,
   setGender,
 }: Props) => {
-  useEffect(() => {
-    console.log("user.username");
-    console.log(username);
-  }, []);
-
   return (
     <Container>
       <Title>
@@ -50,10 +42,10 @@ const Container = styled.div`
 
 const Title = styled.span`
   width: 100%;
-  font-size : ${({theme}) => theme.font.xxLarge};
+  font-size: ${({ theme }) => theme.font.xxLarge};
   font-weight: 800;
   text-align: left;
-  color: ${({theme}) => theme.colors.common.white};
+  color: ${({ theme }) => theme.colors.common.white};
 `;
 
 const ModalSectionContainer = styled.div`
