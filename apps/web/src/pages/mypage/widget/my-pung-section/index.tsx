@@ -1,12 +1,22 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as S from "./style";
 import { ChargeButton } from "@/pages/charge/ui/charge-button";
 import { ChargeModal } from "@/pages/charge/widget/charge-modal";
 import styled from "styled-components";
+import { fetchMyInfo } from "@/entities/user/api/api";
 
 export const MyPungSection = () => {
-  const mypung = 300;
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [cash, setCash] = useState(0)
+  
+  
+  useEffect(()=> {
+    const fetchPung = async () => {
+      const result = await fetchMyInfo()
+      setCash(result.data.cash)
+    }  
+    fetchPung()
+  },[])
 
   const handleChargeClick = () => {
     setIsModalOpen(true);
@@ -23,7 +33,7 @@ export const MyPungSection = () => {
         </div>
       </S.GradientCircle>
       <S.Title>
-        보유 중인 펑 : <S.HighLight>{mypung}</S.HighLight> 개
+        보유 중인 펑 : <S.HighLight>{cash}</S.HighLight> 개
       </S.Title>
       <ChargeButton onClick={handleChargeClick}>충전하기</ChargeButton>
       {isModalOpen && (

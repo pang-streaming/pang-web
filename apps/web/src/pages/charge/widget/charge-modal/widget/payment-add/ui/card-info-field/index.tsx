@@ -1,7 +1,9 @@
 import styled from "styled-components";
 
 interface Props {
-  type: "name" | "card-num" | "expiry-date" | "card-pw" | "owner" | "phone-num";
+  type: "name" | "card-num" | "expiry-date" | "card-pw" | "owner" | "phone-num" | "birth";
+  value: string | string[];
+  onChange: (value: string | string[]) => void;
 }
 
 const typeLabels: Record<Props["type"], string> = {
@@ -11,29 +13,66 @@ const typeLabels: Record<Props["type"], string> = {
   "card-pw": "비밀번호 앞 2자리",
   owner: "소유자명",
   "phone-num": "전화번호",
+  birth: "생년월일",
 };
 
-export const CardInfoField = ({ type }: Props) => {
+export const CardInfoField = ({ type, value, onChange }: Props) => {
+
   const renderFields = () => {
     if (type === "card-num") {
+      const cardNumbers = Array.isArray(value) ? value : ["", "", "", ""];
       return (
         <Row>
-          <Input />
-          <Input />
-          <Input />
-          <Input />
+          {cardNumbers.map((num, index) => (
+            <Input
+              key={index}
+              value={num}
+              maxLength={4}
+              onChange={(e) => {
+                const newNumbers = [...cardNumbers];
+                newNumbers[index] = e.target.value;
+                onChange(newNumbers);
+              }}
+            />
+          ))}
         </Row>
       );
     }
     if (type === "expiry-date") {
+      const expiryData = Array.isArray(value) ? value : ["", ""];
       return (
         <Row>
-          <Input />
-          <Input />
+          <Input
+            placeholder="MM"
+            maxLength={2}
+            value={expiryData[0]}
+            onChange={(e) => {
+              const newExpiry = [...expiryData];
+              newExpiry[0] = e.target.value;
+              onChange(newExpiry);
+            }}
+          />
+          <Input
+            placeholder="YY"
+            maxLength={2}
+            value={expiryData[1]}
+            onChange={(e) => {
+              const newExpiry = [...expiryData];
+              newExpiry[1] = e.target.value;
+              onChange(newExpiry);
+            }}
+          />
         </Row>
       );
     }
-    return <Input />;
+    return (
+      <Input
+        value={typeof value === 'string' ? value : ''}
+        onChange={(e) => onChange(e.target.value)}
+        maxLength={type === "card-pw" ? 2 : type === "birth" ? 6 : undefined}
+        placeholder={type === "birth" ? "YYMMDD" : undefined}
+      />
+    );
   };
 
   return (

@@ -22,3 +22,17 @@ export const CardListContainer = styled.div`
   background-color: ${({ theme }) => theme.colors.background.normal};
   align-items: flex-start;
 `;
+
+export const LoadingText = styled.div`
+  color: ${({ theme }) => theme.colors.text.subtitle};
+  font-size: ${({ theme }) => theme.font.medium};
+  text-align: center;
+  padding: 20px;
+`;
+
+export const EmptyText = styled.div`
+  color: ${({ theme }) => theme.colors.text.subtitle};
+  font-size: ${({ theme }) => theme.font.medium};
+  text-align: center;
+  padding: 20px;
+`;
