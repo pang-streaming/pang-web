@@ -1,9 +1,15 @@
 import styled from "styled-components";
 
-export const ChargeButton = () => {
+
+interface ChargeButtonProps {
+  children: string;
+  onClick: () => void;
+}
+
+export const ChargeButton = ({children,onClick}:ChargeButtonProps) => {
   return (
-    <Container>
-      <Text>충전하기</Text>
+    <Container onClick={onClick}>
+      <Text>{children}</Text>
     </Container>
   );
 };

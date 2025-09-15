@@ -14,7 +14,7 @@ export const MyPungSection = () => {
       <S.Title>
         보유 중인 펑 : <S.HighLight>{mypung}</S.HighLight> 개
       </S.Title>
-      <ChargeButton />
+      <ChargeButton onClick={() => {}}>충전하기</ChargeButton>
     </S.Container>
   );
 };

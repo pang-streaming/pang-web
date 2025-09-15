@@ -1,23 +1,47 @@
 import styled from "styled-components";
 import charge from "@/app/assets/images/charge.svg";
 import { ChargeButton } from "../../ui/charge-button";
+import { ChargeModal } from "../charge-modal";
+import { useState } from "react";
+
 interface ChargeBoxProps {
   type: "mypung" | "chargepung";
 }
 
 export const ChargeBox = ({ type }: ChargeBoxProps) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleChargeClick = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
-    <Container>
-      {type === "mypung" ? (
-        <StrokeCircle>
-          <span style={{ fontSize: 32 }}>💣</span>
-        </StrokeCircle>
-      ) : (
-        <img src={charge} style={{ marginRight: 20 }} />
+    <>
+      <Container>
+        {type === "mypung" ? (
+          <StrokeCircle>
+            <span style={{ fontSize: 32 }}>💣</span>
+          </StrokeCircle>
+        ) : (
+          <img src={charge} style={{ marginRight: 20 }} />
+        )}
+        <Text>{type === "mypung" ? "보유중인 펑 : 300개" : "펑 자동충전"}</Text>
+        <ChargeButton onClick={handleChargeClick}>충전하기</ChargeButton>
+      </Container>
+      
+      {isModalOpen && (
+        <ModalOverlay>
+          <ChargeModal 
+            initialType="pung-charge" 
+            onClose={handleCloseModal}
+          />
+        </ModalOverlay>
       )}
-      <Text>{type === "mypung" ? "보유중인 펑 : 300개" : "펑 자동충전"}</Text>
-      <ChargeButton />
-    </Container>
+    </>
   );
 };
 
@@ -48,4 +72,17 @@ const Text = styled.span`
   font-size: ${({ theme }) => theme.font.xxLarge};
   font-weight: 600;
   color: ${({ theme }) => theme.colors.text.normal};
+`;
+
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
 `;
