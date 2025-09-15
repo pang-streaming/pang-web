@@ -5,28 +5,75 @@ import { useDevices } from '../../hooks/useDevices';
 interface SourcesModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAddSource: (name: string, type: string, deviceId?: string) => void;
+  onAddSource: (name: string, type: string, deviceId?: string) => Promise<void>;
+  onAddImageSource: (name: string, file: File) => void;
+  onAddTextSource: (name: string, text: string, fontSize: number, color: string) => void;
+  existingSources?: Array<{ type: string; deviceId?: string }>;
 }
 
 export const SourcesModal: React.FC<SourcesModalProps> = ({
   isOpen,
   onClose,
-  onAddSource
+  onAddSource,
+  onAddImageSource,
+  onAddTextSource,
+  existingSources = []
 }) => {
   const [sourceName, setSourceName] = useState('');
   const [sourceType, setSourceType] = useState('video');
   const [selectedDevice, setSelectedDevice] = useState('');
   
+  // 이미지 소스 관련 상태
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  
+  // 텍스트 소스 관련 상태
+  const [textContent, setTextContent] = useState('');
+  const [fontSize, setFontSize] = useState(24);
+  const [textColor, setTextColor] = useState('#ffffff');
+  
   const { getVideoDevices, getAudioInputDevices, isLoading } = useDevices();
   
   const videoDevices = getVideoDevices();
   const audioInputDevices = getAudioInputDevices();
+  
+  // 화면 공유 소스가 이미 있는지 확인
+  const hasDisplaySource = existingSources.some(source => 
+    source.deviceId === 'desktop-video' || source.deviceId === 'browser-video'
+  );
 
-  const handleAddSource = () => {
+  const handleAddSource = async () => {
     if (sourceName.trim() && selectedDevice) {
-      onAddSource(sourceName.trim(), sourceType, selectedDevice);
+      await onAddSource(sourceName.trim(), sourceType, selectedDevice);
       setSourceName('');
       setSelectedDevice('');
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      if (!sourceName.trim()) {
+        setSourceName(file.name);
+      }
+    }
+  };
+
+  const handleAddImage = () => {
+    if (sourceName.trim() && selectedFile) {
+      onAddImageSource(sourceName.trim(), selectedFile);
+      setSourceName('');
+      setSelectedFile(null);
+    }
+  };
+
+  const handleAddText = () => {
+    if (sourceName.trim() && textContent.trim()) {
+      onAddTextSource(sourceName.trim(), textContent.trim(), fontSize, textColor);
+      setSourceName('');
+      setTextContent('');
+      setFontSize(24);
+      setTextColor('#ffffff');
     }
   };
 
@@ -77,35 +124,100 @@ export const SourcesModal: React.FC<SourcesModalProps> = ({
             </TypeSelect>
           </TypeSection>
           
-          {(sourceType === 'video' || sourceType === 'audio') && (
-            <DeviceSection>
-              <Label>디바이스 선택</Label>
-              <DeviceSelect
-                value={selectedDevice}
-                onChange={(e) => setSelectedDevice(e.target.value)}
-                disabled={isLoading}
-              >
-                <option value="">디바이스를 선택하세요</option>
-                {sourceType === 'video' && videoDevices.map(device => (
-                  <option key={device.id} value={device.id}>
-                    {device.label}
+        {(sourceType === 'video' || sourceType === 'audio') && (
+          <DeviceSection>
+            <Label>디바이스 선택</Label>
+            <DeviceSelect
+              value={selectedDevice}
+              onChange={(e) => setSelectedDevice(e.target.value)}
+              disabled={isLoading}
+            >
+              <option value="">디바이스를 선택하세요</option>
+              {sourceType === 'video' && videoDevices.map(device => {
+                const isDisplaySource = device.id === 'desktop-video' || device.id === 'browser-video';
+                const isDisabled = isDisplaySource && hasDisplaySource;
+                return (
+                  <option 
+                    key={device.id} 
+                    value={device.id}
+                    disabled={isDisabled}
+                  >
+                    {device.label}{isDisabled ? ' (이미 추가됨)' : ''}
                   </option>
-                ))}
-                {sourceType === 'audio' && audioInputDevices.map(device => (
-                  <option key={device.id} value={device.id}>
-                    {device.label}
-                  </option>
-                ))}
-              </DeviceSelect>
-            </DeviceSection>
-          )}
-          
-          <AddSourceButton 
-            onClick={handleAddSource}
-            disabled={!sourceName.trim() || !selectedDevice}
-          >
-            + 소스 추가
-          </AddSourceButton>
+                );
+              })}
+              {sourceType === 'audio' && audioInputDevices.map(device => (
+                <option key={device.id} value={device.id}>
+                  {device.label}
+                </option>
+              ))}
+            </DeviceSelect>
+          </DeviceSection>
+        )}
+
+        {sourceType === 'image' && (
+          <ImageSection>
+            <Label>이미지 파일</Label>
+            <FileInput
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
+            {selectedFile && (
+              <FilePreview>
+                <FileInfo>선택된 파일: {selectedFile.name}</FileInfo>
+                <FileSize>{(selectedFile.size / 1024 / 1024).toFixed(2)} MB</FileSize>
+              </FilePreview>
+            )}
+          </ImageSection>
+        )}
+
+        {sourceType === 'text' && (
+          <TextSection>
+            <Label>텍스트 내용</Label>
+            <TextArea
+              value={textContent}
+              onChange={(e) => setTextContent(e.target.value)}
+              placeholder="텍스트를 입력하세요"
+              rows={3}
+            />
+            <TextOptions>
+              <TextOption>
+                <Label>글자 크기</Label>
+                <NumberInput
+                  type="number"
+                  value={fontSize}
+                  onChange={(e) => setFontSize(Number(e.target.value))}
+                  min="12"
+                  max="72"
+                />
+              </TextOption>
+              <TextOption>
+                <Label>글자 색상</Label>
+                <ColorInput
+                  type="color"
+                  value={textColor}
+                  onChange={(e) => setTextColor(e.target.value)}
+                />
+              </TextOption>
+            </TextOptions>
+          </TextSection>
+        )}
+
+        <AddSourceButton
+          onClick={
+            sourceType === 'image' ? handleAddImage :
+            sourceType === 'text' ? handleAddText :
+            handleAddSource
+          }
+          disabled={
+            sourceType === 'image' ? (!sourceName.trim() || !selectedFile) :
+            sourceType === 'text' ? (!sourceName.trim() || !textContent.trim()) :
+            (!sourceName.trim() || !selectedDevice)
+          }
+        >
+          + 소스 추가
+        </AddSourceButton>
         </ModalContent>
       </ModalContainer>
     </ModalOverlay>
@@ -280,5 +392,121 @@ const AddSourceButton = styled.button`
   }
 `;
 
+const ImageSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+`;
+
+const FileInput = styled.input`
+  padding: 8px 12px;
+  background-color: ${({ theme }) => theme.colors.background.dark};
+  border: 1px solid ${({ theme }) => theme.colors.stroke.normal};
+  border-radius: 4px;
+  color: ${({ theme }) => theme.colors.common.white};
+  font-size: 14px;
+  box-sizing: border-box;
+  
+  &::file-selector-button {
+    background-color: ${({ theme }) => theme.colors.primary.normal};
+    color: ${({ theme }) => theme.colors.common.white};
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    margin-right: 12px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+`;
+
+const FilePreview = styled.div`
+  padding: 12px;
+  background-color: ${({ theme }) => theme.colors.background.dark};
+  border: 1px solid ${({ theme }) => theme.colors.stroke.normal};
+  border-radius: 4px;
+`;
+
+const FileInfo = styled.div`
+  font-size: 14px;
+  color: ${({ theme }) => theme.colors.common.white};
+  margin-bottom: 4px;
+`;
+
+const FileSize = styled.div`
+  font-size: 12px;
+  color: ${({ theme }) => theme.colors.text.subtitle};
+`;
+
+const TextSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+`;
+
+const TextArea = styled.textarea`
+  width: 100%;
+  padding: 12px 16px;
+  background-color: ${({ theme }) => theme.colors.background.dark};
+  border: 1px solid ${({ theme }) => theme.colors.stroke.normal};
+  border-radius: 4px;
+  color: ${({ theme }) => theme.colors.common.white};
+  font-size: 14px;
+  resize: vertical;
+  min-height: 80px;
+  box-sizing: border-box;
+  
+  &::placeholder {
+    color: ${({ theme }) => theme.colors.text.placeholder};
+  }
+  
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.primary.normal};
+  }
+`;
+
+const TextOptions = styled.div`
+  display: flex;
+  gap: 16px;
+`;
+
+const TextOption = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+`;
+
+const NumberInput = styled.input`
+  width: 100%;
+  padding: 8px 12px;
+  background-color: ${({ theme }) => theme.colors.background.dark};
+  border: 1px solid ${({ theme }) => theme.colors.stroke.normal};
+  border-radius: 4px;
+  color: ${({ theme }) => theme.colors.common.white};
+  font-size: 14px;
+  box-sizing: border-box;
+  
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.primary.normal};
+  }
+`;
+
+const ColorInput = styled.input`
+  width: 100%;
+  height: 40px;
+  padding: 4px;
+  background-color: ${({ theme }) => theme.colors.background.dark};
+  border: 1px solid ${({ theme }) => theme.colors.stroke.normal};
+  border-radius: 4px;
+  cursor: pointer;
+  box-sizing: border-box;
+  
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.primary.normal};
+  }
+`;
 
 export default SourcesModal;

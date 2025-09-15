@@ -7,16 +7,14 @@ interface ScenesModalProps {
   isOpen: boolean;
   onClose: () => void;
   scenes: StreamScene[];
-  onAddScene: (name: string, selectedDevices?: string[]) => void;
+  onAddScene: (name: string, selectedDevices?: string[]) => Promise<void>;
   onSelectScene: (sceneId: string) => void;
 }
 
 export const ScenesModal: React.FC<ScenesModalProps> = ({
   isOpen,
   onClose,
-  scenes,
-  onAddScene,
-  onSelectScene
+  onAddScene
 }) => {
   const [sceneName, setSceneName] = useState('');
   const [activeTab, setActiveTab] = useState<'screen' | 'audio'>('screen');
@@ -110,13 +108,13 @@ export const ScenesModal: React.FC<ScenesModalProps> = ({
                   <EmptyText>사용 가능한 비디오 디바이스가 없습니다.</EmptyText>
                 )}
                 
-                <AddSceneButton onClick={() => {
+                <AddSceneButton onClick={async () => {
                   const selectedDevicesArray = Array.from(selectedDevices);
                   if (sceneName.trim()) {
-                    onAddScene(sceneName.trim(), selectedDevicesArray);
+                    await onAddScene(sceneName.trim(), selectedDevicesArray);
                     setSceneName('');
                   } else {
-                    onAddScene(`새 ${activeTab === 'screen' ? '화면' : '오디오'} 장면`, selectedDevicesArray);
+                    await onAddScene(`새 ${activeTab === 'screen' ? '화면' : '오디오'} 장면`, selectedDevicesArray);
                   }
                 }}>
                   + 장면 추가
@@ -145,13 +143,13 @@ export const ScenesModal: React.FC<ScenesModalProps> = ({
                   <EmptyText>사용 가능한 오디오 디바이스가 없습니다.</EmptyText>
                 )}
                 
-                <AddSceneButton onClick={() => {
+                <AddSceneButton onClick={async () => {
                   const selectedDevicesArray = Array.from(selectedDevices);
                   if (sceneName.trim()) {
-                    onAddScene(sceneName.trim(), selectedDevicesArray);
+                    await onAddScene(sceneName.trim(), selectedDevicesArray);
                     setSceneName('');
                   } else {
-                    onAddScene(`새 ${activeTab === 'screen' ? '화면' : '오디오'} 장면`, selectedDevicesArray);
+                    await onAddScene(`새 오디오 장면`, selectedDevicesArray);
                   }
                 }}>
                   + 장면 추가

@@ -8,13 +8,6 @@ import { useStreaming } from '../hooks/useStreaming';
 
 
 
-interface AudioSource {
-  id: string;
-  name: string;
-  level: number;
-  muted: boolean;
-}
-
 interface TopContributor {
   rank: number;
   name: string;
@@ -38,17 +31,17 @@ const StreamingPage: React.FC = () => {
     addScene,
     switchScene,
     addSource,
+    addImageSource,
+    addTextSource,
     toggleSourceVisibility,
+    setAudioLevel,
+    toggleAudioMute,
+    requestDisplayMedia,
     startStreaming,
     stopStreaming
   } = useStreaming();
   
   const [streamTitle, setStreamTitle] = useState<string>('스트리머의 방송');
-
-  const audioSources: AudioSource[] = [
-    { id: 'mic', name: '마이크', level: -20, muted: false },
-    { id: 'system', name: '시스템', level: -35, muted: false }
-  ];
 
   const topContributors: TopContributor[] = [
     { rank: 1, name: '대듀', amount: '208,000' },
@@ -86,18 +79,16 @@ const StreamingPage: React.FC = () => {
     toggleSourceVisibility(sourceId);
   };
   
-  const handleVolumeChange = (_sourceId: string, _level: number) => {
-  };
   
   const handleSendMessage = (_message: string) => {
   };
 
-  const handleAddScene = (name: string, selectedDevices?: string[]) => {
-    addScene(name, selectedDevices);
+  const handleAddScene = async (name: string, selectedDevices?: string[]) => {
+    await addScene(name, selectedDevices);
   };
 
-  const handleAddSource = (name: string, type: string, deviceId?: string) => {
-    addSource(name, type as 'video' | 'audio' | 'image' | 'text', deviceId);
+  const handleAddSource = async (name: string, type: string, deviceId?: string) => {
+    await addSource(name, type as 'video' | 'audio' | 'image' | 'text', deviceId);
   };
 
 
@@ -119,17 +110,31 @@ const StreamingPage: React.FC = () => {
           <StreamPreview 
             onTagClick={handleTagClick}
             previewStream={previewStream}
+            sources={sources}
+            activeScene={scenes.find(scene => scene.active)}
+            onSourceClick={(sourceId) => {
+              console.log('Source clicked:', sourceId);
+            }}
+            onRequestDisplayMedia={async (sourceId) => {
+              try {
+                await requestDisplayMedia(sourceId);
+              } catch (error) {
+                console.error('화면 공유 오류:', error);
+              }
+            }}
           />
           
           <PanelControl 
             scenes={scenes}
             sources={sources}
-            audioSources={audioSources}
             onSceneChange={handleSceneChange}
             onSourceToggle={handleSourceToggle}
-            onVolumeChange={handleVolumeChange}
+            onVolumeChange={setAudioLevel}
+            onMuteToggle={toggleAudioMute}
             onAddScene={handleAddScene}
             onAddSource={handleAddSource}
+            onAddImageSource={addImageSource}
+            onAddTextSource={addTextSource}
           />
         </MainContent>
         

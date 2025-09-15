@@ -10,35 +10,35 @@ interface Source {
   name: string;
   type: string;
   visible: boolean;
-}
-
-interface AudioSource {
-  id: string;
-  name: string;
-  level: number;
-  muted: boolean;
+  deviceId?: string;
+  audioLevel?: number;
+  audioMuted?: boolean;
 }
 
 interface PanelControlProps {
   scenes: StreamScene[];
   sources?: Source[];
-  audioSources?: AudioSource[];
   onSceneChange: (sceneId: string) => void;
   onSourceToggle?: (sourceId: string) => void;
   onVolumeChange?: (sourceId: string, level: number) => void;
-  onAddScene?: (name: string, selectedDevices?: string[]) => void;
-  onAddSource?: (name: string, type: string, deviceId?: string) => void;
+  onMuteToggle?: (sourceId: string) => void;
+  onAddScene?: (name: string, selectedDevices?: string[]) => Promise<void>;
+  onAddSource?: (name: string, type: string, deviceId?: string) => Promise<void>;
+  onAddImageSource?: (name: string, file: File) => void;
+  onAddTextSource?: (name: string, text: string, fontSize: number, color: string) => void;
 }
 
 export const PanelControl: React.FC<PanelControlProps> = ({
   scenes,
   sources = [],
-  audioSources = [],
   onSceneChange,
   onSourceToggle,
   onVolumeChange,
+  onMuteToggle,
   onAddScene,
-  onAddSource
+  onAddSource,
+  onAddImageSource,
+  onAddTextSource
 }) => {
   const [isScenesModalOpen, setIsScenesModalOpen] = useState(false);
   const [isSourcesModalOpen, setIsSourcesModalOpen] = useState(false);
@@ -109,50 +109,71 @@ export const PanelControl: React.FC<PanelControlProps> = ({
           </PanelHeader>
           <PanelContent>
             <AudioList>
-              {audioSources.map(source => {
-                const audioLevel = audioLevels.find(level => level.deviceId === source.id);
-                const currentLevel = audioLevel ? audioLevel.level : source.level;
-                
-                return (
-                  <AudioItem key={source.id}>
-                    <AudioName>{source.name}</AudioName>
-                    <VolumeControl>
-                      <VolumeSlider
-                        type="range"
-                        min="-60"
-                        max="0"
-                        value={currentLevel}
-                        onChange={(e) => onVolumeChange && onVolumeChange(source.id, parseInt(e.target.value))}
+              {activeSceneSources
+                .filter(source => source.type === 'audio')
+                .map(source => {
+                  const audioLevel = audioLevels.find(level => level.deviceId === source.id);
+                  const currentLevel = source.audioLevel ?? (audioLevel ? audioLevel.level : -20);
+                  const isMuted = source.audioMuted ?? (audioLevel?.muted || false);
+                  
+                  return (
+                    <AudioItem key={source.id}>
+                      <AudioName>{source.name}</AudioName>
+                      <VolumeControl>
+                        <VolumeSlider
+                          type="range"
+                          min="-60"
+                          max="0"
+                          value={currentLevel}
+                          onChange={(e) => onVolumeChange && onVolumeChange(source.id, parseInt(e.target.value))}
+                        />
+                      </VolumeControl>
+                      <MuteButton 
+                        $muted={isMuted}
+                        onClick={() => onMuteToggle && onMuteToggle(source.id)}
                       />
-                    </VolumeControl>
-                    <MuteButton $muted={audioLevel?.muted || source.muted} />
-                  </AudioItem>
-                );
-              })}
+                    </AudioItem>
+                  );
+                })}
+              {activeSceneSources.filter(source => source.type === 'audio').length === 0 && (
+                <EmptyAudioText>오디오 소스가 없습니다</EmptyAudioText>
+              )}
             </AudioList>
           </PanelContent>
         </AudioPanel>
       </PanelsRow>
       
-      <ScenesModal
-        isOpen={isScenesModalOpen}
-        onClose={() => setIsScenesModalOpen(false)}
-        scenes={scenes}
-        onAddScene={(name, selectedDevices) => {
-          onAddScene?.(name, selectedDevices);
-          setIsScenesModalOpen(false);
-        }}
-        onSelectScene={onSceneChange}
-      />
-      
-      <SourcesModal
-        isOpen={isSourcesModalOpen}
-        onClose={() => setIsSourcesModalOpen(false)}
-        onAddSource={(name, type, deviceId) => {
-          onAddSource?.(name, type, deviceId);
-          setIsSourcesModalOpen(false);
-        }}
-      />
+            <ScenesModal
+              isOpen={isScenesModalOpen}
+              onClose={() => setIsScenesModalOpen(false)}
+              scenes={scenes}
+              onAddScene={async (name, selectedDevices) => {
+                await onAddScene?.(name, selectedDevices);
+                setIsScenesModalOpen(false);
+              }}
+              onSelectScene={onSceneChange}
+            />
+
+            <SourcesModal
+              isOpen={isSourcesModalOpen}
+              onClose={() => setIsSourcesModalOpen(false)}
+              onAddSource={async (name, type, deviceId) => {
+                await onAddSource?.(name, type, deviceId);
+                setIsSourcesModalOpen(false);
+              }}
+              onAddImageSource={(name, file) => {
+                onAddImageSource?.(name, file);
+                setIsSourcesModalOpen(false);
+              }}
+              onAddTextSource={(name, text, fontSize, color) => {
+                onAddTextSource?.(name, text, fontSize, color);
+                setIsSourcesModalOpen(false);
+              }}
+              existingSources={sources.map(source => ({
+                type: source.type,
+                deviceId: source.deviceId
+              }))}
+            />
     </ControlPanelsContainer>
   );
 };
@@ -396,6 +417,13 @@ const MuteButton = styled.button<MuteButtonProps>`
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
+`;
+
+const EmptyAudioText = styled.div`
+  font-size: 12px;
+  color: ${({ theme }) => theme.colors.text.subtitle};
+  text-align: center;
+  padding: 20px 0;
 `;
 
 export default PanelControl;
