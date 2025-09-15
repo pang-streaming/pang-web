@@ -2,7 +2,9 @@ import styled from "styled-components";
 import {TabTitleText} from "@/shared/ui/tab-title-text";
 import {Segment, SegmentButtonGroup} from "@pang/shared/ui";
 import React from "react";
-import {VideoItem, VideoList} from "@/shared/ui/video/VideoList";
+import {VideoItem, VideoList} from "@/shared/ui/video/video-list";
+import {ChipList} from "@/shared/ui/chip/chip-list";
+import {Chip} from "@/entities/chip/model/type";
 
 
 const liveVideos: VideoItem[] = [
@@ -108,6 +110,19 @@ const segments: Segment[] = [
 	}
 ]
 
+const chips: Chip[] = [
+	{
+		id: '1',
+		name: 'asd',
+		type: 'normal'
+	},
+	{
+		id: '2',
+		name: 'asdsd',
+		type: 'normal'
+	},
+]
+
 export const CategoryDetail = () => {
 	return (
 		<CategoryDetailContainer>
@@ -117,6 +132,7 @@ export const CategoryDetail = () => {
 				<CategoryInfoWrapper>
 					<Title>포르자 호라이즌 5</Title>
 					<CategoryInfo>시청자 24명 · 라이브 1개</CategoryInfo>
+					<ChipList chips={chips}/>
 				</CategoryInfoWrapper>
 			</CategoryBoxWrapper>
 			<SegmentHeader>

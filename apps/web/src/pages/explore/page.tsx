@@ -1,7 +1,7 @@
 import { TabTitleText } from "@/shared/ui/tab-title-text";
 import styled from "styled-components";
 import {Segment, SegmentButtonGroup} from "@pang/shared/ui";
-import {VideoItem, VideoList} from "@/shared/ui/video/VideoList";
+import {VideoItem, VideoList} from "@/shared/ui/video/video-list";
 
 const segments: Segment[] = [
 	{
