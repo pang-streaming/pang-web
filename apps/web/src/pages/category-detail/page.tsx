@@ -113,12 +113,17 @@ const segments: Segment[] = [
 const chips: Chip[] = [
 	{
 		id: '1',
-		name: 'asd',
-		type: 'normal'
+		name: '배틀그라운드',
+		type: 'main'
 	},
 	{
 		id: '2',
-		name: 'asdsd',
+		name: '팡페스티벌',
+		type: 'special'
+	},
+	{
+		id: '3',
+		name: '치지직',
 		type: 'normal'
 	},
 ]

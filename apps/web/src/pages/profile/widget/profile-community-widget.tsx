@@ -52,27 +52,6 @@ const CommunityTagWrapper = styled.div`
 	align-items: center;
 `
 
-const CommunityTagList = styled.div`
-	display: flex;
-	flex-direction: row;
-	gap: 10px;
-`
-
-const CommunityTag = styled.span<{selected?: boolean}>`
-	border-radius: ${({theme}) => theme.borders.maximum};
-	padding: 4px 10px;
-	color: ${({theme, selected}) => selected ? theme.colors.background.dark : theme.colors.text.subtitle};
-	border: 2px solid ${({theme, selected}) => selected ? theme.colors.text.normal : theme.colors.text.subtitle};
-	background-color: ${({theme, selected}) => selected ? theme.colors.text.normal : 'none'};
-	cursor: pointer;
-	font-size: ${({theme}) => theme.font.medium};
-	font-weight: 700;
-	user-select: none;
-	&:hover {
-			background-color: ${({theme, selected}) => selected ? theme.colors.text.normal : theme.colors.hover.light};
-	}
-`
-
 const WriteButton = styled.button`
 	outline: none;
 	border: none;
