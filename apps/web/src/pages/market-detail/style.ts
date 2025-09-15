@@ -54,11 +54,7 @@ export const BackButton = styled.button`
   border-radius: 8px;
   border: none;
   background: #2a2a2a;
-<<<<<<< Updated upstream:apps/web/src/pages/market-detail/style.ts
   color: ${({theme}) => theme.colors.text.normal};
-=======
-  color: ${({theme})=>theme.colors.text.normal};
->>>>>>> Stashed changes:apps/web/src/pages/store-detail/style.ts
   cursor: pointer;
 `;
 
@@ -69,11 +65,7 @@ export const Fallback = styled.div`
   align-items: center;
   justify-content: center;
   gap: 12px;
-<<<<<<< Updated upstream:apps/web/src/pages/market-detail/style.ts
   color: ${({theme}) => theme.colors.text.normal};
-=======
-  color: ${({theme})=>theme.colors.text.normal};;
->>>>>>> Stashed changes:apps/web/src/pages/store-detail/style.ts
 `;
 
 export const UserInfoContainer = styled.div`
@@ -126,4 +118,14 @@ export const DetailButtonText = styled.span`
   font-size: ${({theme}) => theme.font.medium};
   font-weight: 500;
 	user-select: none;
+`;
+
+export const Description = styled.span`
+  width: 100%;
+  background-color: red;
+  align-self: center;
+  padding: 20px 120px;
+  box-sizing: border-box;
+  color: ${({ theme }) => theme.colors.text.normal};
+  white-space: pre-wrap;
 `;

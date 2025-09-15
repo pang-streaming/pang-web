@@ -10,7 +10,7 @@ import Game from "@/app/assets/game.svg?react";
 import { CategoryBox } from "./ui/category-box";
 import { TagBox } from "./ui/tag-box";
 import { ProductCard } from "./ui/product-card";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Product } from "@/entities/product/model/type";
 import { TabTitleText } from "@/shared/ui/tab-title-text";
 
@@ -61,9 +61,9 @@ export const Market = () => {
 
 
   const dummyProducts: Product[] = [
-    { id: "1", name: "귀여운 VTuber 굿즈", price: 12000, image: "https://picsum.photos/200" },
-    { id: "2", name: "3D 모델링 캐릭터", price: 30000, image: "https://picsum.photos/350" },
-    { id: "3", name: "한정판 일러스트 인데 이게 정말 좋은 희귀한 한정판 일러스트입니다. 진짜 대박이에요", price: 18000, image: "https://picsum.photos/400" },
+    { seller: "이기찬",id: "1", name: "귀여운 VTuber 굿즈", price: 12000, image: "https://picsum.photos/200" },
+    { seller: "이상은",id: "2", name: "3D 모델링 캐릭터", price: 30000, image: "https://picsum.photos/350" },
+    { seller: "김민규",id: "3", name: "한정판 일러스트 인데 이게 정말 좋은 희귀한 한정판 일러스트입니다. 진짜 대박이에요", price: 18000, image: "https://picsum.photos/400" },
   ];
 
   const [products, setProducts] = useState<Product[]>(dummyProducts);
@@ -107,6 +107,7 @@ export const Market = () => {
             image={product.image}
             title={product.name}
             price={product.price}
+            seller={product.seller}
             onClick={() =>
                 navigate("/market-detail", { state: product })
             }

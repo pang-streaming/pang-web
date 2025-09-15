@@ -3,29 +3,38 @@ import { GenderPicker } from "./gender-section";
 import { AgeSection } from "./age-section";
 import genderIcon from '@/app/assets/gender.svg';
 import calendarIcon from '@/app/assets/calander.svg';
+import { NicknameSection } from "./nickname-section";
 
 export const ModalSection = ({
-  isAge,
+  type,
   birth,
   setBirth,
   gender,
   setGender,
+  nickname,
+  setNickname
 }: {
-  isAge: boolean;
+  type: 'age' | 'gender' | 'nickname';
   birth?: string;
   setBirth?: (value: string) => void;
   gender?: string;
   setGender?: (value: "MALE" | "FEMALE" | "OTHER") => void;
+  nickname?: string;
+  setNickname?: (value: string) => void;
 }) => {
   return (
     <ModalSectionContainer>
-      <img src={isAge ? calendarIcon : genderIcon} />
+      <img src={type == 'age' ? calendarIcon : type == 'gender' ?  genderIcon : ""} />
       <ModalSectionDivider />
-      {isAge ? (
+      {type == 'age' ? (
         <AgeSection birth={birth || ""} setBirth={setBirth!} />
       ) : (
-        <GenderPicker gender={gender || ""} setGender={setGender!} />
-      )}
+        type == 'gender' ? ( 
+          <GenderPicker gender={gender || ""} setGender={setGender!} />
+        ) : <NicknameSection nickname={nickname || ""} setNickname={setNickname!} />
+      )
+      
+      }
     </ModalSectionContainer>
   );
 };

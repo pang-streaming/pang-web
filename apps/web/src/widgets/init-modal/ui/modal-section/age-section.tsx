@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 export const AgeSection = ({
   birth,
-  setBirth,
+  setBirth, 
 }: {
   birth: string;
   setBirth: (value: string) => void;

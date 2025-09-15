@@ -10,11 +10,11 @@ import {SubmitButton} from "@pang/shared/ui";
 import Buy from "@/app/assets/shopping-cart.svg?react";
 import Gift from "@/app/assets/gift.svg?react";
 
-export const StoreDetail = () => {
+export const MarketDetail = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const state = location.state as
-    | { image: string; name: string; price: number }
+    | { image: string; name: string; price: number; seller: string; }
     | undefined;
 
   if (!state) {
@@ -34,7 +34,7 @@ export const StoreDetail = () => {
           <S.ProductInfoSection>
             <S.UserInfoContainer>
               <S.UserAvatar src={normalProfile} />
-              <S.Username>Siromori</S.Username>
+              <S.Username>{state.seller}</S.Username>
             </S.UserInfoContainer>
             <S.ProductTitle>{state.name}</S.ProductTitle>
             <S.Spacer />

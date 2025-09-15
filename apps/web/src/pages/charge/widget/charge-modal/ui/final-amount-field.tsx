@@ -9,7 +9,6 @@ interface FinalAmountFieldProps {
 }
 
 export const FinalAmountField = ({ pungAmount }: FinalAmountFieldProps) => {
-  // 충전할 펑 + 10% 수수료
   const totalAmount = Math.floor(pungAmount * 1.1);
   
   return (

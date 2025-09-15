@@ -7,6 +7,8 @@ interface Props {
   setBirth: (value: string) => void;
   gender: "MALE" | "FEMALE" | "OTHER" | "";
   setGender: (value: "MALE" | "FEMALE" | "OTHER") => void;
+  nickname: string;
+  setNickname: (value: string) => void;
 }
 
 export const InitModalStep1 = ({
@@ -15,6 +17,8 @@ export const InitModalStep1 = ({
   setBirth,
   gender,
   setGender,
+  nickname,
+  setNickname
 }: Props) => {
   return (
     <Container>
@@ -24,8 +28,9 @@ export const InitModalStep1 = ({
         나이와 성별을 선택해주세요
       </Title>
       <ModalSectionContainer>
-        <ModalSection isAge={true} birth={birth} setBirth={setBirth} />
-        <ModalSection isAge={false} gender={gender} setGender={setGender} />
+        <ModalSection type="age" birth={birth} setBirth={setBirth} />
+        <ModalSection type="gender" gender={gender} setGender={setGender} />
+        <ModalSection type="nickname" nickname={nickname} setNickname={setNickname} />
       </ModalSectionContainer>
     </Container>
   );

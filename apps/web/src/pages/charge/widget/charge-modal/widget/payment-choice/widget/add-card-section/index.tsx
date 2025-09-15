@@ -38,7 +38,7 @@ export const GradientCircle = styled.div<{ size?: number; innerBg?: string }>`
   width: ${({ size = 60 }) => `${size}px`};
   height: ${({ size = 60 }) => `${size}px`};
   padding: 1px;
-  border-radius: 50%;
+  border-radius: ${({theme}) =>theme.borders.maximum};
   background: linear-gradient(to bottom, ${({theme}) => theme.colors.primary.normal}, ${({theme}) => theme.colors.secondary.normal});
   display: flex;
   align-items: center;
