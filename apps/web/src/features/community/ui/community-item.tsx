@@ -40,7 +40,7 @@ const CommunityItemContainer = styled.div<{isNotification: boolean}>`
 	border-radius: ${({theme}) => theme.borders.xlarge};
 	cursor: pointer;
 	&:hover {
-			background-color: ${({theme}) => theme.colors.hover.light};\
+			background-color: ${({theme}) => theme.colors.hover.light};
 	}
 `
 

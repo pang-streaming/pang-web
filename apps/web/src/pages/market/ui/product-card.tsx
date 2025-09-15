@@ -5,10 +5,11 @@ interface ProductCardProps {
   image?: string;
   title: string;
   price: number;
+  seller: string;
   onClick?: () => void;
 }
 
-export function ProductCard({ image, title, price, onClick }: ProductCardProps) {
+export function ProductCard({ image, title, seller, price, onClick }: ProductCardProps) {
   return (
     <Card onClick={onClick}>
       <Image src={image ?? ""} alt={title} />
