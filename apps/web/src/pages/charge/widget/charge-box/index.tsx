@@ -2,7 +2,8 @@ import styled from "styled-components";
 import charge from "@/app/assets/images/charge.svg";
 import { ChargeButton } from "../../ui/charge-button";
 import { ChargeModal } from "../charge-modal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { fetchMyInfo } from "@/entities/user/api/api";
 
 interface ChargeBoxProps {
   type: "mypung" | "chargepung";
@@ -10,6 +11,16 @@ interface ChargeBoxProps {
 
 export const ChargeBox = ({ type }: ChargeBoxProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [cash, setCash] = useState(0)
+  
+  useEffect(()=> {
+    const fetchPung = async () => {
+      const result = await fetchMyInfo()
+      setCash(result.data.cash)
+    }  
+    fetchPung()
+  },[])
 
   const handleChargeClick = () => {
     setIsModalOpen(true);
@@ -42,7 +53,7 @@ export const ChargeBox = ({ type }: ChargeBoxProps) => {
             </span>
           </div>
         )}
-        <Text>{type === "mypung" ? "보유중인 펑 : 300개" : "펑 자동충전"}</Text>
+        <Text>{type === "mypung" ? `보유중인 펑 : ${cash.toLocaleString()}개` : "펑 자동충전"}</Text>
         <ChargeButton onClick={handleChargeClick}>충전하기</ChargeButton>
       </Container>
 

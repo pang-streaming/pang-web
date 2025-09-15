@@ -2,6 +2,7 @@ import * as S from "./style";
 import { Header } from "./widget/header";
 import * as C from './widget/index'
 import { useState } from "react";
+import { paymentApi } from "@/entities/payment/api";
 
 interface ChargeModalProps {
   initialType?: "pung-charge" | "payment-choice" | "payment-add";
@@ -11,6 +12,7 @@ interface ChargeModalProps {
 export const ChargeModal = ({ initialType = "pung-charge", onClose }: ChargeModalProps) => {
   const [currentType, setCurrentType] = useState<"pung-charge" | "payment-choice" | "payment-add">(initialType);
   const [pungAmount, setPungAmount] = useState(1000);
+  const [cardRefreshTrigger, setCardRefreshTrigger] = useState(0);
 
   const handlePungChange = (amount: number) => {
     setPungAmount(amount);
@@ -28,8 +30,31 @@ export const ChargeModal = ({ initialType = "pung-charge", onClose }: ChargeModa
     setCurrentType("payment-choice");
   };
 
+  const handleCardAdded = () => {
+    setCardRefreshTrigger(prev => prev + 1);
+  };
+
   const handleBackToPungCharge = () => {
     setCurrentType("pung-charge");
+  };
+
+  const handleCharge = async (cardId: string, amount: number) => {
+    try {
+      const result = await paymentApi.processPayment(cardId, amount);
+      console.log('결제 성공:', result);
+
+      // 성공 시 모달 닫기 또는 성공 페이지로 이동
+      if (onClose) {
+        onClose();
+      }
+
+      // 여기에 성공 메시지나 다른 처리 로직을 추가할 수 있습니다
+      alert(`결제가 완료되었습니다!`);
+
+    } catch (error) {
+      console.error('결제 실패:', error);
+      alert('결제에 실패했습니다. 다시 시도해 주세요.');
+    }
   };
 
   return (
@@ -45,9 +70,9 @@ export const ChargeModal = ({ initialType = "pung-charge", onClose }: ChargeModa
         {currentType === "pung-charge" ? (
           <C.PungCharge pungAmount={pungAmount} onPungChange={handlePungChange} toPaymentChoice={handleToPaymentChoice} />
         ) : currentType === "payment-choice" ? (
-          <C.PaymentChoice pungAmount={pungAmount} toPaymentAdd={handleToPaymentAdd} onBackToPungCharge={handleBackToPungCharge} />
+          <C.PaymentChoice pungAmount={pungAmount} toPaymentAdd={handleToPaymentAdd} onBackToPungCharge={handleBackToPungCharge} onCardAdded={handleCardAdded} cardRefreshTrigger={cardRefreshTrigger} onCharge={handleCharge} />
         ) : (
-          <C.PaymentAdd onBackToPaymentChoice={handleBackToPaymentChoice} />
+          <C.PaymentAdd onBackToPaymentChoice={handleBackToPaymentChoice} onCardAdded={handleCardAdded} />
         )}
       </S.Content>
     </S.Container>

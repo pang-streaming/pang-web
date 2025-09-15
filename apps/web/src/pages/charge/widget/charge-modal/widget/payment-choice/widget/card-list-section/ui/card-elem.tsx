@@ -2,43 +2,31 @@
 
 import React from 'react'
 import styled from 'styled-components'
-import menu from '@/app/assets/payment/menu.svg'
-import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
 
 interface CardElemProps {
     id: string;
     image: string;
     cardName: string;
+    isSelected: boolean;
+    onSelect: (id: string) => void;
 }
 
-export const CardElem = ({id, image, cardName}: CardElemProps) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
+export const CardElem = ({id, image, cardName, isSelected, onSelect}: CardElemProps) => {
+  const handleClick = () => {
+    onSelect(id);
   };
 
   return (
-    <Container ref={setNodeRef} style={style} {...attributes} {...listeners}>
+    <Container onClick={handleClick} isSelected={isSelected}>
         <img style={{marginRight:10}} src={image} />
         <Text>{cardName}</Text>
-        <img src={menu} />
+        {isSelected && <SelectionIndicator />}
     </Container>
   )
 }
 
 
-const Container = styled.div`
+const Container = styled.div<{ isSelected: boolean }>`
     width: 100%;
     display: flex;
     justify-content: flex-start;
@@ -46,15 +34,33 @@ const Container = styled.div`
     box-sizing: border-box;
     padding: 8px;
     border-radius: ${({ theme }) => theme.borders.small};
-    cursor: grab;
-    transition: background-color 0.2s ease;
-    
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid ${({ theme, isSelected }) =>
+        isSelected ? theme.colors.primary.normal : 'transparent'};
+    background-color: ${({ theme, isSelected }) =>
+        isSelected ? theme.colors.primary.light : 'transparent'};
+
     &:hover {
-        background-color: ${({ theme }) => theme.colors.background.light};
+        background-color: ${({ theme, isSelected }) =>
+            isSelected ? theme.colors.primary.light : theme.colors.background.light};
     }
-    
-    &:active {
-        cursor: grabbing;
+`
+
+const SelectionIndicator = styled.div`
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: ${({ theme }) => theme.colors.primary.normal};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &::after {
+        content: '✓';
+        color: white;
+        font-size: 12px;
+        font-weight: bold;
     }
 `
 const Text = styled.span`
