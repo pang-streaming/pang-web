@@ -42,7 +42,7 @@ export const EmptyText = styled.span`
   justify-content: center;
   align-items: center;
   background-color: ${({ theme }) => theme.colors.text.subtitle};
-  color: ${({theme}) => theme.colors.common.white};
+  color: ${({theme}) => theme.colors.text.normal};
   border-radius: 12px;
   margin-bottom: 10px;
 `;

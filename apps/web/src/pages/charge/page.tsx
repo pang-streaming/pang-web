@@ -3,7 +3,6 @@ import * as S from "./style";
 import { Segment, SegmentButtonGroup } from "@pang/shared/ui";
 import { ChargeBox } from "./widget/charge-box";
 import { ListHeader } from "./widget/list-header";
-import { ChargeModal } from "./widget/charge-modal";
 
 const segments: Segment[] = [
   {

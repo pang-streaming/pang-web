@@ -1,137 +1,66 @@
 import { TabTitleText } from "@/shared/ui/tab-title-text";
-import styled from "styled-components";
-import {Segment, SegmentButtonGroup} from "@pang/shared/ui";
-import {VideoItem, VideoList} from "@/shared/ui/video/video-list";
+import * as S from "./style";
+import { Segment, SegmentButtonGroup } from "@pang/shared/ui";
+import { VideoList } from "@/shared/ui/video/video-list";
+import { useVideoList } from "../home/hooks/use-video-list";
 
 const segments: Segment[] = [
-	{
-		id: "live",
-		name: "라이브"
-	},
-	{
-		id: "video",
-		name: "동영상"
-	}
+  {
+    id: "live",
+    name: "라이브",
+  },
+  {
+    id: "video",
+    name: "동영상",
+  },
 ];
 
-
-const liveVideos: VideoItem[] = [
-	{
-		streamId: "11",
-		title: "하하ㅑ",
-		url: "",
-		username: "강연",
-		nickname: "강연"
-	},
-	{
-		streamId: "12",
-		title: "하하ㅑ",
-		url: "",
-		username: "강연",
-		nickname: "강연"
-	},
-	{
-		streamId: "13",
-		title: "하하ㅑ",
-		url: "",
-		username: "강연",
-		nickname: "강연"
-	},
-	{
-		streamId: "14",
-		title: "하하ㅑ",
-		url: "",
-		username: "강연",
-		nickname: "강연"
-	},
-	{
-		streamId: "15",
-		title: "하하ㅑ",
-		url: "",
-		username: "강연",
-		nickname: "강연"
-	},
-	{
-		streamId: "16",
-		title: "하하ㅑ",
-		url: "",
-		username: "강연",
-		nickname: "강연"
-	},
-	{
-		streamId: "17",
-		title: "하하ㅑ",
-		url: "",
-		username: "강연",
-		nickname: "강연"
-	},
-	{
-		streamId: "18",
-		title: "하하ㅑ",
-		url: "",
-		username: "강연",
-		nickname: "강연"
-	},
-	{
-		streamId: "19",
-		title: "하하ㅑ",
-		url: "",
-		username: "강연",
-		nickname: "강연"
-	},
-	{
-		streamId: "20",
-		title: "하하ㅑ",
-		url: "",
-		username: "강연",
-		nickname: "강연"
-	},
-	{
-		streamId: "21",
-		title: "하하ㅑ",
-		url: "",
-		username: "강연",
-		nickname: "강연"
-	},
-	{
-		streamId: "22",
-		title: "하하ㅑ",
-		url: "",
-		username: "강연",
-		nickname: "강연"
-	},
-]
-
-liveVideos.push(...liveVideos);
-liveVideos.push(...liveVideos);
-liveVideos.push(...liveVideos);
-
 export const Explore = () => {
+  const { liveVideos, isLoading, error } = useVideoList();
+  
+  // 테스트용으로 비디오 데이터 복제
+  const testVideos = [...liveVideos, ...liveVideos, ...liveVideos];
+  
+  if (isLoading) {
+    return (
+      <S.Container>
+        <S.EmptyStateContainer>
+          <S.EmptyStateTitle>방송을 불러오는 중...</S.EmptyStateTitle>
+        </S.EmptyStateContainer>
+      </S.Container>
+    );
+  }
+  if (error) {
+    return (
+      <S.Container>
+        <S.EmptyStateContainer>
+          <S.EmptyStateTitle>오류가 발생했습니다</S.EmptyStateTitle>
+          <S.EmptyStateMessage>{error}</S.EmptyStateMessage>
+        </S.EmptyStateContainer>
+      </S.Container>
+    );
+  }
   return (
-    <ExploreContainer>
+    <S.ExploreContainer>
       <TabTitleText>탐색</TabTitleText>
-	    <SegmentHeader>
-		    <SegmentButtonGroup segments={segments} />
-	    </SegmentHeader>
-	    <VideoList videos={liveVideos}/>
-    </ExploreContainer>
+      <S.SegmentHeader>
+        <SegmentButtonGroup segments={segments} />
+      </S.SegmentHeader>
+
+      {testVideos.length === 0 ? (
+        <S.Container>
+          <S.EmptyStateContainer>
+            <S.EmptyStateTitle>
+              현재 진행 중인 방송이 없습니다
+            </S.EmptyStateTitle>
+            <S.EmptyStateMessage>
+              새로운 방송이 시작되면 여기에 표시됩니다
+            </S.EmptyStateMessage>
+          </S.EmptyStateContainer>
+        </S.Container>
+      ) : (
+        <VideoList videos={testVideos} />
+      )}
+    </S.ExploreContainer>
   );
 };
-
-export const ExploreContainer = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-`;
-
-
-const SegmentHeader = styled.div`
-  box-sizing: border-box;
-	position: sticky;
-  top: 67px;
-  background-color: ${({theme}) => theme.colors.background.normal};
-  z-index: 1;
-  display: flex;
-	flex-direction: row;
-  align-items: center;
-`;

@@ -37,7 +37,7 @@ export const MyPungSection = () => {
       </S.Title>
       <ChargeButton onClick={handleChargeClick}>충전하기</ChargeButton>
       {isModalOpen && (
-        <ModalOverlay>
+        <ModalOverlay onClick={handleCloseModal}>
           <ChargeModal 
             initialType="pung-charge" 
             onClose={handleCloseModal}

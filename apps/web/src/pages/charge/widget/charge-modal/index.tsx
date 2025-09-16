@@ -56,7 +56,7 @@ export const ChargeModal = ({ initialType = "pung-charge", onClose }: ChargeModa
   };
 
   return (
-    <S.Container>
+    <S.Container onClick={(e) => e.stopPropagation()}>
       <Header onClose={onClose}>
         {currentType === "pung-charge"
           ? "펑 충전하기"

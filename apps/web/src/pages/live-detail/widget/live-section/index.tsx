@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaChevronLeft } from "react-icons/fa6";
-import { useIsMobile } from "@/entities/video/hooks/useIsMobile";
+import { useIsMobile } from "@/entities/video/hooks/controller/useIsMobile";
 import { useStreamDetail } from "./model/use-stream-detail";
 import * as S from "./style";
 import {
