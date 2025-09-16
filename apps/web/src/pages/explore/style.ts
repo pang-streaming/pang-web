@@ -1,5 +1,24 @@
 import styled from "styled-components";
 
+
+export const ExploreContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+`;
+
+
+export const SegmentHeader = styled.div`
+  box-sizing: border-box;
+	position: sticky;
+  top: 67px;
+  background-color: ${({theme}) => theme.colors.background.normal};
+  z-index: 1;
+  display: flex;
+	flex-direction: row;
+  align-items: center;
+`;
+
 export const Container = styled.div`
 	width: 100%;
 	display: flex;
@@ -47,7 +66,6 @@ export const EmptyStateContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 80px 20px;
   text-align: center;
   min-height: 400px;
 `;

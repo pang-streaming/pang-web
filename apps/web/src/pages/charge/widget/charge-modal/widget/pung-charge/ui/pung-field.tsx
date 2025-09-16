@@ -3,12 +3,13 @@ import styled from "styled-components";
 
 interface PungFieldProps {
   pungAmount: number;
+  type: 'charge' | 'sponsor'
 }
 
-export const PungField = ({ pungAmount }: PungFieldProps) => {
+export const PungField = ({ pungAmount, type }: PungFieldProps) => {
   return (
     <Wrapper>
-        <Text>충전할 펑</Text>
+        <Text>{type === 'charge' ? "충전할 펑" : "후원할 펑"}</Text>
       <Container>
         <span style={{ fontSize: 20 }}>💣</span>
         <Field>{pungAmount.toLocaleString()}</Field>

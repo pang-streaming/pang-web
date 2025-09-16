@@ -6,7 +6,7 @@ export const ChattingContainer = styled.div`
 	box-sizing: border-box;
   padding: 20px;
 	width:435px;
-	min-height: 700px;
+	min-height: calc(100vh - 4em - 67px);
 	max-height: calc(100vh - 4em - 67px);
 	display: flex;
 	flex-direction: column;
@@ -66,4 +66,45 @@ export const Message = styled.div`
   font-size: ${({theme}) => theme.font.medium};
   align-self: flex-start;
   word-break: break-word;
+`;
+
+export const SponsorMessage = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin: 4px 0;
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+  width: 100%;
+`;
+
+export const SponsorIcon = styled.div`
+  font-size: 16px;
+  animation: bounce 1s infinite;
+  
+  @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+      transform: translateY(0);
+    }
+    40% {
+      transform: translateY(-3px);
+    }
+    60% {
+      transform: translateY(-1px);
+    }
+  }
+`;
+
+export const SponsorText = styled.div`
+  color: white;
+  font-size: ${({theme}) => theme.font.medium};
+  font-weight: 600;
+  flex: 1;
+`;
+
+export const SponsorNickname = styled.span`
+  font-weight: 700;
+  color: #fff;
 `;

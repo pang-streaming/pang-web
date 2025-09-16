@@ -45,20 +45,19 @@ export const DonationPage = () => {
         isPlayingRef.current = false;
     };
 
-    if (!current) 
-        return;
-
     return (
-        <DonationMessageContainer key={current.id}>
+        <>
+        {current && (
+            <DonationMessageContainer key={current.id}>
             {current.youtube && (
                 <YouTube
-                    videoId={current.youtube}
-                    opts={{
-                        width: "480",
-                        height: "270",
-                        playerVars: { autoplay: 1 },
-                    }}
-                    onEnd={closeDonation}
+                videoId={current.youtube}
+                opts={{
+                    width: "480",
+                    height: "270",
+                    playerVars: { autoplay: 1 },
+                }}
+                onEnd={closeDonation}
                 />
             )}
 
@@ -76,8 +75,10 @@ export const DonationPage = () => {
             <DonationMessageTextContainer>
                 {current.message ? current.message : current.youtube ? "[영상 후원]" : "[메시지 없음]"}
             </DonationMessageTextContainer>
-        </DonationMessageContainer>
-    )
+            </DonationMessageContainer>
+        )}
+        </>
+    );
 }
 
 const bounceAnimation = keyframes`

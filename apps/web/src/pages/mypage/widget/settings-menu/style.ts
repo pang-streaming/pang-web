@@ -18,4 +18,3 @@ export const Divider = styled.div<{ color: string }>`
   margin: 15px 0;
   background-color: ${({ color }) => color};
 `;
-

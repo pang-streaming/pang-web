@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useSlider } from "@/entities/video/hooks/useSlider";
+import { useSlider } from "@/entities/video/hooks/controller/useSlider";
 
 interface SliderProps {
   value: number;

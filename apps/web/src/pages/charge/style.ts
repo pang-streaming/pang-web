@@ -5,6 +5,7 @@ export const Container = styled.div`
   padding: 44px 44px 0 44px;
   border-radius: ${({theme}) => theme.borders.large};
 	background-color: ${({ theme }) => theme.colors.content.normal};
+  margin-top: 24px;
 `;
 
 export const ChargeBoxRow = styled.div`

@@ -1,7 +1,8 @@
-import type { Video } from "../../model/type";
+
 import * as S from "./style";
 import normalProfile from "@/app/assets/images/normal_profile.svg";
-import {useVideoCard} from "@/entities/video/hooks/useVideoCard";
+import {useVideoCard} from "@/entities/video/hooks/controller/useVideoCard";
+import { VideoItem } from "../../model/type";
 
 export const VideoCard = ({
   streamId,
@@ -10,7 +11,7 @@ export const VideoCard = ({
   username,
   nickname,
   profileImage,
-}: Video) => {
+}: VideoItem) => {
 	const {handleOnClickVideoCard, handleOnClickProfile} = useVideoCard({streamId, username});
 
 	return (

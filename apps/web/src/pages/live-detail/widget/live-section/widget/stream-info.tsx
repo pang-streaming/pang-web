@@ -1,10 +1,10 @@
 import nomalProfile from "@/app/assets/images/normal_profile.svg";
-import { useFollowInfo } from "../model/useFollowInfo";
+import { useFollowInfo } from "../model/use-follow-info";
 import {IoHeart} from "react-icons/io5";
 import {IoMdHeartEmpty} from "react-icons/io";
 import styled from "styled-components";
 import {FollowButton} from "@/shared/ui/button/follow-button";
-import {useVideoCard} from "@/entities/video/hooks/useVideoCard";
+import {useVideoCard} from "@/entities/video/hooks/controller/useVideoCard";
 
 interface StreamInfoProps {
 	streamId: string;

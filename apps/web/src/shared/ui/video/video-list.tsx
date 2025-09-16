@@ -1,25 +1,17 @@
 import styled, {css} from "styled-components";
 import {VideoCard} from "@/entities/video/ui/video-card";
+import { VideoListProps } from "@/entities/video/model/type";
 
-export interface VideoItem {
-	streamId: string;
-	title: string;
-	url: string;
-	username: string;
-	nickname: string;
-	profileImage?: string;
-}
 
-interface VideoListProps {
-	videos: VideoItem[];
-	maxColumns?: number;
-}
 
 export const VideoList = ({videos, maxColumns}: VideoListProps) => {
+	const safeVideos = Array.isArray(videos) ? videos : [];
+	
 	return (
 		<VideoListContainer maxColumns={maxColumns}>
-			{videos.map((video) => (
+			{safeVideos.map((video, index) => (
 				<VideoCard
+					key={video.streamId || index}
 					streamId={video.streamId}
 					title={video.title}
 					url={video.url}

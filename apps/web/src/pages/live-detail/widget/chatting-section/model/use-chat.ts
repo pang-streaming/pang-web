@@ -7,6 +7,8 @@ export interface ChatItem {
   viewerName: string;
   chatting: string;
   color: string;
+  type?: 'message' | 'sponsor';
+  sponsorAmount?: number;
 }
 
 export const useChat = (streamId: string) => {
@@ -30,18 +32,35 @@ export const useChat = (streamId: string) => {
       setChatList((prev) => [
         ...prev,
         {
-          viewerName: data.username,
+          viewerName: data.nickname,
           chatting: data.message,
           color: randomColor(),
+          type: 'message',
+        },
+      ]);
+    };
+
+    const handleSponsorMessage = (data: any) => {
+      console.log("받은 후원 메시지:", data);
+      setChatList((prev) => [
+        ...prev,
+        {
+          viewerName: data.nickname || data.username || "익명",
+          chatting: `${data.amount?.toLocaleString()}개를 후원하셨습니다`,
+          color: "#ff6b6b",
+          type: 'sponsor',
+          sponsorAmount: data.amount,
         },
       ]);
     };
 
     socket?.on("chat_message", handleChatMessage);
+    socket?.on("sponsor_message", handleSponsorMessage);
 
     return () => {
       socket.off("connect", join);
       socket.off("chat_message", handleChatMessage);
+      socket.off("sponsor_message", handleSponsorMessage);
     };
   }, [socket, streamId]);
 
@@ -61,5 +80,26 @@ export const useChat = (streamId: string) => {
     }
   };
 
-  return { chat, setChat, chatList, sendMessage };
+  const addSponsorMessage = (nickname: string, amount: number) => {
+    setChatList((prev) => [
+      ...prev,
+      {
+        viewerName: nickname,
+        chatting: `${amount.toLocaleString()}개를 후원하셨습니다`,
+        color: "#ff6b6b",
+        type: 'sponsor',
+        sponsorAmount: amount,
+      },
+    ]);
+
+    if (socket && socket.connected) {
+      socket.emit("sponsor_message", {
+        nickname: nickname,
+        amount: amount,
+        roomId: streamId,
+      });
+    }
+  };
+
+  return { chat, setChat, chatList, sendMessage, addSponsorMessage };
 };

@@ -1,17 +1,27 @@
-import { Video } from "@/entities/video/model/type";
 import styled from "styled-components";
+import { VideoItem } from "@/entities/video/model/type";
 import { useState } from "react";
 import normalProfile from "@/app/assets/images/normal_profile.svg";
-import {useVideoCard} from "@/entities/video/hooks/useVideoCard";
+import {useVideoCard} from "@/entities/video/hooks/controller/useVideoCard";
 
 interface HeaderVideoProps {
-  videos: Video[];
+  videos: VideoItem[];
   hideProfile?: boolean;
 }
 
 export const HeaderVideo = ({ videos, hideProfile }: HeaderVideoProps) => {
   const [activeVideo, setActiveVideo] = useState<number>(0);
-  const { title, nickname, username, streamId, profileImage } = videos[activeVideo];
+  
+  if (!videos || videos.length === 0) {
+    return null;
+  }
+  
+  const currentVideo = videos[activeVideo];
+  if (!currentVideo) {
+    return null;
+  }
+  
+  const { title, nickname, username, streamId, profileImage } = currentVideo;
 	const {handleOnClickVideoCard, handleOnClickProfile} = useVideoCard({streamId, username});
 
   return (

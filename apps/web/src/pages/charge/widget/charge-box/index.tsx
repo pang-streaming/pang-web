@@ -58,7 +58,7 @@ export const ChargeBox = ({ type }: ChargeBoxProps) => {
       </Container>
 
       {isModalOpen && (
-        <ModalOverlay>
+        <ModalOverlay onClick={handleCloseModal}>
           <ChargeModal initialType="pung-charge" onClose={handleCloseModal} />
         </ModalOverlay>
       )}

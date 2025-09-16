@@ -12,7 +12,6 @@ export function useStreamDetail(streamId?: string) {
         const res = await fetchLiveStreamDetail(streamId);
         setStreamData(res.data.data);
       } catch (err) {
-        // eslint-disable-next-line no-console
         console.error("스트림 불러오는중 실패", err);
       }
     };

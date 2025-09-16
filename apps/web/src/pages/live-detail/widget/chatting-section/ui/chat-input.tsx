@@ -1,14 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import Emoji from "@/app/assets/emoji.svg?react";
+import sendPung from "@/app/assets/send-pung.svg";
 import Airplane from "@/app/assets/airplane.svg?react";
+import { SponsorModal } from "../widget/sponsor-modal";
+import { sponsorPung } from "@/features/sponsor/api";
+import { fetchMyInfo } from "@/entities/user/api/api";
+import { paymentApi } from "@/entities/payment/api";
+import { sponsorEventManager } from "@/shared/lib/sponsor-event";
 
 interface ChatInputProps {
   onSend: (message: string) => void;
+  addSponsorMessage: (nickname: string, amount: number) => void;
 }
 
-export const ChatInput = ({ onSend }: ChatInputProps) => {
+export const ChatInput = ({ onSend, addSponsorMessage }: ChatInputProps) => {
   const [text, setText] = useState("");
+  const [isSponsorModalOpen, setIsSponsorModalOpen] = useState(false);
+  const [pungAmount, setPungAmount] = useState(0);
+  const [userCash, setUserCash] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [cardId, setCardId] = useState<string>("");
+  const [userNickname, setUserNickname] = useState<string>("");
 
   const handleSend = () => {
     if (text.trim() === "") return;
@@ -16,7 +29,76 @@ export const ChatInput = ({ onSend }: ChatInputProps) => {
     setText("");
   };
 
-  const [isComposing, setIsComposing] = useState(false); 
+  const handleSponsorClick = () => {
+    setPungAmount(1000); 
+    setIsSponsorModalOpen(true);
+  };
+
+  const handlePungChange = (amount: number) => {
+    setPungAmount(amount);
+  };
+
+  const handleSponsorPung = async () => {
+    if (!cardId) {
+      console.error("카드 정보가 없습니다.");
+      return;
+    }
+
+    if (pungAmount > userCash) {
+      return;
+    }
+    
+    try {
+      await sponsorPung(cardId, pungAmount);
+      console.log("후원 성공:", pungAmount);
+      setIsSponsorModalOpen(false);
+      
+      // 임시로 클라이언트에서 cash 차감
+      const newCash = userCash - pungAmount;
+      console.log(`후원 전 cash: ${userCash}, 후원 금액: ${pungAmount}, 후원 후 cash: ${newCash}`);
+      setUserCash(newCash);
+      setPungAmount(1000); 
+      
+      sponsorEventManager.emit(userNickname, pungAmount);
+      addSponsorMessage(userNickname, pungAmount);
+      
+      // try {
+      //   const result = await fetchMyInfo();
+      //   setUserCash(result.data.cash);
+      // } catch (error) {
+      //   console.log("서버 동기화 실패, 클라이언트 값 유지");
+      // }
+    } catch (error) {
+      console.error("후원 실패:", error);
+    }
+  };
+
+  const [isComposing, setIsComposing] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+
+        const userResult = await fetchMyInfo();
+        setUserCash(userResult.data.cash);
+        setPungAmount(userResult.data.cash);
+        setUserNickname(userResult.data.nickname);
+
+        const cardResult = await paymentApi.getCards();
+        if (cardResult.data && cardResult.data.length > 0) {
+          setCardId(cardResult.data[0].cardId);
+        } else {
+          console.warn("등록된 카드가 없습니다.");
+        }
+      } catch (error) {
+        console.error("데이터 로드 실패:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   const inputEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && !isComposing) {
@@ -34,31 +116,57 @@ export const ChatInput = ({ onSend }: ChatInputProps) => {
   };
 
   return (
-    <Container>
-      <Input
-        type="text"
-        placeholder="채팅을 입력해주세요"
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        onKeyDown={inputEnter}
-        onCompositionStart={compositionStart}
-        onCompositionEnd={compositionEnd}
-      />
-      <Emoji />
-      <Airplane onClick={handleSend} />
-    </Container>
+    <div>
+      <Container>
+        <Input
+          type="text"
+          placeholder="채팅을 입력해주세요"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          onKeyDown={inputEnter}
+          onCompositionStart={compositionStart}
+          onCompositionEnd={compositionEnd}
+        />
+        <button
+          onClick={handleSponsorClick}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            outline: "none",
+            border: "none",
+            backgroundColor: "transparent",
+          }}
+        >
+          <img src={sendPung} alt="" />
+        </button>
+        <Airplane onClick={handleSend} />
+      </Container>
+
+      {isSponsorModalOpen && (
+        <ModalOverlay onClick={() => setIsSponsorModalOpen(false)}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <SponsorModal
+              pungAmount={pungAmount}
+              onPungChange={handlePungChange}
+              sponsorPung={handleSponsorPung}
+              userCash={userCash}
+            />
+          </ModalContent>
+        </ModalOverlay>
+      )}
+    </div>
   );
 };
 
 const Container = styled.div`
   width: 100%;
-  background-color: ${({theme}) => theme.colors.content.normal};
-  border-radius: ${({theme}) => theme.borders.large};
+  background-color: ${({ theme }) => theme.colors.content.normal};
+  border-radius: ${({ theme }) => theme.borders.large};
   display: flex;
   align-items: center;
   padding: 12px;
   box-sizing: border-box;
-  color: ${({theme}) => theme.colors.text.normal};
+  color: ${({ theme }) => theme.colors.text.normal};
   justify-content: space-between;
 `;
 export const Input = styled.input`
@@ -66,5 +174,28 @@ export const Input = styled.input`
   border: none;
   width: 80%;
   background-color: transparent;
-  color: ${({theme}) => theme.colors.text.normal};
+  color: ${({ theme }) => theme.colors.text.normal};
+`;
+
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+const ModalContent = styled.div`
+  background-color: ${({ theme }) => theme.colors.content.normal};
+  border-radius: ${({ theme }) => theme.borders.large};
+  padding: 20px;
+  max-width: 400px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
 `;

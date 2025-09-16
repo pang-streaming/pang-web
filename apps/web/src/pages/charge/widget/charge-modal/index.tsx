@@ -43,12 +43,10 @@ export const ChargeModal = ({ initialType = "pung-charge", onClose }: ChargeModa
       const result = await paymentApi.processPayment(cardId, amount);
       console.log('결제 성공:', result);
 
-      // 성공 시 모달 닫기 또는 성공 페이지로 이동
       if (onClose) {
         onClose();
       }
 
-      // 여기에 성공 메시지나 다른 처리 로직을 추가할 수 있습니다
       alert(`결제가 완료되었습니다!`);
 
     } catch (error) {
@@ -58,7 +56,7 @@ export const ChargeModal = ({ initialType = "pung-charge", onClose }: ChargeModa
   };
 
   return (
-    <S.Container>
+    <S.Container onClick={(e) => e.stopPropagation()}>
       <Header onClose={onClose}>
         {currentType === "pung-charge"
           ? "펑 충전하기"

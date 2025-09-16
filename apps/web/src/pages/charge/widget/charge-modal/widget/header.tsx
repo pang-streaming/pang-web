@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import xmark from "@/app/assets/xmark.svg";
+
 
 interface HeaderProps {
   children: React.ReactNode;
@@ -10,7 +10,6 @@ export const Header = ({ children, onClose }: HeaderProps) => {
   return (
     <Container>
       <Title>{children}</Title>
-      <Icon src={xmark} onClick={onClose} />
     </Container>
   );
 };
