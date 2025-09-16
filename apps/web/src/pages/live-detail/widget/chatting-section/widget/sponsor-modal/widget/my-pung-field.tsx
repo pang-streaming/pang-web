@@ -22,7 +22,7 @@ export const MyPungField = ({ userCash }: MyPungFieldProps) => {
 
 
 const Container = styled.div`
-  padding: 20px 16px 0px 16px;
+  padding: 20px 16px 16px 16px;
   box-sizing: border-box;
   width: 100%;
   display: flex;

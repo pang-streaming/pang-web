@@ -1,8 +1,14 @@
 import api from "@/api/api";
-import { VideoItem } from "../model/type";
+import { IStreamDataResponse, VideoItem } from "../model/type";
 
 export const fetchVideos = async (): Promise<VideoItem[]> => {
     const res = await api.get("/stream");
+    return res.data.data || [];
+};
+
+
+export const getStreamData = async (streamId:string): Promise<IStreamDataResponse> => {
+    const res = await api.get(`/stream/${streamId}`);
     return res.data.data || [];
 };
 

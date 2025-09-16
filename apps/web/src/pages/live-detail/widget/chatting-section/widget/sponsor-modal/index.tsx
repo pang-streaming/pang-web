@@ -1,21 +1,76 @@
 import styled from "styled-components";
 import * as W from './widget/index';
-import { SubmitButton } from "@pang/shared/ui";
+import { SegmentButtonGroup, SubmitButton } from "@pang/shared/ui";
+import { useState } from "react";
+import { Input } from "../../ui/chat-input";
 
 interface SponsorModalProps {
   pungAmount: number;
   onPungChange: (amount: number) => void;
+  onYoutubeUrlChange: (url:string) => void;
+  onChangeDonationType: (type:string) => void;
+  onChangeMessage: (message:string) => void;
   sponsorPung: () => void;
   userCash: number;
 }
 
-export const SponsorModal = ({ pungAmount, onPungChange, sponsorPung, userCash }: SponsorModalProps) => {
+function extractYouTubeID(url:string) {
+  try {
+    const urlObj = new URL(url);
+    const id = urlObj.searchParams.get('v');
+    if (id) return id;
+  } catch (e) {
+  
+  }
+
+  const idPattern = /^[a-zA-Z0-9_-]{11}$/;
+  if (idPattern.test(url)) return url;
+
+  return null;
+}
+
+export const SponsorModal = ({ pungAmount, onPungChange, sponsorPung, onYoutubeUrlChange, onChangeDonationType, onChangeMessage, userCash }: SponsorModalProps) => {
   const isInsufficient = pungAmount > userCash;
+  const [selectedDonationType, setSelectedDonationType] = useState("cash");
+
+  const donationCategory = [
+    {
+      id: "cash",
+	    name: "펑 후원"
+    },
+    {
+      id: "video",
+	    name: "영상 후원"
+    }
+  ];
+
+  const handleDonationTypeChange = (type:string) => {
+    setSelectedDonationType(type);
+    onChangeDonationType(type)
+  }
 
   return (
     <Container>
-        <W.MyPungField userCash={userCash}/>
+      <SegmentButtonGroup 
+        segments={donationCategory} 
+        defaultSegmentIndex={0}
+        onSegmentChange={handleDonationTypeChange}
+      />
+      <W.MyPungField userCash={userCash}/>
       <W.IncreaseField pungAmount={pungAmount} onPungChange={onPungChange} />
+      {selectedDonationType == "video" ? 
+        (
+          <W.YoutubeField onYoutubeUrlChange={(url:string)=> {
+            const extractUrl = extractYouTubeID(url)
+            if (extractUrl != null)
+              onYoutubeUrlChange(extractUrl)
+          }}/>
+        ) 
+        : 
+        (<W.MessageField onMessageChange={onChangeMessage}/>)
+       
+      }
+      
       <W.AgreeRow />
       {isInsufficient && (
         <InsufficientWarning>
@@ -49,3 +104,4 @@ const InsufficientWarning = styled.div`
   font-weight: 600;
   text-align: center;
 `;
+

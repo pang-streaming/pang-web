@@ -10,6 +10,15 @@ export interface ChatItem {
   type?: 'message' | 'sponsor';
   sponsorAmount?: number;
 }
+export interface ISendDonationMessageRequest {
+  token?: string
+  roomId: string;   
+  message?: string; 
+  amount: number;   
+  voiceId?: string; 
+  youtube?: string;
+}
+
 
 export const useChat = (streamId: string) => {
   const socket = useSocket();
@@ -45,7 +54,7 @@ export const useChat = (streamId: string) => {
       setChatList((prev) => [
         ...prev,
         {
-          viewerName: data.nickname || data.username || "익명",
+          viewerName: data.nickname || "익명",
           chatting: `${data.amount?.toLocaleString()}개를 후원하셨습니다`,
           color: "#ff6b6b",
           type: 'sponsor',
@@ -55,12 +64,12 @@ export const useChat = (streamId: string) => {
     };
 
     socket?.on("chat_message", handleChatMessage);
-    socket?.on("sponsor_message", handleSponsorMessage);
+    socket?.on("donation_message", handleSponsorMessage);
 
     return () => {
       socket.off("connect", join);
       socket.off("chat_message", handleChatMessage);
-      socket.off("sponsor_message", handleSponsorMessage);
+      socket.off("donation_message", handleSponsorMessage);
     };
   }, [socket, streamId]);
 
@@ -80,24 +89,10 @@ export const useChat = (streamId: string) => {
     }
   };
 
-  const addSponsorMessage = (nickname: string, amount: number) => {
-    setChatList((prev) => [
-      ...prev,
-      {
-        viewerName: nickname,
-        chatting: `${amount.toLocaleString()}개를 후원하셨습니다`,
-        color: "#ff6b6b",
-        type: 'sponsor',
-        sponsorAmount: amount,
-      },
-    ]);
-
+  const addSponsorMessage = (data:ISendDonationMessageRequest) => {
     if (socket && socket.connected) {
-      socket.emit("sponsor_message", {
-        nickname: nickname,
-        amount: amount,
-        roomId: streamId,
-      });
+      data.token = String(localStorage.getItem("accessToken"));
+      socket.emit("send_donation", data);
     }
   };
 

@@ -63,7 +63,7 @@ export const DonationPage = () => {
 
             <DonationMessageTextTitle>
                 <DonationMessageUsername>
-                {current.username}
+                {current.nickname}
                 </DonationMessageUsername>
                 님이&nbsp;
                 <DonationMessagePrice>
