@@ -32,7 +32,7 @@ export const SegmentButtonGroup = ({ segments, defaultSegmentIndex, onSegmentCha
 
 
 const SegmentWrapper = styled.div`
-	display: flex;
+  margin: 16px 0;
+    display: flex;
 	flex-direction: row;
-	margin-bottom: 16px;
 `;

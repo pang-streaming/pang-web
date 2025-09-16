@@ -1,7 +1,7 @@
 import * as S from "./style";
 import { HeaderVideo } from "@/entities/video/ui/header-video";
 import { TabTitleText } from "@/shared/ui/tab-title-text";
-import {VideoItem, VideoList} from "@/shared/ui/video/VideoList";
+import {VideoItem, VideoList} from "@/shared/ui/video/video-list";
 
 const liveVideos: VideoItem[] = [
 	{

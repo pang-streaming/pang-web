@@ -1,7 +1,7 @@
 import { TabTitleText } from "@/shared/ui/tab-title-text";
 import styled from "styled-components";
 import {Segment, SegmentButtonGroup} from "@pang/shared/ui";
-import {VideoItem, VideoList} from "@/shared/ui/video/VideoList";
+import {VideoItem, VideoList} from "@/shared/ui/video/video-list";
 
 const segments: Segment[] = [
 	{
@@ -110,7 +110,9 @@ export const Explore = () => {
   return (
     <ExploreContainer>
       <TabTitleText>탐색</TabTitleText>
-	    <SegmentButtonGroup segments={segments} />
+	    <SegmentHeader>
+		    <SegmentButtonGroup segments={segments} />
+	    </SegmentHeader>
 	    <VideoList videos={liveVideos}/>
     </ExploreContainer>
   );
@@ -120,4 +122,16 @@ export const ExploreContainer = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
+`;
+
+
+const SegmentHeader = styled.div`
+  box-sizing: border-box;
+	position: sticky;
+  top: 67px;
+  background-color: ${({theme}) => theme.colors.background.normal};
+  z-index: 1;
+  display: flex;
+	flex-direction: row;
+  align-items: center;
 `;

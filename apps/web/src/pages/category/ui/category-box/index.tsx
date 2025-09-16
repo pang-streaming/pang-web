@@ -1,4 +1,5 @@
 import * as S from './style'
+import {useNavigate} from "react-router-dom";
 
 interface CategoryBoxProps {
     categoryChipCount: number;
@@ -13,9 +14,10 @@ export const CategoryBox = ({
     categoryTitle,
 }: CategoryBoxProps) => {
     const formattedChipCount = new Intl.NumberFormat().format(categoryChipCount);
-
+		const navigate = useNavigate();
+		
 	return (
-		<S.CategoryContainer>
+		<S.CategoryContainer onClick={() => navigate("/category-detail")}>
 			<S.CategoryBoxThumbnail>
 				<S.CategoryChip><S.ChipCountText>•{formattedChipCount}</S.ChipCountText></S.CategoryChip>
 			</S.CategoryBoxThumbnail>
