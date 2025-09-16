@@ -4,6 +4,7 @@ export interface Product {
     image: string;
     name: string;
     price: number;
+    seller: string;
 }
 
 export interface ProductResponse {

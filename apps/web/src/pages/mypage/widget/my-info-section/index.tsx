@@ -38,7 +38,7 @@ export const MyInfoSection = () => {
     <S.Container>
       <S.ProfileImage src={user?.profileImage || normalProfile} />
       <S.UserInfoSection>
-        <S.Nickname>{user?.username}</S.Nickname>
+        <S.Nickname>{user?.nickname}</S.Nickname>
         <S.Email>{user?.email}</S.Email>
         <S.StatusMessage>
           {user?.description}

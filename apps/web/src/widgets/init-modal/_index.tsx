@@ -16,14 +16,15 @@ interface InitModalProps {
 export const InitModal = ({ isOpen, onClose, username }: InitModalProps) => {
   const [birth, setBirth] = useState("");
   const [gender, setGender] = useState<"MALE" | "FEMALE" | "OTHER" | "">("");
+  const [nickname, setNickname] = useState("");
 
   const [step, setStep] = useState(1);
 
   if (!isOpen) return null;
 
   const handleNext = async () => {
-    if (!birth || !gender) {
-      alert("나이랑 성별을 입력해주세요!");
+    if (!birth || !gender || !nickname) {
+      alert("모든 필드를 입력해주세요!");
       return;
     }
 
@@ -36,7 +37,7 @@ export const InitModal = ({ isOpen, onClose, username }: InitModalProps) => {
     console.log("요청 보낼 생년월일:", formattedBirth); 
 
     try {
-      await updateMyInfo("", formattedBirth, gender);
+      await updateMyInfo(nickname, formattedBirth, gender);
       setStep((prev) => prev + 1);
     } catch (err) {
       console.error("업데이트 실패:", err);
@@ -54,6 +55,8 @@ export const InitModal = ({ isOpen, onClose, username }: InitModalProps) => {
             setBirth={setBirth}
             gender={gender}
             setGender={setGender}
+            nickname={nickname}
+            setNickname={setNickname}
           />
         )}
         {step === 2 && <InitModalStep2 username={username} />}
