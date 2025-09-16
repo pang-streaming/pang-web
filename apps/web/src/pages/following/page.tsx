@@ -1,6 +1,7 @@
 import { FollowingCard } from "@/features/follow/ui/following-card";
 import { TabTitleText } from "@/shared/ui/tab-title-text";
 import { useFollowing } from "./hooks/useFollowing";
+import styled from "styled-components";
 
 export const Following = () => {
   const { following } = useFollowing();
@@ -10,14 +11,14 @@ export const Following = () => {
   }
   
   return (
-    <div>
+    <FollowingContainer>
       <TabTitleText>팔로잉</TabTitleText>
 
       {following.length === 0 ? (
-        <div style={{ 
-          display: "flex", 
-          justifyContent: "center", 
-          alignItems: "center", 
+        <div style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
           height: "60vh",
           color: "#a3a3a3",
           fontSize: "16px"
@@ -25,7 +26,7 @@ export const Following = () => {
           팔로잉이 없습니다
         </div>
       ) : (
-        <div style={{ display: "flex", gap: 40 }}>
+        <FollowingCardWrapper>
           {following.map((f, index) => (
             <FollowingCard
               key={index}
@@ -33,8 +34,20 @@ export const Following = () => {
               followerCount={f.follower}
             />
           ))}
-        </div>
+        </FollowingCardWrapper>
       )}
-    </div>
+    </FollowingContainer>
   );
 };
+
+const FollowingContainer = styled.div`
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+`
+
+const FollowingCardWrapper = styled.div`
+    margin-top: 30px;
+		display: flex;
+		gap: 40px
+`

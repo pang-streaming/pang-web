@@ -2,6 +2,7 @@ import React from "react";
 import { CategoryBox } from "./ui/category-box";
 import styled from "styled-components";
 import {TabTitleText} from "@/shared/ui/tab-title-text";
+import {Tag, TagButton} from "@pang/shared/ui";
 
 interface CategoryItem {
 	categoryTitle: string;
@@ -15,7 +16,11 @@ const categories: CategoryItem[] = [
 	{ categoryTitle: "스포츠", categoryChipCount: 126315, categoryLiveCount: 201 },
 	{ categoryTitle: "일상", categoryChipCount: 126315, categoryLiveCount: 201 },
 	{ categoryTitle: "ASMR", categoryChipCount: 126315, categoryLiveCount: 201 },
-	{ categoryTitle: "버추얼", categoryChipCount: 126315, categoryLiveCount: 201 },
+	{ categoryTitle: "게임", categoryChipCount: 126315, categoryLiveCount: 201 },
+	{ categoryTitle: "음악", categoryChipCount: 126315, categoryLiveCount: 201 },
+	{ categoryTitle: "스포츠", categoryChipCount: 126315, categoryLiveCount: 201 },
+	{ categoryTitle: "일상", categoryChipCount: 126315, categoryLiveCount: 201 },
+	{ categoryTitle: "ASMR", categoryChipCount: 126315, categoryLiveCount: 201 },
 	{ categoryTitle: "게임", categoryChipCount: 126315, categoryLiveCount: 201 },
 	{ categoryTitle: "음악", categoryChipCount: 126315, categoryLiveCount: 201 },
 	{ categoryTitle: "스포츠", categoryChipCount: 126315, categoryLiveCount: 201 },
@@ -24,11 +29,37 @@ const categories: CategoryItem[] = [
 	{ categoryTitle: "버추얼", categoryChipCount: 126315, categoryLiveCount: 201 },
 ];
 
+const tags: Tag[] = [
+	{
+		id: 'all',
+		name: '전체'
+	},
+	{
+		id: 'virtual',
+		name: '버츄얼'
+	},
+	{
+		id: 'game',
+		name: '게임'
+	},
+	{
+		id: 'sports',
+		name: '스포츠'
+	},
+	{
+		id: 'etc',
+		name: '기타'
+	},
+]
+
 export const Category = () => {
 	return (
-		<CategoryWrapper>
+		<CategoryContainer>
 			<TabTitleText>카테고리</TabTitleText>
-			<CategoryContainer>
+			<TagHeader>
+				<TagButton tags={tags} defaultTagId='all'/>
+			</TagHeader>
+			<CategoryWrapper>
 				{categories.map((category, index) => (
 					<CategoryBox
 						key={index}
@@ -37,19 +68,30 @@ export const Category = () => {
 						categoryTitle={category.categoryTitle}
 					/>
 				))}
-			</CategoryContainer>
-		</CategoryWrapper>
+			</CategoryWrapper>
+		</CategoryContainer>
 	);
 };
 
-const CategoryWrapper = styled.div`
-    display: flex;
+const CategoryContainer = styled.div`
+		display: flex;
     flex-direction: column;
     gap: 12px;
 `;
 
+const TagHeader = styled.div`
+  box-sizing: border-box;
+	padding: 14px 2px;
+	position: sticky;
+  top: 67px;
+  background-color: ${({theme}) => theme.colors.background.normal};
+  z-index: 1;
+  display: flex;
+	flex-direction: row;
+  align-items: center;
+`;
 
-const CategoryContainer = styled.div`
+const CategoryWrapper = styled.div`
     display: grid;
     gap: 20px;
     width: 100%;

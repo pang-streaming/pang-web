@@ -1,15 +1,27 @@
 import styled from "styled-components";
 import {CommunityItem} from "@/features/community/ui/community-item";
+import {Tag, TagButton} from "@pang/shared/ui";
+
+const tags: Tag[] = [
+	{
+		id: 'all',
+		name: '전체'
+	},
+	{
+		id: 'community',
+		name: '자유게시판'
+	},
+	{
+		id: 'notification',
+		name: '공지글'
+	},
+]
 
 export const ProfileCommunityWidget = () => {
 	return (
 		<CommunityContainer>
 			<CommunityTagWrapper>
-				<CommunityTagList>
-					<CommunityTag selected>전체</CommunityTag>
-					<CommunityTag>자유게시판</CommunityTag>
-					<CommunityTag>공지글</CommunityTag>
-				</CommunityTagList>
+				<TagButton tags={tags} defaultTagId={'all'}/>
 				<WriteButton>글쓰기 +</WriteButton>
 			</CommunityTagWrapper>
 			<CommunityItemList>
@@ -38,27 +50,6 @@ const CommunityTagWrapper = styled.div`
 	flex-direction: row;
 	justify-content: space-between;
 	align-items: center;
-`
-
-const CommunityTagList = styled.div`
-	display: flex;
-	flex-direction: row;
-	gap: 10px;
-`
-
-const CommunityTag = styled.span<{selected?: boolean}>`
-	border-radius: ${({theme}) => theme.borders.maximum};
-	padding: 4px 10px;
-	color: ${({theme, selected}) => selected ? theme.colors.background.dark : theme.colors.text.subtitle};
-	border: 2px solid ${({theme, selected}) => selected ? theme.colors.text.normal : theme.colors.text.subtitle};
-	background-color: ${({theme, selected}) => selected ? theme.colors.text.normal : 'none'};
-	cursor: pointer;
-	font-size: ${({theme}) => theme.font.medium};
-	font-weight: 700;
-	user-select: none;
-	&:hover {
-			background-color: ${({theme, selected}) => selected ? theme.colors.text.normal : theme.colors.hover.light};
-	}
 `
 
 const WriteButton = styled.button`
