@@ -1,7 +1,9 @@
+import { AmountChip } from "@/pages/charge/widget/charge-modal/widget/pung-charge/ui/amount-chip";
+import { PungField } from "@/pages/charge/widget/charge-modal/widget/pung-charge/ui/pung-field";
 import React from "react";
 import styled from "styled-components";
-import { AmountChip } from "../ui/amount-chip";
-import { PungField } from "../ui/pung-field";
+
+
 
 interface IncreaseFieldProps {
   pungAmount: number;
@@ -15,7 +17,7 @@ export const IncreaseField = ({ pungAmount, onPungChange }: IncreaseFieldProps) 
 
   return (
     <Container>
-      <PungField type="charge" pungAmount={pungAmount} />
+      <PungField type="sponsor" pungAmount={pungAmount} />
       <AmountChipRow>
         <AmountChip amount={1000} onClick={() => handleChipClick(1000)} />
         <AmountChip amount={5000} onClick={() => handleChipClick(5000)} />

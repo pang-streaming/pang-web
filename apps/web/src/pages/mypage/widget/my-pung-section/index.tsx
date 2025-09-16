@@ -33,7 +33,7 @@ export const MyPungSection = () => {
         </div>
       </S.GradientCircle>
       <S.Title>
-        보유 중인 펑 : <S.HighLight>{cash}</S.HighLight> 개
+        보유 중인 펑 : <S.HighLight>{cash.toLocaleString()}</S.HighLight> 개
       </S.Title>
       <ChargeButton onClick={handleChargeClick}>충전하기</ChargeButton>
       {isModalOpen && (
