@@ -8,16 +8,23 @@ import { sponsorPung } from "@/features/sponsor/api";
 import { fetchMyInfo } from "@/entities/user/api/api";
 import { paymentApi } from "@/entities/payment/api";
 import { sponsorEventManager } from "@/shared/lib/sponsor-event";
+import { ISendDonationMessageRequest } from "../model/use-chat";
 
 interface ChatInputProps {
+  username: string;
   onSend: (message: string) => void;
-  addSponsorMessage: (nickname: string, amount: number) => void;
+  addSponsorMessage: (data: ISendDonationMessageRequest) => void;
 }
 
-export const ChatInput = ({ onSend, addSponsorMessage }: ChatInputProps) => {
+export const ChatInput = ({ username, onSend, addSponsorMessage }: ChatInputProps) => {
   const [text, setText] = useState("");
   const [isSponsorModalOpen, setIsSponsorModalOpen] = useState(false);
   const [pungAmount, setPungAmount] = useState(0);
+  const [youtubeUrl, setYoutubeUrl] = useState<string>("");
+  const [donationType, setDonationType] = useState<string>("");
+  const [message, setMessage] = useState<string>("")
+
+  
   const [userCash, setUserCash] = useState(0);
   const [loading, setLoading] = useState(true);
   const [cardId, setCardId] = useState<string>("");
@@ -38,6 +45,18 @@ export const ChatInput = ({ onSend, addSponsorMessage }: ChatInputProps) => {
     setPungAmount(amount);
   };
 
+  const handleYoutubeUrlChange = (url: string) => {
+    setYoutubeUrl(url)
+  };
+  const handleMessageChange = (message: string) => {
+    setMessage(message)
+  };
+  const handleDonationTypeChange = (type: string) => {
+    setDonationType(type)
+  };
+
+  
+  
   const handleSponsorPung = async () => {
     if (!cardId) {
       console.error("카드 정보가 없습니다.");
@@ -49,7 +68,6 @@ export const ChatInput = ({ onSend, addSponsorMessage }: ChatInputProps) => {
     }
     
     try {
-      await sponsorPung(cardId, pungAmount);
       console.log("후원 성공:", pungAmount);
       setIsSponsorModalOpen(false);
       
@@ -60,7 +78,27 @@ export const ChatInput = ({ onSend, addSponsorMessage }: ChatInputProps) => {
       setPungAmount(1000); 
       
       sponsorEventManager.emit(userNickname, pungAmount);
-      addSponsorMessage(userNickname, pungAmount);
+      switch (donationType) {
+        case "cash":
+          addSponsorMessage({
+            roomId: username,   
+            message: message, 
+            amount: pungAmount, 
+            voiceId: "gtbd9NwwnPeKoNkxPtk8Xn",
+          });
+          break;
+        case "video":
+          addSponsorMessage({
+            roomId: username,   
+            youtube: youtubeUrl,
+            amount: pungAmount
+          });
+          break
+        default:
+          break;
+      }
+      
+
       
       // try {
       //   const result = await fetchMyInfo();
@@ -148,6 +186,9 @@ export const ChatInput = ({ onSend, addSponsorMessage }: ChatInputProps) => {
             <SponsorModal
               pungAmount={pungAmount}
               onPungChange={handlePungChange}
+              onChangeDonationType={handleDonationTypeChange}
+              onYoutubeUrlChange={handleYoutubeUrlChange}
+              onChangeMessage={handleMessageChange}
               sponsorPung={handleSponsorPung}
               userCash={userCash}
             />
@@ -191,7 +232,7 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalContent = styled.div`
-  background-color: ${({ theme }) => theme.colors.content.normal};
+  background-color: ${({ theme }) => theme.colors.background.normal};
   border-radius: ${({ theme }) => theme.borders.large};
   padding: 20px;
   max-width: 400px;
