@@ -169,7 +169,7 @@ const ModalOverlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: ${({ theme }) => theme.colors.background.dark};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -183,7 +183,7 @@ const ModalContainer = styled.div`
   max-height: 700px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 20px ${({ theme }) => theme.colors.background.dark};
 `;
 
 const ModalHeader = styled.div`

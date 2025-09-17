@@ -22,7 +22,6 @@ interface ChatMessage {
 }
 
 const StreamingPage: React.FC = () => {
-  // 스트리밍 상태 관리
   const {
     isStreaming,
     scenes,
@@ -36,6 +35,7 @@ const StreamingPage: React.FC = () => {
     toggleSourceVisibility,
     setAudioLevel,
     toggleAudioMute,
+    updateSourceOrder,
     requestDisplayMedia,
     startStreaming,
     stopStreaming
@@ -108,7 +108,6 @@ const StreamingPage: React.FC = () => {
           />
           
           <StreamPreview 
-            onTagClick={handleTagClick}
             previewStream={previewStream}
             sources={sources}
             activeScene={scenes.find(scene => scene.active)}
@@ -131,6 +130,7 @@ const StreamingPage: React.FC = () => {
             onSourceToggle={handleSourceToggle}
             onVolumeChange={setAudioLevel}
             onMuteToggle={toggleAudioMute}
+            onUpdateSourceOrder={updateSourceOrder}
             onAddScene={handleAddScene}
             onAddSource={handleAddSource}
             onAddImageSource={addImageSource}

@@ -18,7 +18,6 @@ interface Source {
 }
 
 interface StreamPreviewProps {
-  onTagClick: () => void;
   previewStream?: MediaStream | null;
   sources?: Source[];
   activeScene?: { id: string; sources: string[] };
@@ -27,7 +26,6 @@ interface StreamPreviewProps {
 }
 
 export const StreamPreview: React.FC<StreamPreviewProps> = ({ 
-  onTagClick, 
   previewStream, 
   sources = [], 
   activeScene,
@@ -40,8 +38,9 @@ export const StreamPreview: React.FC<StreamPreviewProps> = ({
   const [isResizing, setIsResizing] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [resizeStart, setResizeStart] = useState({ x: 0, y: 0, width: 0, height: 0 });
+  const [tags, setTags] = useState<string[]>([]);
+  const [tagInput, setTagInput] = useState('');
 
-  // 씬이 바뀔 때마다 소스 위치 초기화
   React.useEffect(() => {
     setSourcePositions({});
     setSelectedSource(null);
@@ -50,6 +49,23 @@ export const StreamPreview: React.FC<StreamPreviewProps> = ({
   const handleSourceClick = (sourceId: string) => {
     setSelectedSource(selectedSource === sourceId ? null : sourceId);
     onSourceClick?.(sourceId);
+  };
+
+  const handleAddTag = () => {
+    if (tagInput.trim() && !tags.includes(tagInput.trim()) && tags.length < 5) {
+      setTags(prev => [...prev, tagInput.trim()]);
+      setTagInput('');
+    }
+  };
+
+  const handleRemoveTag = (tagToRemove: string) => {
+    setTags(prev => prev.filter(tag => tag !== tagToRemove));
+  };
+
+  const handleTagInputKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleAddTag();
+    }
   };
 
   const handleMouseDown = (e: React.MouseEvent, sourceId: string, action: 'drag' | 'resize') => {
@@ -114,7 +130,6 @@ export const StreamPreview: React.FC<StreamPreviewProps> = ({
     setIsResizing(false);
   };
 
-  // 마우스 이벤트 리스너 등록
   React.useEffect(() => {
     if (isDragging || isResizing) {
       document.addEventListener('mousemove', handleMouseMove as any);
@@ -148,7 +163,6 @@ export const StreamPreview: React.FC<StreamPreviewProps> = ({
           </VideoPlaceholder>
         )}
         
-        {/* 소스 오버레이 - 활성 씬의 비디오, 이미지, 텍스트 소스만 표시 (previewStream이 없을 때만) */}
         {!previewStream && sources.filter(source => 
           source.visible && 
           source.type !== 'audio' && 
@@ -238,13 +252,28 @@ export const StreamPreview: React.FC<StreamPreviewProps> = ({
       </VideoPreview>
       <BottomControlsRow>
         <TagInputContainer>
-          <TagInput placeholder="태그 입력" />
+          <TagInput 
+            placeholder={`태그 입력 (${tags.length}/5)`} 
+            value={tagInput}
+            onChange={(e) => setTagInput(e.target.value)}
+            onKeyPress={handleTagInputKeyPress}
+            disabled={tags.length >= 5}
+          />
+          <AddTagButton 
+            onClick={handleAddTag}
+            disabled={tags.length >= 5 || !tagInput.trim()}
+          >
+            추가
+          </AddTagButton>
         </TagInputContainer>
-        <TagButtonsContainer>
-          <TagButton onClick={onTagClick} $active>버추얼</TagButton>
-          <TagButton onClick={onTagClick}>소통</TagButton>
-          <TagButton onClick={onTagClick}>게임</TagButton>
-        </TagButtonsContainer>
+        <TagList>
+          {tags.map((tag, index) => (
+            <TagItem key={index}>
+              <TagText>{tag}</TagText>
+              <RemoveTagButton onClick={() => handleRemoveTag(tag)}>×</RemoveTagButton>
+            </TagItem>
+          ))}
+        </TagList>
       </BottomControlsRow>
     </PreviewContainer>
   );
@@ -299,17 +328,23 @@ const BottomControlsRow = styled.div`
 `;
 
 const TagInputContainer = styled.div`
-  flex: 1;
+  display: flex;
+  gap: 8px;
+  width: 300px;
 `;
 
 const TagInput = styled.input`
-  width: 100%;
-  padding: 8px 12px;
-  background-color: ${({ theme }) => theme.colors.content.normal};
-  border: 1px solid ${({ theme }) => theme.colors.stroke.normal};
-  border-radius: 4px;
-  color: ${({ theme }) => theme.colors.common.white};
+  flex: 1;
+  padding: 8px 16px;
+  background-color: ${({ theme, disabled }) => 
+    disabled ? theme.colors.content.normal : theme.colors.content.dark};
+  border: 1px solid ${({ theme, disabled }) => 
+    disabled ? theme.colors.stroke.light : theme.colors.stroke.normal};
+  border-radius: 20px;
+  color: ${({ theme, disabled }) => 
+    disabled ? theme.colors.text.placeholder : theme.colors.text.normal};
   font-size: 14px;
+  opacity: ${({ disabled }) => disabled ? 0.6 : 1};
   
   &::placeholder {
     color: ${({ theme }) => theme.colors.text.placeholder};
@@ -317,36 +352,68 @@ const TagInput = styled.input`
   
   &:focus {
     outline: none;
-    border-color: ${({ theme }) => theme.colors.primary.normal};
+    border-color: ${({ theme, disabled }) => 
+      disabled ? theme.colors.stroke.light : theme.colors.primary.normal};
   }
 `;
 
-const TagButtonsContainer = styled.div`
-  display: flex;
-  gap: 8px;
-`;
-
-interface TagButtonProps {
-  $active?: boolean;
-}
-
-const TagButton = styled.button<TagButtonProps>`
+const AddTagButton = styled.button`
   padding: 8px 16px;
-  border-radius: 4px;
+  background-color: ${({ theme, disabled }) => 
+    disabled ? theme.colors.button.disabled : theme.colors.primary.normal};
+  color: ${({ theme, disabled }) => 
+    disabled ? theme.colors.text.placeholder : theme.colors.common.white};
+  border: none;
+  border-radius: 20px;
+  cursor: ${({ disabled }) => disabled ? 'not-allowed' : 'pointer'};
   font-size: 14px;
-  background-color: ${props => props.$active ? ({ theme }) => theme.colors.primary.normal : 'transparent'};
-  color: ${({ theme }) => theme.colors.common.white};
-  border: 1px solid ${props => props.$active ? ({ theme }) => theme.colors.primary.normal : ({ theme }) => theme.colors.stroke.normal};
-  cursor: pointer;
   transition: all 0.2s ease;
+  opacity: ${({ disabled }) => disabled ? 0.6 : 1};
   
   &:hover {
-    border-color: ${props => props.$active ? ({ theme }) => theme.colors.primary.normal : ({ theme }) => theme.colors.stroke.dark};
-    background-color: ${props => props.$active ? ({ theme }) => theme.colors.primary.normal : 'rgba(255, 255, 255, 0.05)'};
+    background-color: ${({ theme, disabled }) => 
+      disabled ? theme.colors.button.disabled : theme.colors.primary.dark};
   }
 `;
 
-// 소스 오버레이 관련 스타일
+const TagList = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+`;
+
+const TagItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  background-color: ${({ theme }) => theme.colors.content.dark};
+  color: ${({ theme }) => theme.colors.text.normal};
+  border-radius: 20px;
+  font-size: 12px;
+  border: 1px solid ${({ theme }) => theme.colors.stroke.normal};
+`;
+
+const TagText = styled.span`
+  font-size: 12px;
+`;
+
+const RemoveTagButton = styled.button`
+  background: none;
+  border: none;
+  color: ${({ theme }) => theme.colors.common.white};
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0;
+  margin-left: 4px;
+  
+  &:hover {
+    opacity: 0.7;
+  }
+`;
+
+
 interface SourceOverlayProps {
   $selected: boolean;
   $position: { x: number; y: number; width: number; height: number };
@@ -371,7 +438,7 @@ const SourceOverlay = styled.div<SourceOverlayProps>`
   overflow: hidden;
   
   &:hover {
-    border-color: ${props => props.$selected ? ({ theme }) => theme.colors.common.white : 'rgba(255, 255, 255, 0.5)'};
+    border-color: ${props => props.$selected ? ({ theme }) => theme.colors.common.white : ({ theme }) => theme.colors.stroke.normal};
   }
 `;
 
@@ -409,7 +476,7 @@ const SourcePlaceholder = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: ${({ theme }) => theme.colors.background.dark};
   border-radius: 4px;
   padding: 16px;
 `;
@@ -420,7 +487,7 @@ const SourceLabel = styled.div`
   font-weight: 600;
   text-align: center;
   padding: 4px 8px;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: ${({ theme }) => theme.colors.background.dark};
   border-radius: 2px;
   margin-bottom: 8px;
 `;

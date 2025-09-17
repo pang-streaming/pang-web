@@ -23,10 +23,7 @@ export const SourcesModal: React.FC<SourcesModalProps> = ({
   const [sourceType, setSourceType] = useState('video');
   const [selectedDevice, setSelectedDevice] = useState('');
   
-  // 이미지 소스 관련 상태
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  
-  // 텍스트 소스 관련 상태
   const [textContent, setTextContent] = useState('');
   const [fontSize, setFontSize] = useState(24);
   const [textColor, setTextColor] = useState('#ffffff');
@@ -36,7 +33,6 @@ export const SourcesModal: React.FC<SourcesModalProps> = ({
   const videoDevices = getVideoDevices();
   const audioInputDevices = getAudioInputDevices();
   
-  // 화면 공유 소스가 이미 있는지 확인
   const hasDisplaySource = existingSources.some(source => 
     source.deviceId === 'desktop-video' || source.deviceId === 'browser-video'
   );
@@ -77,7 +73,6 @@ export const SourcesModal: React.FC<SourcesModalProps> = ({
     }
   };
 
-  // 소스 타입 변경 시 디바이스 목록 업데이트
   useEffect(() => {
     if (sourceType === 'video' && videoDevices.length > 0) {
       setSelectedDevice(videoDevices[0].id);
@@ -230,7 +225,7 @@ const ModalOverlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: ${({ theme }) => theme.colors.background.dark};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -244,7 +239,7 @@ const ModalContainer = styled.div`
   max-height: 700px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 20px ${({ theme }) => theme.colors.background.dark};
 `;
 
 const ModalHeader = styled.div`

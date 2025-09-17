@@ -22,6 +22,7 @@ interface PanelControlProps {
   onSourceToggle?: (sourceId: string) => void;
   onVolumeChange?: (sourceId: string, level: number) => void;
   onMuteToggle?: (sourceId: string) => void;
+  onUpdateSourceOrder?: (sceneId: string, newSourceOrder: string[]) => void;
   onAddScene?: (name: string, selectedDevices?: string[]) => Promise<void>;
   onAddSource?: (name: string, type: string, deviceId?: string) => Promise<void>;
   onAddImageSource?: (name: string, file: File) => void;
@@ -35,6 +36,7 @@ export const PanelControl: React.FC<PanelControlProps> = ({
   onSourceToggle,
   onVolumeChange,
   onMuteToggle,
+  onUpdateSourceOrder,
   onAddScene,
   onAddSource,
   onAddImageSource,
@@ -42,13 +44,39 @@ export const PanelControl: React.FC<PanelControlProps> = ({
 }) => {
   const [isScenesModalOpen, setIsScenesModalOpen] = useState(false);
   const [isSourcesModalOpen, setIsSourcesModalOpen] = useState(false);
-  
   const activeScene = scenes.find(scene => scene.active);
   const activeSceneSources = activeScene 
     ? sources.filter(source => activeScene.sources.includes(source.id))
     : [];
   
   const audioLevels = useAudioLevels(activeSceneSources);
+
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+
+  const handleDragStart = (e: React.DragEvent, index: number) => {
+    setDraggedIndex(index);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
+    e.preventDefault();
+    
+    if (draggedIndex !== null && draggedIndex !== dropIndex && activeScene) {
+      const newSources = [...activeSceneSources];
+      const [draggedItem] = newSources.splice(draggedIndex, 1);
+      newSources.splice(dropIndex, 0, draggedItem);
+      
+      const newSourceIds = newSources.map(s => s.id);
+      onUpdateSourceOrder?.(activeScene.id, newSourceIds);
+    }
+    
+    setDraggedIndex(null);
+  };
   return (
     <ControlPanelsContainer>
       <PanelsRow>
@@ -88,18 +116,25 @@ export const PanelControl: React.FC<PanelControlProps> = ({
             </AddButton>
           </PanelHeader>
           <PanelContent>
-            <SourceList>
-              {activeSceneSources.map(source => (
-                <SourceItem key={source.id}>
-                  <SourceIcon $type={source.type} />
-                  <SourceName>{source.name}</SourceName>
-                  <VisibilityButton 
-                    $visible={source.visible}
-                    onClick={() => onSourceToggle && onSourceToggle(source.id)}
-                  />
-                </SourceItem>
-              ))}
-            </SourceList>
+                <SourceList onDragOver={handleDragOver}>
+                  {activeSceneSources.map((source, index) => (
+                    <SourceItem 
+                      key={source.id}
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, index)}
+                      onDragOver={handleDragOver}
+                      onDrop={(e) => handleDrop(e, index)}
+                      $isDragging={draggedIndex === index}
+                    >
+                      <SourceIcon $type={source.type} />
+                      <SourceName>{source.name}</SourceName>
+                      <VisibilityButton
+                        $visible={source.visible}
+                        onClick={() => onSourceToggle && onSourceToggle(source.id)}
+                      />
+                    </SourceItem>
+                  ))}
+                </SourceList>
           </PanelContent>
         </SourcesPanel>
         
@@ -270,13 +305,21 @@ const SourceList = styled.div`
   gap: 4px;
 `;
 
-const SourceItem = styled.div`
+const SourceItem = styled.div<{ $isDragging?: boolean }>`
   display: flex;
   align-items: center;
-  padding: 6px 10px;
+  gap: 8px;
+  padding: 8px;
+  cursor: move;
+  transition: all 0.2s ease;
+  opacity: ${({ $isDragging }) => $isDragging ? 0.5 : 1};
+  background-color: ${({ theme, $isDragging }) => 
+    $isDragging ? theme.colors.primary.light : 'transparent'};
+  border-radius: 4px;
   
   &:hover {
-    background-color: ${({ theme }) => theme.colors.content.normal};
+    background-color: ${({ theme, $isDragging }) => 
+      $isDragging ? theme.colors.primary.light : theme.colors.content.normal};
   }
 `;
 
