@@ -19,10 +19,17 @@ export const VideoContainer = styled.div`
 	aspect-ratio: 16 / 9;
 	border-radius: ${({theme}) => theme.borders.xlarge};
 	background-color: ${({theme}) => theme.colors.content.dark};
+	overflow: hidden;
 	
 	&:hover {
 		opacity: 0.8;
 	}
+`
+
+export const Thumbnail = styled.img`
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
 `
 
 export const ProfileImage = styled.img`

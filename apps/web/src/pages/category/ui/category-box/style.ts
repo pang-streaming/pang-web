@@ -1,9 +1,12 @@
 import styled from "styled-components";
 
-export const CategoryBoxThumbnail = styled.div`
+export const CategoryBoxThumbnail = styled.div<{backgroundImage?: string}>`
 	width: 100%;
 	aspect-ratio: 41 / 56;
 	background-color: ${({theme}) => theme.colors.content.normal};
+	background-image: ${props => props.backgroundImage ? `url(${props.backgroundImage})` : 'none'};
+	background-size: cover;
+	background-position: center;
 	border-radius: ${({theme}) => theme.borders.xlarge};
 	margin-bottom: 10px;
 `;
