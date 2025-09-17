@@ -12,13 +12,14 @@ export const CategoryBox = ({
     categoryChipCount,
     categoryLiveCount,
     categoryTitle,
+    categoryThumbnail
 }: CategoryBoxProps) => {
     const formattedChipCount = new Intl.NumberFormat().format(categoryChipCount);
 		const navigate = useNavigate();
 		
 	return (
 		<S.CategoryContainer onClick={() => navigate("/category-detail")}>
-			<S.CategoryBoxThumbnail>
+			<S.CategoryBoxThumbnail backgroundImage={categoryThumbnail}>
 				<S.CategoryChip><S.ChipCountText>•{formattedChipCount}</S.ChipCountText></S.CategoryChip>
 			</S.CategoryBoxThumbnail>
 			<S.CategoryInfo>

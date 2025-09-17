@@ -6,7 +6,8 @@ import { toast } from "react-toastify";
 import { FiUser, FiLock } from "react-icons/fi";
 import { FaApple } from "react-icons/fa6";
 import { FcGoogle } from "react-icons/fc";
-
+import banner1 from '@/app/assets/banner1.png';
+import banner2 from '@/app/assets/banner2.png';
 import * as S from './style'
 import Logo from "@/app/assets/logo.svg";
 import { loginUser } from "@/features/auth/api/login-api";
@@ -107,7 +108,33 @@ export const LoginForm = () => {
         </div>
       </S.LeftSection>
 
-      <S.RightSection />
+      <S.RightSection>
+        <S.BannerContainer>
+          <S.BannerImage src={banner1} alt="Banner 1" />
+          <S.BannerImage src={banner2} alt="Banner 2" />
+          <S.BannerImage src={banner1} alt="Banner 1" />
+          <S.BannerImage src={banner2} alt="Banner 2" />
+          <S.BannerImage src={banner1} alt="Banner 1" />
+          <S.BannerImage src={banner2} alt="Banner 2" />
+          <S.BannerImage src={banner1} alt="Banner 1" />
+          <S.BannerImage src={banner2} alt="Banner 2" />
+          <S.BannerImage src={banner1} alt="Banner 1" />
+          <S.BannerImage src={banner2} alt="Banner 2" />
+        </S.BannerContainer>
+        <S.BannerContainer2>
+          <S.BannerImage2 src={banner2} alt="Banner 2" />
+          <S.BannerImage2 src={banner1} alt="Banner 1" />
+          <S.BannerImage2 src={banner2} alt="Banner 2" />
+          <S.BannerImage2 src={banner1} alt="Banner 1" />
+          <S.BannerImage2 src={banner2} alt="Banner 2" />
+          <S.BannerImage2 src={banner1} alt="Banner 1" />
+          <S.BannerImage2 src={banner2} alt="Banner 2" />
+          <S.BannerImage2 src={banner1} alt="Banner 1" />
+          <S.BannerImage2 src={banner2} alt="Banner 2" />
+          <S.BannerImage2 src={banner1} alt="Banner 1" />
+          
+        </S.BannerContainer2>
+      </S.RightSection>
     </S.LoginWrapper>
   );
 };
