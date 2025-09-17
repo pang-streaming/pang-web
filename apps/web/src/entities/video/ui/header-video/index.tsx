@@ -21,11 +21,11 @@ export const HeaderVideo = ({ videos, hideProfile }: HeaderVideoProps) => {
     return null;
   }
   
-  const { title, nickname, username, streamId, profileImage } = currentVideo;
+  const { title, nickname, username, streamId, profileImage, url } = currentVideo;
 	const {handleOnClickVideoCard, handleOnClickProfile} = useVideoCard({streamId, username});
 
   return (
-    <HeaderVideoContainer onClick={handleOnClickVideoCard}>
+    <HeaderVideoContainer onClick={handleOnClickVideoCard} backgroundImage={url}>
       <LiveCardContainer>
         <LiveContainer>
           <LiveTag>LIVE</LiveTag>
@@ -91,7 +91,7 @@ const LiveTitle = styled.span`
   color: ${({ theme }) => theme.colors.secondary.normal};
 `;
 
-const HeaderVideoContainer = styled.div`
+const HeaderVideoContainer = styled.div<{backgroundImage?: string}>`
   padding: 20px;
   height: 340px;
   overflow: hidden;
@@ -99,6 +99,9 @@ const HeaderVideoContainer = styled.div`
   border-radius: 20px;
   margin-bottom: 35px;
   background-color: ${({ theme }) => theme.colors.text.subtitle};
+  background-image: ${props => props.backgroundImage ? `url(${props.backgroundImage})` : 'none'};
+  background-size: cover;
+  background-position: center;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
