@@ -4,7 +4,7 @@ export const LoginWrapper = styled.div`
   display: flex;
   width: 100vw;
   height: 100vh;
-  background-color: black;
+  background-color: transparent;
 `;
 
 export const LeftSection = styled.div`
@@ -23,7 +23,66 @@ export const LeftSection = styled.div`
 export const RightSection = styled.div`
   flex-grow: 1;
   height: 100vh;
-  background-color: black;
+  background-image: url('/src/app/assets/login-banner.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  overflow: hidden;
+`;
+
+export const BannerContainer = styled.div`
+  position: absolute;
+  top: 30%;
+  left: 0;
+  transform: translateY(-50%);
+  height: 150px;
+  display: flex;
+  animation: slideRight 185s linear infinite;
+  
+  @keyframes slideRight {
+    0% {
+      transform: translateY(-80%) translateX(-90%);
+    }
+    100% {
+      transform: translateY(-80%) translateX(100%);
+    }
+  }
+`;
+
+export const BannerImage = styled.img`
+  height: 250px;
+  width: auto;
+  flex-shrink: 0;
+  margin-right: 10px;
+  opacity: 0.4;
+`;
+
+export const BannerContainer2 = styled.div`
+  position: absolute;
+  top: 70%;
+  right: 0;
+  transform: translateY(-50%);
+  height: 150px;
+  display: flex;
+  animation: slideLeft 180s linear infinite;
+  
+  @keyframes slideLeft {
+    0% {
+      transform: translateY(-70%) translateX(90%);
+    }
+    100% {
+      transform: translateY(-70%) translateX(-100%);
+    }
+  }
+`;
+
+export const BannerImage2 = styled.img`
+  height: 250px;
+  width: auto;
+  flex-shrink: 0;
+  margin-left: 10px;
+  opacity: 0.4;
 `;
 
 export const LoginLogo = styled.img`
