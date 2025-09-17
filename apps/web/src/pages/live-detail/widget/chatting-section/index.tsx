@@ -75,6 +75,11 @@ export const ChattingSection = () => {
                       {item.viewerName}
                     </S.SponsorNickname>
                     님이 {item.sponsorAmount?.toLocaleString()}개를 후원하셨습니다!
+                    {item.message && (
+                      <S.SponsorMessageText>
+                        "{item.message}"
+                      </S.SponsorMessageText>
+                    )}
                   </S.SponsorText>
                 </S.SponsorMessage>
               ) : (

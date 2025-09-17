@@ -37,7 +37,10 @@ export const ChatInput = ({ username, onSend, addSponsorMessage }: ChatInputProp
   };
 
   const handleSponsorClick = () => {
-    setPungAmount(1000); 
+    setPungAmount(1000);
+    setMessage("");
+    setYoutubeUrl("");
+    setDonationType("");
     setIsSponsorModalOpen(true);
   };
 
@@ -75,7 +78,12 @@ export const ChatInput = ({ username, onSend, addSponsorMessage }: ChatInputProp
       const newCash = userCash - pungAmount;
       console.log(`후원 전 cash: ${userCash}, 후원 금액: ${pungAmount}, 후원 후 cash: ${newCash}`);
       setUserCash(newCash);
-      setPungAmount(1000); 
+      setPungAmount(1000);
+      
+      // 후원 후 입력값들 초기화
+      setMessage("");
+      setYoutubeUrl("");
+      setDonationType(""); 
       
       sponsorEventManager.emit(userNickname, pungAmount);
       switch (donationType) {

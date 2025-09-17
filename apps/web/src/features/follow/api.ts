@@ -13,7 +13,7 @@ export const fetchMyFollower = async (username: string): Promise<FollowResponse>
     return res.data;
 }
 
-export const followingOtherUser = async (username: string): Promise<FollowResponse> => {
-    const res = await api.post("/follow",null, {params : { username }});
+export const followingOtherUser = async (username: string) => {
+    const res = await api.post(`/follow?username=${username}`);
     return res.data;
 }

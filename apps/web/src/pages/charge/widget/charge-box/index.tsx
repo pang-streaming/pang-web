@@ -12,15 +12,15 @@ interface ChargeBoxProps {
 export const ChargeBox = ({ type }: ChargeBoxProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const [cash, setCash] = useState(0)
-  
-  useEffect(()=> {
+  const [cash, setCash] = useState(0);
+
+  useEffect(() => {
     const fetchPung = async () => {
-      const result = await fetchMyInfo()
-      setCash(result.data.cash)
-    }  
-    fetchPung()
-  },[])
+      const result = await fetchMyInfo();
+      setCash(result.data.cash);
+    };
+    fetchPung();
+  }, []);
 
   const handleChargeClick = () => {
     setIsModalOpen(true);
@@ -38,7 +38,13 @@ export const ChargeBox = ({ type }: ChargeBoxProps) => {
             <span style={{ fontSize: 32 }}>💣</span>
           </StrokeCircle>
         ) : (
-          <div style={{ position: "relative", display: "inline-block", marginRight: 20 }}>
+          <div
+            style={{
+              position: "relative",
+              display: "inline-block",
+              marginRight: 20,
+            }}
+          >
             <img src={charge} />
             <span
               style={{
@@ -53,7 +59,17 @@ export const ChargeBox = ({ type }: ChargeBoxProps) => {
             </span>
           </div>
         )}
-        <Text>{type === "mypung" ? `보유중인 펑 : ${cash.toLocaleString()}개` : "펑 자동충전"}</Text>
+
+        <Text>
+          {type === "mypung" ? (
+            <>
+              보유중인 펑 : <Amount>{cash.toLocaleString()}</Amount>개
+            </>
+          ) : (
+            "펑 자동충전"
+          )}
+        </Text>
+
         <ChargeButton onClick={handleChargeClick}>충전하기</ChargeButton>
       </Container>
 
@@ -89,10 +105,15 @@ const StrokeCircle = styled.div`
 `;
 
 const Text = styled.span`
-  margin-right: auto;
   font-size: ${({ theme }) => theme.font.xxLarge};
   font-weight: 600;
   color: ${({ theme }) => theme.colors.text.normal};
+  margin-right: auto;
+`;
+const Amount = styled.span`
+  font-size: ${({ theme }) => theme.font.xxLarge};
+  font-weight: 600;
+  color: ${({ theme }) => theme.colors.primary.normal};
 `;
 
 const ModalOverlay = styled.div`

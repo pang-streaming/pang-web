@@ -1,8 +1,8 @@
 import * as S from "./style";
 import { HeaderVideo } from "@/entities/video/ui/header-video";
 import { TabTitleText } from "@/shared/ui/tab-title-text";
-import { VideoList } from "@/shared/ui/video/video-list";
 import { useVideoList } from "./hooks/use-video-list";
+import { VideoList } from "@/shared/ui/video/video-list";
 
 
 export const Home = () => {

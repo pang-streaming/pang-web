@@ -3,6 +3,7 @@ import * as S from "./style";
 import { Segment, SegmentButtonGroup } from "@pang/shared/ui";
 import { ChargeBox } from "./widget/charge-box";
 import { ListHeader } from "./widget/list-header";
+import { useState } from "react";
 
 const segments: Segment[] = [
   {
@@ -11,11 +12,13 @@ const segments: Segment[] = [
   },
   {
     id: "buy",
-    name: "구매내역",
+    name: "충전내역",
   },
 ];
 
 export const Charge = () => {
+  const [selectedSegment, setSelectedSegment] = useState<string>("use");
+
   return (
     <div>
       <TabTitleText>My 펑</TabTitleText>
@@ -24,8 +27,11 @@ export const Charge = () => {
           <ChargeBox type="mypung" />
           <ChargeBox type="chargepung" />
         </S.ChargeBoxRow>
-        <SegmentButtonGroup segments={segments} />
-        <ListHeader></ListHeader>
+        <SegmentButtonGroup 
+          segments={segments} 
+          onSegmentChange={setSelectedSegment}
+        />
+        <ListHeader segmentType={selectedSegment} />
       </S.Container>
     </div>
   );

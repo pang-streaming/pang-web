@@ -30,6 +30,10 @@ export const VideoWrapperInner = styled.div`
 	&:-webkit-full-screen,
 	&:-moz-full-screen {
 		border-radius: 0;
+		background-color: #000;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 `;
 
@@ -43,6 +47,19 @@ export const VideoOverlayArea = styled.div`
 		height: 100%;
 		object-fit: cover;
 		pointer-events: auto; 
+	}
+	
+	&:fullscreen,
+	&:-webkit-full-screen,
+	&:-moz-full-screen {
+		width: 100vw;
+		height: 100vh;
+		
+		video {
+			width: 100vw;
+			height: 100vh;
+			object-fit: contain;
+		}
 	}
 `;
 

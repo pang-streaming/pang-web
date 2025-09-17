@@ -108,3 +108,14 @@ export const SponsorNickname = styled.span`
   font-weight: 700;
   color: #fff;
 `;
+
+export const SponsorMessageText = styled.div`
+  margin-top: 8px;
+  padding: 8px 12px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  font-style: italic;
+  font-size: ${({theme}) => theme.font.small};
+  color: rgba(255, 255, 255, 0.9);
+
+`;
