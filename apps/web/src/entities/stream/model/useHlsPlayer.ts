@@ -17,9 +17,7 @@ export function useHlsPlayer(videoRef: RefObject<HTMLVideoElement | null>, sourc
         enableWorker: true,
         backBufferLength: 90,
       });
-      // hls.loadSource("https://d30x1sjlpvaefa.cloudfront.net/hls/tester/master.m3u8");
-
-      // hls.loadSource("http://52.78.230.112:8044/hls/jiyun/master.m3u8");
+      
       hls.loadSource(sourceUrl);
 
       hls.attachMedia(video);
