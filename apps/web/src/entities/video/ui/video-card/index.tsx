@@ -17,7 +17,7 @@ export const VideoCard = ({
 	return (
 		<S.LiveCardContainer  onClick={handleOnClickVideoCard}>
 			<S.VideoContainer>
-				{/*<S.Thumbnail/>*/}
+				<S.Thumbnail src={url} alt={title} />
 			</S.VideoContainer>
 			<S.LiveInfo>
 				<S.ProfileImage src={profileImage || normalProfile} onClick={handleOnClickProfile} />

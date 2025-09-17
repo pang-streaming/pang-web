@@ -43,7 +43,7 @@ export const CategoryDetail = () => {
       <CategoryDetailContainer>
         <TabTitleText>카테고리</TabTitleText>
         <CategoryBoxWrapper>
-          <CategoryThumbnail src="https://picsum.photos/205/280" />
+          <CategoryThumbnail src="/category-images/forza.webp" />
           <CategoryInfoWrapper>
             <Title>포르자 호라이즌 5</Title>
             <CategoryInfo>시청자 24명 · 라이브 1개</CategoryInfo>
@@ -65,7 +65,7 @@ export const CategoryDetail = () => {
       <CategoryDetailContainer>
         <TabTitleText>카테고리</TabTitleText>
         <CategoryBoxWrapper>
-          <CategoryThumbnail src="https://picsum.photos/205/280" />
+          <CategoryThumbnail src="/category-images/forza.webp" />
           <CategoryInfoWrapper>
             <Title>포르자 호라이즌 5</Title>
             <CategoryInfo>시청자 24명 · 라이브 1개</CategoryInfo>
@@ -86,7 +86,7 @@ export const CategoryDetail = () => {
     <CategoryDetailContainer>
       <TabTitleText>카테고리</TabTitleText>
       <CategoryBoxWrapper>
-        <CategoryThumbnail src="https://picsum.photos/205/280" />
+        <CategoryThumbnail src="/category-images/forza.webp" />
         <CategoryInfoWrapper>
           <Title>포르자 호라이즌 5</Title>
           <CategoryInfo>시청자 24명 · 라이브 1개</CategoryInfo>
