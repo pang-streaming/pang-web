@@ -15,9 +15,11 @@ export const DonationPage = () => {
     const queryParams = new URLSearchParams(location.search);
     const roomId = String(queryParams.get("username"));
 
-    useSocket(roomId, (data) => {
-        setQueue((prev) => [...prev, data]);
+    useSocket({
+        roomId: roomId,
+        onDonation: (data)=> setQueue((prev) => [...prev, data])
     });
+    
 
     useEffect(() => {
         if (!isPlayingRef.current && queue.length > 0) {
