@@ -1,53 +1,10 @@
 import api from "@/api/api";
+import * as P  from "./model/type";
 
-export interface CardInfo {
-  name: string;
-  cardNumber: string;
-  expiryMonth: string;
-  expiryYear: string;
-  password: string;
-  owner: string;
-  phoneNumber: string;
-  birth: string;
-}
-
-export interface AddCardRequest {
-  name: string;
-  phone: string;
-  cardNumber: string;
-  expiredYear: string;
-  expiredMonth: string;
-  birth: string;
-  cardPassword: string;
-}
-
-export interface CardListItem {
-  cardId: string;
-  provider: string;
-  name: string;
-}
-
-export interface ApiResponse<T> {
-  status: string;
-  message: string;
-  data: T;
-  timestamp: string;
-}
-
-export interface ProcessPaymentRequest {
-  cardId: string;
-  amount: number;
-}
-
-export interface ProcessPaymentResponse {
-  transactionId: string;
-  status: string;
-  amount: number;
-}
 
 export const paymentApi = {
-  addCard: async (cardInfo: CardInfo): Promise<ApiResponse<null>> => {
-    const requestData: AddCardRequest = {
+  addCard: async (cardInfo: P.CardInfo): Promise<P.ApiResponse<null>> => {
+    const requestData: P.AddCardRequest = {
       name: cardInfo.name,
       phone: cardInfo.phoneNumber,
       cardNumber: cardInfo.cardNumber,
@@ -60,13 +17,13 @@ export const paymentApi = {
     return response.data;
   },
 
-  getCards: async (): Promise<ApiResponse<CardListItem[]>> => {
+  getCards: async (): Promise<P.ApiResponse<P.CardListItem[]>> => {
     const response = await api.get("/payment/card");
     return response.data;
   },
 
-  processPayment: async (cardId: string, amount: number): Promise<ApiResponse<ProcessPaymentResponse>> => {
-    const requestData: ProcessPaymentRequest = {
+  processPayment: async (cardId: string, amount: number): Promise<P.ApiResponse<P.ProcessPaymentResponse>> => {
+    const requestData: P.ProcessPaymentRequest = {
       cardId,
       amount,
     };
@@ -74,3 +31,4 @@ export const paymentApi = {
     return response.data;
   },
 };
+

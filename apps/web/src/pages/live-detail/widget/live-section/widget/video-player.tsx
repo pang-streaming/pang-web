@@ -28,15 +28,19 @@ export const VideoPlayer = ({ streamUrl, isMobile }: VideoPlayerProps) => {
 
   return (
     <S.VideoContainer ref={hoverRef}>
-      <S.VideoWrapperInner>
+      <S.VideoWrapperInner ref={containerRef}>
         {streamUrl && (
           <S.VideoOverlayArea>
             <S.Video
               ref={videoRef}
+              src={streamUrl}
               type="application/vnd.apple.mpegurl"
               autoPlay
+              playsInline
               muted={muted}
               onClick={handlePause}
+              controls={false}
+              webkit-playsinline="true"
             />
           </S.VideoOverlayArea>
         )}

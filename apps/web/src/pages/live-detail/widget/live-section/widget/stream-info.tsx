@@ -1,10 +1,11 @@
 import nomalProfile from "@/app/assets/images/normal_profile.svg";
-import { useFollowInfo } from "../model/use-follow-info";
+import { useFollow } from "@/features/follow/hooks/useFollow";
 import {IoHeart} from "react-icons/io5";
 import {IoMdHeartEmpty} from "react-icons/io";
 import styled from "styled-components";
 import {FollowButton} from "@/shared/ui/button/follow-button";
 import {useVideoCard} from "@/entities/video/hooks/controller/useVideoCard";
+import { useState, useEffect } from "react";
 
 interface StreamInfoProps {
 	streamId: string;
@@ -14,8 +15,32 @@ interface StreamInfoProps {
 }
 
 export const StreamInfo = ({ streamId, username, title, nickname }: StreamInfoProps) => {
-  const { followerCount, isFollowing, isLoading, toggleFollow } = useFollowInfo(nickname);
-	const {handleOnClickProfile} = useVideoCard({streamId, username});
+  const { loading, getMyFollower, followUser } = useFollow();
+  const [followerCount, setFollowerCount] = useState(0);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const {handleOnClickProfile} = useVideoCard({streamId, username});
+
+  useEffect(() => {
+    const fetchFollowInfo = async () => {
+      const followerData = await getMyFollower(username);
+      if (followerData) {
+        setFollowerCount(followerData.data.length);
+      }
+    };
+    fetchFollowInfo();
+  }, [username, getMyFollower]);
+
+  const toggleFollow = async () => {
+    const success = await followUser(username);
+    if (success) {
+      setIsFollowing(prev => !prev);
+      console.log("succes")
+      const followerData = await getMyFollower(username);
+      if (followerData) {
+        setFollowerCount(followerData.data.length);
+      }
+    }
+  };
 	
   return (
     <StreamInfoContainer>
@@ -28,7 +53,7 @@ export const StreamInfo = ({ streamId, username, title, nickname }: StreamInfoPr
             <FollowerCount>팔로워 {followerCount.toLocaleString()}명</FollowerCount>
           </UserInfoWrapper>
         </UserContainer>
-        <FollowButton isFollowing={isFollowing} onClick={toggleFollow} disabled={isLoading}/>
+        <FollowButton isFollowing={isFollowing} onClick={toggleFollow} disabled={loading}/>
       </StreamerInfoContainer>
     </StreamInfoContainer>
   );

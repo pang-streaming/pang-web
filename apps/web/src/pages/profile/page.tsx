@@ -3,11 +3,12 @@ import styled from "styled-components";
 import normalProfile from "@/app/assets/images/normal_profile.svg";
 import {FollowButton} from "@/shared/ui/button/follow-button";
 import {Segment, SegmentButtonGroup} from "@pang/shared/ui";
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import {ProfileHomeWidget} from "@/pages/profile/widget/profile-home-widget";
 import {ProfileVideoWidget} from "@/pages/profile/widget/profile-video-widget";
 import {ProfileCommunityWidget} from "@/pages/profile/widget/profile-community-widget";
 import {ProfileInfoWidget} from "@/pages/profile/widget/profile-info-widget";
+import { useFollow } from "@/features/follow/hooks/useFollow";
 
 const segments: Segment[] = [
 	{
@@ -31,6 +32,32 @@ const segments: Segment[] = [
 export const ProfilePage = () => {
 	const {id} = useParams();
 	const [activeTabId, setActiveTabId] = useState<string>(segments[0].id);
+	const { loading, getMyFollower, followUser } = useFollow();
+	const [followerCount, setFollowerCount] = useState(0);
+	const [isFollowing, setIsFollowing] = useState(false);
+
+	useEffect(() => {
+		const fetchFollowInfo = async () => {
+			if (!id) return;
+			const followerData = await getMyFollower(id);
+			if (followerData) {
+				setFollowerCount(followerData.data.length);
+			}
+		};
+		fetchFollowInfo();
+	}, [id, getMyFollower]);
+
+	const toggleFollow = async () => {
+		if (!id) return;
+		const success = await followUser(id);
+		if (success) {
+			setIsFollowing(prev => !prev);
+			const followerData = await getMyFollower(id);
+			if (followerData) {
+				setFollowerCount(followerData.data.length);
+			}
+		}
+	};
 	
 	return (
 		<ProfileContainer>
@@ -39,11 +66,15 @@ export const ProfilePage = () => {
 					<ProfileImage src={normalProfile}/>
 					<UserInfo>
 						<NickName>테스트</NickName>
-						<UserFollowers>12.5만명</UserFollowers>
+						<UserFollowers>{followerCount.toLocaleString()}명</UserFollowers>
 						<UserDescription>asdasdsadsadasdasd</UserDescription>
 					</UserInfo>
 				</UserInfoWrapper>
-				<FollowButton isFollowing={false} disabled={false} onClick={() => console.log("follow")}/>
+				<FollowButton 
+					isFollowing={isFollowing} 
+					disabled={loading} 
+					onClick={toggleFollow}
+				/>
 			</UserInfoContainer>
 			<SegmentButtonGroup segments={segments} onSegmentChange={setActiveTabId}/>
 			{activeTabId === 'home' && <ProfileHomeWidget/>}

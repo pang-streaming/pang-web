@@ -9,6 +9,7 @@ export interface ChatItem {
   color: string;
   type?: 'message' | 'sponsor';
   sponsorAmount?: number;
+  message?: string;
 }
 export interface ISendDonationMessageRequest {
   token?: string
@@ -59,6 +60,7 @@ export const useChat = (streamId: string) => {
           color: "#ff6b6b",
           type: 'sponsor',
           sponsorAmount: data.amount,
+          message: data.message
         },
       ]);
     };
