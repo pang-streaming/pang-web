@@ -98,7 +98,7 @@ export const Video = styled(MuxVideo)`
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
-		background-color: #000;
+		background-color: ${({theme}) => theme.colors.background.normal};
 	}
 `;
 
