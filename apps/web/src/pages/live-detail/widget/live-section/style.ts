@@ -30,7 +30,7 @@ export const VideoWrapperInner = styled.div`
 	&:-webkit-full-screen,
 	&:-moz-full-screen {
 		border-radius: 0;
-		background-color: #000;
+		background-color: #${({theme}) => theme.colors.background.normal};
 		display: flex;
 		align-items: center;
 		justify-content: center;
