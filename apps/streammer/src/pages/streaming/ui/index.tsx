@@ -5,21 +5,10 @@ import StreamPreview from './components/StreamPreview';
 import PanelControl from './components/PanelControl';
 import ChattingSection from './components/ChattingSection';
 import { useStreaming } from '../hooks/useStreaming';
+import { SocketProvider } from '../hooks/socket-provider';
 
 
 
-interface TopContributor {
-  rank: number;
-  name: string;
-  amount: string;
-}
-
-interface ChatMessage {
-  id: string;
-  viewerName: string;
-  chatting: string;
-  color: string;
-}
 
 const StreamingPage: React.FC = () => {
   const {
@@ -43,17 +32,6 @@ const StreamingPage: React.FC = () => {
   
   const [streamTitle, setStreamTitle] = useState<string>('스트리머의 방송');
 
-  const topContributors: TopContributor[] = [
-    { rank: 1, name: '대듀', amount: '208,000' },
-    { rank: 2, name: '대구에듀', amount: '98,000' },
-    { rank: 3, name: '감귤', amount: '98,000' }
-  ];
-
-  const chatMessages: ChatMessage[] = [
-    { id: '1', viewerName: '이상한 컴퓨터', chatting: '오늘 있던 폼 없던 폼 다 죽었네', color: '#9A57FF' },
-    { id: '2', viewerName: '대듀팬', chatting: '흠...', color: '#FF0055' },
-    { id: '3', viewerName: '대 듀', chatting: '여러분 죄송해요', color: '#FFD700' }
-  ];
 
   const handleEditTitle = () => {
     const newTitle = prompt('방송 제목을 입력하세요', streamTitle);
@@ -80,8 +58,6 @@ const StreamingPage: React.FC = () => {
   };
   
   
-  const handleSendMessage = (_message: string) => {
-  };
 
   const handleAddScene = async (name: string, selectedDevices?: string[]) => {
     await addScene(name, selectedDevices);
@@ -93,58 +69,58 @@ const StreamingPage: React.FC = () => {
 
 
   return (
-    <PageContainer>
-      <StreamLayout>
-        <MainContent>
-          <StreamHeader 
-            title={streamTitle}
-            viewerCount={128}
-            likeCount={42}
-            isStreaming={isStreaming}
-            onEditTitle={handleEditTitle}
-            onStartStream={handleStartStream}
-            onStopStream={handleStopStream}
-            onTagClick={handleTagClick}
-          />
+    <SocketProvider>
+      <PageContainer>
+        <StreamLayout>
+          <MainContent>
+            <StreamHeader 
+              title={streamTitle}
+              viewerCount={128}
+              likeCount={42}
+              isStreaming={isStreaming}
+              onEditTitle={handleEditTitle}
+              onStartStream={handleStartStream}
+              onStopStream={handleStopStream}
+              onTagClick={handleTagClick}
+            />
+            
+            <StreamPreview 
+              previewStream={previewStream}
+              sources={sources}
+              activeScene={scenes.find(scene => scene.active)}
+              onSourceClick={(sourceId) => {
+                console.log('Source clicked:', sourceId);
+              }}
+              onRequestDisplayMedia={async (sourceId) => {
+                try {
+                  await requestDisplayMedia(sourceId);
+                } catch (error) {
+                  console.error('화면 공유 오류:', error);
+                }
+              }}
+            />
+            
+            <PanelControl 
+              scenes={scenes}
+              sources={sources}
+              onSceneChange={handleSceneChange}
+              onSourceToggle={handleSourceToggle}
+              onVolumeChange={setAudioLevel}
+              onMuteToggle={toggleAudioMute}
+              onUpdateSourceOrder={updateSourceOrder}
+              onAddScene={handleAddScene}
+              onAddSource={handleAddSource}
+              onAddImageSource={addImageSource}
+              onAddTextSource={addTextSource}
+            />
+          </MainContent>
           
-          <StreamPreview 
-            previewStream={previewStream}
-            sources={sources}
-            activeScene={scenes.find(scene => scene.active)}
-            onSourceClick={(sourceId) => {
-              console.log('Source clicked:', sourceId);
-            }}
-            onRequestDisplayMedia={async (sourceId) => {
-              try {
-                await requestDisplayMedia(sourceId);
-              } catch (error) {
-                console.error('화면 공유 오류:', error);
-              }
-            }}
+          <ChattingSection 
+            streamId="streaming-room-1"
           />
-          
-          <PanelControl 
-            scenes={scenes}
-            sources={sources}
-            onSceneChange={handleSceneChange}
-            onSourceToggle={handleSourceToggle}
-            onVolumeChange={setAudioLevel}
-            onMuteToggle={toggleAudioMute}
-            onUpdateSourceOrder={updateSourceOrder}
-            onAddScene={handleAddScene}
-            onAddSource={handleAddSource}
-            onAddImageSource={addImageSource}
-            onAddTextSource={addTextSource}
-          />
-        </MainContent>
-        
-        <ChattingSection 
-          chatList={chatMessages}
-          topContributors={topContributors}
-          onSendMessage={handleSendMessage}
-        />
-      </StreamLayout>
-    </PageContainer>
+        </StreamLayout>
+      </PageContainer>
+    </SocketProvider>
   );
 };
 
