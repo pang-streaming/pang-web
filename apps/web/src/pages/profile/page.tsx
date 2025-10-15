@@ -65,13 +65,13 @@ export const ProfilePage = () => {
 				<UserInfoWrapper>
 					<ProfileImage src={normalProfile}/>
 					<UserInfo>
-						<NickName>테스트</NickName>
-						<UserFollowers>{followerCount.toLocaleString()}명</UserFollowers>
-						<UserDescription>asdasdsadsadasdasd</UserDescription>
+						<NickName>jiyun</NickName>
+						<UserFollowers>{/* {followerCount.toLocaleString()} */}2명</UserFollowers>
+						<UserDescription>반갑습니다.</UserDescription>
 					</UserInfo>
 				</UserInfoWrapper>
 				<FollowButton 
-					isFollowing={isFollowing} 
+					isFollowing={true} 
 					disabled={loading} 
 					onClick={toggleFollow}
 				/>

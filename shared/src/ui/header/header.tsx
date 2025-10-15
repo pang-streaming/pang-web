@@ -50,6 +50,7 @@ const LogoWrapper = styled.div`
 	justify-content: center;
 	gap: 24px;
 	margin-right: 36px;
+	z-index: auto;
 `;
 
 const ButtonWrapper = styled.div`
@@ -84,4 +85,5 @@ const HeaderContainer = styled.header`
 	align-items: center;
 	justify-content: space-between;
 	z-index: 10;
+	
 `;

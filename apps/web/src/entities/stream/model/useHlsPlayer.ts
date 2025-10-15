@@ -24,7 +24,7 @@ export function useHlsPlayer(videoRef: RefObject<HTMLVideoElement | null>, sourc
       
       hls.on(Hls.Events.MANIFEST_PARSED, () => {
         console.log("HLS manifest parsed successfully");
-      });
+      });                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
       
       hls.on(Hls.Events.ERROR, (event, data) => {
         console.error("HLS error:", data);
