@@ -1,7 +1,7 @@
 import {HeaderVideo} from "@/entities/video/ui/header-video";
-import {Video} from "@/entities/video/model/type";
+import { VideoItem } from "@/entities/video/model/type";
 
-const videos: Video[] = [
+const videos: VideoItem[] = [
 	{
 		streamId: "1",
 		title: "안녕하세요",

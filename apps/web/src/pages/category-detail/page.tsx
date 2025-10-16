@@ -5,6 +5,9 @@ import { ChipList } from "@/shared/ui/chip/chip-list";
 import { Chip } from "@/entities/chip/model/type";
 import { VideoList } from "@/shared/ui/video/video-list";
 import { useVideoList } from "../home/hooks/use-video-list";
+import { useLocation, useParams } from "react-router-dom";
+
+
 
 const segments: Segment[] = [
   {
@@ -36,6 +39,8 @@ const chips: Chip[] = [
 ];
 
 export const CategoryDetail = () => {
+  const location = useLocation();
+  const {  } = useParams();
   const { liveVideos, isLoading, error } = useVideoList();
 
   if (isLoading) {
