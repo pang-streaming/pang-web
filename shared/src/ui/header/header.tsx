@@ -46,12 +46,13 @@ export const Header = ({ onClickMenu, type }: HeaderProps) => {
 };
 
 const LogoWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  gap: 24px;
-  margin-right: 36px;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	gap: 24px;
+	margin-right: 36px;
+	z-index: auto;
 `;
 
 const ButtonWrapper = styled.div`
@@ -74,16 +75,18 @@ const SidebarToggleButton = styled(IoMenu)`
 `;
 
 const HeaderContainer = styled.header`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 66px;
-  padding: 0 22px;
-  background-color: ${({ theme }) => theme.colors.background.normal};
-  border-bottom: 1px solid ${({ theme }) => theme.colors.border.light};
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  z-index: 10;
+
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 66px;
+	padding: 0 22px;
+	background-color: ${({ theme }) => theme.colors.background.normal};
+	border-bottom: 1px solid ${({ theme }) => theme.colors.border.light};
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	z-index: 10;
+	
 `;

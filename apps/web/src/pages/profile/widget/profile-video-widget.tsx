@@ -1,4 +1,5 @@
-import {VideoItem, VideoList} from "@/shared/ui/video/video-list";
+import { VideoItem } from "@/entities/video/model/type";
+import { VideoList} from "@/shared/ui/video/video-list";
 
 
 const recodedVideos: VideoItem[] = [

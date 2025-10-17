@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import styled from "styled-components";
 import { CardInfoSection } from "./widget/card-info-section";
-import { ChargeButton } from "@/pages/charge/ui/charge-button";
 import { SubmitButton } from "@pang/shared/ui";
-import { CardInfo, paymentApi } from "@/entities/payment/api";
+import { paymentApi } from "@/entities/payment/api";
+import { CardInfo } from "@/entities/payment/model/type";
+import { isAxiosError } from "axios";
 
 interface PaymentAddProps {
   onBackToPaymentChoice: () => void;
@@ -31,7 +32,9 @@ export const PaymentAdd = ({ onBackToPaymentChoice, onCardAdded }: PaymentAddPro
       onBackToPaymentChoice();
     } catch (error) {
       console.error('카드 등록 실패:', error);
-      // 에러 처리 로직 추가
+      if (isAxiosError(error)) 
+        alert(error.response?.data.message);
+      return;
     } finally {
       setIsLoading(false);
     }
