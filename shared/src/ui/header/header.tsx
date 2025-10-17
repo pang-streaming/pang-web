@@ -3,7 +3,7 @@ import { IoMenu } from "react-icons/io5";
 import { SearchBar } from "./searchBar";
 import { PiMonitorBold, PiSunBold } from "react-icons/pi";
 import { HeaderButton } from "../buttons/headerButton";
-import { HiOutlineBell, HiOutlineMoon } from "react-icons/hi";
+import { HiOutlineMoon } from "react-icons/hi";
 import { FiVideo } from "react-icons/fi";
 import { useThemeStore } from "../../store/theme/themeStore";
 import { LoginButton } from "../buttons/loginButton";
@@ -37,7 +37,6 @@ export const Header = ({ onClickMenu, type }: HeaderProps) => {
       {type === "user" && <SearchBar />}
       <ButtonWrapper>
         <HeaderButton Icon={MoveButton} />
-        <HeaderButton Icon={HiOutlineBell} />
         <HeaderButton Icon={DarkLightModeIcon} onClick={toggleTheme} />
         <LoginButton isLoggedIn={isLoggedIn} />
       </ButtonWrapper>
