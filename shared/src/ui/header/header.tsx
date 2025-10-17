@@ -17,31 +17,33 @@ interface HeaderProps {
 }
 
 export const Header = ({ onClickMenu, type }: HeaderProps) => {
-	const navigate = useNavigate();
-	const { mode, toggleTheme } = useThemeStore();
-	const DarkLightModeIcon = mode === "dark" ? PiSunBold : HiOutlineMoon;
-	const MoveButton = type === "user" ? FiVideo : PiMonitorBold;
+  const navigate = useNavigate();
+  const { mode, toggleTheme } = useThemeStore();
+  const DarkLightModeIcon = mode === "dark" ? PiSunBold : HiOutlineMoon;
+  const MoveButton = type === "user" ? FiVideo : PiMonitorBold;
 
-	const token = localStorage.getItem("accessToken");
-	const isLoggedIn = token == null;
+  const token = localStorage.getItem("accessToken");
+  const isLoggedIn = token == null;
 
-
-	return (
-		<HeaderContainer>
-			<LogoWrapper>
-				<SidebarToggleButton size={28} onClick={onClickMenu}/>
-				<PangLogo type={type} onClick={() => navigate('/')} cursor="pointer"/>
-			</LogoWrapper>
-			{type === "user" && <SearchBar/>}
-			<ButtonWrapper>
-				<HeaderButton Icon={MoveButton}/>
-				<HeaderButton Icon={HiOutlineBell}/>
-				<HeaderButton Icon={DarkLightModeIcon} onClick={toggleTheme}/>
-				<LoginButton isLoggedIn={isLoggedIn}/>
-			</ButtonWrapper>
-		</HeaderContainer>
-	)
-}
+  return (
+    <HeaderContainer>
+      <LogoWrapper>
+        {/* 스트리머 타입이 아닐 때만 메뉴 아이콘 렌더링 */}
+        {type !== "streamer" && (
+          <SidebarToggleButton size={28} onClick={onClickMenu} />
+        )}
+        <PangLogo type={type} onClick={() => navigate("/")} cursor="pointer" />
+      </LogoWrapper>
+      {type === "user" && <SearchBar />}
+      <ButtonWrapper>
+        <HeaderButton Icon={MoveButton} />
+        <HeaderButton Icon={HiOutlineBell} />
+        <HeaderButton Icon={DarkLightModeIcon} onClick={toggleTheme} />
+        <LoginButton isLoggedIn={isLoggedIn} />
+      </ButtonWrapper>
+    </HeaderContainer>
+  );
+};
 
 const LogoWrapper = styled.div`
 	display: flex;
@@ -54,25 +56,26 @@ const LogoWrapper = styled.div`
 `;
 
 const ButtonWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: 18px;
-`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+`;
 
 const SidebarToggleButton = styled(IoMenu)`
-    cursor: pointer;
-	padding: 6px;
-	border-radius: ${({ theme }) => theme.borders.large};
-    color: ${({ theme }) => theme.colors.button.active};
+  cursor: pointer;
+  padding: 6px;
+  border-radius: ${({ theme }) => theme.borders.large};
+  color: ${({ theme }) => theme.colors.button.active};
 
-	&:hover {
-	background-color: ${({ theme }) => theme.colors.hover.light};
-	}
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.hover.light};
+  }
 `;
 
 const HeaderContainer = styled.header`
+
 	position: fixed;
 	top: 0;
 	left: 0;
