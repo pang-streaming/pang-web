@@ -49,7 +49,7 @@ export const useCanvasRenderer = (
 						ctx.drawImage(source as HTMLImageElement, x, y, width, height);
 						break;
 					case 'canvas':
-						ctx.drawImage(source as HTMLCanvasElement, screen.x, screen.y, screen.width, screen.height);
+						ctx.drawImage(source as HTMLCanvasElement, x, y, width, height);
 						break;
 				}
 				if (selectedScreen === screen.id) {
@@ -83,5 +83,5 @@ export const useCanvasRenderer = (
 				cancelAnimationFrame(animationId);
 			}
 		};
-	}, [canvasRef, screens, canvasSize, selectedScreen]);
+	}, [canvasRef, canvasSize.height, canvasSize.width, screens, selectedScreen]);
 };

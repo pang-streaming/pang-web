@@ -35,7 +35,7 @@ export const useCanvasSize = (containerRef: RefObject<HTMLDivElement | null>): C
 		let timeoutId: NodeJS.Timeout;
 		const throttledResize = () => {
 			clearTimeout(timeoutId);
-			timeoutId = setTimeout(updateCanvasSize, 16); // 60fps
+			timeoutId = setTimeout(updateCanvasSize, 16);
 		};
 		
 		window.addEventListener('resize', throttledResize);

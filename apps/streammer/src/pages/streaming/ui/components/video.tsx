@@ -23,10 +23,10 @@ export const Video = ({ screens, setScreens, containerRef, canvasSize, audios, v
 	const { status, startStreaming, stopStreaming } = useWhipBroadcast(
 		canvasRef,
 		{
-      whipUrl: 'https://whip.vdo.ninja',
+      whipUrl: 'http://13.209.69.28:9000/rtc/v1/whip/?app=live&stream=tester',
       bitrate: 8000000,
       fps: 60,
-      bearerToken: 'daedyu'
+      // bearerToken: 'daedyu'
     },
 		audios
 	);
