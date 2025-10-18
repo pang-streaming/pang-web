@@ -7,9 +7,10 @@ import {useScreenManagement} from "@/features/canvas/hooks/useScreenManagement";
 
 const StreamingPage: React.FC = () => {
 	const containerRef = useRef<HTMLDivElement>(null);
+	const [audios, setAudios] = React.useState<MediaStreamTrack[]>([]);
 	
 	const canvasSize = useCanvasSize(containerRef);
-	const { screens, setScreens, addVideoScreen, clearScreens } = useScreenManagement(canvasSize);
+	const { screens, setScreens, addVideoScreen, clearScreens } = useScreenManagement(canvasSize, setAudios);
   return (
     <PageContainer>
       <DashboardContainer>
@@ -18,6 +19,7 @@ const StreamingPage: React.FC = () => {
 	          canvasSize={canvasSize}
 	          containerRef={containerRef}
 	          screens={screens}
+	          audios={audios}
 	          setScreens={setScreens}
             viewers={123}
             likes={456}
@@ -26,6 +28,7 @@ const StreamingPage: React.FC = () => {
 
         <StreamSettingSection>
           <StreamSetting
+	          setAudios={setAudios}
             onVideoAddButtonClick={addVideoScreen}
           />
         </StreamSettingSection>

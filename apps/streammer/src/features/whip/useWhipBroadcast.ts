@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {RefObject, useCallback, useEffect, useRef, useState} from 'react';
 
 export interface WhipBroadcastConfig {
   whipUrl: string;
@@ -16,7 +16,11 @@ interface WhipBroadcastStatus {
   frameCount: number;
 }
 
-export const useWhipBroadcast = (canvasRef: React.RefObject<HTMLCanvasElement | null>, config: WhipBroadcastConfig) => {
+export const useWhipBroadcast = (
+	canvasRef: RefObject<HTMLCanvasElement | null>,
+	config: WhipBroadcastConfig,
+	audios: MediaStreamTrack[]
+) => {
   const [status, setStatus] = useState<WhipBroadcastStatus>({
     isStreaming: false,
     connectionState: 'disconnected',
@@ -46,59 +50,86 @@ export const useWhipBroadcast = (canvasRef: React.RefObject<HTMLCanvasElement | 
     frameCounter.current++;
   }, []);
 
-  // SDP에서 H.264와 Opus 코덱 우선순위 설정
+  // SDP에서 H.264와 Opus 코덱만 사용하도록 설정
   const setCodecPreferences = useCallback((sdp: string): string => {
     const lines = sdp.split('\r\n');
-    const videoH264Payloads: string[] = [];
-    const audioOpusPayloads: string[] = [];
-    const otherVideoPayloads: string[] = [];
-    const otherAudioPayloads: string[] = [];
+    const h264Payloads: string[] = [];
+    const opusPayloads: string[] = [];
+    const payloadsToKeep: string[] = [];
+    const rtxMap = new Map<string, string>(); // rtx -> main
 
-    // 코덱 페이로드 타입 찾기
+    // 1. Find H264 and Opus payloads, and build RTX map
     lines.forEach(line => {
       const rtpmapMatch = line.match(/^a=rtpmap:(\d+)\s+(.+)/);
       if (rtpmapMatch) {
         const payload = rtpmapMatch[1];
         const codec = rtpmapMatch[2].toLowerCase();
-
         if (codec.includes('h264')) {
-          videoH264Payloads.push(payload);
-        } else if (codec.startsWith('vp') || codec.includes('av1')) {
-          otherVideoPayloads.push(payload);
+          h264Payloads.push(payload);
         } else if (codec.includes('opus')) {
-          audioOpusPayloads.push(payload);
-        } else if (codec.includes('pcm') || codec.includes('isac')) {
-          otherAudioPayloads.push(payload);
+          opusPayloads.push(payload);
         }
+      }
+      const fmtpMatch = line.match(/^a=fmtp:(\d+)\s+apt=(\d+)/);
+      if (fmtpMatch) {
+        rtxMap.set(fmtpMatch[1], fmtpMatch[2]);
       }
     });
 
-    // m= 라인 재구성
-    const modifiedLines = lines.map(line => {
-      if (line.startsWith('m=video') && videoH264Payloads.length > 0) {
-        const parts = line.split(' ');
-        const mediaInfo = parts.slice(0, 3);
-        const allPayloads = [
-          ...videoH264Payloads,
-          ...otherVideoPayloads,
-          ...parts.slice(3).filter(p => !videoH264Payloads.includes(p) && !otherVideoPayloads.includes(p)),
-        ];
-        return `${mediaInfo.join(' ')} ${allPayloads.join(' ')}`;
+    payloadsToKeep.push(...h264Payloads, ...opusPayloads);
+
+    // 2. Find associated RTX payloads to keep
+    rtxMap.forEach((mainPayload, rtxPayload) => {
+      if (h264Payloads.includes(mainPayload) || opusPayloads.includes(mainPayload)) {
+        payloadsToKeep.push(rtxPayload);
       }
-      if (line.startsWith('m=audio') && audioOpusPayloads.length > 0) {
+    });
+
+    // 3. Filter all lines that don't belong to a payload we want to keep
+    const filteredLines = lines.filter(line => {
+      if (!line.startsWith('a=')) {
+        return true; // Keep non 'a=' lines (like m=, c=, etc.)
+      }
+      const match = line.match(/^a=(rtpmap|fmtp|rtcp-fb):(\d+)/);
+      if (match) {
+        return payloadsToKeep.includes(match[2]);
+      }
+      // Keep other a= lines that are not payload-specific
+      return !line.match(/^a=(rtpmap|fmtp|rtcp-fb):/);
+    });
+
+    // 4. Reconstruct m-lines
+    const finalLines = filteredLines.map(line => {
+      if (line.startsWith('m=video')) {
         const parts = line.split(' ');
         const mediaInfo = parts.slice(0, 3);
-        const allPayloads = [
-          ...audioOpusPayloads,
-          ...otherAudioPayloads,
-          ...parts.slice(3).filter(p => !audioOpusPayloads.includes(p) && !otherAudioPayloads.includes(p)),
+        const originalPayloads = parts.slice(3);
+        const keptPayloads = originalPayloads.filter(p => payloadsToKeep.includes(p));
+
+        // Prioritize H.264
+        const finalPayloads = [
+          ...h264Payloads,
+          ...keptPayloads.filter(p => !h264Payloads.includes(p)),
         ];
-        return `${mediaInfo.join(' ')} ${allPayloads.join(' ')}`;
+        return `${mediaInfo.join(' ')} ${[...new Set(finalPayloads)].join(' ')}`;
+      }
+      if (line.startsWith('m=audio')) {
+        const parts = line.split(' ');
+        const mediaInfo = parts.slice(0, 3);
+        const originalPayloads = parts.slice(3);
+        const keptPayloads = originalPayloads.filter(p => payloadsToKeep.includes(p));
+
+        // Prioritize Opus
+        const finalPayloads = [
+          ...opusPayloads,
+          ...keptPayloads.filter(p => !opusPayloads.includes(p)),
+        ];
+        return `${mediaInfo.join(' ')} ${[...new Set(finalPayloads)].join(' ')}`;
       }
       return line;
     });
 
-    return modifiedLines.join('\r\n');
+    return finalLines.join('\r\n');
   }, []);
 
   const startStreaming = useCallback(async () => {
@@ -107,23 +138,31 @@ export const useWhipBroadcast = (canvasRef: React.RefObject<HTMLCanvasElement | 
     }
 
     try {
-      // Canvas에서 MediaStream 생성
       const stream = canvasRef.current.captureStream(config.fps || 60);
       mediaStream.current = stream;
-
-      // 무음 오디오 트랙 추가
-      const audioContext = new AudioContext();
-      const destination = audioContext.createMediaStreamDestination();
-      const oscillator = audioContext.createOscillator();
-      oscillator.frequency.value = 0;
-      const gainNode = audioContext.createGain();
-      gainNode.gain.value = 0.001;
-      oscillator.connect(gainNode);
-      gainNode.connect(destination);
-      oscillator.start();
-
-      const silentAudioTrack = destination.stream.getAudioTracks()[0];
-      stream.addTrack(silentAudioTrack);
+			
+			if (audios.length > 0) {
+				const audioContext = new AudioContext();
+				const destination = audioContext.createMediaStreamDestination();
+				audios.forEach(track => {
+					const source = audioContext.createMediaStreamSource(new MediaStream([track]));
+					source.connect(destination);
+				})
+				const mixedAudioTrack = destination.stream.getAudioTracks()[0];
+				stream.addTrack(mixedAudioTrack);
+			} else {
+				const audioContext = new AudioContext();
+				const destination = audioContext.createMediaStreamDestination();
+				const oscillator = audioContext.createOscillator();
+				oscillator.frequency.value = 0;
+				const gainNode = audioContext.createGain();
+				gainNode.gain.value = 0.001;
+				oscillator.connect(gainNode);
+				gainNode.connect(destination);
+				oscillator.start();
+				const silentAudioTrack = destination.stream.getAudioTracks()[0];
+				stream.addTrack(silentAudioTrack);
+			}
 
       // PeerConnection 생성
       const pc = new RTCPeerConnection({

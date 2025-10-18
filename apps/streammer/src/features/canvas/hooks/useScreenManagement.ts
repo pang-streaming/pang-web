@@ -8,7 +8,10 @@ interface ScreenManagement {
 	clearScreens: () => void;
 }
 
-export const useScreenManagement = (canvasSize: CanvasSize): ScreenManagement => {
+export const useScreenManagement = (
+	canvasSize: CanvasSize,
+	setAudios: React.Dispatch<React.SetStateAction<MediaStreamTrack[]>>
+): ScreenManagement => {
 	const [screens, setScreens] = useState<Screen[]>([]);
 	
 	// Keep screens within bounds on resize
@@ -20,11 +23,6 @@ export const useScreenManagement = (canvasSize: CanvasSize): ScreenManagement =>
 		})));
 	}, [canvasSize]);
 	
-	// // Update audio when enabled state changes
-	// React.useEffect(() => {
-	// 	audioManager.updateScreenAudio(screens);
-	// }, [audioManager.audioEnabled, screens, audioManager]);
-	
 	const addVideoScreen = useCallback(async (): Promise<void> => {
 		try {
 			const stream = await navigator.mediaDevices.getDisplayMedia({
@@ -35,6 +33,10 @@ export const useScreenManagement = (canvasSize: CanvasSize): ScreenManagement =>
 				},
 				audio: true
 			});
+			const audioTrack = stream.getAudioTracks()[0];
+			if (audioTrack) {
+				setAudios(prev => [...prev, audioTrack]);
+			}
 			
 			const video = document.createElement("video");
 			video.srcObject = stream;
@@ -82,6 +84,10 @@ export const useScreenManagement = (canvasSize: CanvasSize): ScreenManagement =>
 						screen.audioSource?.disconnect();
 						screen.gainNode?.disconnect();
 					}
+					const audioTrack = stream.getAudioTracks()[0];
+					if (audioTrack) {
+						setAudios(prev => prev.filter(track => track.id !== audioTrack.id));
+					}
 					return prev.filter(s => s.stream !== stream);
 				});
 			});
@@ -95,9 +101,10 @@ export const useScreenManagement = (canvasSize: CanvasSize): ScreenManagement =>
 				alert("화면 공유에 실패했습니다: " + error.message);
 			}
 		}
-	}, [canvasSize]);
+	}, [canvasSize.height, canvasSize.width, setAudios]);
 	
 	const clearScreens = useCallback((): void => {
+		setAudios([]);
 		setScreens(prev => {
 			prev.forEach(s => {
 				s.stream?.getTracks().forEach(track => track.stop());

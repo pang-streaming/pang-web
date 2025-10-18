@@ -11,18 +11,23 @@ interface VideoProps {
 	screens: Screen[];
 	setScreens: React.Dispatch<React.SetStateAction<Screen[]>>;
 	canvasSize: CanvasSize;
+	audios: MediaStreamTrack[];
   viewers?: number; // 시청자 수
   likes?: number;   // 좋아요 수
 }
 
-export const Video = ({ screens, setScreens, containerRef, canvasSize, viewers = 123, likes = 456 }: VideoProps) => {
+export const Video = ({ screens, setScreens, containerRef, canvasSize, audios, viewers = 123, likes = 456 }: VideoProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-	const { status, startStreaming, stopStreaming } = useWhipBroadcast(canvasRef, {
-    whipUrl: 'https://whip.vdo.ninja',
-    bitrate: 8000000,
-    fps: 60,
-    bearerToken: 'daedyu'
-  });
+	const { status, startStreaming, stopStreaming } = useWhipBroadcast(
+		canvasRef,
+		{
+      whipUrl: 'https://whip.vdo.ninja',
+      bitrate: 8000000,
+      fps: 60,
+      bearerToken: 'daedyu'
+    },
+		audios
+	);
 
   console.log(status);
 

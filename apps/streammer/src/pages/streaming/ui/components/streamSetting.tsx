@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {Dispatch, SetStateAction, useState} from "react";
 import styled from "styled-components";
 import { VolumeMixer } from "./volumeMixer";
 import {useDragAndDrop} from "@/pages/streaming/hooks/useDragAndDrop";
@@ -67,12 +67,27 @@ const SectionsRenderer = React.memo<{
 
 interface StreamProps {
 	onVideoAddButtonClick: () => void;
+	setAudios: Dispatch<SetStateAction<MediaStreamTrack[]>>;
 }
 
-export const StreamSetting = ({ onVideoAddButtonClick }: StreamProps) => {
+export const StreamSetting = ({ onVideoAddButtonClick, setAudios }: StreamProps) => {
   const [screenSections, setScreenSections] = useState<string[]>(["섹션1"]);
   const [audioSections, setAudioSections] = useState<string[]>(["구글"]);
-
+	
+	const addMicrophoneAudio = async () => {
+		try {
+			const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+			const audioTrack = stream.getAudioTracks()[0];
+			if (audioTrack) {
+			  setAudios(prev => [...prev, audioTrack]);
+			  setAudioSections(prev => [...prev, '마이크']);
+			}
+		} catch (err) {
+			console.error("마이크 접근 실패:", err);
+			alert("마이크 사용 권한이 필요합니다.");
+		}
+	};
+	
   // Use custom hooks for drag and drop
   const screenDragState = useDragAndDrop(screenSections, setScreenSections);
   const audioDragState = useDragAndDrop(audioSections, setAudioSections);
@@ -86,6 +101,7 @@ export const StreamSetting = ({ onVideoAddButtonClick }: StreamProps) => {
       <ScreenSetContainer>
 	      <button onClick={onVideoAddButtonClick}>+</button>
 	      <SectionsRenderer items={audioSections} dragState={audioDragState} />
+	      <button onClick={addMicrophoneAudio}>마이크 추가</button>
       </ScreenSetContainer>
 
       <VolumeMixerContainer>
