@@ -1,73 +1,93 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { VolumeMixer } from "./volumeMixer";
+import {useDragAndDrop} from "@/pages/streaming/hooks/useDragAndDrop";
 
-export const StreamSetting = () => {
-  const [screenSections, setScreenSections] = useState<string[]>(["section1", "section2", "section3", "section4"]);
-  const [audioSections, setAudioSections] = useState<string[]>(["section1", "section2", "section3", "section4"]);
+interface DragState {
+  draggingIndex: number | null;
+  handleDragStart: (index: number) => void;
+  handleDragOver: (index: number) => void;
+  handleDragEnd: () => void;
+}
 
-  // 섹션별 독립 dragging state
-  const [screenDraggingIndex, setScreenDraggingIndex] = useState<number | null>(null);
-  const [audioDraggingIndex, setAudioDraggingIndex] = useState<number | null>(null);
+interface SectionProps {
+  section: string;
+  index: number;
+  isDragging: boolean;
+  onDragStart: () => void;
+  onDragOver: (e: React.DragEvent) => void;
+  onDragEnd: () => void;
+}
 
-  const handleDragStart = (index: number, setDragging: React.Dispatch<React.SetStateAction<number | null>>) => {
-    setDragging(index);
-  };
+// Memoized section component
+const DraggableSectionItem = React.memo<SectionProps>(({
+  section,
+  isDragging,
+  onDragStart,
+  onDragOver,
+  onDragEnd,
+}) => (
+  <DraggableSection
+    draggable
+    isDragging={isDragging}
+    onDragStart={onDragStart}
+    onDragOver={onDragOver}
+    onDragEnd={onDragEnd}
+  >
+    <label>{section}</label>
+  </DraggableSection>
+));
 
-  const handleDragOver = (
-    index: number,
-    items: string[],
-    setItems: React.Dispatch<React.SetStateAction<string[]>>,
-    setDragging: React.Dispatch<React.SetStateAction<number | null>>,
-    draggingIndex: number | null
-  ) => {
-    if (draggingIndex === null || draggingIndex === index) return;
-    const newItems = Array.from(items);
-    const [draggedItem] = newItems.splice(draggingIndex, 1);
-    newItems.splice(index, 0, draggedItem);
-    setDragging(index);
-    setItems(newItems);
-  };
+// Memoized sections renderer
+const SectionsRenderer = React.memo<{
+  items: string[];
+  dragState: DragState;
+}>(({ items, dragState }) => {
+  const { draggingIndex, handleDragStart, handleDragOver, handleDragEnd } = dragState;
+	
+  return (
+    <>
+      {items.map((section, index) => (
+        <DraggableSectionItem
+	        key={section}
+	        section={section}
+	        index={index}
+	        isDragging={draggingIndex === index}
+	        onDragStart={() => handleDragStart(index)}
+	        onDragOver={(e) => {
+		        e.preventDefault();
+		        handleDragOver(index);
+	        }}
+	        onDragEnd={handleDragEnd}
+        />
+      ))}
+    </>
+  );
+});
 
-  const handleDragEnd = (setDragging: React.Dispatch<React.SetStateAction<number | null>>) => {
-    setDragging(null);
-  };
+interface StreamProps {
+	onVideoAddButtonClick: () => void;
+}
 
-  const renderSections = (
-    items: string[],
-    setItems: React.Dispatch<React.SetStateAction<string[]>>,
-    draggingIndex: number | null,
-    setDragging: React.Dispatch<React.SetStateAction<number | null>>
-  ) =>
-    items.map((section, index) => (
-      <DraggableSection
-        key={section}
-        draggable
-        isDragging={draggingIndex === index}
-        onDragStart={() => handleDragStart(index, setDragging)}
-        onDragOver={(e) => {
-          e.preventDefault();
-          handleDragOver(index, items, setItems, setDragging, draggingIndex);
-        }}
-        onDragEnd={() => handleDragEnd(setDragging)}
-      >
-        <label>{section}</label>
-      </DraggableSection>
-    ));
+export const StreamSetting = ({ onVideoAddButtonClick }: StreamProps) => {
+  const [screenSections, setScreenSections] = useState<string[]>(["섹션1"]);
+  const [audioSections, setAudioSections] = useState<string[]>(["구글"]);
+
+  // Use custom hooks for drag and drop
+  const screenDragState = useDragAndDrop(screenSections, setScreenSections);
+  const audioDragState = useDragAndDrop(audioSections, setAudioSections);
 
   return (
     <SettingContainer>
-      {/* 화면 설정 섹션 */}
+      <SectionSetContainer>
+	      <SectionsRenderer items={screenSections} dragState={screenDragState} />
+      </SectionSetContainer>
+
       <ScreenSetContainer>
-        {renderSections(screenSections, setScreenSections, screenDraggingIndex, setScreenDraggingIndex)}
+	      <button onClick={onVideoAddButtonClick}>+</button>
+	      <SectionsRenderer items={audioSections} dragState={audioDragState} />
       </ScreenSetContainer>
 
-      {/* 오디오 설정 섹션 */}
-      <AudioSetContainer>
-        {renderSections(audioSections, setAudioSections, audioDraggingIndex, setAudioDraggingIndex)}
-      </AudioSetContainer>
-
-      {/* 볼륨 믹서 */}
       <VolumeMixerContainer>
         <VolumeMixer />
       </VolumeMixerContainer>
@@ -75,68 +95,52 @@ export const StreamSetting = () => {
   );
 };
 
-/* Styled Components */
 const SettingContainer = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
   max-width: 1200px;
   border-radius: 14px;
-  background-color: #1f1f1f;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+  background-color: ${({theme}) => theme.colors.background.normal};
   overflow: hidden;
   gap: 10px;
   padding: 16px;
 `;
 
-const ScreenSetContainer = styled.div`
+const BaseSectionContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
   gap: 8px;
   padding: 16px;
   border-radius: 12px;
-  background-color: #2c2c2c;
+  background-color: ${({theme}) => theme.colors.content.normal};
 `;
 
-const AudioSetContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  gap: 8px;
-  padding: 16px;
-  border-radius: 12px;
-  background-color: #2c2c2c;
-`;
+const SectionSetContainer = styled(BaseSectionContainer)``;
+
+const ScreenSetContainer = styled(BaseSectionContainer)``;
 
 const DraggableSection = styled.div<{ isDragging?: boolean }>`
   display: flex;
   flex-direction: column;
   padding: 8px 10px;
-  background-color: ${(props) => (props.isDragging ? "#252525" : "#3a3a3a")};
-  cursor: grab;
-  border-radius: 6px;
+  background-color: ${({ theme, isDragging}) => isDragging ? theme.colors.hover.normal : theme.colors.content.dark};
+  border-radius: ${({theme}) => theme.borders.large};
   margin-bottom: 6px;
-  box-shadow: ${(props) => (props.isDragging ? "0 8px 16px rgba(0,0,0,0.3)" : "none")};
-  transition: background-color 0.2s, box-shadow 0.2s, transform 0.1s;
+  box-shadow: ${({ isDragging }) => (isDragging ? "0 8px 16px rgba(0,0,0,0.3)" : "none")};
 
-  & > label {
-    font-size: 15px;
-    color: #fff;
-    font-weight: 500;
-  }
+  font-size: 15px;
+  color: ${({theme}) => theme.colors.text.normal};
+  font-weight: 500;
 
   &:hover {
-    background-color: ${(props) => (props.isDragging ? "#252525" : "#4a4a4a")};
+    background-color: ${({ theme }) => theme.colors.hover.normal};
+	  cursor: grab;
   }
 `;
 
-const VolumeMixerContainer = styled.div`
-  display: flex;
-  flex-direction: column;
+const VolumeMixerContainer = styled(BaseSectionContainer)`
   flex: 1.5;
-  padding: 16px;
-  border-radius: 12px;
-  background-color: #2c2c2c;
   overflow-y: auto;
 `;

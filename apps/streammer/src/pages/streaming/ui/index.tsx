@@ -1,18 +1,33 @@
-import React from "react";
+import React, {useRef} from "react";
 import styled from "styled-components";
 import { Video } from "./components/video";
 import { StreamSetting } from "./components/streamSetting";
+import {useCanvasSize} from "@/features/canvas/hooks/useCanvasSize";
+import {useScreenManagement} from "@/features/canvas/hooks/useScreenManagement";
 
 const StreamingPage: React.FC = () => {
+	const containerRef = useRef<HTMLDivElement>(null);
+	
+	const canvasSize = useCanvasSize(containerRef);
+	const { screens, setScreens, addVideoScreen, clearScreens } = useScreenManagement(canvasSize);
   return (
     <PageContainer>
       <DashboardContainer>
         <VideoSection>
-          <Video />
+          <Video
+	          canvasSize={canvasSize}
+	          containerRef={containerRef}
+	          screens={screens}
+	          setScreens={setScreens}
+            viewers={123}
+            likes={456}
+          />
         </VideoSection>
 
         <StreamSettingSection>
-          <StreamSetting />
+          <StreamSetting
+            onVideoAddButtonClick={addVideoScreen}
+          />
         </StreamSettingSection>
 
         <ChatSection>
@@ -25,7 +40,6 @@ const StreamingPage: React.FC = () => {
 
 export default StreamingPage;
 
-/* Styled */
 const PageContainer = styled.div`
   width: 100%;
   height: 100%;
@@ -55,7 +69,7 @@ const VideoSection = styled.div`
   grid-area: video;
   position: relative;
   width: 100%;
-  padding-top: 56.25%; /* 16:9 비율 유지 */
+  padding-top: 56%;
 
   & > * {
     position: absolute;
@@ -68,7 +82,7 @@ const VideoSection = styled.div`
 
 const StreamSettingSection = styled.div`
   grid-area: settings;
-  padding: 0px 16px;
+  padding: 0 16px;
   border-radius: 8px;
   display: flex;
   flex-direction: column;
@@ -82,6 +96,5 @@ const ChatSection = styled.div`
   overflow-y: auto;
   max-height: 100%;
   height: 100%;
-  background-color: ${({ theme }) =>
-    theme.colors.background.light}; /* 임시 색상, theme 없을 때 */
+  background-color: ${({ theme }) => theme.colors.background.light};
 `;

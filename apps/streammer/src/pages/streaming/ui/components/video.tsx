@@ -1,16 +1,32 @@
-import React from "react";
+import React, { useRef } from "react";
 import styled from "styled-components";
 import { AiOutlineEye, AiOutlineHeart } from "react-icons/ai";
+import {LiveCanvas} from "@/features/canvas/ui/live-canvas";
+import {CanvasSize, Screen} from "@/features/canvas/constants/canvas-constants";
+import {VscDebugStart} from "react-icons/vsc";
+import { useWhipBroadcast } from "@/features/whip/useWhipBroadcast";
 
 interface VideoProps {
-  src?: string;
-  poster?: string;
+	containerRef: React.RefObject<HTMLDivElement | null>;
+	screens: Screen[];
+	setScreens: React.Dispatch<React.SetStateAction<Screen[]>>;
+	canvasSize: CanvasSize;
   viewers?: number; // 시청자 수
   likes?: number;   // 좋아요 수
 }
 
-export const Video: React.FC<VideoProps> = ({ src, poster, viewers = 123, likes = 456 }) => {
-  return (
+export const Video = ({ screens, setScreens, containerRef, canvasSize, viewers = 123, likes = 456 }: VideoProps) => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+	const { status, startStreaming, stopStreaming } = useWhipBroadcast(canvasRef, {
+    whipUrl: 'https://whip.vdo.ninja',
+    bitrate: 8000000,
+    fps: 60,
+    bearerToken: 'daedyu'
+  });
+
+  console.log(status);
+
+	return (
     <LiveContainer>
       <TitleRow>
         <SectionTitle>스트리머님의 방송 ✎</SectionTitle>
@@ -23,16 +39,14 @@ export const Video: React.FC<VideoProps> = ({ src, poster, viewers = 123, likes 
             <AiOutlineHeart style={{ marginRight: "4px" }} />
             {likes}
           </StatItem>
+	        <StartButton onClick={startStreaming}>
+		        <VscDebugStart size={20}/>
+	        </StartButton>
         </StatsContainer>
       </TitleRow>
-
-      <VideoBox>
-        {src ? (
-          <VideoElement src={src} poster={poster} controls />
-        ) : (
-          <UploadText>방송중인 실제 화면</UploadText>
-        )}
-      </VideoBox>
+	    <CanvasContainer ref={containerRef}>
+		    <LiveCanvas canvasRef={canvasRef} screens={screens} setScreens={setScreens} canvasSize={canvasSize} />
+	    </CanvasContainer>
     </LiveContainer>
   );
 };
@@ -48,6 +62,14 @@ const LiveContainer = styled.div`
   height: 100%;
   box-sizing: border-box;
   margin-bottom: -10%;
+`;
+
+const CanvasContainer = styled.div`
+display: flex;
+justify-content: center;
+align-items: center;
+width: 100%;
+height: 100%;
 `;
 
 const TitleRow = styled.div`
@@ -76,35 +98,11 @@ const StatItem = styled.span`
   color: ${({ theme }) => theme.colors.text.normal};
 `;
 
-const VideoBox = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  background-color: ${({ theme }) => theme.colors.background.light};
-  border: 1px dashed #ccc;
-  border-radius: 16px;
-  position: relative;
-  aspect-ratio: 16 / 9;
-  min-height: 200px;
-  overflow: hidden;
-
-  @media (max-width: 768px) {
-    min-height: 150px;
-  }
-`;
-
-const VideoElement = styled.video`
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 16px;
-  background-color: black;
-`;
-
-const UploadText = styled.p`
-  font-size: 1rem;
-  color: #666;
-  margin: 0;
-  text-align: center;
-`;
+const StartButton = styled.button`
+	padding: 8px;
+	border-radius: ${({theme}) => theme.borders.small};
+	color: ${({theme}) => theme.colors.text.normal};
+	background-color: ${({theme}) => theme.colors.content.normal};
+	cursor: pointer;
+	border: none;
+`
