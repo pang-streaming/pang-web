@@ -9,6 +9,8 @@ const StreamingPage: React.FC = () => {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const [audios, setAudios] = React.useState<MediaStreamTrack[]>([]);
 	
+	console.log(audios)
+	
 	const canvasSize = useCanvasSize(containerRef);
 	const { screens, setScreens, addVideoScreen, clearScreens } = useScreenManagement(canvasSize, setAudios);
   return (

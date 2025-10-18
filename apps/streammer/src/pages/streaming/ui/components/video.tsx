@@ -1,10 +1,12 @@
-import React, { useRef } from "react";
+import React, {useEffect, useRef} from "react";
 import styled from "styled-components";
 import { AiOutlineEye, AiOutlineHeart } from "react-icons/ai";
 import {LiveCanvas} from "@/features/canvas/ui/live-canvas";
 import {CanvasSize, Screen} from "@/features/canvas/constants/canvas-constants";
 import {VscDebugStart} from "react-icons/vsc";
 import { useWhipBroadcast } from "@/features/whip/useWhipBroadcast";
+import {FaStreetView} from "react-icons/fa";
+import {useVrmScreen} from "@/features/vrm/hooks/useVrmScreen";
 
 interface VideoProps {
 	containerRef: React.RefObject<HTMLDivElement | null>;
@@ -28,31 +30,51 @@ export const Video = ({ screens, setScreens, containerRef, canvasSize, audios, v
     },
 		audios
 	);
+	const { screen: vrmScreen, VrmRenderer, toggleVrmVisibility } = useVrmScreen(canvasSize, null, true);
 
-  console.log(status);
+	useEffect(() => {
+		if (vrmScreen) {
+			setScreens(prev => {
+				const existingVrmIndex = prev.findIndex(s => s.id === 999);
+				if (existingVrmIndex !== -1) {
+					const newScreens = [...prev];
+					newScreens[existingVrmIndex] = vrmScreen;
+					return newScreens;
+				} else {
+					return [...prev, vrmScreen];
+				}
+			});
+		}
+	}, [vrmScreen, setScreens]);
 
 	return (
-    <LiveContainer>
-      <TitleRow>
-        <SectionTitle>스트리머님의 방송 ✎</SectionTitle>
-        <StatsContainer>
-          <StatItem>
-            <AiOutlineEye style={{ marginRight: "4px" }} />
-            {viewers}
-          </StatItem>
-          <StatItem>
-            <AiOutlineHeart style={{ marginRight: "4px" }} />
-            {likes}
-          </StatItem>
-	        <StartButton onClick={startStreaming}>
-		        <VscDebugStart size={20}/>
-	        </StartButton>
-        </StatsContainer>
-      </TitleRow>
-	    <CanvasContainer ref={containerRef}>
-		    <LiveCanvas canvasRef={canvasRef} screens={screens} setScreens={setScreens} canvasSize={canvasSize} />
-	    </CanvasContainer>
-    </LiveContainer>
+		<>
+			<VrmRenderer />
+			<LiveContainer>
+				<TitleRow>
+					<SectionTitle>스트리머님의 방송 ✎</SectionTitle>
+					<StatsContainer>
+						<StatItem>
+							<AiOutlineEye style={{ marginRight: "4px" }} />
+							{viewers}
+						</StatItem>
+						<StatItem>
+							<AiOutlineHeart style={{ marginRight: "4px" }} />
+							{likes}
+						</StatItem>
+						<StartButton onClick={startStreaming}>
+							<VscDebugStart size={20}/>
+						</StartButton>
+						<VtuberButton onClick={toggleVrmVisibility}>
+							<FaStreetView size={20} />
+						</VtuberButton>
+					</StatsContainer>
+				</TitleRow>
+				<CanvasContainer ref={containerRef}>
+					<LiveCanvas canvasRef={canvasRef} screens={screens} setScreens={setScreens} canvasSize={canvasSize} />
+				</CanvasContainer>
+			</LiveContainer>
+		</>
   );
 };
 
@@ -70,6 +92,7 @@ const LiveContainer = styled.div`
 `;
 
 const CanvasContainer = styled.div`
+position: relative;
 display: flex;
 justify-content: center;
 align-items: center;
@@ -111,3 +134,21 @@ const StartButton = styled.button`
 	cursor: pointer;
 	border: none;
 `
+
+const VtuberButton = styled.button`
+  padding: 8px;
+  border-radius: ${({theme}) => theme.borders.small};
+  color: ${({theme}) => theme.colors.text.normal};
+  background-color: ${({theme}) => theme.colors.content.normal};
+  cursor: pointer;
+  border: none;
+`
+
+const VtuberWrapper = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10; // Make sure it's on top
+`;

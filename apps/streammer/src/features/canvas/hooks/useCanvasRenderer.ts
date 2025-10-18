@@ -1,9 +1,9 @@
 import {CanvasSize, HANDLE_SIZE, Screen} from "@/features/canvas/constants/canvas-constants";
 import {useSelectedScreenStore} from "@/features/stores/useSelectedScreenStore";
-import {useEffect} from "react";
+import {RefObject, useEffect} from "react";
 
 export const useCanvasRenderer = (
-	canvasRef: React.RefObject<HTMLCanvasElement | null>,
+	canvasRef: RefObject<HTMLCanvasElement | null>,
 	screens: Screen[],
 	canvasSize: CanvasSize
 ): void => {
@@ -49,7 +49,7 @@ export const useCanvasRenderer = (
 						ctx.drawImage(source as HTMLImageElement, x, y, width, height);
 						break;
 					case 'canvas':
-						ctx.drawImage(source as HTMLCanvasElement, x, y, width, height);
+						ctx.drawImage(source as HTMLCanvasElement, screen.x, screen.y, screen.width, screen.height);
 						break;
 				}
 				if (selectedScreen === screen.id) {

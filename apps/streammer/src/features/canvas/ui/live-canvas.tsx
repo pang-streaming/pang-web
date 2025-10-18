@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import React, {useRef} from "react";
+import React from "react";
 import {useCanvasInteraction} from "@/features/canvas/hooks/useCanvasInteraction";
 import {useCanvasRenderer} from "@/features/canvas/hooks/useCanvasRenderer";
 import {CanvasSize, Screen} from "@/features/canvas/constants/canvas-constants";
@@ -12,8 +12,6 @@ interface CanvasProps {
 }
 
 export const LiveCanvas = ({canvasRef, screens, setScreens, canvasSize}: CanvasProps) => {
-
-	// const audioManager = useAudioManager();
 	const { cursorStyle, handleMouseDown, handleMouseMove, handleMouseUp } = useCanvasInteraction(screens, setScreens, canvasSize);
 	
 	useCanvasRenderer(canvasRef, screens, canvasSize);
