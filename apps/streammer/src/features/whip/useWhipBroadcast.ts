@@ -1,4 +1,6 @@
 import {RefObject, useCallback, useEffect, useRef, useState} from 'react';
+import {useAudioMixer} from "@/features/audio/hooks/useAudioMixer";
+import {useStreamingSettings} from "@/features/whip/useStreamingSettings";
 
 export interface WhipBroadcastConfig {
   whipUrl: string;
@@ -18,9 +20,9 @@ interface WhipBroadcastStatus {
 
 export const useWhipBroadcast = (
 	canvasRef: RefObject<HTMLCanvasElement | null>,
-	config: WhipBroadcastConfig,
-	audios: MediaStreamTrack[]
+	config: WhipBroadcastConfig
 ) => {
+	const {setCodecPreferences} = useStreamingSettings();
   const [status, setStatus] = useState<WhipBroadcastStatus>({
     isStreaming: false,
     connectionState: 'disconnected',
@@ -28,13 +30,16 @@ export const useWhipBroadcast = (
     fps: 0,
     frameCount: 0,
   });
-
   const peerConnection = useRef<RTCPeerConnection | null>(null);
   const mediaStream = useRef<MediaStream | null>(null);
+  const audioSenderRef = useRef<RTCRtpSender | null>(null);
   const lastFrameTime = useRef<number>(0);
   const frameCounter = useRef<number>(0);
-
-  // FPS 계산을 위한 함수
+	
+	// 오디오 믹싱 - Zustand store에서 자동으로 가져옴
+	const mixedAudioTrack = useAudioMixer();
+	
+	// FPS 계산을 위한 함수
   const updateFps = useCallback(() => {
     const now = performance.now();
     const delta = now - lastFrameTime.current;
@@ -50,88 +55,6 @@ export const useWhipBroadcast = (
     frameCounter.current++;
   }, []);
 
-  // SDP에서 H.264와 Opus 코덱만 사용하도록 설정
-  const setCodecPreferences = useCallback((sdp: string): string => {
-    const lines = sdp.split('\r\n');
-    const h264Payloads: string[] = [];
-    const opusPayloads: string[] = [];
-    const payloadsToKeep: string[] = [];
-    const rtxMap = new Map<string, string>(); // rtx -> main
-
-    // 1. Find H264 and Opus payloads, and build RTX map
-    lines.forEach(line => {
-      const rtpmapMatch = line.match(/^a=rtpmap:(\d+)\s+(.+)/);
-      if (rtpmapMatch) {
-        const payload = rtpmapMatch[1];
-        const codec = rtpmapMatch[2].toLowerCase();
-        if (codec.includes('h264')) {
-          h264Payloads.push(payload);
-        } else if (codec.includes('opus')) {
-          opusPayloads.push(payload);
-        }
-      }
-      const fmtpMatch = line.match(/^a=fmtp:(\d+)\s+apt=(\d+)/);
-      if (fmtpMatch) {
-        rtxMap.set(fmtpMatch[1], fmtpMatch[2]);
-      }
-    });
-
-    payloadsToKeep.push(...h264Payloads, ...opusPayloads);
-
-    // 2. Find associated RTX payloads to keep
-    rtxMap.forEach((mainPayload, rtxPayload) => {
-      if (h264Payloads.includes(mainPayload) || opusPayloads.includes(mainPayload)) {
-        payloadsToKeep.push(rtxPayload);
-      }
-    });
-
-    // 3. Filter all lines that don't belong to a payload we want to keep
-    const filteredLines = lines.filter(line => {
-      if (!line.startsWith('a=')) {
-        return true; // Keep non 'a=' lines (like m=, c=, etc.)
-      }
-      const match = line.match(/^a=(rtpmap|fmtp|rtcp-fb):(\d+)/);
-      if (match) {
-        return payloadsToKeep.includes(match[2]);
-      }
-      // Keep other a= lines that are not payload-specific
-      return !line.match(/^a=(rtpmap|fmtp|rtcp-fb):/);
-    });
-
-    // 4. Reconstruct m-lines
-    const finalLines = filteredLines.map(line => {
-      if (line.startsWith('m=video')) {
-        const parts = line.split(' ');
-        const mediaInfo = parts.slice(0, 3);
-        const originalPayloads = parts.slice(3);
-        const keptPayloads = originalPayloads.filter(p => payloadsToKeep.includes(p));
-
-        // Prioritize H.264
-        const finalPayloads = [
-          ...h264Payloads,
-          ...keptPayloads.filter(p => !h264Payloads.includes(p)),
-        ];
-        return `${mediaInfo.join(' ')} ${[...new Set(finalPayloads)].join(' ')}`;
-      }
-      if (line.startsWith('m=audio')) {
-        const parts = line.split(' ');
-        const mediaInfo = parts.slice(0, 3);
-        const originalPayloads = parts.slice(3);
-        const keptPayloads = originalPayloads.filter(p => payloadsToKeep.includes(p));
-
-        // Prioritize Opus
-        const finalPayloads = [
-          ...opusPayloads,
-          ...keptPayloads.filter(p => !opusPayloads.includes(p)),
-        ];
-        return `${mediaInfo.join(' ')} ${[...new Set(finalPayloads)].join(' ')}`;
-      }
-      return line;
-    });
-
-    return finalLines.join('\r\n');
-  }, []);
-
   const startStreaming = useCallback(async () => {
     if (!canvasRef.current || !config.whipUrl) {
       throw new Error('Canvas reference or WHIP URL is missing');
@@ -140,30 +63,11 @@ export const useWhipBroadcast = (
     try {
       const stream = canvasRef.current.captureStream(config.fps || 60);
       mediaStream.current = stream;
-			
-			if (audios.length > 0) {
-				const audioContext = new AudioContext();
-				const destination = audioContext.createMediaStreamDestination();
-				audios.forEach(track => {
-					const source = audioContext.createMediaStreamSource(new MediaStream([track]));
-					source.connect(destination);
-				})
-				const mixedAudioTrack = destination.stream.getAudioTracks()[0];
-				stream.addTrack(mixedAudioTrack);
-			} else {
-				const audioContext = new AudioContext();
-				const destination = audioContext.createMediaStreamDestination();
-				const oscillator = audioContext.createOscillator();
-				oscillator.frequency.value = 0;
-				const gainNode = audioContext.createGain();
-				gainNode.gain.value = 0.001;
-				oscillator.connect(gainNode);
-				gainNode.connect(destination);
-				oscillator.start();
-				const silentAudioTrack = destination.stream.getAudioTracks()[0];
-				stream.addTrack(silentAudioTrack);
-			}
 
+			if (mixedAudioTrack) {
+				stream.addTrack(mixedAudioTrack);
+			}
+			
       // PeerConnection 생성
       const pc = new RTCPeerConnection({
         iceServers: [
@@ -175,10 +79,15 @@ export const useWhipBroadcast = (
       });
       peerConnection.current = pc;
 
-      // 오디오/비디오 트랙 추가
+      console.log('Stream tracks:', {
+				audio: stream.getAudioTracks().length,
+	      video: stream.getVideoTracks().length,
+	      audioTrackDetails: stream.getAudioTracks().map(t => ({ id: t.id, enabled: t.enabled, readyState: t.readyState }))
+      })
+			// 오디오/비디오 트랙 추가
       const audioTrack = stream.getAudioTracks()[0];
       const videoTrack = stream.getVideoTracks()[0];
-      pc.addTrack(audioTrack, stream);
+	    audioSenderRef.current = pc.addTrack(audioTrack, stream);
       const videoSender = pc.addTrack(videoTrack, stream);
 
       // 비디오 인코딩 파라미터 설정
@@ -263,7 +172,7 @@ export const useWhipBroadcast = (
       stopStreaming();
       throw error;
     }
-  }, [config, canvasRef, setCodecPreferences, audios]);
+  }, [config, canvasRef, setCodecPreferences, mixedAudioTrack]);
 
   const stopStreaming = useCallback(() => {
     if (mediaStream.current) {
@@ -275,6 +184,8 @@ export const useWhipBroadcast = (
       peerConnection.current.close();
       peerConnection.current = null;
     }
+    
+    audioSenderRef.current = null;
 
     setStatus({
       isStreaming: false,
@@ -284,21 +195,37 @@ export const useWhipBroadcast = (
       frameCount: 0,
     });
   }, []);
-
-  // 컴포넌트 언마운트 시 정리
   useEffect(() => {
     return () => {
       stopStreaming();
     };
   }, [stopStreaming]);
 
-  // FPS 업데이트
   useEffect(() => {
     if (status.isStreaming) {
       const animationFrame = requestAnimationFrame(updateFps);
       return () => cancelAnimationFrame(animationFrame);
     }
   }, [status.isStreaming, updateFps]);
+  
+  // 방송 중 오디오 트랙 변경 시 실시간 교체
+  useEffect(() => {
+    if (status.isStreaming && audioSenderRef.current && mixedAudioTrack) {
+      console.log('Replacing audio track during streaming', {
+        newTrackId: mixedAudioTrack.id,
+        enabled: mixedAudioTrack.enabled,
+        readyState: mixedAudioTrack.readyState
+      });
+      
+      audioSenderRef.current.replaceTrack(mixedAudioTrack)
+        .then(() => {
+          console.log('Audio track replaced successfully');
+        })
+        .catch(err => {
+          console.error('Failed to replace audio track:', err);
+        });
+    }
+  }, [mixedAudioTrack, status.isStreaming]);
 
   return {
     status,

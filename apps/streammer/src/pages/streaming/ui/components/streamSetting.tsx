@@ -1,7 +1,8 @@
-import React, {Dispatch, SetStateAction, useState} from "react";
+import React, {useState} from "react";
 import styled from "styled-components";
 import { VolumeMixer } from "./volumeMixer";
 import {useDragAndDrop} from "@/pages/streaming/hooks/useDragAndDrop";
+import {useAudioStore} from "@/features/audio/stores/useAudioStore";
 
 interface DragState {
   draggingIndex: number | null;
@@ -67,19 +68,19 @@ const SectionsRenderer = React.memo<{
 
 interface StreamProps {
 	onVideoAddButtonClick: () => void;
-	setAudios: Dispatch<SetStateAction<MediaStreamTrack[]>>;
 }
 
-export const StreamSetting = ({ onVideoAddButtonClick, setAudios }: StreamProps) => {
+export const StreamSetting = ({ onVideoAddButtonClick }: StreamProps) => {
   const [screenSections, setScreenSections] = useState<string[]>(["섹션1"]);
   const [audioSections, setAudioSections] = useState<string[]>(["구글"]);
+	const { addAudioTrack } = useAudioStore();
 	
 	const addMicrophoneAudio = async () => {
 		try {
 			const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 			const audioTrack = stream.getAudioTracks()[0];
 			if (audioTrack) {
-			  setAudios(prev => [...prev, audioTrack]);
+			  addAudioTrack(audioTrack, 'microphone', audioTrack.label || 'Microphone');
 			  setAudioSections(prev => [...prev, '마이크']);
 			}
 		} catch (err) {

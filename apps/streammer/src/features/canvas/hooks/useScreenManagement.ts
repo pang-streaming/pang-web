@@ -1,5 +1,6 @@
 import React, {useCallback, useEffect, useState} from "react";
 import {CanvasSize, Screen} from "@/features/canvas/constants/canvas-constants";
+import {useAudioStore} from "@/features/audio/stores/useAudioStore";
 
 interface ScreenManagement {
 	screens: Screen[];
@@ -9,9 +10,9 @@ interface ScreenManagement {
 }
 
 export const useScreenManagement = (
-	canvasSize: CanvasSize,
-	setAudios: React.Dispatch<React.SetStateAction<MediaStreamTrack[]>>
+	canvasSize: CanvasSize
 ): ScreenManagement => {
+	const { addAudioTrack, removeAudioTrack, clearAllAudioTracks } = useAudioStore();
 	const [screens, setScreens] = useState<Screen[]>([]);
 	
 	// Keep screens within bounds on resize
@@ -34,8 +35,14 @@ export const useScreenManagement = (
 				audio: true
 			});
 			const audioTrack = stream.getAudioTracks()[0];
+			console.log('screen share audio track: ', audioTrack ? {
+				id: audioTrack.id,
+				label: audioTrack.label,
+				enabled: audioTrack.enabled,
+				readyState: audioTrack.readyState
+			}: 'No audio track')
 			if (audioTrack) {
-				setAudios(prev => [...prev, audioTrack]);
+				addAudioTrack(audioTrack, 'screen', 'Screen Audio');
 			}
 			
 			const video = document.createElement("video");
@@ -84,7 +91,7 @@ export const useScreenManagement = (
 					}
 					const audioTrack = stream.getAudioTracks()[0];
 					if (audioTrack) {
-						setAudios(prev => prev.filter(track => track.id !== audioTrack.id));
+						removeAudioTrack(audioTrack.id);
 					}
 					return prev.filter(s => s.stream !== stream);
 				});
@@ -99,10 +106,10 @@ export const useScreenManagement = (
 				alert("화면 공유에 실패했습니다: " + error.message);
 			}
 		}
-	}, [canvasSize.height, canvasSize.width, setAudios]);
+	}, [canvasSize.height, canvasSize.width, addAudioTrack, removeAudioTrack]);
 	
 	const clearScreens = useCallback((): void => {
-		setAudios([]);
+		clearAllAudioTracks();
 		setScreens(prev => {
 			prev.forEach(s => {
 				s.stream?.getTracks().forEach(track => track.stop());
@@ -111,7 +118,7 @@ export const useScreenManagement = (
 			});
 			return [];
 		});
-	}, []);
+	}, [clearAllAudioTracks]);
 	
 	return {
 		screens,

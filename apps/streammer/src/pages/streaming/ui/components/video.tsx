@@ -12,12 +12,11 @@ interface VideoProps {
 	screens: Screen[];
 	setScreens: React.Dispatch<React.SetStateAction<Screen[]>>;
 	canvasSize: CanvasSize;
-	audios: MediaStreamTrack[];
   viewers?: number; // 시청자 수
   likes?: number;   // 좋아요 수
 }
 
-export const Video = ({ screens, setScreens, containerRef, canvasSize, audios, viewers = 123, likes = 456 }: VideoProps) => {
+export const Video = ({ screens, setScreens, containerRef, canvasSize, viewers = 123, likes = 456 }: VideoProps) => {
 	const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
 	const [selectedDevice, setSelectedDevice] = useState<MediaDeviceInfo | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -28,8 +27,7 @@ export const Video = ({ screens, setScreens, containerRef, canvasSize, audios, v
       bitrate: 8000000,
       fps: 60,
       bearerToken: 'daedyu'
-    },
-		audios
+    }
 	);
 	const { screen: vrmScreen, VrmRenderer } = useVrmScreen(canvasSize, null, true, selectedDevice);
 	

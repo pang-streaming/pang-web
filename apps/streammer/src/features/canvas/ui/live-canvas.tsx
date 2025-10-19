@@ -32,16 +32,10 @@ const VideoCanvas = styled.canvas<{ cursorStyle: string }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
   background-color: ${({ theme }) => theme.colors.background.light};
   border: ${({theme}) => `2px solid ${theme.colors.border.normal}`};
   border-radius: ${({theme}) => theme.borders.small};
   position: relative;
   aspect-ratio: 16 / 9;
-  min-height: 200px;
   overflow: hidden;
-
-  @media (max-width: 768px) {
-    min-height: 150px;
-  }
 `;

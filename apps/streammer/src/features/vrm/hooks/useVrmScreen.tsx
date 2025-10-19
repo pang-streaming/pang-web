@@ -8,7 +8,7 @@ export const useVrmScreen = (canvasSize: CanvasSize, vrmUrl: string | null, isCa
 
   const onCanvasReady = useCallback((canvas: HTMLCanvasElement) => {
     const vrmScreen: Screen = {
-      id: 999, // Special ID for the VRM screen
+      id: 999,
       type: 'canvas',
       source: canvas,
       x: 0,
@@ -17,7 +17,7 @@ export const useVrmScreen = (canvasSize: CanvasSize, vrmUrl: string | null, isCa
       height: canvasSize.height,
     };
     setScreen(vrmScreen);
-  }, [canvasSize]);
+  }, [canvasSize.width, canvasSize.height]);
 
   const VrmRenderer = useCallback(() => (
     <ThreeCanvas
