@@ -2,7 +2,8 @@ import { CardElem } from "./ui/card-elem";
 import { paymentIcons } from "@/app/assets/payment/_index";
 import * as S from './style'
 import { useEffect, useState } from "react";
-import { paymentApi, CardListItem } from "@/entities/payment/api";
+import { paymentApi } from "@/entities/payment/api";
+import { CardListItem } from "@/entities/payment/model/type";
 
 export interface CardData {
   id: string;

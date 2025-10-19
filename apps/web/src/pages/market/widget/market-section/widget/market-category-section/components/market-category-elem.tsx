@@ -1,16 +1,16 @@
+// MarketCategoryElem.tsx
 import styled from "styled-components";
 
 export interface MarketCategoryElemProps {
   image: string;
   title: string;
+  query: string;
+  onClick?: () => void; 
 }
 
-export const MarketCategoryElem = ({
-  image,
-  title,
-}: MarketCategoryElemProps) => {
+export const MarketCategoryElem = ({ image, title, onClick }: MarketCategoryElemProps) => {
   return (
-    <Container>
+    <Container onClick={onClick}>
       <ImageContainer src={image} />
       <Title>{title}</Title>
     </Container>
@@ -25,6 +25,10 @@ const Container = styled.div`
   gap: 4px;
   align-items: center;
   cursor: pointer;
+
+  &:hover {
+    opacity: 0.7;
+  }
 `;
 
 const ImageContainer = styled.img`

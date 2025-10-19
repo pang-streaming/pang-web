@@ -6,6 +6,7 @@ import Airplane from "@/app/assets/airplane.svg?react";
 import { SponsorModal } from "../widget/sponsor-modal";
 import { sponsorPung } from "@/features/sponsor/api";
 import { fetchMyInfo } from "@/entities/user/api/api";
+import { useQuery } from "@tanstack/react-query";
 import { paymentApi } from "@/entities/payment/api";
 import { sponsorEventManager } from "@/shared/lib/sponsor-event";
 import { ISendDonationMessageRequest } from "../model/use-chat";
@@ -121,30 +122,32 @@ export const ChatInput = ({ username, onSend, addSponsorMessage }: ChatInputProp
 
   const [isComposing, setIsComposing] = useState(false);
 
+  const { data: myInfoData } = useQuery({
+    queryKey: ["myInfo"],
+    queryFn: fetchMyInfo,
+    staleTime: 1000 * 60,
+    refetchOnWindowFocus: false,
+  });
+
   useEffect(() => {
-    const fetchData = async () => {
+    const user = myInfoData?.data;
+    if (!user) return;
+    setUserCash(user.cash);
+    setPungAmount(user.cash);
+    setUserNickname(user.nickname);
+    (async () => {
       try {
-        setLoading(true);
-
-        const userResult = await fetchMyInfo();
-        setUserCash(userResult.data.cash);
-        setPungAmount(userResult.data.cash);
-        setUserNickname(userResult.data.nickname);
-
         const cardResult = await paymentApi.getCards();
         if (cardResult.data && cardResult.data.length > 0) {
           setCardId(cardResult.data[0].cardId);
-        } else {
-          console.warn("등록된 카드가 없습니다.");
         }
-      } catch (error) {
-        console.error("데이터 로드 실패:", error);
+      } catch (e) {
+        console.warn("카드 로드 실패", e);
       } finally {
         setLoading(false);
       }
-    };
-    fetchData();
-  }, []);
+    })();
+  }, [myInfoData?.data]);
 
   const inputEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && !isComposing) {

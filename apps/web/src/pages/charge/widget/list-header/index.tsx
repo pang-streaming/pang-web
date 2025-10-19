@@ -1,6 +1,8 @@
 import { useTransaction } from "@/entities/transaction/hooks/useTransaction";
 import styled from "styled-components";
 import { Transaction, BalanceData } from "@/entities/transaction/model/type";
+import { TransactionSkeleton } from "@/shared/ui/skeleton";
+import { ErrorScreen } from "@/shared/ui/error-screen";
 
 interface ListHeaderProps {
   segmentType: string;
@@ -8,27 +10,24 @@ interface ListHeaderProps {
 
 export const ListHeader = ({ segmentType }: ListHeaderProps) => {
   const isUseSegment = segmentType === "use";
-  const { loading, error, transaction } = useTransaction();
+  const { data, isError, isLoading, error } = useTransaction();
 
   const transactionList =
-    (transaction as unknown as BalanceData)?.transactions?.filter(
-      (tx: Transaction) =>
-        isUseSegment ? tx.type === "USE" : tx.type === "CHARGE"
+    data?.data?.transactions?.filter((tx: Transaction) =>
+      isUseSegment ? tx.type === "USE" : tx.type === "CHARGE"
     ) || [];
 
-  if (loading) {
+  if (isLoading) {
     return (
-      <Container>
-        <LoadingMessage>거래 내역을 불러오는 중...</LoadingMessage>
-      </Container>
+      <div>
+        <TransactionSkeleton  />
+      </div>
     );
   }
 
   if (error) {
     return (
-      <Container>
-        <ErrorMessage>오류가 발생했습니다: {error.message}</ErrorMessage>
-      </Container>
+      <ErrorScreen error={String(error)}/>
     );
   }
 
@@ -115,7 +114,7 @@ const TransactionRow = styled.div`
   box-sizing: border-box;
   align-items: center;
   background-color: ${({ theme }) => theme.colors.background.light};
-  border-radius: ${({theme}) => theme.borders.medium};
+  border-radius: ${({ theme }) => theme.borders.medium};
 
   &:hover {
     /* background-color: ${({ theme }) => theme.colors.hover.light}; */

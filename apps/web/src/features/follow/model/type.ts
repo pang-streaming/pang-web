@@ -4,6 +4,7 @@ export interface Follow {
     image: string,
     nickname: string,
     follower: number
+    username: string,
 }
 
 export interface FollowResponse {

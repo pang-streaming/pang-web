@@ -1,28 +1,13 @@
-import { useEffect, useState } from "react";
-import { Transaction } from "../model/type";
 import { fetchTransaction } from "../api";
+import { useQuery } from "@tanstack/react-query";
+import type { BalanceResponse } from "../model/type";
+
 
 export const useTransaction = () => {
-  const [transaction, setTransaction] = useState<Transaction>();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-
-  useEffect(() => {
-    const loadData = async () => {
-      setLoading(true);
-      try {
-        const res = await fetchTransaction();
-        setTransaction(res.data);
-        console.log("거래내역" ,res.data)
-      } catch (e) {
-        setError(e as Error);
-        console.error(e);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadData();
-  }, []);
-
-  return { transaction, loading, error };
+  return useQuery<BalanceResponse>({
+    queryKey: ["transaction"],
+    queryFn: fetchTransaction,
+    staleTime: 1000 * 60,
+    refetchOnWindowFocus: false,
+  });
 };

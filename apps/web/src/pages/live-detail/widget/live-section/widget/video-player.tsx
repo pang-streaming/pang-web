@@ -4,7 +4,7 @@ import { VideoControls } from "./video-controlls";
 import { useHlsPlayer } from "@/entities/stream/model/useHlsPlayer";
 import * as V from "@/entities/video/model/index";
 import * as S from "../style";
-import {useHover, useVolume, useFullScreen} from "@/entities/video/model";
+import { useHover, useVolume, useFullScreen } from "@/entities/video/model";
 
 interface VideoPlayerProps {
   streamUrl?: string;
@@ -19,8 +19,8 @@ export const VideoPlayer = ({ streamUrl, isMobile }: VideoPlayerProps) => {
   const [pause, setPause] = useState(false);
   const { handleFullScreen } = useFullScreen(containerRef);
   const videoReady = V.useVideoReady(videoRef);
-  const { handlePip } = V.usePip(videoRef, videoReady);
-  useHlsPlayer(videoRef, streamUrl);
+  const { handlePip } = V.usePip(videoRef);
+  useHlsPlayer(videoRef, streamUrl);  
 
   const handlePause = () => {
     setPause(!pause);
@@ -33,20 +33,18 @@ export const VideoPlayer = ({ streamUrl, isMobile }: VideoPlayerProps) => {
           <S.VideoOverlayArea>
             <S.Video
               ref={videoRef}
-              src={streamUrl}
-              type="application/vnd.apple.mpegurl"
               autoPlay
               playsInline
               muted={muted}
               onClick={handlePause}
               controls={false}
-              webkit-playsinline="true"
+              disablePictureInPicture={false}
             />
           </S.VideoOverlayArea>
         )}
         {pause && (
           <S.VideoCenterController>
-            <Pause/>
+            <Pause />
           </S.VideoCenterController>
         )}
         <VideoControls

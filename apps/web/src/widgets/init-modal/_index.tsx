@@ -65,7 +65,8 @@ export const InitModal = ({ isOpen, onClose, username }: InitModalProps) => {
           {step === 1 ? (
             <NextButton onClick={handleNext}>다음</NextButton>
           ) : (
-            <CloseButton onClick={onClose}>완료</CloseButton>
+            // <CloseButton onClick={onClose}>완료</CloseButton>
+            <></>
           )}
         </ButtonWrapper>
 

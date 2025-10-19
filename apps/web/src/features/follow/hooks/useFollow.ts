@@ -1,58 +1,86 @@
-import { useState, useCallback } from "react";
-import { fetchMyFollowing, fetchMyFollower, followingOtherUser } from "../api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchMyFollowing, fetchMyFollower, followingOtherUser, unfollowOtherUser } from "../api";
 import type { FollowResponse } from "../model/type";
 
-export const useFollow = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+export const useMyFollowing = (username?: string) => {
+  return useQuery<FollowResponse>({
+    queryKey: ["myFollowing", username],
+    queryFn: () => fetchMyFollowing(username!),
+    enabled: !!username,
+    staleTime: 1000 * 60,
+    refetchOnWindowFocus: false,
+  });
+};
 
-  const getMyFollowing = useCallback(async (username: string): Promise<FollowResponse | null> => {
-    try {
-      setLoading(true);
-      setError(null);
-      const result = await fetchMyFollowing(username);
-      return result;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "팔로잉 목록을 불러오는데 실패했습니다.");
-      return null;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+export const useMyFollower = (username?: string) => {
+  return useQuery<FollowResponse>({
+    queryKey: ["myFollower", username],
+    queryFn: () => fetchMyFollower(username!),
+    enabled: !!username,
+    staleTime: 1000 * 60,
+    refetchOnWindowFocus: false,
+  });
+};
 
-  const getMyFollower = useCallback(async (username: string): Promise<FollowResponse | null> => {
-    try {
-      setLoading(true);
-      setError(null);
-      const result = await fetchMyFollower(username);
-      return result;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "팔로워 목록을 불러오는데 실패했습니다.");
-      return null;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+export const useFollowUser = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ username, isFollowing }: { username: string; isFollowing: boolean }) => 
+      isFollowing ? unfollowOtherUser(username) : followingOtherUser(username),
+    onMutate: async ({ username, isFollowing }) => {
+      await queryClient.cancelQueries({ queryKey: ["otherUserInfo", username] });
+      await queryClient.cancelQueries({ queryKey: ["myFollowing"] });
+      await queryClient.cancelQueries({ queryKey: ["myFollower", username] });
 
-  const followUser = useCallback(async (username: string): Promise<boolean> => {
-    try {
-      setLoading(true);
-      setError(null);
-      await followingOtherUser(username);
-      return true;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "팔로우에 실패했습니다.");
-      return false;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+      const previousUserInfo = queryClient.getQueryData(["otherUserInfo", username]);
+      const previousFollowing = queryClient.getQueryData(["myFollowing"]);
+      const previousFollower = queryClient.getQueryData(["myFollower", username]);
 
-  return {
-    loading,
-    error,
-    getMyFollowing,
-    getMyFollower,
-    followUser,
-  };
+      if (previousUserInfo) {
+        queryClient.setQueryData(["otherUserInfo", username], {
+          ...previousUserInfo,
+          data: {
+            ...(previousUserInfo as any).data,
+            isFollowed: !isFollowing,
+            followerCount: isFollowing 
+              ? (previousUserInfo as any).data.followerCount - 1 
+              : (previousUserInfo as any).data.followerCount + 1,
+          }
+        });
+      }
+
+      if (previousFollower) {
+        queryClient.setQueryData(["myFollower", username], {
+          ...previousFollower,
+          data: isFollowing 
+            ? (previousFollower as FollowResponse).data.filter((follower: any) => follower.username !== username)
+            : [...(previousFollower as FollowResponse).data, { username }]
+        });
+      }
+
+      return { previousUserInfo, previousFollowing, previousFollower };
+    },
+    onError: (err, variables, context) => {
+      if (variables?.username) {
+        if (context?.previousUserInfo) {
+          queryClient.setQueryData(["otherUserInfo", variables.username], context.previousUserInfo);
+        }
+        if (context?.previousFollowing) {
+          queryClient.setQueryData(["myFollowing"], context.previousFollowing);
+        }
+        if (context?.previousFollower) {
+          queryClient.setQueryData(["myFollower", variables.username], context.previousFollower);
+        }
+      }
+      console.error("팔로우 처리 중 오류가 발생했습니다:", err);
+    },
+    onSettled: (_, variables) => {
+      // 성공/실패 관계없이 서버 데이터로 동기화
+      if (variables && 'username' in variables) {
+        queryClient.invalidateQueries({ queryKey: ["otherUserInfo", variables.username] });
+        queryClient.invalidateQueries({ queryKey: ["myFollowing"] });
+        queryClient.invalidateQueries({ queryKey: ["myFollower", variables.username] });
+      }
+    },
+  });
 };

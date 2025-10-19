@@ -13,6 +13,7 @@ export const FollowButton = ({isFollowing, onClick, disabled}: FollowButtonProps
 		<FollowButtonWrapper
 			onClick={onClick}
 			disabled={disabled}
+			isFollowing={isFollowing}
 		>
 			{isFollowing ? <IoHeart size={20} /> : <IoMdHeartEmpty size={20} />}
 			<FollowButtonText>
@@ -22,22 +23,30 @@ export const FollowButton = ({isFollowing, onClick, disabled}: FollowButtonProps
 	)
 }
 
-const FollowButtonWrapper = styled.button`
+const FollowButtonWrapper = styled.button<{isFollowing?: boolean}>`
 	padding: 0 12px;
 	height: 31px;
 	border-radius: ${({theme}) => theme.borders.medium};
 	outline: none;
 	border: none;
-	background-color: ${({theme}) => theme.colors.secondary.normal};
+	background-color: ${({isFollowing, theme}) => 
+		isFollowing ? theme.colors.primary.normal : theme.colors.secondary.normal};
 	display: flex;
 	align-items: center;
 	gap: 6px;
 	white-space: nowrap;
 	flex-shrink: 0;
 	color: ${({theme}) => theme.colors.common.white};
+	transition: all 0.2s ease;
   
   &:hover {
     cursor: pointer;
+    opacity: 0.8;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 `;
 

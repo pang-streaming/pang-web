@@ -1,30 +1,24 @@
 import { formattedPrice } from "@/pages/market/util/formatted-price";
 import styled from "styled-components";
-import model from '@/app/assets/model.png'
+import panglogo from '@/app/assets/pang-emotion-logo.png'
 import { useNavigate } from "react-router-dom";
 
 export interface VirtualModelElemProps {
+  id: string;
   image: string;
   productName: string;
   price: number;
 }
 
-export const VirtualModelElem = ({image,price,productName,}: VirtualModelElemProps) => {
+export const VirtualModelElem = ({ id, image, price, productName }: VirtualModelElemProps) => {
 
   const navigate = useNavigate();
   const handleProduct = () => {
-    navigate("/market-detail", {
-      state: {
-        image: model,     
-        name: productName, 
-        price,          
-        seller: "판매자닉네임", 
-      },
-    });
+    navigate(`/market-detail?productId=${id}`);
   }
   return (
     <Container onClick={handleProduct}>
-      <Image src={model} />
+      <Image src={image || panglogo} />
       <ProductName>{productName}</ProductName>
       <Price>{formattedPrice(price)}원</Price>
     </Container>

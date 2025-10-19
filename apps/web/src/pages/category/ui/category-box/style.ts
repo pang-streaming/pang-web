@@ -9,6 +9,13 @@ export const CategoryBoxThumbnail = styled.div<{backgroundImage?: string}>`
 	background-position: center;
 	border-radius: ${({theme}) => theme.borders.xlarge};
 	margin-bottom: 10px;
+  border: 3px solid transparent;
+  
+  &:hover {
+    border-color: ${({ theme }) => theme.colors.primary.normal};
+    cursor: pointer;
+  }
+
 `;
 
 export const CategoryContainer = styled.div`
@@ -19,10 +26,6 @@ export const CategoryContainer = styled.div`
   flex-direction: column;
   box-sizing: border-box;
   border: 3px solid transparent;
-  &:hover {
-    border-color: ${({ theme }) => theme.colors.primary.normal};
-    cursor: pointer;
-  }
 `;
 
 export const CategoryInfo = styled.div`

@@ -1,45 +1,51 @@
-export interface CategoryItem {
-  id: string;
-  categoryTitle: string;
-  categoryChipCount: number;
-  categoryLiveCount: number;
-  categoryThumbnail?: string;
+
+export type CategoryType =
+  | "GAME"
+  | "TRAVEL"
+  | "EATING_SHOW"
+  | "VIRTUAL"
+  | "SPORTS"
+  | "MUSIC"
+  | "DRAWING"
+  | "TALK"
+  | "COOKING"
+  | "CURRENT_AFFAIRS"
+  | "STUDY"
+  | "OTHERS";
+
+export interface Category {
+  id: number;
+  name: string;
+  chip: string;
+  type: CategoryType;
+  postImage: string;
+  streamCount: number;
 }
 
-export const categories: CategoryItem[] = [
-  { 
-    id: 'lol',
-    categoryTitle: "리그오브레전드", 
-    categoryChipCount: 126315, 
-    categoryLiveCount: 201,
-    categoryThumbnail: '/category-images/lol.png'
-  },
-  { 
-    id: 'lostark',
-    categoryTitle: "로스트아크", 
-    categoryChipCount: 126315, 
-    categoryLiveCount: 201,
-    categoryThumbnail: '/category-images/lostark.png'
-  },
-  { 
-    id: 'pubg',
-    categoryTitle: "배틀그라운드", 
-    categoryChipCount: 126315, 
-    categoryLiveCount: 201,
-    categoryThumbnail: '/category-images/pubg.png' 
-  },
-  { 
-    id: 'maple',
-    categoryTitle: "메이플스토리", 
-    categoryChipCount: 126315, 
-    categoryLiveCount: 201,
-    categoryThumbnail: '/category-images/maple.png' 
-  },
-  { 
-    id: 'forza',
-    categoryTitle: "포르자 호라이즌 5", 
-    categoryChipCount: 126315, 
-    categoryLiveCount: 201,
-    categoryThumbnail: '/category-images/forza.webp' 
-  }
-];
+export interface Category {
+  id: number;
+  name: string;
+  chip: string;
+  type: CategoryType;
+  postImage: string;
+  streamCount: number;
+  tag: string[];
+}
+
+
+export interface CategoryLive {
+  streamId: string;
+  title: string;
+  url: string;
+  username: string;
+  nickname: string;
+  profileImage: string;
+  viewCount: number;
+}
+
+export interface CategoryLiveResponse {
+  status: string;
+  message: string;
+  data: CategoryLive[];
+  timestamp: string;
+}
