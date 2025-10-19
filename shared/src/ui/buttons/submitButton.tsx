@@ -1,11 +1,11 @@
 import styled from "styled-components";
-import {ComponentType} from "react";
+import {ComponentType, ReactNode} from "react";
 
 interface SubmitButtonProps {
 	disabled?: boolean;
 	type?: 'normal' | 'alternative'
 	onClick?: () => void;
-	children: string;
+	children: ReactNode;
 	Icon?: ComponentType;
 }
 
