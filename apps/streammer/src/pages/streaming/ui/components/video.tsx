@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import styled from "styled-components";
 import { AiOutlineEye, AiOutlineHeart } from "react-icons/ai";
 import {LiveCanvas} from "@/features/canvas/ui/live-canvas";
@@ -19,6 +19,8 @@ interface VideoProps {
 }
 
 export const Video = ({ screens, setScreens, containerRef, canvasSize, audios, viewers = 123, likes = 456 }: VideoProps) => {
+	const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
+	const [selectedDevice, setSelectedDevice] = useState<MediaDeviceInfo | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 	const { status, startStreaming, stopStreaming } = useWhipBroadcast(
 		canvasRef,
@@ -30,8 +32,25 @@ export const Video = ({ screens, setScreens, containerRef, canvasSize, audios, v
     },
 		audios
 	);
-	const { screen: vrmScreen, VrmRenderer, toggleVrmVisibility } = useVrmScreen(canvasSize, null, true);
-
+	const { screen: vrmScreen, VrmRenderer } = useVrmScreen(canvasSize, null, true, selectedDevice);
+	
+	useEffect(() => {
+		const getDevices = async () => {
+			try {
+				await navigator.mediaDevices.getUserMedia({ video: true }); // 권한 요청
+				const availableDevices = await navigator.mediaDevices.enumerateDevices();
+				const videoDevices = availableDevices.filter(device => device.kind === 'videoinput');
+				setDevices(videoDevices);
+				if (videoDevices.length > 0 && !selectedDevice) {
+					setSelectedDevice(videoDevices[0]);
+				}
+			} catch (err) {
+				console.error("카메라 접근 오류:", err);
+			}
+		};
+		getDevices();
+   }, []);
+	
 	useEffect(() => {
 		if (vrmScreen) {
 			setScreens(prev => {
@@ -65,9 +84,19 @@ export const Video = ({ screens, setScreens, containerRef, canvasSize, audios, v
 						<StartButton onClick={startStreaming}>
 							<VscDebugStart size={20}/>
 						</StartButton>
-						<VtuberButton onClick={toggleVrmVisibility}>
-							<FaStreetView size={20} />
-						</VtuberButton>
+						<select
+						  onChange={(e) => {
+						    const device = devices.find(d => d.deviceId === e.target.value);
+						    setSelectedDevice(device || null);
+							}}
+						  value={selectedDevice?.deviceId || ''}
+						>
+							{devices.map(device => (
+								<option key={device.deviceId} value={device.deviceId}>
+						      {device.label || `Camera ${devices.indexOf(device) + 1}`}
+								</option>
+							))}
+						</select>
 					</StatsContainer>
 				</TitleRow>
 				<CanvasContainer ref={containerRef}>
@@ -134,21 +163,3 @@ const StartButton = styled.button`
 	cursor: pointer;
 	border: none;
 `
-
-const VtuberButton = styled.button`
-  padding: 8px;
-  border-radius: ${({theme}) => theme.borders.small};
-  color: ${({theme}) => theme.colors.text.normal};
-  background-color: ${({theme}) => theme.colors.content.normal};
-  cursor: pointer;
-  border: none;
-`
-
-const VtuberWrapper = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 10; // Make sure it's on top
-`;

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { VRM, VRMUtils, VRMLoaderPlugin, VRMHumanoid } from "@pixiv/three-vrm";
@@ -7,6 +7,7 @@ import * as Kalidokit from "kalidokit";
 interface ThreeCanvasProps {
   vrmUrl: string | null;
   isCameraEnabled: boolean;
+	selectedDevice: MediaDeviceInfo | null;
   onCanvasReady: (canvas: HTMLCanvasElement) => void;
   isVisible: boolean;
   width: number;
@@ -36,7 +37,7 @@ const rigPosition = (vrm: VRM, name: keyof VRMHumanoid["humanBones"], position =
   Part.position.lerp(vector, lerpAmount);
 };
 
-const ThreeCanvas = ({ vrmUrl, isCameraEnabled, onCanvasReady, isVisible, width, height }: ThreeCanvasProps) => {
+const ThreeCanvas = ({ vrmUrl, isCameraEnabled, selectedDevice, onCanvasReady, isVisible, width, height }: ThreeCanvasProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const currentVrm = useRef<VRM | null>(null);
   const [isHolisticLoaded, setIsHolisticLoaded] = useState(false);
@@ -47,47 +48,12 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled, onCanvasReady, isVisible, width,
       currentVrm.current.scene.visible = isVisible;
     }
   }, [isVisible]);
-
-  // 자동 깜빡임 관련 상태
-  const {current} = useRef<number | null>(null);
-  const lastBlinkTime = useRef<number>(0);
-  const nextBlinkDelay = useRef<number>(0);
-  
-  // 자동 깜빡임 함수
-  const startAutoBlink = (vrm: VRM) => {
-    if (!vrm.expressionManager) return;
-  
-    const now = Date.now();
-    
-    // 첫 번째 깜빡임이거나 다음 깜빡임 시간이 되었을 때
-    if (lastBlinkTime.current === 0 || now - lastBlinkTime.current >= nextBlinkDelay.current) {
-      // 깜빡임 애니메이션
-      const blinkDuration = 150; // 깜빡임 지속 시간 (ms)
-      const blinkValue = 1.0; // 깜빡임 강도
-    
-      // 깜빡임 시작
-      vrm.expressionManager.setValue("blink", blinkValue);
-      
-      // 깜빡임 종료
-      setTimeout(() => {
-        if (vrm.expressionManager) {
-          vrm.expressionManager.setValue("blink", 0);
-        }
-      }, blinkDuration);
-    
-      lastBlinkTime.current = now;
-    
-      // 다음 깜빡임까지의 랜덤 시간 (2-6초)
-      nextBlinkDelay.current = 2000 + Math.random() * 4000;
-    }
-  };
-
-// Animate Face Helper Function
-  const rigFace = (vrm: VRM, riggedFace: any) => {
+	
+	const rigFace = useCallback((vrm: VRM, riggedFace: any) => {
     if (!vrm.expressionManager || !vrm.lookAt || !vrm.humanoid) return;
-  
+
     rigRotation(vrm, "neck", riggedFace.head, 0.7);
-  
+
     const expressionManager = vrm.expressionManager;
     // Eye blinking
     const stabilizedBlink = Kalidokit.Face.stabilizeBlink(
@@ -95,7 +61,7 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled, onCanvasReady, isVisible, width,
       riggedFace.head.y
     );
     expressionManager.setValue("blink", stabilizedBlink.l);
-  
+
     // Mouth movements
     const lerpVal = 0.5;
     expressionManager.setValue("ih", Kalidokit.Vector.lerp(riggedFace.mouth.shape.I, expressionManager.getValue("i") || 0, lerpVal));
@@ -103,7 +69,7 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled, onCanvasReady, isVisible, width,
     expressionManager.setValue("ee", Kalidokit.Vector.lerp(riggedFace.mouth.shape.E, expressionManager.getValue("e") || 0, lerpVal));
     expressionManager.setValue("oh", Kalidokit.Vector.lerp(riggedFace.mouth.shape.O, expressionManager.getValue("o") || 0, lerpVal));
     expressionManager.setValue("ou", Kalidokit.Vector.lerp(riggedFace.mouth.shape.U, expressionManager.getValue("u") || 0, lerpVal));
-  
+
     // Pupil tracking
     let lookTarget = new THREE.Euler(
       Kalidokit.Vector.lerp(oldLookTarget.current.x, riggedFace.pupil.y, 0.4),
@@ -115,97 +81,97 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled, onCanvasReady, isVisible, width,
     if (vrm.lookAt.target) {
       vrm.lookAt.target.position.set(Math.sin(lookTarget.y) * 2, -Math.sin(lookTarget.x) * 2, -5);
     }
-  };
-
-  const animateVRM = (vrm: VRM, results: any) => {
-    if (!currentVrm.current) return;
-
-    let riggedPose, riggedLeftHand, riggedRightHand, riggedFace;
-    const videoElement = videoRef.current;
-    if (!videoElement) return;
-
-    try {
-      const faceLandmarks = results.faceLandmarks;
-      const pose3DLandmarks = results.ea;
-      const pose2DLandmarks = results.poseLandmarks;
-      const leftHandLandmarks = results.rightHandLandmarks;
-      const rightHandLandmarks = results.leftHandLandmarks;
-
-      // Animate Face
-      if (faceLandmarks) {
-        riggedFace = Kalidokit.Face.solve(faceLandmarks, { runtime: "mediapipe", video: videoElement });
-        if (riggedFace) rigFace(vrm, riggedFace);
-      }
-      
-      // Animate Pose
-      if (pose2DLandmarks && pose3DLandmarks) {
-        riggedPose = Kalidokit.Pose.solve(pose3DLandmarks, pose2DLandmarks, { runtime: "mediapipe", video: videoElement });
-        if (riggedPose) {
-          rigRotation(vrm, "hips", riggedPose.Hips.rotation, 0.3);
-          rigPosition(vrm, "hips", {
-            x: -riggedPose.Hips.position.x,
-            y: riggedPose.Hips.position.y + 1,
-            z: -riggedPose.Hips.position.z,
-          }, 1, 0.07);
-      
-          rigRotation(vrm, "chest", riggedPose.Spine, 0.25, 0.3);
-          rigRotation(vrm, "spine", riggedPose.Spine, 0.45, 0.3);
-          rigRotation(vrm, "rightUpperArm", riggedPose.RightUpperArm, 1, 0.3);
-          rigRotation(vrm, "rightLowerArm", riggedPose.RightLowerArm, 1, 0.3);
-          rigRotation(vrm, "leftUpperArm", riggedPose.LeftUpperArm, 1, 0.3);
-          rigRotation(vrm, "leftLowerArm", riggedPose.LeftLowerArm, 1, 0.3);
-          rigRotation(vrm, "leftUpperLeg", riggedPose.LeftUpperLeg, 1, 0.3);
-          rigRotation(vrm, "leftLowerLeg", riggedPose.LeftLowerLeg, 1, 0.3);
-          rigRotation(vrm, "rightUpperLeg", riggedPose.RightUpperLeg, 1, 0.3);
-          rigRotation(vrm, "rightLowerLeg", riggedPose.RightLowerLeg, 1, 0.3);
-      
-          // Animate Hands
-          if (leftHandLandmarks) {
-            riggedLeftHand = Kalidokit.Hand.solve(leftHandLandmarks, "Left");
-            if (riggedLeftHand) {
-              rigRotation(vrm, "leftHand", { z: riggedPose.LeftHand.z, y: riggedLeftHand.LeftWrist.y, x: riggedLeftHand.LeftWrist.x, });
-              rigRotation(vrm, "leftRingProximal", riggedLeftHand.LeftRingProximal);
-              rigRotation(vrm, "leftRingIntermediate", riggedLeftHand.LeftRingIntermediate);
-              rigRotation(vrm, "leftRingDistal", riggedLeftHand.LeftRingDistal);
-              rigRotation(vrm, "leftIndexProximal", riggedLeftHand.LeftIndexProximal);
-              rigRotation(vrm, "leftIndexIntermediate", riggedLeftHand.LeftIndexIntermediate);
-              rigRotation(vrm, "leftIndexDistal", riggedLeftHand.LeftIndexDistal);
-              rigRotation(vrm, "leftMiddleProximal", riggedLeftHand.LeftMiddleProximal);
-              rigRotation(vrm, "leftMiddleIntermediate", riggedLeftHand.LeftMiddleIntermediate);
-              rigRotation(vrm, "leftMiddleDistal", riggedLeftHand.LeftMiddleDistal);
-              rigRotation(vrm, "leftThumbProximal", riggedLeftHand.LeftThumbProximal);
-              rigRotation(vrm, "leftThumbDistal", riggedLeftHand.LeftThumbDistal);
-              rigRotation(vrm, "leftLittleProximal", riggedLeftHand.LeftLittleProximal);
-              rigRotation(vrm, "leftLittleIntermediate", riggedLeftHand.LeftLittleIntermediate);
-              rigRotation(vrm, "leftLittleDistal", riggedLeftHand.LeftLittleDistal);
-            }
-          }
-          if (rightHandLandmarks) {
-            riggedRightHand = Kalidokit.Hand.solve(rightHandLandmarks, "Right");
-            if (riggedRightHand) {
-              rigRotation(vrm, "rightHand", { z: riggedPose.RightHand.z, y: riggedRightHand.RightWrist.y, x: riggedRightHand.RightWrist.x, });
-              rigRotation(vrm, "rightRingProximal", riggedRightHand.RightRingProximal);
-              rigRotation(vrm, "rightRingIntermediate", riggedRightHand.RightRingIntermediate);
-              rigRotation(vrm, "rightRingDistal", riggedRightHand.RightRingDistal);
-              rigRotation(vrm, "rightIndexProximal", riggedRightHand.RightIndexProximal);
-              rigRotation(vrm, "rightIndexIntermediate", riggedRightHand.RightIndexIntermediate);
-              rigRotation(vrm, "rightIndexDistal", riggedRightHand.RightIndexDistal);
-              rigRotation(vrm, "rightMiddleProximal", riggedRightHand.RightMiddleProximal);
-              rigRotation(vrm, "rightMiddleIntermediate", riggedRightHand.RightMiddleIntermediate);
-              rigRotation(vrm, "rightMiddleDistal", riggedRightHand.RightMiddleDistal);
-              rigRotation(vrm, "rightThumbProximal", riggedRightHand.RightThumbProximal);
-              rigRotation(vrm, "rightThumbDistal", riggedRightHand.RightThumbDistal);
-              rigRotation(vrm, "rightLittleProximal", riggedRightHand.RightLittleProximal);
-              rigRotation(vrm, "rightLittleIntermediate", riggedRightHand.RightLittleIntermediate);
-              rigRotation(vrm, "rightLittleDistal", riggedRightHand.RightLittleDistal);
-            }
-          }
-        }
-      }
-    } catch (error) {
-      console.error("Kalidokit solve error:", error);
-    }
-  };
+	}, [])
+	
+  const animateVRM = useCallback((vrm: VRM, results: any) => {
+	  if (!currentVrm.current) return;
+	  
+	  let riggedPose, riggedLeftHand, riggedRightHand, riggedFace;
+	  const videoElement = videoRef.current;
+	  if (!videoElement) return;
+	  
+	  try {
+		  const faceLandmarks = results.faceLandmarks;
+		  const pose3DLandmarks = results.ea;
+		  const pose2DLandmarks = results.poseLandmarks;
+		  const leftHandLandmarks = results.rightHandLandmarks;
+		  const rightHandLandmarks = results.leftHandLandmarks;
+		  
+		  // Animate Face
+		  if (faceLandmarks) {
+			  riggedFace = Kalidokit.Face.solve(faceLandmarks, { runtime: "mediapipe", video: videoElement });
+			  if (riggedFace) rigFace(vrm, riggedFace);
+		  }
+		  
+		  // Animate Pose
+		  if (pose2DLandmarks && pose3DLandmarks) {
+			  riggedPose = Kalidokit.Pose.solve(pose3DLandmarks, pose2DLandmarks, { runtime: "mediapipe", video: videoElement });
+			  if (riggedPose) {
+				  rigRotation(vrm, "hips", riggedPose.Hips.rotation, 0.3);
+				  rigPosition(vrm, "hips", {
+					  x: -riggedPose.Hips.position.x,
+					  y: riggedPose.Hips.position.y + 1,
+					  z: -riggedPose.Hips.position.z,
+				  }, 1, 0.07);
+				  
+				  rigRotation(vrm, "chest", riggedPose.Spine, 0.25, 0.3);
+				  rigRotation(vrm, "spine", riggedPose.Spine, 0.45, 0.3);
+				  rigRotation(vrm, "rightUpperArm", riggedPose.RightUpperArm, 1, 0.3);
+				  rigRotation(vrm, "rightLowerArm", riggedPose.RightLowerArm, 1, 0.3);
+				  rigRotation(vrm, "leftUpperArm", riggedPose.LeftUpperArm, 1, 0.3);
+				  rigRotation(vrm, "leftLowerArm", riggedPose.LeftLowerArm, 1, 0.3);
+				  rigRotation(vrm, "leftUpperLeg", riggedPose.LeftUpperLeg, 1, 0.3);
+				  rigRotation(vrm, "leftLowerLeg", riggedPose.LeftLowerLeg, 1, 0.3);
+				  rigRotation(vrm, "rightUpperLeg", riggedPose.RightUpperLeg, 1, 0.3);
+				  rigRotation(vrm, "rightLowerLeg", riggedPose.RightLowerLeg, 1, 0.3);
+				  
+				  // Animate Hands
+				  if (leftHandLandmarks) {
+					  riggedLeftHand = Kalidokit.Hand.solve(leftHandLandmarks, "Left");
+					  if (riggedLeftHand) {
+						  rigRotation(vrm, "leftHand", { z: riggedPose.LeftHand.z, y: riggedLeftHand.LeftWrist.y, x: riggedLeftHand.LeftWrist.x, });
+						  rigRotation(vrm, "leftRingProximal", riggedLeftHand.LeftRingProximal);
+						  rigRotation(vrm, "leftRingIntermediate", riggedLeftHand.LeftRingIntermediate);
+						  rigRotation(vrm, "leftRingDistal", riggedLeftHand.LeftRingDistal);
+						  rigRotation(vrm, "leftIndexProximal", riggedLeftHand.LeftIndexProximal);
+						  rigRotation(vrm, "leftIndexIntermediate", riggedLeftHand.LeftIndexIntermediate);
+						  rigRotation(vrm, "leftIndexDistal", riggedLeftHand.LeftIndexDistal);
+						  rigRotation(vrm, "leftMiddleProximal", riggedLeftHand.LeftMiddleProximal);
+						  rigRotation(vrm, "leftMiddleIntermediate", riggedLeftHand.LeftMiddleIntermediate);
+						  rigRotation(vrm, "leftMiddleDistal", riggedLeftHand.LeftMiddleDistal);
+						  rigRotation(vrm, "leftThumbProximal", riggedLeftHand.LeftThumbProximal);
+						  rigRotation(vrm, "leftThumbDistal", riggedLeftHand.LeftThumbDistal);
+						  rigRotation(vrm, "leftLittleProximal", riggedLeftHand.LeftLittleProximal);
+						  rigRotation(vrm, "leftLittleIntermediate", riggedLeftHand.LeftLittleIntermediate);
+						  rigRotation(vrm, "leftLittleDistal", riggedLeftHand.LeftLittleDistal);
+					  }
+				  }
+				  if (rightHandLandmarks) {
+					  riggedRightHand = Kalidokit.Hand.solve(rightHandLandmarks, "Right");
+					  if (riggedRightHand) {
+						  rigRotation(vrm, "rightHand", { z: riggedPose.RightHand.z, y: riggedRightHand.RightWrist.y, x: riggedRightHand.RightWrist.x, });
+						  rigRotation(vrm, "rightRingProximal", riggedRightHand.RightRingProximal);
+						  rigRotation(vrm, "rightRingIntermediate", riggedRightHand.RightRingIntermediate);
+						  rigRotation(vrm, "rightRingDistal", riggedRightHand.RightRingDistal);
+						  rigRotation(vrm, "rightIndexProximal", riggedRightHand.RightIndexProximal);
+						  rigRotation(vrm, "rightIndexIntermediate", riggedRightHand.RightIndexIntermediate);
+						  rigRotation(vrm, "rightIndexDistal", riggedRightHand.RightIndexDistal);
+						  rigRotation(vrm, "rightMiddleProximal", riggedRightHand.RightMiddleProximal);
+						  rigRotation(vrm, "rightMiddleIntermediate", riggedRightHand.RightMiddleIntermediate);
+						  rigRotation(vrm, "rightMiddleDistal", riggedRightHand.RightMiddleDistal);
+						  rigRotation(vrm, "rightThumbProximal", riggedRightHand.RightThumbProximal);
+						  rigRotation(vrm, "rightThumbDistal", riggedRightHand.RightThumbDistal);
+						  rigRotation(vrm, "rightLittleProximal", riggedRightHand.RightLittleProximal);
+						  rigRotation(vrm, "rightLittleIntermediate", riggedRightHand.RightLittleIntermediate);
+						  rigRotation(vrm, "rightLittleDistal", riggedRightHand.RightLittleDistal);
+					  }
+				  }
+			  }
+		  }
+	  } catch (error) {
+		  console.error("Kalidokit solve error:", error);
+	  }
+  },[rigFace]);
 	
   useEffect(() => {
     const scriptId = "mediapipe-holistic-script";
@@ -239,8 +205,16 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled, onCanvasReady, isVisible, width,
   
     const setupCamera = async () => {
       try {
+				const videoConstrains: MediaTrackConstraints = {
+					width: 640,
+					height: 480
+				}
+				if (selectedDevice) {
+					videoConstrains.deviceId = { exact: selectedDevice.deviceId };
+				}
+				
         const stream = await navigator.mediaDevices.getUserMedia({
-          video: { width: 640, height: 480 },
+          video: videoConstrains,
           audio: false,
         });
         videoElement.srcObject = stream;
@@ -350,10 +324,6 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled, onCanvasReady, isVisible, width,
           vrm.scene.rotation.y = Math.PI; // Rotate model to face camera
           currentVrm.current = vrm;
 
-          // 자동 깜빡임 초기화
-          lastBlinkTime.current = 0;
-          nextBlinkDelay.current = 1000 + Math.random() * 2000; // 첫 깜빡임까지 1-3초
-
           // VRM 모델의 밝기 조정
           vrm.scene.traverse((child) => {
             if (child instanceof THREE.Mesh) {
@@ -400,8 +370,6 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled, onCanvasReady, isVisible, width,
       animationFrameId = requestAnimationFrame(animate);
       const delta = clock.getDelta();
       if (currentVrm.current) {
-        // 자동 깜빡임 실행
-        startAutoBlink(currentVrm.current);
         currentVrm.current.update(delta);
       }
       renderer.render(scene, camera);
@@ -410,15 +378,12 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled, onCanvasReady, isVisible, width,
 
     return () => {
       cancelAnimationFrame(animationFrameId);
-      if (current) {
-        clearTimeout(current);
-      }
       if(currentVrm.current) {
         VRMUtils.deepDispose(currentVrm.current.scene);
       }
       renderer.dispose();
     };
-  }, [current, height, onCanvasReady, vrmUrl, width]);
+  }, [height, onCanvasReady, vrmUrl, width]);
 
   return (
     <video ref={videoRef} style={{ display: "none" }}></video>
