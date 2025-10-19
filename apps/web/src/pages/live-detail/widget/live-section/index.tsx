@@ -9,6 +9,7 @@ import {
   SponsorNotification,
 } from "@/pages/live-detail/widget/live-section/widget";
 import { useSponsorNotification } from "./model/use-sponsor-notification";
+import { Loading } from "@/widgets/fall-back";
 
 
 export const LiveSection = () => {
@@ -19,14 +20,14 @@ export const LiveSection = () => {
 
   const { streamData, isLoading } = useStreamDetail(streamId);
   const isMobile = useIsMobile();
-  const { sponsorNotification, showSponsorNotification, hideSponsorNotification } = useSponsorNotification();
+  const { sponsorNotification } = useSponsorNotification();
 
   return (
     <S.LiveDetailContainer>
       {isMobile && <FaChevronLeft size={24} onClick={() => navigate("/")} />}
       <S.ContentWrapper>
         {isLoading ? (
-          <div>로딩중...</div>
+           <Loading />
         ) : streamData ? (
           <>
             <VideoPlayer streamUrl={streamData.url} isMobile={isMobile} />

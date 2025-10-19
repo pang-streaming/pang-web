@@ -1,22 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import * as S from "./style";
 import { ChargeButton } from "@/pages/charge/ui/charge-button";
 import { ChargeModal } from "@/pages/charge/widget/charge-modal";
 import styled from "styled-components";
+import { useQuery } from "@tanstack/react-query";
 import { fetchMyInfo } from "@/entities/user/api/api";
 
 export const MyPungSection = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [cash, setCash] = useState(0)
-  
-  
-  useEffect(()=> {
-    const fetchPung = async () => {
-      const result = await fetchMyInfo()
-      setCash(result.data.cash)
-    }  
-    fetchPung()
-  },[])
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const { data } = useQuery({
+    queryKey: ["myInfo"],
+    queryFn: fetchMyInfo,
+    staleTime: 1000 * 60,
+    refetchOnWindowFocus: false,
+  });
+  const cash = data?.data?.cash ?? 0;
 
   const handleChargeClick = () => {
     setIsModalOpen(true);

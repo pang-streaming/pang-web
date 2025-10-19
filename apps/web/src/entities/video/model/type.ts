@@ -1,14 +1,14 @@
-export interface VideoItem {
-	streamId: string;
-	title: string;
-	url: string;
-	username: string;
-	nickname: string;
-	profileImage?: string;
-}
+// export interface VideoItem {
+// 	streamId: string;
+// 	title: string;
+// 	url: string;
+// 	username: string;
+// 	nickname: string;
+// 	profileImage?: string;
+// }
 
 export interface VideoListProps {
-	videos: VideoItem[];
+	videos: IStreamDataResponse[];
 	maxColumns?: number;
 }
 

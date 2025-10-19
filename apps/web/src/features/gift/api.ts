@@ -11,3 +11,9 @@ export const sendGift = async (
     });
     return res.data;
   };
+
+
+  export const fetchGift = async (): Promise<GiftResponse> => {
+    const res = await api.get('/market/gifts');
+    return res.data;
+  }

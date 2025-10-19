@@ -97,5 +97,5 @@ const HeaderContainer = styled.header`
 	align-items: center;
 	justify-content: space-between;
 	z-index: 10;
-	
+	user-select: none;
 `;

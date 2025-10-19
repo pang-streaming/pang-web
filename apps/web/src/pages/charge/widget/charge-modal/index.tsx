@@ -5,12 +5,13 @@ import { useState } from "react";
 import { paymentApi } from "@/entities/payment/api";
 
 interface ChargeModalProps {
-  initialType?: "pung-charge" | "payment-choice" | "payment-add";
+  initialType?: "pung-charge" | "payment-choice" | "payment-add" | "auto-charge";
+  chargeType?: "mypung" | "autochargepung";
   onClose?: () => void;
 }
 
-export const ChargeModal = ({ initialType = "pung-charge", onClose }: ChargeModalProps) => {
-  const [currentType, setCurrentType] = useState<"pung-charge" | "payment-choice" | "payment-add">(initialType);
+export const ChargeModal = ({ initialType = "pung-charge", chargeType = "mypung", onClose }: ChargeModalProps) => {
+  const [currentType, setCurrentType] = useState<"pung-charge" | "payment-choice" | "payment-add" | "auto-charge">(initialType);
   const [pungAmount, setPungAmount] = useState(1000);
   const [cardRefreshTrigger, setCardRefreshTrigger] = useState(0);
 
@@ -58,14 +59,18 @@ export const ChargeModal = ({ initialType = "pung-charge", onClose }: ChargeModa
   return (
     <S.Container onClick={(e) => e.stopPropagation()}>
       <Header onClose={onClose}>
-        {currentType === "pung-charge"
+        {currentType === "auto-charge"
+          ? "펑 자동충전"
+          : currentType === "pung-charge"
           ? "펑 충전하기"
           : currentType === "payment-choice"
             ? "결제수단 선택"
             : "결제수단 추가"}
       </Header>
       <S.Content>
-        {currentType === "pung-charge" ? (
+        {currentType === "auto-charge" ? (
+          <C.AutoCharge onClose={onClose} />
+        ) : currentType === "pung-charge" ? (
           <C.PungCharge pungAmount={pungAmount} onPungChange={handlePungChange} toPaymentChoice={handleToPaymentChoice} />
         ) : currentType === "payment-choice" ? (
           <C.PaymentChoice pungAmount={pungAmount} toPaymentAdd={handleToPaymentAdd} onBackToPungCharge={handleBackToPungCharge} onCardAdded={handleCardAdded} cardRefreshTrigger={cardRefreshTrigger} onCharge={handleCharge} />

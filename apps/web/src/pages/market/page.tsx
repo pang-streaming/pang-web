@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import * as S from "./style";
 import { VirtualModelSection } from "./widget/market-section/widget/virtual-model-section";
 import { MarketSection } from "./widget/market-section";
-import { Divider } from "../market-detail/ui/divider";
+import { Divider } from "./page/market-detail/ui/divider";
 import { MarketCategorySection } from "./widget/market-section/widget/market-category-section";
 import { PopularModelStore } from "./widget/market-section/widget/popular-model-store";
 import { MainNoticeSlide } from "./widget/main-notice-slide";
@@ -19,10 +19,7 @@ export const Market = () => {
         <VirtualModelSection />
       </MarketSection>
       <Divider verticalPadding={34} />
-      <MarketSection title="인기 3D 모델 스토어">
-        <PopularModelStore />
-      </MarketSection>
-      <MarketSection title="인기 마켓">
+      <MarketSection title="인기 스토어">
         <PopularModelStore />
       </MarketSection>
       <Divider verticalPadding={34} />

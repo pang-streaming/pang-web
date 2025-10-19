@@ -61,7 +61,7 @@ export const VideoListContainer = styled.div`
     }
 `;
 
-export const EmptyStateContainer = styled.div`
+export const ErrorStateContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -70,14 +70,14 @@ export const EmptyStateContainer = styled.div`
   min-height: 400px;
 `;
 
-export const EmptyStateTitle = styled.h2`
+export const ErrorStateTitle = styled.h2`
   font-size: ${({ theme }) => theme.font.xxLarge};
   font-weight: 600;
   color: ${({ theme }) => theme.colors.text.normal};
   margin-bottom: 12px;
 `;
 
-export const EmptyStateMessage = styled.p`
+export const ErrorStateMessage = styled.p`
   font-size: ${({ theme }) => theme.font.large};
   color: ${({ theme }) => theme.colors.text.placeholder};
   margin: 0;

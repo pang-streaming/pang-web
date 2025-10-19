@@ -2,25 +2,23 @@ import styled from "styled-components";
 import charge from "@/app/assets/images/charge.svg";
 import { ChargeButton } from "../../ui/charge-button";
 import { ChargeModal } from "../charge-modal";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { fetchMyInfo } from "@/entities/user/api/api";
 
 interface ChargeBoxProps {
-  type: "mypung" | "chargepung";
+  type: "mypung" | "autochargepung";
 }
 
 export const ChargeBox = ({ type }: ChargeBoxProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const [cash, setCash] = useState(0);
-
-  useEffect(() => {
-    const fetchPung = async () => {
-      const result = await fetchMyInfo();
-      setCash(result.data.cash);
-    };
-    fetchPung();
-  }, []);
+  const { data } = useQuery({
+    queryKey: ["myInfo"],
+    queryFn: fetchMyInfo,
+    staleTime: 1000 * 60,
+    refetchOnWindowFocus: false,
+  });
+  const cash = data?.data?.cash ?? 0;
 
   const handleChargeClick = () => {
     setIsModalOpen(true);
@@ -75,7 +73,11 @@ export const ChargeBox = ({ type }: ChargeBoxProps) => {
 
       {isModalOpen && (
         <ModalOverlay onClick={handleCloseModal}>
-          <ChargeModal initialType="pung-charge" onClose={handleCloseModal} />
+          <ChargeModal 
+            initialType={type === "mypung" ? "pung-charge" : "auto-charge"} 
+            chargeType={type}
+            onClose={handleCloseModal} 
+          />
         </ModalOverlay>
       )}
     </>

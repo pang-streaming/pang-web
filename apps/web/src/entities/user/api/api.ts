@@ -1,6 +1,6 @@
 import api from "@/api/api";
 import type { UserResponse } from "../model/type";
-
+import { OtherUser, OtherUserResponse } from "@/pages/profile/model/other-user";
 
 export const fetchMyInfo = async (): Promise<UserResponse> => {
   const res = await api.get("/user/me");
@@ -9,10 +9,24 @@ export const fetchMyInfo = async (): Promise<UserResponse> => {
   return data;
 };
 
+
+export const uploadImage = async (file: File) => {
+  const formData = new FormData();
+  formData.append("image", file); 
+
+  const res = await api.post("/post/image", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
+  return res.data;
+};
+
 export const updateMyInfo = async (
-  nickname: string,
-  age: string,
-  gender: string,
+  nickname?: string,
+  age?: string,
+  gender?: string,
   profileImage?: string,
   bannerImage?: string,
   description?: string
@@ -23,8 +37,19 @@ export const updateMyInfo = async (
     gender,
     profileImage,
     bannerImage,
-    description
+    description,
   };
   const res = await api.patch("/user", data);
+  return res.data;
+};
+
+export const deleteUser = async () => {
+  return (await api.delete("/user")).data;
+};
+
+
+
+export const fetchOtherUserInfo = async ({ username }: { username: string }): Promise<OtherUserResponse> => {
+  const res = await api.get(`/user/${username}`);
   return res.data;
 };

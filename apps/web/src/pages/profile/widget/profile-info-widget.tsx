@@ -1,6 +1,8 @@
 import styled from "styled-components";
+import { useUsernameToInfo } from "../hook/useProfile";
 
 export const ProfileInfoWidget = () => {
+	// const { data: userInfo, isLoading, error } = useUsernameToInfo();
 	return (
 		<ProfileInfoContainer>
 			<InfoContainer>
