@@ -25,10 +25,20 @@ export const Header = ({ onClickMenu, type }: HeaderProps) => {
   const token = localStorage.getItem("accessToken");
   const isLoggedIn = token == null;
 
+  // 타입에 따라 이동할 경로
+  const handleMoveButtonClick = () => {
+    if (type === "user") {
+      // 유저에서 스트리머 페이지로 이동 (포트번호 다름)
+      window.location.href = "http://localhost:5173/streaming"; 
+    } else {
+      // 스트리머에서 유저 페이지로 이동
+      window.location.href = " http://localhost:5174"; 
+    }
+  };
+
   return (
     <HeaderContainer>
       <LogoWrapper>
-        {/* 스트리머 타입이 아닐 때만 메뉴 아이콘 렌더링 */}
         {type !== "streamer" && (
           <SidebarToggleButton size={28} onClick={onClickMenu} />
         )}
@@ -36,7 +46,7 @@ export const Header = ({ onClickMenu, type }: HeaderProps) => {
       </LogoWrapper>
       {type === "user" && <SearchBar />}
       <ButtonWrapper>
-        <HeaderButton Icon={MoveButton} />
+        <HeaderButton Icon={MoveButton} onClick={handleMoveButtonClick} />
         <HeaderButton Icon={DarkLightModeIcon} onClick={toggleTheme} />
         <LoginButton isLoggedIn={isLoggedIn} />
       </ButtonWrapper>
