@@ -29,7 +29,7 @@ export const useVrmScreen = (canvasSize: CanvasSize, vrmUrl: string | null, isCa
       width={canvasSize.width}
       height={canvasSize.height}
     />
-  ), [vrmUrl, isCameraEnabled, onCanvasReady, isVisible, canvasSize]);
+  ), [selectedDevice, vrmUrl, isCameraEnabled, isVisible, onCanvasReady, canvasSize.width, canvasSize.height]);
 
   const toggleVrmVisibility = () => {
     setIsVisible(prev => !prev);

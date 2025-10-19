@@ -44,8 +44,6 @@ export const useScreenManagement = (
 			video.muted = true;
 			video.playsInline = true;
 			
-			// const audioNodes = audioManager.createAudioNodes(stream);
-			
 			await new Promise<void>((resolve) => {
 				video.onloadedmetadata = () => {
 					video.play()

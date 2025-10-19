@@ -5,7 +5,6 @@ import {LiveCanvas} from "@/features/canvas/ui/live-canvas";
 import {CanvasSize, Screen} from "@/features/canvas/constants/canvas-constants";
 import {VscDebugStart} from "react-icons/vsc";
 import { useWhipBroadcast } from "@/features/whip/useWhipBroadcast";
-import {FaStreetView} from "react-icons/fa";
 import {useVrmScreen} from "@/features/vrm/hooks/useVrmScreen";
 
 interface VideoProps {
@@ -25,10 +24,10 @@ export const Video = ({ screens, setScreens, containerRef, canvasSize, audios, v
 	const { status, startStreaming, stopStreaming } = useWhipBroadcast(
 		canvasRef,
 		{
-      whipUrl: 'http://13.209.69.28:9000/rtc/v1/whip/?app=live&stream=tester',
+      whipUrl: 'https://whip.vdo.ninja',
       bitrate: 8000000,
       fps: 60,
-      // bearerToken: 'daedyu'
+      bearerToken: 'daedyu'
     },
 		audios
 	);

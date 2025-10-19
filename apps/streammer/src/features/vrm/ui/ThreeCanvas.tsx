@@ -287,8 +287,8 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled, selectedDevice, onCanvasReady, i
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(30.0, width / height, 0.1, 20.0);
     camera.position.set(0.0, 1.4, 1.5);
-
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+		
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
     renderer.setSize(width, height);
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
