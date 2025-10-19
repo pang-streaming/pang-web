@@ -48,29 +48,4 @@ export const userSidebarItems: SidebarItem[] = [
 	},
 ]
 
-export const streamerSidebarItems: SidebarItem[] = [
-	{
-		id: 'dashboard',
-		icon: <MdDashboard size={26}/>,
-		name: '대시보드',
-		path: '/dashboard'
-	},
-	{
-		id: "streaming",
-		icon: <FaTowerBroadcast size={26} />,
-		name: "스트리밍 관리",
-		path: "/streaming",
-	},
-	{
-		id: "revenue",
-		name: "수익관리",
-		path: "/revenue",
-		icon: <Budget/>,
-	},
-	{
-		id: "content",
-		name: "콘텐츠 관리",
-		path: "/content",
-		icon: <MdOutlinePermMedia size={26} />,
-	}
-]
+export const streamerSidebarItems: SidebarItem[] = [];

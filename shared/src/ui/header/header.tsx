@@ -3,7 +3,7 @@ import { IoMenu } from "react-icons/io5";
 import { SearchBar } from "./searchBar";
 import { PiMonitorBold, PiSunBold } from "react-icons/pi";
 import { HeaderButton } from "../buttons/headerButton";
-import { HiOutlineBell, HiOutlineMoon } from "react-icons/hi";
+import { HiOutlineMoon } from "react-icons/hi";
 import { FiVideo } from "react-icons/fi";
 import { useThemeStore } from "../../store/theme/themeStore";
 import { LoginButton } from "../buttons/loginButton";
@@ -17,31 +17,42 @@ interface HeaderProps {
 }
 
 export const Header = ({ onClickMenu, type }: HeaderProps) => {
-	const navigate = useNavigate();
-	const { mode, toggleTheme } = useThemeStore();
-	const DarkLightModeIcon = mode === "dark" ? PiSunBold : HiOutlineMoon;
-	const MoveButton = type === "user" ? FiVideo : PiMonitorBold;
+  const navigate = useNavigate();
+  const { mode, toggleTheme } = useThemeStore();
+  const DarkLightModeIcon = mode === "dark" ? PiSunBold : HiOutlineMoon;
+  const MoveButton = type === "user" ? FiVideo : PiMonitorBold;
 
-	const token = localStorage.getItem("accessToken");
-	const isLoggedIn = token == null;
+  const token = localStorage.getItem("accessToken");
+  const isLoggedIn = token == null;
 
+  // 타입에 따라 이동할 경로
+  const handleMoveButtonClick = () => {
+    if (type === "user") {
+      // 유저에서 스트리머 페이지로 이동 (포트번호 다름)
+      window.location.href = "http://localhost:5173/streaming"; 
+    } else {
+      // 스트리머에서 유저 페이지로 이동
+      window.location.href = " http://localhost:5174"; 
+    }
+  };
 
-	return (
-		<HeaderContainer>
-			<LogoWrapper>
-				<SidebarToggleButton size={28} onClick={onClickMenu}/>
-				<PangLogo type={type} onClick={() => navigate('/')} cursor="pointer"/>
-			</LogoWrapper>
-			{type === "user" && <SearchBar/>}
-			<ButtonWrapper>
-				<HeaderButton Icon={MoveButton}/>
-				<HeaderButton Icon={HiOutlineBell}/>
-				<HeaderButton Icon={DarkLightModeIcon} onClick={toggleTheme}/>
-				<LoginButton isLoggedIn={isLoggedIn}/>
-			</ButtonWrapper>
-		</HeaderContainer>
-	)
-}
+  return (
+    <HeaderContainer>
+      <LogoWrapper>
+        {type !== "streamer" && (
+          <SidebarToggleButton size={28} onClick={onClickMenu} />
+        )}
+        <PangLogo type={type} onClick={() => navigate("/")} cursor="pointer" />
+      </LogoWrapper>
+      {type === "user" && <SearchBar />}
+      <ButtonWrapper>
+        <HeaderButton Icon={MoveButton} onClick={handleMoveButtonClick} />
+        <HeaderButton Icon={DarkLightModeIcon} onClick={toggleTheme} />
+        <LoginButton isLoggedIn={isLoggedIn} />
+      </ButtonWrapper>
+    </HeaderContainer>
+  );
+};
 
 const LogoWrapper = styled.div`
 	display: flex;
@@ -54,25 +65,26 @@ const LogoWrapper = styled.div`
 `;
 
 const ButtonWrapper = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: 18px;
-`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+`;
 
 const SidebarToggleButton = styled(IoMenu)`
-    cursor: pointer;
-	padding: 6px;
-	border-radius: ${({ theme }) => theme.borders.large};
-    color: ${({ theme }) => theme.colors.button.active};
+  cursor: pointer;
+  padding: 6px;
+  border-radius: ${({ theme }) => theme.borders.large};
+  color: ${({ theme }) => theme.colors.button.active};
 
-	&:hover {
-	background-color: ${({ theme }) => theme.colors.hover.light};
-	}
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.hover.light};
+  }
 `;
 
 const HeaderContainer = styled.header`
+
 	position: fixed;
 	top: 0;
 	left: 0;

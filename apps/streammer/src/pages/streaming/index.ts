@@ -1,1 +1,1 @@
-export { default as StreamingPage } from './ui';
+export { default as streamingPage } from './ui';
