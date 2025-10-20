@@ -25,7 +25,7 @@ export const Charge = () => {
       <S.Container>
         <S.ChargeBoxRow>
           <ChargeBox type="mypung" />
-          <ChargeBox type="chargepung" />
+          <ChargeBox type="autochargepung" />
         </S.ChargeBoxRow>
         <SegmentButtonGroup 
           segments={segments} 

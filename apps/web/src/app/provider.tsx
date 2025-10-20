@@ -8,8 +8,6 @@ import { InitModal } from "@/widgets/init-modal/_index";
 import { useProvider } from "./hooks/useProvider";
 
 export const Provider = ({ children }: { children: ReactNode }) => {
-  const { user, isModalOpen, closeModal } = useProvider();
-
   return (
     <QueryClientProvider client={queryClient}>
       <CustomThemeProvider>
@@ -24,16 +22,25 @@ export const Provider = ({ children }: { children: ReactNode }) => {
           theme="colored"
         />
         <BrowserRouter>
-          {children}
-          {user && (
-            <InitModal
-              isOpen={isModalOpen}
-              onClose={closeModal}
-              username={user?.username}
-            />
-          )}
+          <ProviderContent>{children}</ProviderContent>
         </BrowserRouter>
       </CustomThemeProvider>
     </QueryClientProvider>
   );
 };
+
+function ProviderContent({ children }: { children: ReactNode }) {
+  const { user, isModalOpen, closeModal } = useProvider();
+  return (
+    <>
+      {children}
+      {user && (
+        <InitModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          username={user?.username}
+        />
+      )}
+    </>
+  );
+}

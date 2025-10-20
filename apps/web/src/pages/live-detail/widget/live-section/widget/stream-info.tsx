@@ -1,11 +1,10 @@
 import nomalProfile from "@/app/assets/images/normal_profile.svg";
-import { useFollow } from "@/features/follow/hooks/useFollow";
-import {IoHeart} from "react-icons/io5";
-import {IoMdHeartEmpty} from "react-icons/io";
 import styled from "styled-components";
 import {FollowButton} from "@/shared/ui/button/follow-button";
 import {useVideoCard} from "@/entities/video/hooks/controller/useVideoCard";
-import { useState, useEffect } from "react";
+import { useMyFollower, useFollowUser, useMyFollowing } from "@/features/follow/hooks/useFollow";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
+import { fetchMyInfo } from "@/entities/user/api/api";
 
 interface StreamInfoProps {
 	streamId: string;
@@ -15,31 +14,26 @@ interface StreamInfoProps {
 }
 
 export const StreamInfo = ({ streamId, username, title, nickname }: StreamInfoProps) => {
-  const { loading, getMyFollower, followUser } = useFollow();
-  const [followerCount, setFollowerCount] = useState(0);
-  const [isFollowing, setIsFollowing] = useState(false);
+  const { data: followerData, isLoading } = useMyFollower(username);
+  const queryClient = useQueryClient();
+  const { mutate: followMutate, isPending } = useFollowUser();
+  const followerCount = followerData?.data?.length ?? 0;
   const {handleOnClickProfile} = useVideoCard({streamId, username});
 
-  useEffect(() => {
-    const fetchFollowInfo = async () => {
-      const followerData = await getMyFollower(username);
-      if (followerData) {
-        setFollowerCount(followerData.data.length);
-      }
-    };
-    fetchFollowInfo();
-  }, [username, getMyFollower]);
+  const { data: myInfo } = useQuery({
+    queryKey: ["myInfo"],
+    queryFn: fetchMyInfo,
+  });
 
-  const toggleFollow = async () => {
-    const success = await followUser(username);
-    if (success) {
-      setIsFollowing(prev => !prev);
-      console.log("succes")
-      const followerData = await getMyFollower(username);
-      if (followerData) {
-        setFollowerCount(followerData.data.length);
-      }
-    }
+  const { data: myFollowingData } = useMyFollowing(myInfo?.data?.username);
+
+  const userInfo = queryClient.getQueryData(["otherUserInfo", username]);
+  const isFollowingFromAPI = (userInfo as any)?.data?.isFollowed ?? false;
+  const isFollowingFromList = myFollowingData?.data?.some(following => following.username === username) ?? false;
+  const isFollowing = isFollowingFromAPI || isFollowingFromList;
+
+  const toggleFollow = () => {
+    followMutate({ username, isFollowing });
   };
 	
   return (
@@ -53,7 +47,7 @@ export const StreamInfo = ({ streamId, username, title, nickname }: StreamInfoPr
             <FollowerCount>팔로워 {followerCount.toLocaleString()}명</FollowerCount>
           </UserInfoWrapper>
         </UserContainer>
-        <FollowButton isFollowing={isFollowing} onClick={toggleFollow} disabled={loading}/>
+        <FollowButton isFollowing={isFollowing} onClick={toggleFollow} disabled={isLoading || isPending}/>
       </StreamerInfoContainer>
     </StreamInfoContainer>
   );

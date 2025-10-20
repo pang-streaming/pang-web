@@ -1,37 +1,38 @@
 import React from "react";
 import styled from "styled-components";
-import thumbnail from "@/app/assets/thumbnail.png";
-import mochi from '@/app/assets/mochi.png'
-
-
-export interface PopularModelStoreElemProps {
-  profileImage: string;
-  bgImage: string;
-  storeName: string;
-  description: string;
-}
+import { useNavigate } from "react-router-dom";
+import { Store } from "@/entities/store/type";
 
 export const PopularModelStoreElem = ({
-  profileImage,
-  bgImage,
-  storeName,
+  id,
+  name,
   description,
-}: PopularModelStoreElemProps) => {
+  profileImage,
+  bannerImage,
+}: Store) => {
+  const navigate = useNavigate();
+
+  const handleStore = () => {
+    navigate(`/store-detail/${id}`);
+  };
+
   return (
-    <Container>
-      <BackImage src={mochi} />
-      <ProfileImage src={thumbnail} />
+    <Container onClick={handleStore}>
+      <BackImage src={bannerImage} />
+      <ProfileImage src={profileImage} />
       <InfoSection>
-        <StoreName>{storeName}</StoreName>
+        <StoreName>{name}</StoreName>
         <Description>{description}</Description>
       </InfoSection>
     </Container>
   );
 };
+
+
 const Container = styled.div`
   width: 168px;
   height: 224px;
-  background-color: ${({theme}) => theme.colors.content.normal};
+  background-color: ${({ theme }) => theme.colors.content.normal};
   display: flex;
   flex-direction: column;
   border-radius: ${({ theme }) => theme.borders.large};
@@ -78,6 +79,7 @@ const StoreName = styled.span`
 `;
 
 const Description = styled.span`
+width: 90%;
   margin-top: 10px;
   font-size: ${({ theme }) => theme.font.small};
   font-weight: 400;

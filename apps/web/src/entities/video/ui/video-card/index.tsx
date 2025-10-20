@@ -2,7 +2,9 @@
 import * as S from "./style";
 import normalProfile from "@/app/assets/images/normal_profile.svg";
 import {useVideoCard} from "@/entities/video/hooks/controller/useVideoCard";
-import { VideoItem } from "../../model/type";
+import { IStreamDataResponse } from "../../model/type";
+import nullThumbnail from '@/app/assets/thumbnail.png'
+
 
 export const VideoCard = ({
   streamId,
@@ -11,13 +13,14 @@ export const VideoCard = ({
   username,
   nickname,
   profileImage,
-}: VideoItem) => {
+  thumbnail
+}: IStreamDataResponse) => {
 	const {handleOnClickVideoCard, handleOnClickProfile} = useVideoCard({streamId, username});
 
 	return (
 		<S.LiveCardContainer  onClick={handleOnClickVideoCard}>
 			<S.VideoContainer>
-				<S.Thumbnail src={url} alt={title} />
+				<S.Thumbnail src={thumbnail || nullThumbnail} alt={title} />
 			</S.VideoContainer>
 			<S.LiveInfo>
 				<S.ProfileImage src={profileImage || normalProfile} onClick={handleOnClickProfile} />

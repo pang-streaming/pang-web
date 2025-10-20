@@ -1,16 +1,5 @@
 import styled from "styled-components";
 
-export const CategoryBoxThumbnail = styled.div<{backgroundImage?: string}>`
-	width: 100%;
-	aspect-ratio: 41 / 56;
-	background-color: ${({theme}) => theme.colors.content.normal};
-	background-image: ${props => props.backgroundImage ? `url(${props.backgroundImage})` : 'none'};
-	background-size: cover;
-	background-position: center;
-	border-radius: ${({theme}) => theme.borders.xlarge};
-	margin-bottom: 10px;
-`;
-
 export const CategoryContainer = styled.div`
   aspect-ratio: 41/67;
   border-radius: ${({ theme }) => theme.borders.xlarge};
@@ -19,9 +8,9 @@ export const CategoryContainer = styled.div`
   flex-direction: column;
   box-sizing: border-box;
   border: 3px solid transparent;
+  transition: 0.3s scale;
   &:hover {
-    border-color: ${({ theme }) => theme.colors.primary.normal};
-    cursor: pointer;
+    scale: 0.97;
   }
 `;
 
@@ -31,8 +20,33 @@ export const CategoryInfo = styled.div`
 	gap: 10px;
 `;
 
+export const CategoryBoxThumbnailWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  aspect-ratio: 41 / 56;
+  border-radius: ${({ theme }) => theme.borders.xlarge};
+  overflow: hidden;
+  border: 3px solid transparent;
+  margin-bottom: 10px;
+  transition: 0.3s border-color;
+  &:hover {
+    
+    border-color: ${({ theme }) => theme.colors.primary.normal};
+    cursor: pointer;
+  }
+`;
+
+export const CategoryBoxThumbnail = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+`;
+
 export const CategoryChip = styled.div`
-  margin: 10px;
+  position: absolute;
+  top: 10px;
+  left: 10px;
   width: 59px;
   height: 20px;
   background-color: ${({ theme }) => theme.colors.secondary.normal};
@@ -41,6 +55,7 @@ export const CategoryChip = styled.div`
   justify-content: center;
   align-items: center;
 `;
+
 
 export const ChipCountText = styled.span`
   font-size: 10px;

@@ -1,22 +1,16 @@
 
 import React from 'react'
 import styled from 'styled-components';
-import thumbnail from '@/app/assets/notice-thumbnail.png'
+import { TopFiveProduct } from '@/pages/market/model/product';
 
 
-export interface MainNoticeElemProps {
-    bgImage: string;
-    title: string;
-    subTitle: string;
-}
-
-export const MainNoticeElem = ({bgImage,title,subTitle,}:MainNoticeElemProps) => {
+export const MainNoticeElem = (product :TopFiveProduct) => {
   return (
     <Container>
-        <BackImage src={thumbnail  /* bgImage */} />
+        <BackImage src={product.image}/>
         <InfoSection>
-            <Title>{title}</Title>
-            <SubTitle>{subTitle}</SubTitle>
+            <Title>{product.name}</Title>
+            <SubTitle>혹시라도 아직 구매하지 못하신 분들을 위해 안내드립니다!</SubTitle>
         </InfoSection>
     </Container>
   )

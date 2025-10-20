@@ -1,58 +1,41 @@
-import { useState, useCallback } from "react";
-import { fetchMyFollowing, fetchMyFollower, followingOtherUser } from "../api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchMyFollowing, fetchMyFollower, followingOtherUser, unfollowOtherUser } from "../api";
 import type { FollowResponse } from "../model/type";
 
-export const useFollow = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+export const useMyFollowing = (username?: string) => {
+  return useQuery<FollowResponse>({
+    queryKey: ["myFollowing", username],
+    queryFn: () => fetchMyFollowing(username!),
+    enabled: !!username,
+    staleTime: 1000 * 60,
+    refetchOnWindowFocus: false,
+  });
+};
 
-  const getMyFollowing = useCallback(async (username: string): Promise<FollowResponse | null> => {
-    try {
-      setLoading(true);
-      setError(null);
-      const result = await fetchMyFollowing(username);
-      return result;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "팔로잉 목록을 불러오는데 실패했습니다.");
-      return null;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+export const useMyFollower = (username?: string) => {
+  return useQuery<FollowResponse>({
+    queryKey: ["myFollower", username],
+    queryFn: () => fetchMyFollower(username!),
+    enabled: !!username,
+    staleTime: 1000 * 60,
+    refetchOnWindowFocus: false,
+  });
+};
 
-  const getMyFollower = useCallback(async (username: string): Promise<FollowResponse | null> => {
-    try {
-      setLoading(true);
-      setError(null);
-      const result = await fetchMyFollower(username);
-      return result;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "팔로워 목록을 불러오는데 실패했습니다.");
-      return null;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  const followUser = useCallback(async (username: string): Promise<boolean> => {
-    try {
-      setLoading(true);
-      setError(null);
-      await followingOtherUser(username);
-      return true;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "팔로우에 실패했습니다.");
-      return false;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  return {
-    loading,
-    error,
-    getMyFollowing,
-    getMyFollower,
-    followUser,
-  };
+export const useFollowUser = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ username, isFollowing }: { username: string; isFollowing: boolean }) => 
+      isFollowing ? unfollowOtherUser(username) : followingOtherUser(username),
+    onSuccess: (_, variables) => {
+      // 모든 관련 쿼리 즉시 invalidate
+      queryClient.invalidateQueries({ queryKey: ["otherUserInfo", variables.username] });
+      queryClient.invalidateQueries({ queryKey: ["myFollowing"] });
+      queryClient.invalidateQueries({ queryKey: ["myFollower"] });
+      queryClient.invalidateQueries({ queryKey: ["following"] });
+    },
+    onError: (err) => {
+      console.error("팔로우 처리 중 오류가 발생했습니다:", err);
+    },
+  });
 };

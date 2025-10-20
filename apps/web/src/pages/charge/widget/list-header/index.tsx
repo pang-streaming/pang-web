@@ -1,6 +1,8 @@
-import { useTransaction } from "@/entities/transaction/hooks/useTransaction";
+import { useTransaction, usePurchase } from "@/entities/transaction/hooks/useTransaction";
 import styled from "styled-components";
-import { Transaction, BalanceData } from "@/entities/transaction/model/type";
+import { Transaction, BalanceData, PurchaseHistory } from "@/entities/transaction/model/type";
+import { TransactionSkeleton } from "@/shared/ui/skeleton";
+import { ErrorScreen } from "@/shared/ui/error-screen";
 
 interface ListHeaderProps {
   segmentType: string;
@@ -8,77 +10,130 @@ interface ListHeaderProps {
 
 export const ListHeader = ({ segmentType }: ListHeaderProps) => {
   const isUseSegment = segmentType === "use";
-  const { loading, error, transaction } = useTransaction();
+  const { data, isError, isLoading, error } = useTransaction();
+  const { data: purchaseData, isLoading: isPurchaseLoading, error: purchaseError } = usePurchase();
 
-  const transactionList =
-    (transaction as unknown as BalanceData)?.transactions?.filter(
-      (tx: Transaction) =>
-        isUseSegment ? tx.type === "USE" : tx.type === "CHARGE"
-    ) || [];
+  const transactionList = !isUseSegment
+    ? data?.data?.transactions?.filter((tx: Transaction) => tx.type === "CHARGE") || []
+    : [];
 
-  if (loading) {
-    return (
-      <Container>
-        <LoadingMessage>거래 내역을 불러오는 중...</LoadingMessage>
-      </Container>
-    );
-  }
+  const purchaseList = isUseSegment ? (purchaseData?.data || []) : [];
 
-  if (error) {
-    return (
-      <Container>
-        <ErrorMessage>오류가 발생했습니다: {error.message}</ErrorMessage>
-      </Container>
-    );
-  }
+  if (isUseSegment) {
+    if (isPurchaseLoading) {
+      return (
+        <div>
+          <TransactionSkeleton  />
+        </div>
+      );
+    }
 
-  if (transactionList.length === 0) {
-    return (
-      <Container>
-        <EmptyMessage>
-          {isUseSegment ? "사용 내역이 없습니다" : "충전 내역이 없습니다"}
-        </EmptyMessage>
-      </Container>
-    );
+    if (purchaseError) {
+      return (
+        <ErrorScreen error={String(purchaseError)}/>
+      );
+    }
+
+    if (purchaseList.length === 0) {
+      return (
+        <Container>
+          <EmptyMessage>사용 내역이 없습니다</EmptyMessage>
+        </Container>
+      );
+    }
+  } else {
+    if (isLoading) {
+      return (
+        <div>
+          <TransactionSkeleton  />
+        </div>
+      );
+    }
+
+    if (error) {
+      return (
+        <ErrorScreen error={String(error)}/>
+      );
+    }
+
+    if (transactionList.length === 0) {
+      return (
+        <Container>
+          <EmptyMessage>충전 내역이 없습니다</EmptyMessage>
+        </Container>
+      );
+    }
   }
 
   return (
     <TransactionContainer>
-      <HeaderContainer>
-        <HeaderItem $ratio={2}>
-          {isUseSegment ? "사용일시" : "충전일시"}
-        </HeaderItem>
-        <HeaderItem $ratio={1}>
-          {isUseSegment ? "사용수량" : "충전수량"}
-        </HeaderItem>
-        <HeaderItem $ratio={1}>
-          {isUseSegment ? "사용내용" : "충전내용"}
-        </HeaderItem>
-        <HeaderItem $ratio={2}>
-          {isUseSegment ? "사용채널" : "충전채널"}
-        </HeaderItem>
-        <HeaderItem $ratio={3}>
-          {isUseSegment ? "후원메시지" : "충전메시지"}
-        </HeaderItem>
-      </HeaderContainer>
+      {isUseSegment ? (
+        <>
+          <HeaderContainer>
+            <HeaderItem $ratio={2}>구매일시</HeaderItem>
+            <HeaderItem $ratio={1}>구매수량</HeaderItem>
+            <HeaderItem $ratio={1}>사용내용</HeaderItem>
+            <HeaderItem $ratio={2}>상품명</HeaderItem>
+            <HeaderItem $ratio={3}>배송상태</HeaderItem>
+          </HeaderContainer>
 
-      {transactionList.map((tx: Transaction) => (
-        <TransactionRow key={tx.id}>
-          <TransactionItem $ratio={2}>
-            {new Date(tx.createdAt).toLocaleString()}
-          </TransactionItem>
-          <TransactionItem $ratio={1}>
-            {tx.amount.toLocaleString()} 펑
-          </TransactionItem>
-          <TransactionItem $ratio={1}>
-            {tx.type === "USE" ? "사용" : "충전"}
-          </TransactionItem>
-          <TransactionItem $ratio={2}>{tx.description || "-"}</TransactionItem>
-          <TransactionItem $ratio={3}>{tx.description || "-"}</TransactionItem>
-        </TransactionRow>
-      ))}
+          {purchaseList.map((purchase: PurchaseHistory) => (
+            <TransactionRow key={purchase.purchaseId}>
+              <TransactionItem $ratio={2}>
+                {new Date(purchase.createdAt).toLocaleString()}
+              </TransactionItem>
+              <TransactionItem $ratio={1}>
+                {purchase.price.toLocaleString()} 펑
+              </TransactionItem>
+              <TransactionItem $ratio={1}>
+                구매
+              </TransactionItem>
+              <TransactionItem $ratio={2}>{purchase.productName}</TransactionItem>
+              <TransactionItem $ratio={3}>
+                {getDeliveryStatusText(purchase.deliveryStatus)}
+              </TransactionItem>
+            </TransactionRow>
+          ))}
+        </>
+      ) : (
+        <>
+          <HeaderContainer>
+            <HeaderItem $ratio={2}>충전일시</HeaderItem>
+            <HeaderItem $ratio={1}>충전수량</HeaderItem>
+            <HeaderItem $ratio={1}>충전내용</HeaderItem>
+            <HeaderItem $ratio={2}>충전채널</HeaderItem>
+            <HeaderItem $ratio={3}>충전메시지</HeaderItem>
+          </HeaderContainer>
+
+          {transactionList.map((tx: Transaction) => (
+            <TransactionRow key={tx.id}>
+              <TransactionItem $ratio={2}>
+                {new Date(tx.createdAt).toLocaleString()}
+              </TransactionItem>
+              <TransactionItem $ratio={1}>
+                {tx.amount.toLocaleString()} 펑
+              </TransactionItem>
+              <TransactionItem $ratio={1}>
+                충전
+              </TransactionItem>
+              <TransactionItem $ratio={2}>{tx.description || "-"}</TransactionItem>
+              <TransactionItem $ratio={3}>{tx.description || "-"}</TransactionItem>
+            </TransactionRow>
+          ))}
+        </>
+      )}
     </TransactionContainer>
   );
+};
+
+const getDeliveryStatusText = (status: string) => {
+  const statusMap: Record<string, string> = {
+    PREPARING: "배송 준비중",
+    SHIPPING: "배송중",
+    DELIVERED: "배송 완료",
+    CANCELED: "취소됨",
+  };
+  return statusMap[status] || status;
 };
 
 const Container = styled.div`
@@ -115,7 +170,7 @@ const TransactionRow = styled.div`
   box-sizing: border-box;
   align-items: center;
   background-color: ${({ theme }) => theme.colors.background.light};
-  border-radius: ${({theme}) => theme.borders.medium};
+  border-radius: ${({ theme }) => theme.borders.medium};
 
   &:hover {
     /* background-color: ${({ theme }) => theme.colors.hover.light}; */

@@ -100,4 +100,6 @@ const SidebarContainer = styled.aside<{isSidebarOpen: boolean}>`
     display: flex;
     flex-direction: column;
     z-index: ${({isSidebarOpen}) => isSidebarOpen ? 20 : "auto"};
+	user-select: none;
+
 `

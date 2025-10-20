@@ -16,3 +16,6 @@ export * from "./theme/global";
 
 //modals
 export * from "./modals/loginModal";
+
+//chatting
+export { ChattingSection } from "./chatting-section";

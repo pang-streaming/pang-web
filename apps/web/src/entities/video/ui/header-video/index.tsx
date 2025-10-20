@@ -1,12 +1,12 @@
 import styled from "styled-components";
-import { VideoItem } from "@/entities/video/model/type";
 import { useState } from "react";
 import normalProfile from "@/app/assets/images/normal_profile.svg";
 import { useVideoCard } from "@/entities/video/hooks/controller/useVideoCard";
 import thumbnail from "@/app/assets/thumbnail.png";
+import { IStreamDataResponse } from "../../model/type";
 
 interface HeaderVideoProps {
-  videos: VideoItem[];
+  videos: IStreamDataResponse[];
   hideProfile?: boolean;
 }
 
@@ -22,7 +22,7 @@ export const HeaderVideo = ({ videos, hideProfile }: HeaderVideoProps) => {
     return null;
   }
 
-  const { title, nickname, username, streamId, profileImage, url } =
+  const { title, nickname, username, streamId, profileImage, url,  } =
     currentVideo;
   const { handleOnClickVideoCard, handleOnClickProfile } = useVideoCard({
     streamId,
@@ -32,7 +32,7 @@ export const HeaderVideo = ({ videos, hideProfile }: HeaderVideoProps) => {
   return (
     <HeaderVideoContainer
       onClick={handleOnClickVideoCard}
-      backgroundImage={url}
+      backgroundImage={thumbnail || url}
     >
       <LiveCardContainer>
         <LiveContainer>
