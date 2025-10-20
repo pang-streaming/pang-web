@@ -182,7 +182,7 @@ export const useWhipBroadcast = (
       stopStreaming();
       throw error;
     }
-  }, [config, canvasRef, setCodecPreferences, mixedAudioTrack]);
+  }, [canvasRef, config, mixedAudioTrack, setCodecPreferences]);
 
   const stopStreaming = useCallback(() => {
     if (mediaStream.current) {

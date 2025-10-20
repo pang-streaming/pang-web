@@ -1,9 +1,9 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef} from "react";
 import styled from "styled-components";
 import { AiOutlineEye, AiOutlineHeart } from "react-icons/ai";
 import {LiveCanvas} from "@/features/canvas/ui/live-canvas";
 import {CanvasSize, Screen} from "@/features/canvas/constants/canvas-constants";
-import {VscDebugStart} from "react-icons/vsc";
+import {VscDebugStart, VscDebugStop} from "react-icons/vsc";
 import { useWhipBroadcast } from "@/features/whip/useWhipBroadcast";
 import {useVrmScreen} from "@/features/vrm/hooks/useVrmScreen";
 
@@ -71,7 +71,6 @@ export const Video = ({
 		  setScreens(prev => prev.filter(s => s.id !== 999));
 		}
 	}, [vrmScreen, setScreens, isVTuberEnabled]);
-
 	return (
 		<>
 			{isVTuberEnabled && selectedDevice && <VrmRenderer />}
@@ -87,8 +86,8 @@ export const Video = ({
 							<AiOutlineHeart style={{ marginRight: "4px" }} />
 							{likes}
 						</StatItem>
-						<StartButton onClick={startStreaming} disabled={status.isStreaming}>
-							<VscDebugStart size={20}/>
+						<StartButton isStarted={status.isStreaming} onClick={status.isStreaming ? stopStreaming : startStreaming} disabled={status.iceState === 'checking'}>
+							{status.isStreaming ? <VscDebugStop size={20}/> : <VscDebugStart size={20}/>}
 						</StartButton>
 					</StatsContainer>
 				</TitleRow>
@@ -141,11 +140,11 @@ const StatItem = styled.span`
   color: ${({ theme }) => theme.colors.text.normal};
 `;
 
-const StartButton = styled.button`
+const StartButton = styled.button<{isStarted: boolean}>`
 	padding: 8px;
 	border-radius: ${({theme}) => theme.borders.small};
 	color: ${({theme}) => theme.colors.text.normal};
-	background-color: ${({theme}) => theme.colors.content.normal};
+	background-color: ${({theme, isStarted}) => isStarted ? theme.colors.primary.normal : theme.colors.content.normal};
 	cursor: pointer;
 	border: none;
 `

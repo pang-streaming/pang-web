@@ -113,7 +113,7 @@ const DashboardContainer = styled.div`
   display: flex;
   flex: 1;
   gap: 16px;
-  padding: 16px 16px 0 16px;
+  padding: 14px;
   overflow: hidden;
   min-height: 0;
 `;
@@ -128,8 +128,9 @@ const VideoWrapper = styled.div`
 
 const StreamSettingSection = styled.div`
   display: flex;
-  flex-direction: column;
-  padding: 0 16px 16px 16px;
+  flex-direction: row;
+	width: 100%;
+	box-sizing: border-box;
 `;
 
 const ChatSection = styled.div`
