@@ -3,6 +3,9 @@ import styled from "styled-components";
 import { VolumeMixer } from "./volumeMixer";
 import {useDragAndDrop} from "@/pages/streaming/hooks/useDragAndDrop";
 import {useAudioStore} from "@/features/audio/stores/useAudioStore";
+import { Screen } from "@/features/canvas/constants/canvas-constants";
+import { ScreenListItem } from "@/features/canvas/components/ScreenListItem";
+import { useScreenDragAndDrop } from "@/features/canvas/hooks/useScreenDragAndDrop";
 
 interface DragState {
   draggingIndex: number | null;
@@ -68,10 +71,17 @@ const SectionsRenderer = React.memo<{
 
 interface StreamProps {
 	onVideoAddButtonClick: () => void;
+  screens: Screen[];
+  setScreens: React.Dispatch<React.SetStateAction<Screen[]>>;
+  onRemoveScreen: (screenId: number) => void;
 }
 
-export const StreamSetting = ({ onVideoAddButtonClick }: StreamProps) => {
-  const [screenSections, setScreenSections] = useState<string[]>(["섹션1"]);
+export const StreamSetting = ({ 
+  onVideoAddButtonClick, 
+  screens, 
+  setScreens,
+  onRemoveScreen 
+}: StreamProps) => {
   const [audioSections, setAudioSections] = useState<string[]>(["구글"]);
 	const { addAudioTrack } = useAudioStore();
 	
@@ -89,20 +99,38 @@ export const StreamSetting = ({ onVideoAddButtonClick }: StreamProps) => {
 		}
 	};
 	
-  // Use custom hooks for drag and drop
-  const screenDragState = useDragAndDrop(screenSections, setScreenSections);
+  const screenDragState = useScreenDragAndDrop(screens, setScreens);
   const audioDragState = useDragAndDrop(audioSections, setAudioSections);
 
   return (
     <SettingContainer>
       <SectionSetContainer>
-	      <SectionsRenderer items={screenSections} dragState={screenDragState} />
+        <SectionTitle>화면 소스</SectionTitle>
+        <AddButton onClick={onVideoAddButtonClick}>+ 소스 추가</AddButton>
+        {screens.map((screen, index) => (
+          <ScreenListItem
+            key={screen.id}
+            screen={screen}
+            index={index}
+            isDragging={screenDragState.draggingIndex === index}
+            onDragStart={() => screenDragState.handleDragStart(index)}
+            onDragOver={(e) => {
+              e.preventDefault();
+              screenDragState.handleDragOver(index);
+            }}
+            onDragEnd={screenDragState.handleDragEnd}
+            onRemove={() => onRemoveScreen(screen.id)}
+          />
+        ))}
+        {screens.length === 0 && (
+          <EmptyMessage>소스를 추가해보세요</EmptyMessage>
+        )}
       </SectionSetContainer>
 
       <ScreenSetContainer>
-	      <button onClick={onVideoAddButtonClick}>+</button>
+        <SectionTitle>오디오 소스</SectionTitle>
 	      <SectionsRenderer items={audioSections} dragState={audioDragState} />
-	      <button onClick={addMicrophoneAudio}>마이크 추가</button>
+	      <AddButton onClick={addMicrophoneAudio}>+ 마이크 추가</AddButton>
       </ScreenSetContainer>
 
       <VolumeMixerContainer>
@@ -160,4 +188,38 @@ const DraggableSection = styled.div<{ isDragging?: boolean }>`
 const VolumeMixerContainer = styled(BaseSectionContainer)`
   flex: 1.5;
   overflow-y: auto;
+`;
+
+const SectionTitle = styled.h4`
+  margin: 0 0 12px 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: ${({ theme }) => theme.colors.text.normal};
+`;
+
+const AddButton = styled.button`
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  background-color: ${({ theme }) => theme.colors.content.dark};
+  color: ${({ theme }) => theme.colors.text.normal};
+  border: 2px dashed ${({ theme }) => theme.colors.border.normal};
+  border-radius: ${({ theme }) => theme.borders.large};
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.hover.normal};
+    border-color: ${({ theme }) => theme.colors.text.normal};
+  }
+`;
+
+const EmptyMessage = styled.div`
+  padding: 20px;
+  text-align: center;
+  color: ${({ theme }) => theme.colors.text.subtitle};
+  font-size: 0.9rem;
+  font-style: italic;
 `;
