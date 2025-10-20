@@ -34,9 +34,10 @@ export const Video = ({
 	const { status, startStreaming, stopStreaming } = useWhipBroadcast(
 		canvasRef,
 		{
-      whipUrl: 'http://15.164.229.169:9000/rtc/v1/whip/?app=live&stream=tester',
+      whipUrl: 'https://whip.vdo.ninja',
       bitrate: 8000000,
       fps: 60,
+			bearerToken: 'daedyu',
     }
 	);
 	

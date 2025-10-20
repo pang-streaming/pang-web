@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { SourceType } from '../hooks/useAddSourceModal';
 import { ScreenShareOption } from './ScreenShareOption';
 import { ImageOption } from './ImageOption';
-import { VTuberOption } from './VTuberOption';
+import { VTuberOption } from '@/features/modal/components/VtuberOption';
 import { Screen, CanvasSize } from '@/features/canvas/constants/canvas-constants';
 
 interface AddSourceModalProps {

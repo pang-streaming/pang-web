@@ -82,12 +82,22 @@ export const useWhipBroadcast = (
       console.log('Stream tracks:', {
 				audio: stream.getAudioTracks().length,
 	      video: stream.getVideoTracks().length,
-	      audioTrackDetails: stream.getAudioTracks().map(t => ({ id: t.id, enabled: t.enabled, readyState: t.readyState }))
+	      audioTrackDetails: stream.getAudioTracks().map(t => ({ id: t.id, enabled: t.enabled, readyState: t.readyState })),
+	      mixedAudioTrack: mixedAudioTrack ? { id: mixedAudioTrack.id, enabled: mixedAudioTrack.enabled, readyState: mixedAudioTrack.readyState } : null
       })
+			
 			// 오디오/비디오 트랙 추가
       const audioTrack = stream.getAudioTracks()[0];
       const videoTrack = stream.getVideoTracks()[0];
-	    audioSenderRef.current = pc.addTrack(audioTrack, stream);
+      
+      // 오디오 트랙이 있을 때만 추가
+      if (audioTrack) {
+        console.log('Adding audio track to peer connection:', audioTrack.id);
+	      audioSenderRef.current = pc.addTrack(audioTrack, stream);
+      } else {
+        console.warn('No audio track available to add to peer connection');
+      }
+      
       const videoSender = pc.addTrack(videoTrack, stream);
 
       // 비디오 인코딩 파라미터 설정

@@ -33,25 +33,20 @@ const StreamingPage: React.FC = () => {
 
   const handleRemoveScreen = (screenId: number) => {
     if (screenId === 999) {
-      // VTuber 제거
       setIsVTuberEnabled(false);
       setVrmUrl(null);
       setSelectedDevice(null);
     } else {
-      // 일반 스크린 제거
       setScreens((prev) => {
         const screen = prev.find(s => s.id === screenId);
         if (screen) {
-          // 스트림이 있는 경우 (화면 공유)
           if (screen.stream) {
-            // 오디오 트랙 제거
             const audioTrack = screen.stream.getAudioTracks()[0];
             if (audioTrack) {
               console.log(`Removing audio track for screen ${screenId}:`, audioTrack.id);
               removeAudioTrack(audioTrack.id);
             }
             
-            // 비디오 트랙 정리
             screen.stream.getVideoTracks().forEach(track => track.stop());
           }
         }

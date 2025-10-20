@@ -4,7 +4,7 @@ import {useAudioStore} from "@/features/audio/stores/useAudioStore";
 export const useAudioMixer = () => {
   const [mixedTrack, setMixedTrack] = useState<MediaStreamTrack | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
-  const destinationRef = useRef<MediaStreamDestination | null>(null);
+  const destinationRef = useRef<MediaStreamAudioDestinationNode | null>(null);
   const sourceNodesRef = useRef<Map<string, MediaStreamAudioSourceNode>>(new Map());
   const gainNodesRef = useRef<Map<string, GainNode>>(new Map());
   const silentSourceRef = useRef<AudioBufferSourceNode | null>(null);
@@ -28,6 +28,13 @@ export const useAudioMixer = () => {
     });
     audioContextRef.current = audioContext;
     
+    // AudioContext가 suspended 상태일 경우 resume
+    if (audioContext.state === 'suspended') {
+      audioContext.resume().then(() => {
+        console.log('AudioContext resumed');
+      });
+    }
+    
     const destination = audioContext.createMediaStreamDestination();
     destinationRef.current = destination;
     
@@ -36,7 +43,8 @@ export const useAudioMixer = () => {
     
     console.log('AudioContext initialized:', {
       sampleRate: audioContext.sampleRate,
-      state: audioContext.state
+      state: audioContext.state,
+      mixedTrack: mixed ? { id: mixed.id, enabled: mixed.enabled, readyState: mixed.readyState } : null
     });
     
     // cleanup: 컴포넌트 언마운트 시에만 정리
@@ -94,7 +102,11 @@ export const useAudioMixer = () => {
     // 새로운 트랙 추가
     tracks.forEach(track => {
       if (!existingTrackIds.has(track.id)) {
-        console.log(`Adding track: ${track.id}`);
+        console.log(`Adding track: ${track.id}`, {
+          enabled: track.enabled,
+          readyState: track.readyState,
+          label: track.label
+        });
         
         const source = audioContext.createMediaStreamSource(new MediaStream([track]));
         const gainNode = audioContext.createGain();
@@ -116,6 +128,11 @@ export const useAudioMixer = () => {
         
         sourceNodesRef.current.set(track.id, source);
         gainNodesRef.current.set(track.id, gainNode);
+        
+        console.log('Audio graph updated:', {
+          totalSources: sourceNodesRef.current.size,
+          destinationTrack: destination.stream.getAudioTracks()[0]?.id
+        });
       }
     });
     

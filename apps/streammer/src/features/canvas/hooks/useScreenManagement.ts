@@ -6,6 +6,7 @@ interface ScreenManagement {
 	screens: Screen[];
 	setScreens: React.Dispatch<React.SetStateAction<Screen[]>>;
 	addVideoScreen: () => Promise<void>;
+	addScreen: (screen: Screen) => void;
 	clearScreens: () => void;
 }
 
