@@ -9,7 +9,6 @@ import { useThemeStore } from "../../store/theme/themeStore";
 import { LoginButton } from "../buttons/loginButton";
 import { useNavigate } from "react-router-dom";
 import { PangLogo } from "../../asset/logo/pangLogo";
-import { useEffect } from "react";
 
 interface HeaderProps {
   onClickMenu: () => void;
@@ -25,14 +24,14 @@ export const Header = ({ onClickMenu, type }: HeaderProps) => {
   const token = localStorage.getItem("accessToken");
   const isLoggedIn = token == null;
 
-  // 타입에 따라 이동할 경로
   const handleMoveButtonClick = () => {
+    const userURL = process.env.VITE_USER_URL;
+    const streamerURL = process.env.VITE_STREAMER_URL;
+
     if (type === "user") {
-      // 유저에서 스트리머 페이지로 이동 (포트번호 다름)
-      window.location.href = "http://localhost:5173/streaming"; 
+      window.location.href = `${streamerURL}/streaming`;
     } else {
-      // 스트리머에서 유저 페이지로 이동
-      window.location.href = " http://localhost:5174"; 
+      window.location.href = `${userURL}`;
     }
   };
 
@@ -42,7 +41,15 @@ export const Header = ({ onClickMenu, type }: HeaderProps) => {
         {type !== "streamer" && (
           <SidebarToggleButton size={28} onClick={onClickMenu} />
         )}
-        <PangLogo type={type} onClick={() => navigate("/")} cursor="pointer" />
+        <PangLogo
+          type={type}
+          onClick={() => {
+            if (type !== "streamer") {
+              navigate("/");
+            }
+          }}
+          cursor={type !== "streamer" ? "pointer" : "default"}
+        />
       </LogoWrapper>
       {type === "user" && <SearchBar />}
       <ButtonWrapper>
@@ -55,13 +62,13 @@ export const Header = ({ onClickMenu, type }: HeaderProps) => {
 };
 
 const LogoWrapper = styled.div`
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: center;
-	gap: 24px;
-	margin-right: 36px;
-	z-index: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin-right: 36px;
+  z-index: auto;
 `;
 
 const ButtonWrapper = styled.div`
@@ -84,18 +91,16 @@ const SidebarToggleButton = styled(IoMenu)`
 `;
 
 const HeaderContainer = styled.header`
-
-	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	height: 66px;
-	padding: 0 22px;
-	background-color: ${({ theme }) => theme.colors.background.normal};
-	border-bottom: 1px solid ${({ theme }) => theme.colors.border.light};
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	z-index: 10;
-	
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 66px;
+  padding: 0 22px;
+  background-color: ${({ theme }) => theme.colors.background.normal};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border.light};
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 10;
 `;
