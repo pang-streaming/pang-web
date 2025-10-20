@@ -23,10 +23,10 @@ export const Video = ({ screens, setScreens, containerRef, canvasSize, viewers =
 	const { status, startStreaming, stopStreaming } = useWhipBroadcast(
 		canvasRef,
 		{
-      whipUrl: 'https://whip.vdo.ninja',
+      whipUrl: 'http://15.164.229.169:9000/rtc/v1/whip/?app=live&stream=tester',
       bitrate: 8000000,
       fps: 60,
-      bearerToken: 'daedyu'
+      // bearerToken: 'daedyu'
     }
 	);
 	const { screen: vrmScreen, VrmRenderer } = useVrmScreen(canvasSize, null, true, selectedDevice);
@@ -104,7 +104,6 @@ export const Video = ({ screens, setScreens, containerRef, canvasSize, viewers =
   );
 };
 
-/* Styled */
 const LiveContainer = styled.div`
   display: flex;
   flex-direction: column;
