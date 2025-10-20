@@ -9,7 +9,7 @@ import { useAddSourceModal } from '@/features/modal/hooks/useAddSourceModal';
 import { Screen } from '@/features/canvas/constants/canvas-constants';
 import { useAudioStore } from '@/features/audio/stores/useAudioStore';
 
-const StreamingPage: React.FC = () => {
+const StreamingPage = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasSize = useCanvasSize(containerRef);
   const { screens, setScreens, addVideoScreen, addScreen, clearScreens } = useScreenManagement(canvasSize);
@@ -58,33 +58,32 @@ const StreamingPage: React.FC = () => {
   return (
     <PageContainer>
       <DashboardContainer>
-        <VideoSection>
-          <Video
-            canvasSize={canvasSize}
-            containerRef={containerRef}
-            screens={screens}
-            setScreens={setScreens}
-            viewers={123}
-            likes={456}
-            vrmUrl={vrmUrl}
-            selectedDevice={selectedDevice}
-            isVTuberEnabled={isVTuberEnabled}
-          />
-        </VideoSection>
-
-        <StreamSettingSection>
-          <StreamSetting
-            onVideoAddButtonClick={modal.openModal}
-            screens={screens}
-            setScreens={setScreens}
-            onRemoveScreen={handleRemoveScreen}
-          />
-        </StreamSettingSection>
-
+	      <VideoWrapper ref={containerRef}>
+		      <Video
+			      canvasSize={canvasSize}
+			      containerRef={containerRef}
+			      screens={screens}
+			      setScreens={setScreens}
+			      viewers={123}
+			      likes={456}
+			      vrmUrl={vrmUrl}
+			      selectedDevice={selectedDevice}
+			      isVTuberEnabled={isVTuberEnabled}
+		      />
+	      </VideoWrapper>
         <ChatSection>
           <h2>채팅 영역</h2>
         </ChatSection>
       </DashboardContainer>
+      
+      <StreamSettingSection>
+	      <StreamSetting
+		      onVideoAddButtonClick={modal.openModal}
+		      screens={screens}
+		      setScreens={setScreens}
+		      onRemoveScreen={handleRemoveScreen}
+	      />
+      </StreamSettingSection>
 
       <AddSourceModal
         isOpen={modal.isOpen}
@@ -104,59 +103,40 @@ export default StreamingPage;
 
 const PageContainer = styled.div`
   width: 100%;
-  height: 100%;
-  margin-top: -2.6%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 `;
 
 const DashboardContainer = styled.div`
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  grid-template-rows: auto 1fr;
-  grid-template-areas:
-    "video chat"
-    "settings chat";
-  gap: 12px;
-  padding: 24px;
-
-  @media (max-width: ${({ theme }) => theme.breakpoint.tablet}) {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "video"
-      "settings"
-      "chat";
-  }
+  display: flex;
+  flex: 1;
+  gap: 16px;
+  padding: 16px 16px 0 16px;
+  overflow: hidden;
+  min-height: 0;
 `;
 
-const VideoSection = styled.div`
-  grid-area: video;
-  position: relative;
-  width: 100%;
-  padding-top: 56%;
-
-  & > * {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-  }
+const VideoWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
 `;
 
 const StreamSettingSection = styled.div`
-  grid-area: settings;
-  padding: 0 16px;
-  border-radius: 8px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  padding: 0 16px 16px 16px;
 `;
 
 const ChatSection = styled.div`
-  grid-area: chat;
-  padding: 16px;
-  overflow-y: auto;
-  max-height: 100%;
-  height: 100%;
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+  padding: 20px;
   background-color: ${({ theme }) => theme.colors.background.light};
+  border-radius: 16px;
 `;

@@ -14,14 +14,13 @@ export const useCanvasSize = (containerRef: RefObject<HTMLDivElement | null>): C
 
 			let width: number, height: number;
 			if (containerWidth / containerHeight > ASPECT_RATIO) {
-				height = containerHeight * 0.95;
+				height = containerHeight;
 				width = height * ASPECT_RATIO;
 			} else {
-				width = containerWidth * 0.95;
+				width = containerWidth;
 				height = width / ASPECT_RATIO;
 			}
 
-			// 크기가 실제로 변경되었을 때만 상태 업데이트
 			const newSize = { width, height };
 			if (lastSizeRef.current.width !== newSize.width || lastSizeRef.current.height !== newSize.height) {
 				lastSizeRef.current = newSize;
@@ -31,7 +30,6 @@ export const useCanvasSize = (containerRef: RefObject<HTMLDivElement | null>): C
 
 		updateCanvasSize();
 
-		// Resize 이벤트에 throttling 적용
 		let timeoutId: NodeJS.Timeout;
 		const throttledResize = () => {
 			clearTimeout(timeoutId);

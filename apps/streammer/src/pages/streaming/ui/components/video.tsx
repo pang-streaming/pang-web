@@ -87,7 +87,7 @@ export const Video = ({
 							<AiOutlineHeart style={{ marginRight: "4px" }} />
 							{likes}
 						</StatItem>
-						<StartButton onClick={startStreaming}>
+						<StartButton onClick={startStreaming} disabled={status.isStreaming}>
 							<VscDebugStart size={20}/>
 						</StartButton>
 					</StatsContainer>
@@ -105,20 +105,14 @@ const LiveContainer = styled.div`
   flex-direction: column;
   background-color: ${({ theme }) => theme.colors.background.light};
   border-radius: 16px;
-  padding: 3% 5%;
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
-  margin-bottom: -10%;
+  padding: 20px;
 `;
 
 const CanvasContainer = styled.div`
-position: relative;
-display: flex;
-justify-content: center;
-align-items: center;
-width: 100%;
-height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 `;
 
 const TitleRow = styled.div`

@@ -144,22 +144,21 @@ const SettingContainer = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
-  max-width: 1200px;
   border-radius: 14px;
   background-color: ${({theme}) => theme.colors.background.normal};
-  overflow: hidden;
-  gap: 10px;
-  padding: 16px;
+  gap: 12px;
+  padding: 12px;
+  min-height: 200px;
 `;
 
 const BaseSectionContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
-  gap: 8px;
   padding: 16px;
   border-radius: 12px;
   background-color: ${({theme}) => theme.colors.content.normal};
+  min-width: 0;
 `;
 
 const SectionSetContainer = styled(BaseSectionContainer)``;
@@ -173,25 +172,23 @@ const DraggableSection = styled.div<{ isDragging?: boolean }>`
   background-color: ${({ theme, isDragging}) => isDragging ? theme.colors.hover.normal : theme.colors.content.dark};
   border-radius: ${({theme}) => theme.borders.large};
   margin-bottom: 6px;
-  box-shadow: ${({ isDragging }) => (isDragging ? "0 8px 16px rgba(0,0,0,0.3)" : "none")};
 
-  font-size: 15px;
+  font-size: ${({theme}) => theme.font.medium};
   color: ${({theme}) => theme.colors.text.normal};
   font-weight: 500;
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.hover.normal};
+    background-color: ${({ theme }) => theme.colors.hover.light};
 	  cursor: grab;
   }
 `;
 
 const VolumeMixerContainer = styled(BaseSectionContainer)`
   flex: 1.5;
-  overflow-y: auto;
 `;
 
 const SectionTitle = styled.h4`
-  margin: 0 0 12px 0;
+  padding-left: 12px;
   font-size: 1rem;
   font-weight: 600;
   color: ${({ theme }) => theme.colors.text.normal};
