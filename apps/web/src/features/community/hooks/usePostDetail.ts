@@ -72,7 +72,6 @@ export const useComment = (postId: number) => {
     queryFn: async () => {
       const response = await fetchComments(postId);
       console.log("useComment - fetchComments 응답:", response);
-      // API 응답 구조가 { data: Comment[] } 형태일 수 있으므로 확인
       return response;
     },
     enabled: !!postId,
@@ -88,45 +87,10 @@ export const useSendComment = () => {
 
   return useMutation({
     mutationFn: sendComment,
-    onMutate: async (newComment) => {
-      await queryClient.cancelQueries({ queryKey: ["comments", newComment.postId] });
-
-      const previousComments = queryClient.getQueryData(["comments", newComment.postId]);
-
-      queryClient.setQueryData(["comments", newComment.postId], (old: any) => {
-        if (!old) return old;
-        
-        const tempComment = {
-          id: Date.now(),
-          content: newComment.content,
-          user: {
-            nickname: "나",
-            profileImageUrl: "",
-          },
-          createdAt: new Date().toISOString(),
-          modifiedAt: new Date().toISOString(),
-          parentId: newComment.parentId || null,
-          children: [],
-        };
-
-        // 서버 응답 구조: { status, message, data: [...], timestamp }
-        return {
-          ...old,
-          data: [...(old.data || []), tempComment],
-        };
-      });
-
-      return { previousComments };
-    },
     onSuccess: (_, variables) => {
-      // 서버에서 최신 데이터 가져오기
       queryClient.invalidateQueries({ queryKey: ["comments", variables.postId] });
     },
-    onError: (error, variables, context) => {
-      // 에러 발생 시 이전 상태로 롤백
-      if (context?.previousComments) {
-        queryClient.setQueryData(["comments", variables.postId], context.previousComments);
-      }
+    onError: (error) => {
       console.error("댓글 전송 실패", error);
     },
   });

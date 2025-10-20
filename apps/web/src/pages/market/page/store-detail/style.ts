@@ -28,6 +28,7 @@ export const ProfileImage = styled.img`
   border-radius: ${({ theme }) => theme.borders.maximum};
   border: 3px solid white;
   object-fit: cover;
+  cursor: pointer;
 `;
 
 export const StoreName = styled.h2`

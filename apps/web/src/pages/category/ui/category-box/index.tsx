@@ -1,22 +1,32 @@
-import { Category } from '../../model/category';
-import * as S from './style';
+import { Category } from "../../model/category";
+import * as S from "./style";
+import nullThumbnail from "@/app/assets/banner2.png";
+import { useState } from "react";
 
 interface CategoryBoxProps {
   category: Category;
 }
 
 export const CategoryBox = ({ category }: CategoryBoxProps) => {
+  const [imageSrc, setImageSrc] = useState<string>(
+    category.postImage && category.postImage.trim() !== ""
+      ? category.postImage
+      : nullThumbnail
+  );
 
-  const formattedChipCount = new Intl.NumberFormat().format(category.streamCount);
+  const handleImageError = () => {
+    setImageSrc(nullThumbnail);
+  };
 
   return (
     <S.CategoryContainer>
-      <S.CategoryBoxThumbnail backgroundImage={category.postImage}>
-        <S.CategoryChip>
-          <S.ChipCountText>•{formattedChipCount}</S.ChipCountText>
-        </S.CategoryChip>
-      </S.CategoryBoxThumbnail>
-
+      <S.CategoryBoxThumbnailWrapper>
+        <S.CategoryBoxThumbnail
+          src={imageSrc}
+          onError={handleImageError}
+          alt={category.name}
+        />
+      </S.CategoryBoxThumbnailWrapper>
       <S.CategoryInfo>
         <S.CategoryBoxTitle>{category.name}</S.CategoryBoxTitle>
         <S.LiveCountText>라이브 {category.streamCount}개</S.LiveCountText>
@@ -24,3 +34,5 @@ export const CategoryBox = ({ category }: CategoryBoxProps) => {
     </S.CategoryContainer>
   );
 };
+
+

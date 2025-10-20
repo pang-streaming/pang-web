@@ -125,7 +125,7 @@ export const LoginInputLeft = styled.div`
 
 export const SectionDivider = styled.div`
   width: 1px;
-  height: 30px;
+height: 100%;
   background-color: #737373;
 `;
 

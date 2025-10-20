@@ -1,8 +1,8 @@
-import { RefObject, useEffect, useRef } from "react";
+import { RefObject, useEffect } from "react";
 import Hls from "hls.js";
 
 export const useHlsPlayer = (
-  videoRef: React.RefObject<HTMLVideoElement | null>,
+  videoRef: RefObject<HTMLVideoElement | null>,
   streamUrl?: string
 ) => {
   useEffect(() => {
@@ -10,25 +10,55 @@ export const useHlsPlayer = (
     if (!video || !streamUrl) return;
 
     if (video.canPlayType("application/vnd.apple.mpegurl")) {
+     
       video.src = streamUrl;
+      video.play().catch((err) => {
+        console.warn("Auto-play blocked on Safari:", err);
+      });
     } else if (Hls.isSupported()) {
       const hls = new Hls({
         enableWorker: true,
         lowLatencyMode: true,
       });
+
       hls.loadSource(streamUrl);
       hls.attachMedia(video);
 
+     
+      hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        console.log("HLS manifest parsed successfully");
+        video.play().catch((err) => {
+          console.warn("Auto-play blocked:", err);
+        });
+      });
+
+    
       hls.on(Hls.Events.ERROR, (event, data) => {
         console.error("HLS error:", data);
+        if (data.fatal) {
+          switch (data.type) {
+            case Hls.ErrorTypes.NETWORK_ERROR:
+              hls.startLoad();
+              break;
+            case Hls.ErrorTypes.MEDIA_ERROR:
+              hls.recoverMediaError();
+              break;
+            default:
+              hls.destroy();
+              break;
+          }
+        }
       });
 
       return () => {
         hls.destroy();
       };
+    } else {
+      console.error("HLS is not supported in this browser");
     }
   }, [videoRef, streamUrl]);
 };
+
 
 // export function useHlsPlayer(videoRef: RefObject<HTMLVideoElement | null>, sourceUrl?: string) {
 //   const hlsRef = useRef<Hls | null>(null);

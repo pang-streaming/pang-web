@@ -203,7 +203,7 @@ const TransactionCard = styled.div`
 /* ================= VirtualModelElem Skeleton ================= */
 export const VirtualModelElemSkeleton = () => (
   <VirtualContainer>
-    <SkeletonBox width="100%" height={150} radius={16} style={{ marginBottom: 10 }} />
+    <SkeletonBox width={200} height={200} radius={16} style={{ marginBottom: 10 }} />
     <SkeletonBox width="70%" height={16} radius={4} style={{ marginBottom: 8 }} />
     <SkeletonBox width="40%" height={18} radius={4} />
   </VirtualContainer>

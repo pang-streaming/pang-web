@@ -11,9 +11,12 @@ import { ErrorStateTitle } from "@/shared/ui/error-screen";
 import { VideoList } from "@/shared/ui/video/video-list";
 import { useFollowingLives } from "@/entities/video/hooks/useLive";
 import { formattedPrice } from "../market/util/formatted-price";
+import { useFollowingLastVideo } from "@/entities/last-video/useLastVideo";
+import { LastVideo } from "@/entities/last-video/type";
 
 export const Following = () => {
   const navigate = useNavigate();
+
   const { data: myInfo, isLoading: isMyInfoLoading } = useQuery({
     queryKey: ["myInfo"],
     queryFn: fetchMyInfo,
@@ -22,11 +25,13 @@ export const Following = () => {
 
   const { data: followingData, isLoading, isError } = useMyFollowing(username);
   const { data: followingLives, error } = useFollowingLives();
+  const { data: followingLastVideos, isLoading: followingLastVideoLoading } = useFollowingLastVideo();
 
   const following = followingData?.data || [];
   const lives = followingLives || [];
+  const lastVideos: LastVideo[] = followingLastVideos?.data || [];
 
-  if (isLoading || isMyInfoLoading)
+  if (isLoading || isMyInfoLoading || followingLastVideoLoading)
     return (
       <FollowingContainer>
         <TabTitleText>팔로잉</TabTitleText>
@@ -37,19 +42,18 @@ export const Following = () => {
 
         <TabTitleText>최근 동영상</TabTitleText>
         <SkeletonGrid count={3} minWidth={420} itemHeight={240} />
-
       </FollowingContainer>
     );
+
 
   if (isError) return <div>팔로잉 정보를 불러오는데 실패했습니다.</div>;
 
   return (
     <FollowingContainer>
-      <TabTitleText>팔로잉</TabTitleText>
 
+      <TabTitleText>팔로잉</TabTitleText>
       {following.length === 0 ? (
         <ErrorStateTitle>팔로잉이 없습니다</ErrorStateTitle>
-
       ) : (
         <FollowingCardWrapper>
           {following.map((f, index) => (
@@ -64,18 +68,18 @@ export const Following = () => {
         </FollowingCardWrapper>
       )}
 
-      <TabTitleText>라이브</TabTitleText>
-      {lives.length === 0 ? (
-        <ErrorStateTitle>현재 진행 중인 방송이 없습니다</ErrorStateTitle>
-      ) : (
-        <VideoList videos={lives} />
+      {lives.length > 0 && (
+        <>
+          <TabTitleText>라이브</TabTitleText>
+          <VideoList videos={lives} />
+        </>
       )}
 
-      <TabTitleText>최근 동영상</TabTitleText>
-      {lives.length === 0 ? (
-        <ErrorStateTitle>진행한 방송이 없습니다</ErrorStateTitle>
-      ) : (
-        <VideoList videos={lives} />
+      {lastVideos.length > 0 && (
+        <>
+          <TabTitleText>최근 동영상</TabTitleText>
+          <VideoList videos={lastVideos as any} />
+        </>
       )}
     </FollowingContainer>
   );
@@ -93,13 +97,4 @@ const FollowingCardWrapper = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 4px;
-`;
-
-const EmptyText = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 60vh;
-  color: #a3a3a3;
-  font-size: 16px;
 `;

@@ -1,6 +1,6 @@
 
-import { fetchGift, sendGift } from "@/features/gift/api";
-import { GiftResponse } from "@/features/gift/model/type";
+import { fetchGift, sendGift, updateGiftInfo } from "@/features/gift/api";
+import { DeliveryStatus, GiftResponse } from "@/features/gift/model/type";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useGifts = () => {
@@ -41,3 +41,37 @@ export const useSendGift = () => {
       },
     });
   };
+
+export const useUpdateGiftInfo = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ 
+      purchaseId, 
+      address, 
+      deliveryStatus 
+    }: { 
+      purchaseId: string; 
+      address: string; 
+      deliveryStatus: DeliveryStatus 
+    }) => {
+      console.log("🚀 useUpdateGiftInfo mutationFn 호출:", {
+        purchaseId,
+        address,
+        deliveryStatus
+      });
+      return updateGiftInfo({ purchaseId, address, deliveryStatus });
+    },
+    onSuccess: () => {
+      console.log("선물 정보 업데이트 성공!");
+      alert("선물 정보가 업데이트되었습니다!");
+      queryClient.invalidateQueries({ queryKey: ["gifts"] });
+    },
+    onError: (error: any) => {
+      const message = error.response?.data?.message;
+      console.error("Gift update error:", message || error);
+      console.error("전체 error 객체:", error);
+      alert("선물 정보 업데이트 중 오류가 발생했습니다.");
+    },
+  });
+};

@@ -8,6 +8,7 @@ import { useCategory } from "./hook/useCategory";
 import { ErrorScreen } from "@/shared/ui/error-screen";
 import { CategorySkeleton } from "@/shared/ui/skeleton";
 import { useNavigate } from "react-router-dom";
+import { Category as CategoryType } from "./model/category";
 
 
 const tags: Tag[] = [
@@ -39,8 +40,8 @@ export const Category = () => {
   
 	if (isError) return <ErrorScreen error={String(error)}/>
   
-	const handleCategoryClick = (categoryId: number) => {
-		navigate(`/category/${categoryId}`);
+	const handleCategoryClick = (category: CategoryType) => {
+		navigate(`/category/${category.id}`, { state: { category } });
 	};
   
 	return (
@@ -51,7 +52,7 @@ export const Category = () => {
 		</TagHeader>
 		<CategoryWrapper>
 		  {categories.map((category) => (
-			<div key={category.id} onClick={() => handleCategoryClick(category.id)}>
+			<div key={category.id} onClick={() => handleCategoryClick(category)}>
 			  <CategoryBox category={category} />
 			</div>
 		  ))}

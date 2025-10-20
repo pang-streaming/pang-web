@@ -8,6 +8,10 @@ import {
   streamerSidebarItems,
   userSidebarItems,
 } from "../sidebar/sidebar.constant";
+import { FollowingCard } from "../sidebar/ui/following-card";
+import { useFollowing } from "../sidebar/ui/following-card/api";
+import { useQuery } from "@tanstack/react-query";
+import { fetchMyInfo } from "../header/api";
 
 interface DefaultLayoutProps {
   type: "streamer" | "user";
@@ -15,6 +19,15 @@ interface DefaultLayoutProps {
 }
 
 export const DefaultLayout = ({ type, full }: DefaultLayoutProps) => {
+
+  const { data } = useQuery({
+    queryKey: ["myInfo"],
+    queryFn: fetchMyInfo,
+    staleTime: 1000 * 60,
+    refetchOnWindowFocus: false,
+  });
+  const { data: followingData, isLoading } = useFollowing(data?.data.username || "");
+
   const [tabs, setTabs] = useState(false);
   const sidebarItems =
     type === "streamer" ? streamerSidebarItems : userSidebarItems;
@@ -30,7 +43,20 @@ export const DefaultLayout = ({ type, full }: DefaultLayoutProps) => {
           sidebarItems={sidebarItems}
           type={type}
         >
-          {/*팔로워 목록 리스트*/}
+         {isLoading ? (
+            <>
+              
+            </>
+          ) : (
+            followingData?.data.map((user) => (
+              <FollowingCard 
+                key={user.username}
+                profileImage={user.image} 
+                nickname={user.nickname}
+                username={user.username}
+                isSidebarOpen={tabs}
+              />
+            )))}
         </Sidebar>
       )}
       <Header onClickMenu={() => setTabs(!tabs)} type={type} />

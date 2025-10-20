@@ -1,27 +1,24 @@
 import { TabTitleText } from "@/shared/ui/tab-title-text";
 import * as S from "./style";
-import { useLocation, useParams, useNavigate } from "react-router-dom";
-import { SkeletonGrid, SkeletonBox } from "@/shared/ui/skeleton";
-import { StoreProduct, Store } from "@/entities/store/type";
-import { useStoreProduct } from "@/entities/store/useStore";
+import { useParams, useNavigate } from "react-router-dom";
+import { SkeletonBox } from "@/shared/ui/skeleton";
+import { useStoreProduct, useStore } from "@/entities/store/useStore";
 
 export const StoreDetail = () => {
-  const { state } = useLocation();
   const { storeId } = useParams<{ storeId: string }>();
   const navigate = useNavigate();
-  const storeInfo = state as Store | null;
 
-  const { data: products, isLoading, isError } = useStoreProduct(storeId!);
+  const { data: allStores, isLoading: isStoresLoading } = useStore();
+  const { data: products, isLoading: isProductsLoading, isError } = useStoreProduct(storeId!);
 
   console.log("products:", products);
+  console.log("allStores:", allStores);
 
   if (!storeId) {
     return <S.Container>스토어 ID가 없습니다.</S.Container>;
   }
 
-  if (!storeInfo) {
-    return <S.Container>스토어 정보를 불러올 수 없습니다.</S.Container>;
-  }
+  const isLoading = isStoresLoading || isProductsLoading;
 
   if (isLoading) {
     return (
@@ -31,9 +28,14 @@ export const StoreDetail = () => {
           <SkeletonBox width={100} height={100} radius="50%" />
           <SkeletonBox width={150} height={30} radius={6} />
         </S.ProfileWrapper>
-        {/* <SkeletonGrid count={6} minWidth={200} itemHeight={250} gap={16} /> */}
       </S.Container>
     );
+  }
+
+  const storeInfo = allStores?.data?.find(store => store.id === storeId);
+
+  if (!storeInfo) {
+    return <S.Container>스토어 정보를 불러올 수 없습니다.</S.Container>;
   }
 
   if (isError) {
@@ -43,7 +45,7 @@ export const StoreDetail = () => {
   const { name, profileImage, bannerImage, description } = storeInfo;
 
   const handleProductClick = (productId: string) => {
-    navigate(`/market-detail?id=${productId}`);
+    navigate(`/market-detail?productId=${productId}`);
   };
 
   return (
@@ -78,3 +80,5 @@ export const StoreDetail = () => {
     </S.Container>
   );
 };
+
+

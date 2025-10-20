@@ -19,8 +19,8 @@ export const MarketCategorySection = () => {
 
 
 
-  const handleCategoryClick = (query: string) => {
-    navigate(`/market-category-detail/${query}`);
+  const handleCategoryClick = (category: string) => {
+    navigate(`/market-category-detail/${category}`);
   };
 
   return (

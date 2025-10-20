@@ -1,13 +1,32 @@
 import { useQuery } from "@tanstack/react-query"
 import { LastVideo, LastVideoResponse } from "./type"
-import { fetchLastVideo } from "./api"
+import { fetchAllLastVideo, fetchFollowingLastVideo, fetchLastVideoByUsername } from "./api"
 
-export const useLastVideo = (username?: string) => {
+export const useLastVideoByUsername = (username?: string) => {
   return useQuery<LastVideoResponse>({
     queryKey: ["lastVideo", username],
-    queryFn: () => fetchLastVideo(username!),
+    queryFn: () => fetchLastVideoByUsername(username!),
     enabled: !!username,
     staleTime: 1000 * 60 * 1,
     refetchOnWindowFocus: false,
   });
 };
+
+export const useAllLastVideo = () => {
+  return useQuery<LastVideoResponse>({
+    queryKey: ["alllastVideo"],
+    queryFn: () => fetchAllLastVideo(),
+    staleTime: 1000 * 60 * 1,
+    refetchOnWindowFocus: false,
+  });
+};
+
+export const useFollowingLastVideo = () => {
+    return useQuery<LastVideoResponse>({
+      queryKey: ["followingLastVideo"],
+      queryFn: () => fetchFollowingLastVideo(),
+      staleTime: 1000 * 60 * 1,
+      refetchOnWindowFocus: false,
+    });
+  };
+  

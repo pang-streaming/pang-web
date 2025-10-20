@@ -15,7 +15,7 @@ export interface PostResponse {
     createdAt: string;
     updatedAt: string;
     liked: boolean;
-    images?: string[]; // 게시글 이미지 URL 배열
+    images?: string[]; 
   }
 
 
