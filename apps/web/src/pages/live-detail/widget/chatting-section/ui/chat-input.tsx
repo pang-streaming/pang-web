@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { paymentApi } from "@/entities/payment/api";
 import { sponsorEventManager } from "@/shared/lib/sponsor-event";
 import { ISendDonationMessageRequest } from "../model/use-chat";
+import { donationApi } from "@/entities/donation/api";
 
 interface ChatInputProps {
   username: string;
@@ -75,6 +76,7 @@ export const ChatInput = ({ username, onSend, addSponsorMessage, voiceId }: Chat
       console.log("후원 성공:", pungAmount);
       setIsSponsorModalOpen(false);
       
+
       const newCash = userCash - pungAmount;
       console.log(`후원 전 cash: ${userCash}, 후원 금액: ${pungAmount}, 후원 후 cash: ${newCash}`);
       setUserCash(newCash);
@@ -83,23 +85,53 @@ export const ChatInput = ({ username, onSend, addSponsorMessage, voiceId }: Chat
       setMessage("");
       setYoutubeUrl("");
       setDonationType(""); 
-      
+    
+      // 사용후 잔액 계산
+      const newCash = userCash - pungAmount;
+
       sponsorEventManager.emit(userNickname, pungAmount);
       switch (donationType) {
         case "cash":
+
           addSponsorMessage({
             roomId: username,   
             message: message, 
             amount: pungAmount, 
             voiceId: selectedVoiceId, // 선택한 음성 ID 사용
           });
+
+          donationApi.post({
+            username:username,
+            amount: pungAmount
+          }).then(()=> {
+            addSponsorMessage({
+              roomId: username,   
+              message: message, 
+              amount: pungAmount, 
+              voiceId: "gtbd9NwwnPeKoNkxPtk8Xn",
+            });
+            setUserCash(newCash);
+            setPungAmount(1000);
+          }).catch(err=>{
+            console.log(`후원실패 ${err.response.message}`)
+          })
+          
+
           break;
         case "video":
-          addSponsorMessage({
-            roomId: username,   
-            youtube: youtubeUrl,
+          donationApi.post({
+            username:username,
             amount: pungAmount
-          });
+          }).then(()=> {
+            addSponsorMessage({
+              roomId: username,   
+              youtube: youtubeUrl,
+              amount: pungAmount
+            });
+            setPungAmount(1000);
+          }).catch(err=>{
+            console.log(`후원실패 ${err.response.message}`)
+          })
           break
         default:
           break;
@@ -113,12 +145,12 @@ const payload = {
 }
 console.log("payload", payload)
       
-      // try {
-      //   const result = await fetchMyInfo();
-      //   setUserCash(result.data.cash);
-      // } catch (error) {
-      //   console.log("서버 동기화 실패, 클라이언트 값 유지");
-      // }
+      try {
+        const result = await fetchMyInfo();
+        setUserCash(result.data.cash);
+      } catch (error) {
+        console.log("서버 동기화 실패, 클라이언트 값 유지");
+      }
     } catch (error) {
       console.error("후원 실패:", error);
     }
