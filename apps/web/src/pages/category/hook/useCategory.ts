@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { Category, CategoryLiveResponse } from "../model/category";
-import { fetchCategory, fetchCategoryLives } from "../api/api";
+import { fetchCategory, fetchCategoryLives, fetchCategoryVideos } from "../api/api";
 import { useQuery } from "@tanstack/react-query";
 
 export const useCategory = () => {
@@ -20,6 +20,20 @@ export const useCategoryLives = (categoryId?: string) => {
         queryKey: ['categoryLives', categoryId],
         queryFn: async () => {
             const res = await fetchCategoryLives(categoryId!);
+            return res;
+        },
+        enabled: !!categoryId,
+        staleTime: 1000 * 60,
+        refetchOnWindowFocus: false
+    })
+}
+
+
+export const useCategoryVideos = (categoryId?: string) => {
+    return useQuery<CategoryLiveResponse>({
+        queryKey: ['categoryVideos', categoryId],
+        queryFn: async () => {
+            const res = await fetchCategoryVideos(categoryId!);
             return res;
         },
         enabled: !!categoryId,

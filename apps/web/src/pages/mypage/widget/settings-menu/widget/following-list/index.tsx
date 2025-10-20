@@ -125,8 +125,14 @@ const FollowingListContainer = styled.div`
 const FollowingListContainerRow = styled.div`
     display: flex;
     justify-content: space-between;
+    padding-right: 16px;
     align-items: center;
+    border-radius: ${({theme}) => theme.borders.large};
     gap: 16px;
+    &:hover {
+        background-color: ${({theme}) => theme.colors.hover.light};
+        transform: translateX(4px);
+    }
 `;
 
 const FollowButtonWrapper = styled.div`
@@ -135,6 +141,7 @@ const FollowButtonWrapper = styled.div`
 `;
 
 const FollowingItem = styled.div`
+width: 100%;
     display: flex;
     align-items: center;
     gap: 16px;
@@ -143,10 +150,7 @@ const FollowingItem = styled.div`
     cursor: pointer;
     transition: all 0.2s ease;
 
-    &:hover {
-        background-color: ${({theme}) => theme.colors.hover.light};
-        transform: translateX(4px);
-    }
+    
 `;
 
 const ProfileImage = styled.img`

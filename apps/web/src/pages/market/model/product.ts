@@ -47,13 +47,16 @@ export interface ProductListResponse {
 
 //product detaul
   export interface ProductDetailData {
+    id: string;
     image: string;
     name: string;
     likes: number;
     price: number;
-    userId: string;
+    storeId: string;
     profileImage: string;
     username: string;
+    isLiked: boolean;
+    description: string;
   }
   
 

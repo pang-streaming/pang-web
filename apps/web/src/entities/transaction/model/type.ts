@@ -19,3 +19,24 @@ export interface Transaction {
     data: BalanceData;
     timestamp: string;
   }
+
+  export interface PurchaseHistoryResponse {
+    status: string; 
+    message: string;
+    data: PurchaseHistory[];
+    timestamp: string; 
+  }
+  
+  export interface PurchaseHistory {
+    purchaseId: string;
+    productId: string;
+    imageUrl: string;
+    productName: string;
+    price: number;
+    fileUrl: string;
+    address: string;
+    email: string;
+    deliveryStatus: "PREPARING" | "SHIPPING" | "DELIVERED" | "CANCELED"; 
+    createdAt: string;
+  }
+  

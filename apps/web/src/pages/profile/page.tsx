@@ -3,13 +3,12 @@ import styled from "styled-components";
 import normalProfile from "@/app/assets/images/normal_profile.svg";
 import { FollowButton } from "@/shared/ui/button/follow-button";
 import { Segment, SegmentButtonGroup } from "@pang/shared/ui";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ProfileHomeWidget } from "@/pages/profile/widget/profile-home-widget";
 import { ProfileVideoWidget } from "@/pages/profile/widget/profile-video-widget";
 import { ProfileCommunityWidget } from "@/pages/profile/widget/profile-community-widget";
 import { ProfileInfoWidget } from "@/pages/profile/widget/profile-info-widget";
 import { useFollowUser, useMyFollowing } from "@/features/follow/hooks/useFollow";
-import { Loading } from "@/widgets/fall-back";
 import { useUsernameToInfo } from "./hook/useProfile";
 import { ErrorScreen } from "@/shared/ui/error-screen";
 import { useQueryClient } from "@tanstack/react-query";
@@ -24,11 +23,37 @@ const segments: Segment[] = [
   { id: "info", name: "정보" },
 ];
 
+const getStoredTab = (username: string): string => {
+	const storageKey = `profile-tab-${username}`;
+	return sessionStorage.getItem(storageKey) || segments[0].id;
+};
+
+const storeTab = (username: string, tabId: string): void => {
+	const storageKey = `profile-tab-${username}`;
+	sessionStorage.setItem(storageKey, tabId);
+};
+
 export const ProfilePage = () => {
 	const { username } = useParams<{ username: string }>();
-	const [activeTabId, setActiveTabId] = useState<string>(segments[0].id);
 	const queryClient = useQueryClient();
 	const { mutate: followMutate, isPending } = useFollowUser();
+	
+	const [activeTabId, setActiveTabId] = useState<string>(() => 
+		username ? getStoredTab(username) : segments[0].id
+	);
+	
+	useEffect(() => {
+		if (username) {
+			setActiveTabId(getStoredTab(username));
+		}
+	}, [username]);
+	
+	const handleTabChange = (tabId: string) => {
+		setActiveTabId(tabId);
+		if (username) {
+			storeTab(username, tabId);
+		}
+	};
 	
 	const { data: myInfo } = useQuery({
 		queryKey: ["myInfo"],
@@ -62,6 +87,8 @@ export const ProfilePage = () => {
 			{ username, isFollowing },
 			{
 				onSuccess: () => {
+					queryClient.invalidateQueries({ queryKey: ["otherUserInfo", username] });
+					queryClient.invalidateQueries({ queryKey: ["myFollowing", myInfo?.data?.username] });
 					alert(isFollowing ? "언팔로우했습니다." : "팔로우했습니다! 🎉");
 				},
 				onError: (error) => {
@@ -94,7 +121,8 @@ export const ProfilePage = () => {
   
 		<SegmentButtonGroup
 	  segments={segments}
-	  onSegmentChange={setActiveTabId}
+	  defaultSegmentIndex={segments.findIndex(s => s.id === activeTabId)}
+	  onSegmentChange={handleTabChange}
 	/>
 
 	{activeTabId === "home" && <ProfileHomeWidget username={username || ""} />}
@@ -114,7 +142,7 @@ if (isError || !userInfo) return <ErrorScreen error={String(error)} />;
 			<ProfileImage src={userInfo.data.profileImage || normalProfile} />
 			<UserInfo>
 			  <NickName>{userInfo.data.nickname}</NickName>
-			  <UserFollowers>{userInfo.data.followerCount?.toLocaleString()}명</UserFollowers>
+			  <UserFollowers>팔로워 {userInfo.data.followerCount?.toLocaleString()}명</UserFollowers>
 			  <UserDescription>{userInfo.data.description || ""}</UserDescription>
 			</UserInfo>
 		  </UserInfoWrapper>
@@ -127,7 +155,8 @@ if (isError || !userInfo) return <ErrorScreen error={String(error)} />;
   
 	<SegmentButtonGroup
 	  segments={segments}
-	  onSegmentChange={setActiveTabId}
+	  defaultSegmentIndex={segments.findIndex(s => s.id === activeTabId)}
+	  onSegmentChange={handleTabChange}
 	/>
   
 	{activeTabId === "home" && <ProfileHomeWidget username={username || ""} />}
@@ -191,5 +220,6 @@ const UserFollowers = styled.span`
 const ProfileImage = styled.img`
   width: 100px;
   height: 100px;
+  object-fit: cover;
   border-radius: ${({ theme }) => theme.borders.maximum};
 `;

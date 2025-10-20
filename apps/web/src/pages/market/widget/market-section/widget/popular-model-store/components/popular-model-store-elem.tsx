@@ -13,9 +13,7 @@ export const PopularModelStoreElem = ({
   const navigate = useNavigate();
 
   const handleStore = () => {
-    navigate(`/store-detail/${id}`, { 
-      state: { id, name, description, profileImage, bannerImage } 
-    });
+    navigate(`/store-detail/${id}`);
   };
 
   return (

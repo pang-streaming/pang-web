@@ -2,12 +2,15 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   display: flex;
+  flex-direction: column;
+  gap: 80px;
 `;
 
 export const ProductContainerWrap = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
+
 	align-items: center;
 `;
 
@@ -71,6 +74,8 @@ export const Fallback = styled.div`
 export const UserInfoContainer = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  width: 100%;
   gap: 10px;
   margin-bottom: 30px;
 `;
@@ -86,8 +91,31 @@ export const Username = styled.span`
   font-size: ${({theme}) => theme.font.xLarge};
 	font-weight: 600;
   color: ${({theme}) => theme.colors.text.normal};
+  flex: 1;
 `;
 
+
+export const LikeButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: 1px solid ${({ theme }) => theme.colors.border.normal};
+  background-color: transparent;
+  border-radius: ${({ theme }) => theme.borders.large};
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.hover.light};
+    border-color: ${({ theme }) => theme.colors.primary.normal};
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+`;
 export const ProductTitle = styled.span`
   font-size: ${({theme}) => theme.font.xxLarge};
   font-weight: 700;
@@ -99,6 +127,7 @@ export const Spacer = styled.div`
 `;
 
 export const DetailButtonContainer = styled.div`
+
   display: flex;
 	flex-direction: row;
 	justify-content: center;
@@ -129,3 +158,39 @@ export const Description = styled.span`
   color: ${({ theme }) => theme.colors.text.normal};
   white-space: pre-wrap;
 `;
+
+export const DescriptionSection = styled.div`
+  width: 70%;
+  padding: 24px 30px;
+  background-color: ${({ theme }) => theme.colors.content.normal};
+  border-radius: ${({ theme }) => theme.borders.large};
+  margin-top: 12px;
+`;
+
+export const DescriptionText = styled.p`
+  font-size: ${({ theme }) => theme.font.medium};
+  line-height: 1.6;
+  color: ${({ theme }) => theme.colors.text.normal};
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin: 0;
+`;
+
+export const LikeText = styled.span`
+color: ${({theme}) => theme.colors.text.normal};
+`
+
+
+//추천 상품 섹션
+
+
+export const TopFiveSection = styled.div`
+  padding: 0 120px;
+`
+
+export const TopFiveContainer = styled.div`
+  width: 100%;
+  display: flex;
+  gap: 30px;
+	align-items: center;
+`

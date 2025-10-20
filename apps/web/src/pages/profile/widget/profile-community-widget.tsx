@@ -1,25 +1,40 @@
 import styled from "styled-components";
 import { CommunityItem } from "@/features/community/ui/community-item";
 import { Tag, TagButton } from "@pang/shared/ui";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { WritePostModal } from "@/features/community/widget/write-modal";
-import { fetchPostList } from "@/features/community/api/api";
-import { Post } from "@/features/community/model/post";
 import { useNavigate } from "react-router-dom";
 import { SkeletonBox } from "@/shared/ui/skeleton";
+import { usePostList } from "../hook/useProfile";
+import { useQueryClient } from "@tanstack/react-query";
 
 const tags: Tag[] = [
   { id: "all", name: "전체" },
-  { id: "community", name: "자유게시판" },
-  { id: "notification", name: "공지글" },
+  { id: "notification", name: "공지" },
+  { id: "free", name: "자유게시판" },
 ];
 
 export const ProfileCommunityWidget = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [activeTagId, setActiveTagId] = useState<string>("all");
   const navigate = useNavigate(); 
+  const queryClient = useQueryClient();
 
-  const [isLoading, setIsLoading] = useState(true);
+  const getFilter = (tagId: string): "ALL" | "OWNER_ONLY" | "NON_OWNER_ONLY" => {
+    switch (tagId) {
+      case "notification":
+        return "OWNER_ONLY";
+      case "free":
+        return "NON_OWNER_ONLY";
+      default:
+        return "ALL";
+    }
+  };
+
+  const { data, isLoading, isError } = usePostList({
+    communityId: 1,
+    filter: getFilter(activeTagId),
+  });
 
   const handlePost = (id: number) => {
 	navigate(`/community-detail/${id}`)
@@ -35,29 +50,28 @@ export const ProfileCommunityWidget = () => {
 
   const handleSuccess = () => {
     console.log("게시글 업로드 성공");
+    queryClient.invalidateQueries({ queryKey: ["postList"] });
   };
 
-  useEffect(() => {
-	const fetchData = async () => {
-	  try {
-		setIsLoading(true);
-		const res = await fetchPostList();
-		setPosts(res.content);
-	  } catch (e) {
-		console.error("게시글 불러오기 실패:", e);
-	  } finally {
-		setIsLoading(false);
-	  }
-	};
-  
-	fetchData();
-  }, []);
+  const handleTagChange = (tagId: string | null) => {
+    if (tagId) {
+      setActiveTagId(tagId);
+    }
+  };
+
+  const posts = data?.content || [];
+  const activeTagName =
+    tags.find((tag) => tag.id === activeTagId)?.name || "전체";
   
 
   return (
     <CommunityContainer>
       <CommunityTagWrapper>
-        <TagButton tags={tags} defaultTagId={"all"} />
+        <TagButton 
+          tags={tags} 
+          defaultTagId={"all"} 
+          onChanged={handleTagChange}
+        />
         <WriteButton onClick={handleWriteButton}>글쓰기 +</WriteButton>
       </CommunityTagWrapper>
 
@@ -68,11 +82,13 @@ export const ProfileCommunityWidget = () => {
               <CommunityItemSkeleton key={index} />
             ))}
           </>
+        ) : isError ? (
+          <EmptyMessage>게시글을 불러오는 중 오류가 발생했습니다 😢</EmptyMessage>
         ) : posts.length === 0 ? (
           <EmptyMessage>게시글이 없습니다 🥲</EmptyMessage>
         ) : (
           posts.map((post) => (
-            <CommunityItem key={post.id} post={post} onClick={() => handlePost(post.id)}/> 
+            <CommunityItem key={post.id} post={post} onClick={() => handlePost(post.id)} postType={activeTagName}/> 
           ))
         )}
       </CommunityItemList>

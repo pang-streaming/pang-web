@@ -8,7 +8,9 @@ export interface LastVideo {
     nickname: string;
     profileImage: string;
     viewCount: number;
+    thumbnail?: string;
   }
+
   
   export interface LastVideoResponse {
     status: string; 

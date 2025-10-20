@@ -43,21 +43,28 @@ export const WritePostModal = ({ communityId, onClose, onSuccess }: WritePostMod
         {/* 이미지 업로드 섹션 */}
         <S.ImageSection>
           <S.FileInput
+            id="file-upload"
             type="file"
             accept="image/*"
             multiple
             onChange={(e) => handleFileChange(e.target.files)}
           />
-          <S.ImagePreviewContainer>
-            {files.map((file, index) => (
-              <S.ImagePreviewItem key={index}>
-                <S.ImagePreview src={URL.createObjectURL(file)} alt={`미리보기 ${index + 1}`} />
-                <S.RemoveImageButton onClick={() => removeFile(index)}>✕</S.RemoveImageButton>
-              </S.ImagePreviewItem>
-            ))}
-          </S.ImagePreviewContainer>
+          <S.FileInputLabel htmlFor="file-upload">
+            📷 이미지 추가하기
+          </S.FileInputLabel>
+          
           {files.length > 0 && (
-            <S.ImageCount>{files.length}개의 이미지 선택됨</S.ImageCount>
+            <>
+              <S.ImagePreviewContainer>
+                {files.map((file, index) => (
+                  <S.ImagePreviewItem key={index}>
+                    <S.ImagePreview src={URL.createObjectURL(file)} alt={`미리보기 ${index + 1}`} />
+                    <S.RemoveImageButton onClick={() => removeFile(index)}>✕</S.RemoveImageButton>
+                  </S.ImagePreviewItem>
+                ))}
+              </S.ImagePreviewContainer>
+              <S.ImageCount>📸 {files.length}개의 이미지 선택됨</S.ImageCount>
+            </>
           )}
         </S.ImageSection>
 

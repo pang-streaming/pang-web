@@ -1,11 +1,11 @@
-import { useLastVideo } from "@/entities/last-video/useLastVideo";
+import { useLastVideoByUsername } from "@/entities/last-video/useLastVideo";
 import { IStreamDataResponse } from "@/entities/video/model/type";
 import { ErrorScreen } from "@/shared/ui/error-screen";
 import { SkeletonGrid } from "@/shared/ui/skeleton";
 import { VideoList } from "@/shared/ui/video/video-list";
 
 export const ProfileVideoWidget = ({username}:{username: string}) => {
-  const { data: lastVideoData, isLoading, isError, error } = useLastVideo(username);
+  const { data: lastVideoData, isLoading, isError, error } = useLastVideoByUsername(username);
 
   console.log("username:", username);
   console.log("lastVideoData:", lastVideoData);
@@ -28,7 +28,8 @@ export const ProfileVideoWidget = ({username}:{username: string}) => {
     username: video.username,
     nickname: video.nickname,
     profileImage: video.profileImage,
-    followers: 0, 
+    followers: 0,
+    thumbnail: video.thumbnail || "",
   }));
   
   return <VideoList videos={videos} maxColumns={4} />;

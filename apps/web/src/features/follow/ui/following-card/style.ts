@@ -13,6 +13,7 @@ export const FollowingCardContainer = styled.div`
 export const ProfileImage = styled.img`
   width: 90px;
   height: 90px;
+  object-fit: cover;
   border-radius: 50%;
   margin-bottom: 11px;
   border: 3px solid transparent;

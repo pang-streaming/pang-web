@@ -14,7 +14,6 @@ export const VirtualModelSection = () => {
             <VirtualModelElemSkeleton key={i} />
           ))}
         </Row>
-        <Message>상품 정보를 불러오는 중입니다... ⏳</Message>
       </Container>
     );
 

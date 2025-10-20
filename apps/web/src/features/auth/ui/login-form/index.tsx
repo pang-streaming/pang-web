@@ -29,6 +29,7 @@ export const LoginForm = () => {
       const data = await loginUser(email, password);
       localStorage.setItem("accessToken", data.data.accessToken);
       console.log("로그인 성공")
+      console.log(data.data.accessToken)
       navigate("/");
     } catch (error: any) {
       const status = error.response?.status;
@@ -93,11 +94,7 @@ export const LoginForm = () => {
           </S.LoginButtonText>
         </S.LoginButton>
 
-        <LoginDivider />
-        <S.OauthContainer>
-          <OauthBox logo="apple" />
-          <OauthBox logo="google" />
-        </S.OauthContainer>
+        {/* <LoginDivider /> */}
         <div style={{ marginTop: "30px" }}>
           <S.SignUpText>
             가입된 계정이 없으신가요?{" "}
@@ -139,13 +136,13 @@ export const LoginForm = () => {
   );
 };
 
-const LoginDivider = () => (
-  <S.LoginDividerWrapper>
-    <S.LoginDividerContainer />
-    <S.DividerText>또는</S.DividerText>
-    <S.LoginDividerContainer />
-  </S.LoginDividerWrapper>
-);
+// const LoginDivider = () => (
+//   <S.LoginDividerWrapper>
+//     <S.LoginDividerContainer />
+//     <S.DividerText>또는</S.DividerText>
+//     <S.LoginDividerContainer />
+//   </S.LoginDividerWrapper>
+// );
 
 const OauthBox = ({ logo }: { logo: "apple" | "google" }) => {
   const theme = useTheme();

@@ -1,6 +1,6 @@
-import { fetchTransaction } from "../api";
+import { fetchPurchaseList, fetchTransaction } from "../api";
 import { useQuery } from "@tanstack/react-query";
-import type { BalanceResponse } from "../model/type";
+import type { BalanceResponse, PurchaseHistoryResponse } from "../model/type";
 
 
 export const useTransaction = () => {
@@ -11,3 +11,12 @@ export const useTransaction = () => {
     refetchOnWindowFocus: false,
   });
 };
+
+export const usePurchase = () => {
+  return useQuery<PurchaseHistoryResponse>({
+    queryKey: ["purchaseHistory"],
+    queryFn: fetchPurchaseList,
+    staleTime: 1000 * 60,
+    refetchOnWindowFocus: false,
+  });
+}

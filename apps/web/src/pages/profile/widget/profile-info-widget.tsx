@@ -10,14 +10,6 @@ export const ProfileInfoWidget = () => {
 					<BroadcastInfoText>가입일</BroadcastInfoText>
 					<BroadcastInfoValue>2024. 9. 11.</BroadcastInfoValue>
 				</BroadCastInfoWrapper>
-				<BroadCastInfoWrapper>
-					<BroadcastInfoText>첫 방송일</BroadcastInfoText>
-					<BroadcastInfoValue>2025. 9. 1.</BroadcastInfoValue>
-				</BroadCastInfoWrapper>
-				<BroadCastInfoWrapper>
-					<BroadcastInfoText>총 방송시간</BroadcastInfoText>
-					<BroadcastInfoValue>1,100시간</BroadcastInfoValue>
-				</BroadCastInfoWrapper>
 			</InfoContainer>
 		</ProfileInfoContainer>
 	)

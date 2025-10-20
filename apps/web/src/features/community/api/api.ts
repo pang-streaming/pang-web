@@ -36,19 +36,26 @@ export const likePost = async (postId: number) => {
 
 
 interface PostListQuery {
-    page?: number;
-    size?: number;
-    sort?: string[];
-  }
+  page?: number;
+  size?: number;
+  sort?: string[];
+  filter?: "ALL" | "OWNER_ONLY" | "NON_OWNER_ONLY";
+}
+
 export const fetchPostList = async (
-    // communityId: number,
-    query?: PostListQuery
-  ): Promise<PostListData> => {
-    const res = await api.get(`/post/${1}`, {
-      params: query, 
-    });
-    return res.data.data;
-  };
+  communityId: number,
+  query?: PostListQuery
+): Promise<PostListData> => {
+  const res = await api.get(`/post/${communityId}`, {
+    params: {
+      ...query,
+     
+      filter: query?.filter !== "ALL" ? query?.filter : undefined,
+    },
+  });
+
+  return res.data.data;
+};
 
   
   

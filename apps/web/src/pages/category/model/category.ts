@@ -16,21 +16,12 @@ export type CategoryType =
 export interface Category {
   id: number;
   name: string;
-  chip: string;
+  chip: string[];
   type: CategoryType;
   postImage: string;
   streamCount: number;
 }
 
-export interface Category {
-  id: number;
-  name: string;
-  chip: string;
-  type: CategoryType;
-  postImage: string;
-  streamCount: number;
-  tag: string[];
-}
 
 
 export interface CategoryLive {
@@ -41,6 +32,7 @@ export interface CategoryLive {
   nickname: string;
   profileImage: string;
   viewCount: number;
+  thumbnail?: string;
 }
 
 export interface CategoryLiveResponse {

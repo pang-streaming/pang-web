@@ -10,10 +10,11 @@ interface AutoChargeProps {
 export const AutoCharge = ({ onClose }: AutoChargeProps) => {
   const [agreed, setAgreed] = useState(false);
   const [autoChargeAmount, setAutoChargeAmount] = useState(1000);
+  const finalAutoChargeAmount = autoChargeAmount + (autoChargeAmount * 0.1);
 
   const handleAgree = () => {
     if (agreed) {
-      alert(`펑 자동충전이 설정되었습니다. (자동충전 금액: ${autoChargeAmount.toLocaleString()}펑)`);
+      alert(`펑 자동충전이 설정되었습니다. (자동충전 금액: ${finalAutoChargeAmount.toLocaleString()}펑)`);
       onClose?.();
     } else {
       alert("내용을 확인하고 동의해주세요.");

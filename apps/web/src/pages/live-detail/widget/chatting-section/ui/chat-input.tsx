@@ -1,10 +1,8 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
-import Emoji from "@/app/assets/emoji.svg?react";
 import sendPung from "@/app/assets/send-pung.svg";
 import Airplane from "@/app/assets/airplane.svg?react";
 import { SponsorModal } from "../widget/sponsor-modal";
-import { sponsorPung } from "@/features/sponsor/api";
 import { fetchMyInfo } from "@/entities/user/api/api";
 import { useQuery } from "@tanstack/react-query";
 import { paymentApi } from "@/entities/payment/api";
@@ -16,15 +14,17 @@ interface ChatInputProps {
   username: string;
   onSend: (message: string) => void;
   addSponsorMessage: (data: ISendDonationMessageRequest) => void;
+  voiceId: string;
 }
 
-export const ChatInput = ({ username, onSend, addSponsorMessage }: ChatInputProps) => {
+export const ChatInput = ({ username, onSend, addSponsorMessage, voiceId }: ChatInputProps) => {
   const [text, setText] = useState("");
   const [isSponsorModalOpen, setIsSponsorModalOpen] = useState(false);
   const [pungAmount, setPungAmount] = useState(0);
   const [youtubeUrl, setYoutubeUrl] = useState<string>("");
   const [donationType, setDonationType] = useState<string>("");
-  const [message, setMessage] = useState<string>("")
+  const [message, setMessage] = useState<string>("");
+  const [selectedVoiceId, setSelectedVoiceId] = useState<string>("gtbd9NwwnPeKoNkxPtk8Xn"); // 기본값: 학생회장 김민규
 
   
   const [userCash, setUserCash] = useState(0);
@@ -76,9 +76,12 @@ export const ChatInput = ({ username, onSend, addSponsorMessage }: ChatInputProp
       console.log("후원 성공:", pungAmount);
       setIsSponsorModalOpen(false);
       
-      // 임시로 클라이언트에서 cash 차감
+
+      const newCash = userCash - pungAmount;
+      console.log(`후원 전 cash: ${userCash}, 후원 금액: ${pungAmount}, 후원 후 cash: ${newCash}`);
+      setUserCash(newCash);
+      setPungAmount(1000);
       
-      // 후원 후 입력값들 초기화
       setMessage("");
       setYoutubeUrl("");
       setDonationType(""); 
@@ -89,6 +92,14 @@ export const ChatInput = ({ username, onSend, addSponsorMessage }: ChatInputProp
       sponsorEventManager.emit(userNickname, pungAmount);
       switch (donationType) {
         case "cash":
+
+          addSponsorMessage({
+            roomId: username,   
+            message: message, 
+            amount: pungAmount, 
+            voiceId: selectedVoiceId, // 선택한 음성 ID 사용
+          });
+
           donationApi.post({
             username:username,
             amount: pungAmount
@@ -105,6 +116,7 @@ export const ChatInput = ({ username, onSend, addSponsorMessage }: ChatInputProp
             console.log(`후원실패 ${err.response.message}`)
           })
           
+
           break;
         case "video":
           donationApi.post({
@@ -125,7 +137,13 @@ export const ChatInput = ({ username, onSend, addSponsorMessage }: ChatInputProp
           break;
       }
       
-
+const payload = {
+  "roomId": username,   
+  "message": message, 
+  "amount": pungAmount, 
+  "voiceId": selectedVoiceId,
+}
+console.log("payload", payload)
       
       try {
         const result = await fetchMyInfo();
@@ -220,6 +238,8 @@ export const ChatInput = ({ username, onSend, addSponsorMessage }: ChatInputProp
               onChangeMessage={handleMessageChange}
               sponsorPung={handleSponsorPung}
               userCash={userCash}
+              selectedVoiceId={selectedVoiceId}
+              onVoiceSelect={setSelectedVoiceId}
             />
           </ModalContent>
         </ModalOverlay>

@@ -5,7 +5,7 @@
   import { Chip } from "@/entities/chip/model/type";
   import { VideoList } from "@/shared/ui/video/video-list";
   import { useLocation, useParams } from "react-router-dom";
-  import { useCategoryLives } from "../category/hook/useCategory";
+  import { useCategoryLives, useCategoryVideos } from "../category/hook/useCategory";
   import { useState } from "react";
   import { Category } from "../category/model/category";
 
@@ -25,9 +25,12 @@
     const { categoryId } = useParams<{ categoryId: string }>();
     const [activeTab, setActiveTab] = useState<string>("live");
     
-    const category: Category | undefined = location.state?.category;
     
-    const { data: categoryLivesData, isLoading, error } = useCategoryLives(categoryId);
+    const category: Category | undefined = location.state?.category;
+    const categoryTitle = category?.name || "카테고리";
+    
+    const { data: categoryLivesData, isLoading: livesLoading, error: livesError } = useCategoryLives(categoryId);
+    const { data: categoryVideosData, isLoading: videosLoading, error: videosError } = useCategoryVideos(categoryId);
     
     const categoryLives = categoryLivesData?.data || [];
     const lives = categoryLives.map(live => ({
@@ -41,10 +44,24 @@
       followers: live.viewCount || 0,
     }));
 
+    const categoryVideos = categoryVideosData?.data || [];
+    const videos = categoryVideos.map(video => ({
+      streamId: video.streamId,
+      title: video.title,
+      url: video.url,
+      userId: video.username,
+      username: video.username,
+      nickname: video.nickname,
+      profileImage: video.profileImage,
+      followers: video.viewCount || 0,
+    }));
+
+    const isLoading = activeTab === "live" ? livesLoading : videosLoading;
+    const error = activeTab === "live" ? livesError : videosError;
+
     if (isLoading) {
       return (
         <CategoryDetailContainer>
-          <TabTitleText>카테고리</TabTitleText>
           <ErrorStateTitle>방송을 불러오는 중...</ErrorStateTitle>
         </CategoryDetailContainer>
       );
@@ -53,7 +70,6 @@
     if (error) {
       return (
         <CategoryDetailContainer>
-          <TabTitleText>카테고리</TabTitleText>
           <SegmentHeader>
             <SegmentButtonGroup segments={segments} onSegmentChange={setActiveTab} />
           </SegmentHeader>
@@ -62,18 +78,18 @@
       );
     }
 
+
     return (
       <CategoryDetailContainer>
-        <TabTitleText>카테고리</TabTitleText>
         {category && (
           <CategoryBoxWrapper>
             <CategoryThumbnail src={category.postImage} />
             <CategoryInfoWrapper>
               <Title>{category.name}</Title>
               <CategoryInfo>시청자 {category.streamCount}명</CategoryInfo>
-              {category.tag && (
+              {category.chip && Array.isArray(category.chip) && category.chip.length > 0 && (
                 <ChipList
-                  chips={category.tag.map((tag: string) => ({
+                  chips={category.chip.map((tag: string) => ({
                     id: tag,
                     name: tag,
                     type: "normal" as const,
@@ -96,7 +112,11 @@
         )}
         
         {activeTab === "video" && (
-          <ErrorStateTitle>동영상 기능은 준비 중입니다</ErrorStateTitle>
+          videos.length === 0 ? (
+            <ErrorStateTitle>등록된 동영상이 없습니다</ErrorStateTitle>
+          ) : (
+            <VideoList videos={videos} />
+          )
         )}
       </CategoryDetailContainer>
     );
@@ -129,6 +149,7 @@
   const CategoryThumbnail = styled.img`
     border-radius: ${({ theme }) => theme.borders.medium};
     width: 250px;
+    object-fit: cover;
     aspect-ratio: 41 / 56;
     background-color: ${({ theme }) => theme.colors.content.normal};
   `;

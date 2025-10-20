@@ -39,7 +39,6 @@ export const useWriteModal = ({ communityId, onSuccess, onClose }: UseWriteModal
     try {
       const imageUrls: string[] = [];
       
-      // 여러 이미지를 순차적으로 업로드
       for (const file of files) {
         try {
           const imageRes = await uploadImage(file);

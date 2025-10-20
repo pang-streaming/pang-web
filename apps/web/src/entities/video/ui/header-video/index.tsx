@@ -22,7 +22,7 @@ export const HeaderVideo = ({ videos, hideProfile }: HeaderVideoProps) => {
     return null;
   }
 
-  const { title, nickname, username, streamId, profileImage, url } =
+  const { title, nickname, username, streamId, profileImage, url,  } =
     currentVideo;
   const { handleOnClickVideoCard, handleOnClickProfile } = useVideoCard({
     streamId,
@@ -32,7 +32,7 @@ export const HeaderVideo = ({ videos, hideProfile }: HeaderVideoProps) => {
   return (
     <HeaderVideoContainer
       onClick={handleOnClickVideoCard}
-      backgroundImage={url}
+      backgroundImage={thumbnail || url}
     >
       <LiveCardContainer>
         <LiveContainer>
