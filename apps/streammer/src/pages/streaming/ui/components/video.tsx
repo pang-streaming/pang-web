@@ -12,13 +12,24 @@ interface VideoProps {
 	screens: Screen[];
 	setScreens: React.Dispatch<React.SetStateAction<Screen[]>>;
 	canvasSize: CanvasSize;
-  viewers?: number; // 시청자 수
-  likes?: number;   // 좋아요 수
+  viewers?: number;
+  likes?: number;
+  vrmUrl: string | null;
+  selectedDevice: MediaDeviceInfo | null;
+  isVTuberEnabled: boolean;
 }
 
-export const Video = ({ screens, setScreens, containerRef, canvasSize, viewers = 123, likes = 456 }: VideoProps) => {
-	const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
-	const [selectedDevice, setSelectedDevice] = useState<MediaDeviceInfo | null>(null);
+export const Video = ({ 
+  screens, 
+  setScreens, 
+  containerRef, 
+  canvasSize, 
+  viewers = 123, 
+  likes = 456,
+  vrmUrl,
+  selectedDevice,
+  isVTuberEnabled,
+}: VideoProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 	const { status, startStreaming, stopStreaming } = useWhipBroadcast(
 		canvasRef,
@@ -26,46 +37,43 @@ export const Video = ({ screens, setScreens, containerRef, canvasSize, viewers =
       whipUrl: 'http://15.164.229.169:9000/rtc/v1/whip/?app=live&stream=tester',
       bitrate: 8000000,
       fps: 60,
-      // bearerToken: 'daedyu'
     }
 	);
-	const { screen: vrmScreen, VrmRenderer } = useVrmScreen(canvasSize, null, true, selectedDevice);
+	
+	const { screen: vrmScreen, VrmRenderer } = useVrmScreen(
+	  canvasSize, 
+	  vrmUrl, 
+	  isVTuberEnabled && !!selectedDevice, 
+	  selectedDevice
+	);
 	
 	useEffect(() => {
-		const getDevices = async () => {
-			try {
-				await navigator.mediaDevices.getUserMedia({ video: true }); // 권한 요청
-				const availableDevices = await navigator.mediaDevices.enumerateDevices();
-				const videoDevices = availableDevices.filter(device => device.kind === 'videoinput');
-				setDevices(videoDevices);
-				if (videoDevices.length > 0 && !selectedDevice) {
-					setSelectedDevice(videoDevices[0]);
-				}
-			} catch (err) {
-				console.error("카메라 접근 오류:", err);
-			}
-		};
-		getDevices();
-   }, []);
-	
-	useEffect(() => {
-		if (vrmScreen) {
+		if (vrmScreen && isVTuberEnabled) {
 			setScreens(prev => {
 				const existingVrmIndex = prev.findIndex(s => s.id === 999);
 				if (existingVrmIndex !== -1) {
+					const existingScreen = prev[existingVrmIndex];
 					const newScreens = [...prev];
-					newScreens[existingVrmIndex] = vrmScreen;
+					newScreens[existingVrmIndex] = {
+					  ...vrmScreen,
+					  x: existingScreen.x,
+					  y: existingScreen.y,
+					  width: existingScreen.width,
+					  height: existingScreen.height,
+					};
 					return newScreens;
 				} else {
 					return [...prev, vrmScreen];
 				}
 			});
+		} else if (!isVTuberEnabled) {
+		  setScreens(prev => prev.filter(s => s.id !== 999));
 		}
-	}, [vrmScreen, setScreens]);
+	}, [vrmScreen, setScreens, isVTuberEnabled]);
 
 	return (
 		<>
-			<VrmRenderer />
+			{isVTuberEnabled && selectedDevice && <VrmRenderer />}
 			<LiveContainer>
 				<TitleRow>
 					<SectionTitle>스트리머님의 방송 ✎</SectionTitle>
@@ -81,19 +89,6 @@ export const Video = ({ screens, setScreens, containerRef, canvasSize, viewers =
 						<StartButton onClick={startStreaming}>
 							<VscDebugStart size={20}/>
 						</StartButton>
-						<select
-						  onChange={(e) => {
-						    const device = devices.find(d => d.deviceId === e.target.value);
-						    setSelectedDevice(device || null);
-							}}
-						  value={selectedDevice?.deviceId || ''}
-						>
-							{devices.map(device => (
-								<option key={device.deviceId} value={device.deviceId}>
-						      {device.label || `Camera ${devices.indexOf(device) + 1}`}
-								</option>
-							))}
-						</select>
 					</StatsContainer>
 				</TitleRow>
 				<CanvasContainer ref={containerRef}>

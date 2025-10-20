@@ -13,11 +13,11 @@ export const useVrmScreen = (canvasSize: CanvasSize, vrmUrl: string | null, isCa
       source: canvas,
       x: 0,
       y: 0,
-      width: canvasSize.width,
-      height: canvasSize.height,
+      width: 600,
+      height: 600,
     };
     setScreen(vrmScreen);
-  }, [canvasSize.width, canvasSize.height]);
+  }, []);
 
   const VrmRenderer = useCallback(() => (
     <ThreeCanvas
@@ -26,10 +26,10 @@ export const useVrmScreen = (canvasSize: CanvasSize, vrmUrl: string | null, isCa
       isCameraEnabled={isCameraEnabled && isVisible}
       onCanvasReady={onCanvasReady}
       isVisible={isVisible}
-      width={canvasSize.width}
-      height={canvasSize.height}
+      width={600}
+      height={600}
     />
-  ), [selectedDevice, vrmUrl, isCameraEnabled, isVisible, onCanvasReady, canvasSize.width, canvasSize.height]);
+  ), [selectedDevice, vrmUrl, isCameraEnabled, isVisible, onCanvasReady]);
 
   const toggleVrmVisibility = () => {
     setIsVisible(prev => !prev);

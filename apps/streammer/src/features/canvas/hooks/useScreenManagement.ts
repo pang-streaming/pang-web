@@ -108,6 +108,23 @@ export const useScreenManagement = (
 		}
 	}, [canvasSize.height, canvasSize.width, addAudioTrack, removeAudioTrack]);
 	
+	const addScreen = useCallback((screen: Screen): void => {
+		setScreens(prev => [...prev, screen]);
+		
+		// 화면 공유 종료 이벤트 리스너 추가 (video 타입인 경우)
+		if (screen.type === 'video' && screen.stream) {
+			screen.stream.getVideoTracks()[0].addEventListener('ended', () => {
+				setScreens(prev => {
+					const audioTrack = screen.stream?.getAudioTracks()[0];
+					if (audioTrack) {
+						removeAudioTrack(audioTrack.id);
+					}
+					return prev.filter(s => s.id !== screen.id);
+				});
+			});
+		}
+	}, [removeAudioTrack]);
+	
 	const clearScreens = useCallback((): void => {
 		clearAllAudioTracks();
 		setScreens(prev => {
@@ -124,6 +141,7 @@ export const useScreenManagement = (
 		screens,
 		setScreens,
 		addVideoScreen,
+		addScreen,
 		clearScreens
 	};
 };
