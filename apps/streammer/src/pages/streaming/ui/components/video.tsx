@@ -37,7 +37,7 @@ export const Video = ({
       whipUrl: import.meta.env.VITE_WHIP_URL,
       bitrate: 8000000,
       fps: 60,
-			bearerToken: '604e28eb866d13d0beec154eb8f50613c494653fb1e8457f8e128c3dded1d124116c39abdd3086f22f6fdb5fb00d3e0961e7f48a938879d91ed03a9195eda5f3',
+			secretKey: '604e28eb866d13d0beec154eb8f50613c494653fb1e8457f8e128c3dded1d124116c39abdd3086f22f6fdb5fb00d3e0961e7f48a938879d91ed03a9195eda5f3', //test - not real
     }
 	);
 	

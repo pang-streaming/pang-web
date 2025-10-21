@@ -6,7 +6,7 @@ export interface WhipBroadcastConfig {
   whipUrl: string;
   bitrate?: number;
   fps?: number;
-  bearerToken?: string;
+  secretKey?: string;
 }
 
 interface WhipBroadcastStatus {
@@ -146,7 +146,7 @@ export const useWhipBroadcast = (
         }
       });
 			
-			const whipUrl = config.whipUrl + config.bearerToken;
+			const whipUrl = config.whipUrl + config.secretKey;
 			
       // WHIP 서버에 연결
       const response = await fetch(whipUrl, {
