@@ -2,15 +2,24 @@ import styled from "styled-components";
 import {SubmitButton} from "../buttons/submitButton";
 import {IoClose} from "react-icons/io5";
 
-export const LoginModal = () => {
+interface LoginModalProps {
+	onCancel: () => void;
+	onConfirm: () => void;
+}
+
+export const LoginModal = ({onCancel, onConfirm}: LoginModalProps) => {
 	return (
 		<ModalOverlay>
 			<ModalContent>
 				<ModalCloseIconWrapper>
-					<CloseIcon size={28} onClick={() => console.log("asdds")} />
+					<CloseIcon size={28} onClick={onCancel} />
 				</ModalCloseIconWrapper>
-				<InfoTitle>Login</InfoTitle>
-				<SubmitButton onClick={() => console.log("asdds")}>로그인하기</SubmitButton>
+			<InfoTitle>로그인이 필요한 페이지입니다.</InfoTitle>
+			<InfoDescription>해당 페이지를 이용하시려면 로그인이 필요합니다.</InfoDescription>
+			<ButtonGroup>
+				<SubmitButton onClick={onCancel} type="alternative">취소</SubmitButton>
+				<SubmitButton onClick={onConfirm}>로그인하기</SubmitButton>
+			</ButtonGroup>
 			</ModalContent>
 		</ModalOverlay>
 	)
@@ -45,6 +54,19 @@ const InfoTitle = styled.span`
 	font-weight: bold;
 	color: ${({theme}) => theme.colors.text.normal};
 	padding-bottom: 20px;
+`;
+
+const InfoDescription = styled.p`
+  font-size: ${({theme}) => theme.font.medium};
+  color: ${({theme}) => theme.colors.text.subtitle};
+  padding-bottom: 30px;
+  text-align: center;
+`;
+
+const ButtonGroup = styled.div`
+  display: flex;
+  gap: 10px;
+  width: 100%;
 `;
 
 const ModalContent = styled.div`

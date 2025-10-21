@@ -3,6 +3,7 @@ export * from "./provider/customThemeProvider";
 //layout
 export * from "./layout/defaultLayout";
 export * from "./layout/authLayout";
+export * from "./layout/protectedLayout";
 
 //button
 export * from "./buttons/segmentButton";
