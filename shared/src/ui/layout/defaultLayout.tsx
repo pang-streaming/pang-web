@@ -19,18 +19,21 @@ interface DefaultLayoutProps {
 }
 
 export const DefaultLayout = ({ type, full }: DefaultLayoutProps) => {
-
   const { data } = useQuery({
     queryKey: ["myInfo"],
     queryFn: fetchMyInfo,
     staleTime: 1000 * 60,
     refetchOnWindowFocus: false,
   });
-  const { data: followingData, isLoading } = useFollowing(data?.data.username || "");
 
   const [tabs, setTabs] = useState(false);
   const sidebarItems =
     type === "streamer" ? streamerSidebarItems : userSidebarItems;
+
+  const username = data?.data?.username || "";
+  const { data: followingData, isLoading } = useFollowing(username, {
+    enabled: type === "user" && !!username,
+  });
 
   return (
     <CustomThemeProvider>
@@ -77,11 +80,11 @@ const BlurContainer = styled.div`
   z-index: 11;
 `;
 
-const MainContainer = styled.main<{ full?: boolean, type: string }>`
+const MainContainer = styled.main<{ full?: boolean; type: string }>`
   flex: 1;
   min-height: calc(100vh - 67px);
   margin-top: 67px;
-  margin-left: ${({type}) => type === 'streamer' ? '0' : '60px'};
+  margin-left: ${({ type }) => (type === "streamer" ? "0" : "60px")};
   padding: 2em;
   box-sizing: border-box;
   display: flex;

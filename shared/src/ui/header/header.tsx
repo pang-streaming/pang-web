@@ -7,8 +7,9 @@ import { HiOutlineMoon } from "react-icons/hi";
 import { FiVideo } from "react-icons/fi";
 import { useThemeStore } from "../../store/theme/themeStore";
 import { LoginButton } from "../buttons/loginButton";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { PangLogo } from "../../asset/logo/pangLogo";
+import { tokenStorage } from "../../lib/cookie";
 
 interface HeaderProps {
   onClickMenu: () => void;
@@ -18,18 +19,29 @@ interface HeaderProps {
 export const Header = ({ onClickMenu, type }: HeaderProps) => {
   
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { mode, toggleTheme } = useThemeStore();
   const DarkLightModeIcon = mode === "dark" ? PiSunBold : HiOutlineMoon;
   const MoveButton = type === "user" ? FiVideo : PiMonitorBold;
 
-  const token = localStorage.getItem("accessToken");
+  const token = tokenStorage.getAccessToken();
   const isLoggedIn = token != null;
+  const from = searchParams.get("from");
 
   const handleMoveButtonClick = () => {
     if (type === "user") {
-      window.location.href = "http://localhost:5175/streaming";
+      window.location.href = "http://localhost:5174";
     } else {
-      window.location.href = " http://localhost:5174";
+      window.location.href = "http://localhost:5175";
+    }
+  };
+
+  const handleLogoClick = () => {
+    if (from === "streamer") {
+      // 스트리머에서 온 경우 스트리머 페이지로 돌아가기
+      window.location.href = "http://localhost:5174";
+    } else {
+      navigate("/");
     }
   };
 
@@ -39,13 +51,13 @@ export const Header = ({ onClickMenu, type }: HeaderProps) => {
         {type !== "streamer" && (
           <SidebarToggleButton size={28} onClick={onClickMenu} />
         )}
-        <PangLogo type={type} onClick={() => navigate("/")} cursor="pointer" />
+        <PangLogo type={type} onClick={handleLogoClick} cursor="pointer" />
       </LogoWrapper>
       {type === "user" && <SearchBar />}
       <ButtonWrapper>
         <HeaderButton Icon={MoveButton} onClick={handleMoveButtonClick} />
         <HeaderButton Icon={DarkLightModeIcon} onClick={toggleTheme} />
-        <LoginButton isLoggedIn={isLoggedIn} />
+        <LoginButton isLoggedIn={isLoggedIn} appType={type} />
       </ButtonWrapper>
     </HeaderContainer>
   );

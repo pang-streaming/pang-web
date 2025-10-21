@@ -27,7 +27,14 @@ export const api = axios.create({
 })
 
 api.interceptors.request.use((config) => {
-    const token = localStorage.getItem("accessToken");
+    const getCookie = (name: string) => {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop()?.split(';').shift();
+      return null;
+    };
+    
+    const token = getCookie("accessToken") || localStorage.getItem("accessToken");
     if (
       token &&
       config.url &&
@@ -43,10 +50,12 @@ api.interceptors.request.use((config) => {
 
 
   export const searchStream = async (keyword: string, pageable: Pageable) => {
-    const res = await api.post(`/stream/search/${keyword}`, null, {
+    const res = await api.post<StreamSearchResponse>(`/stream/search/${keyword}`, null, {
       params: pageable,
     });
-    return res.data;
+    console.log("검색 API 전체 응답:", res.data);
+    console.log("검색 결과 content:", res.data.data.content);
+    return res.data.data.content;
   };
 
 

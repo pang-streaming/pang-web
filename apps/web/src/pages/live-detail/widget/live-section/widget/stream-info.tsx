@@ -26,11 +26,12 @@ export const StreamInfo = ({ streamId, username, title, nickname }: StreamInfoPr
   });
 
   const { data: myFollowingData } = useMyFollowing(myInfo?.data?.username);
-
   const userInfo = queryClient.getQueryData(["otherUserInfo", username]);
   const isFollowingFromAPI = (userInfo as any)?.data?.isFollowed ?? false;
   const isFollowingFromList = myFollowingData?.data?.some(following => following.username === username) ?? false;
   const isFollowing = isFollowingFromAPI || isFollowingFromList;
+  
+  const otherUserProfileImage = (userInfo as any)?.data?.profileImage;
 
   const toggleFollow = () => {
     followMutate({ username, isFollowing });
@@ -41,7 +42,7 @@ export const StreamInfo = ({ streamId, username, title, nickname }: StreamInfoPr
       <StreamTitle>{title ?? "제목 없는 방송"}</StreamTitle>
       <StreamerInfoContainer>
         <UserContainer>
-          <UserProfile src={nomalProfile} onClick={handleOnClickProfile}/>
+          <UserProfile src={otherUserProfileImage || nomalProfile} onClick={handleOnClickProfile}/>
           <UserInfoWrapper>
             <UserName onClick={handleOnClickProfile}>{nickname || "unknown_user"}</UserName>
             <FollowerCount>팔로워 {followerCount.toLocaleString()}명</FollowerCount>

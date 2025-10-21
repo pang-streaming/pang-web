@@ -20,6 +20,8 @@ export const LastVideoList = ({videos, maxColumns}: LastVideoListProps) => {
 					username={video.username}
 					nickname={video.nickname}
 					profileImage={video.profileImage}
+                    viewCount={video.viewCount}
+                    thumbnail={video.thumbnail || ""}
 				/>
 			))}
 		</VideoListContainer>

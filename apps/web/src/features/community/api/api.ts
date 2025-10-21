@@ -12,7 +12,7 @@ export const uploadPost = async ({title, content, communityId, images} : {title:
   const res = await api.post("/post", {
     title: title,
     content: content,
-    communityId: 1,
+    communityId: communityId,
     images: images
   });
   return res.data;

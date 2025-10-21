@@ -5,14 +5,22 @@ import chevronRight from "@/app/assets/chevron-right.svg";
 import { useState } from "react";
 import { ProfileEditModal } from "./widget/profile-edit-modal";
 
+interface SettingsMenuProps {
+  from?: string | null;
+}
 
-export const SettingsMenu = () => {
+export const SettingsMenu = ({ from }: SettingsMenuProps) => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleLogout = () => {
     logoutUser();
-    navigate("/");
+    if (from === "streamer") {
+      // 스트리머에서 온 경우 스트리머 로그인 페이지로
+      window.location.href = "http://localhost:5174/login";
+    } else {
+      navigate("/");
+    }
   };
 
   const handleRecentVideo = () => {

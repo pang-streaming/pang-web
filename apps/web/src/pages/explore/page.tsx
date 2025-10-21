@@ -33,6 +33,8 @@ export const Explore = () => {
     nickname: video.nickname,
     profileImage: video.profileImage,
     followers: video.viewCount || 0,
+    viewCount: video.viewCount || 0,
+    thumbnail: video.thumbnail || video.url,
   }));
 
   const isLoading = activeTab === "live" ? livesLoading : videosLoading;

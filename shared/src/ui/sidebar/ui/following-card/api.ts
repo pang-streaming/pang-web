@@ -23,11 +23,12 @@ export interface FollowResponse {
     data: Follow[];
     timestamp: string
 }
-export const useFollowing = (username: string) => {
+export const useFollowing = (username: string, options?: { enabled?: boolean }) => {
     return useQuery<FollowResponse>({
       queryKey: ["following", username],
       queryFn: () => fetchMyFollowing(username),
-      staleTime: 1000 * 60, 
+      staleTime: 1000 * 60,
       refetchOnWindowFocus: false,
+      enabled: !!username && (options?.enabled ?? true),
     });
   };

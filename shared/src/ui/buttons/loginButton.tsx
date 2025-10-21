@@ -3,12 +3,14 @@ import styled from "styled-components";
 import NormalProfile from "../../asset/logo/normal_profile.svg?react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchMyInfo } from "../header/api";
+import { logoutUser } from "../auth/login-api";
 
 interface LoginButtonProps {
   isLoggedIn: boolean;
+  appType: "user" | "streamer";
 }
 
-export const LoginButton = ({ isLoggedIn }: LoginButtonProps) => {
+export const LoginButton = ({ isLoggedIn, appType }: LoginButtonProps) => {
   const navigate = useNavigate();
 
   const { data, isLoading } = useQuery({
@@ -21,6 +23,20 @@ export const LoginButton = ({ isLoggedIn }: LoginButtonProps) => {
 
   const profileImage = data?.data?.profileImage;
 
+  const handleLogout = () => {
+    logoutUser();
+    navigate("/login");
+  };
+
+  const handleProfileClick = () => {
+    if (appType === "streamer") {
+      // 스트리머 페이지의 마이페이지로 이동 (웹 포트)
+      window.location.href = "http://localhost:5175/mypage?from=streamer";
+    } else {
+      navigate("/mypage");
+    }
+  };
+
   if (!isLoggedIn) {
     return (
       <LoginButtonContent onClick={() => navigate("/login")}>
@@ -30,7 +46,7 @@ export const LoginButton = ({ isLoggedIn }: LoginButtonProps) => {
   }
 
   return (
-    <ProfileImageWrapper onClick={() => navigate("/mypage")}>
+    <ProfileImageWrapper onClick={handleProfileClick}>
       {isLoading ? (
         <NormalProfile />
       ) : profileImage ? (

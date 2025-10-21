@@ -4,7 +4,9 @@ import { Category, CategoryLiveResponse } from "../model/category"
 
 export const fetchCategory = async (): Promise<Category[]> => {
     const res =  await api.get("/categories");
-    return (res.data?.data ?? res.data) as Category[];
+    const data = res.data?.data ?? res.data;
+    // Ensure we always return an array
+    return Array.isArray(data) ? data : [];
 }
 
 export const fetchFilteredCategory = async () => {

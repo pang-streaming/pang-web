@@ -12,25 +12,17 @@ interface PostDetailProps {
 }
 
 export const PostDetail = ({ post, onLike, isLikePending }: PostDetailProps) => {
-  const { data: myInfo } = useQuery({
-    queryKey: ["myInfo"],
-    queryFn: fetchMyInfo,
+  const { data } = useQuery({
+    queryKey: ["otherUserInfo", post.username],
+    queryFn: () => fetchOtherUserInfo({ username: post.username }),
     staleTime: 1000 * 60,
     refetchOnWindowFocus: false,
   });
-  // const { data } = useQuery({
-  //   queryKey: ["otherUserInfo"],
-  //   queryFn: () => {
-  //     fetchOtherUserInfo(post.)
-  //   },
-  //   staleTime: 1000 * 60,
-  //   refetchOnWindowFocus: false,
-  // });
   return (
     <S.PostContainer>
       <S.PostHeader>
         <S.AuthorInfo>
-          <S.AuthorAvatar src={normalProfile} />
+        <S.AuthorAvatar src={data?.data?.profileImage || normalProfile} />
           <S.AuthorDetails>
             <S.AuthorName>{post.nickname}</S.AuthorName>
             <S.PostDate>
