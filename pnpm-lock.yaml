@@ -115,32 +115,7 @@ importers:
         specifier: ^4.8.1
         version: 4.8.1
 
-  apps/streammer:
-    dependencies:
-      '@dnd-kit/core':
-        specifier: ^6.3.1
-        version: 6.3.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
-      '@dnd-kit/sortable':
-        specifier: ^10.0.0
-        version: 10.0.0(@dnd-kit/core@6.3.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)
-      '@editorjs/editorjs':
-        specifier: ^2.31.0
-        version: 2.31.0
-      '@editorjs/list':
-        specifier: ^2.0.8
-        version: 2.0.8
-      '@hello-pangea/dnd':
-        specifier: ^18.0.1
-        version: 18.0.1(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
-      '@pixiv/three-vrm':
-        specifier: ^2.1.0
-        version: 2.1.3(@types/three@0.164.1)(three@0.164.1)
-      kalidokit:
-        specifier: ^1.1.5
-        version: 1.1.5
-      three:
-        specifier: ^0.164.1
-        version: 0.164.1
+  apps/streammer: {}
 
   apps/web:
     dependencies:
@@ -162,9 +137,30 @@ importers:
 
   shared:
     dependencies:
+      '@dnd-kit/core':
+        specifier: ^6.3.1
+        version: 6.3.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@dnd-kit/sortable':
+        specifier: ^10.0.0
+        version: 10.0.0(@dnd-kit/core@6.3.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)
+      '@editorjs/editorjs':
+        specifier: ^2.31.0
+        version: 2.31.0
+      '@editorjs/list':
+        specifier: ^2.0.8
+        version: 2.0.8
+      '@hello-pangea/dnd':
+        specifier: ^18.0.1
+        version: 18.0.1(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@pixiv/three-vrm':
+        specifier: ^2.1.0
+        version: 2.1.3(@types/three@0.164.1)(three@0.164.1)
       '@swc/helpers':
         specifier: ^0.5.17
         version: 0.5.17
+      kalidokit:
+        specifier: ^1.1.5
+        version: 1.1.5
       react:
         specifier: ^19.1.1
         version: 19.2.0
@@ -177,6 +173,9 @@ importers:
       styled-components:
         specifier: ^6.1.19
         version: 6.1.19(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      three:
+        specifier: ^0.164.1
+        version: 0.164.1
       vite-plugin-svgr:
         specifier: ^4.5.0
         version: 4.5.0(rollup@4.52.5)(typescript@5.8.3)(vite@7.1.11(@types/node@24.9.1))
