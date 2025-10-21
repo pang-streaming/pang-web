@@ -54,3 +54,4 @@ const AmountInput = styled.input`
     color: ${({theme}) => theme.colors.text.subtitle};
   }
 `;
+

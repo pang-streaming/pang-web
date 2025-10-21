@@ -6,7 +6,11 @@ function App() {
   return (
     <Routes>
       <Route element={<DefaultLayout type="streamer" />}>
+<<<<<<< HEAD
         <Route path="/streaming" element={<StreamingPage />} />
+=======
+        <Route path="/" element={<StreamingPage />} />
+>>>>>>> main
       </Route>
     </Routes>
   );
