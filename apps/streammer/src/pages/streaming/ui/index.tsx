@@ -52,7 +52,7 @@ const StreamingPage = () => {
           await refetchMyInfo();
           } else {
             console.log('STREAMER이므로 스트림 키를 조회합니다.');
-            const response = await fetchStreamKey({ 'stream-type': 'WHIP' });
+            const response = await fetchStreamKey();
             
             if (response.data?.streamKey) {
               console.log('스트림 키 조회 성공:', response.data.streamKey);
