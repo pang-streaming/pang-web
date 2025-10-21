@@ -35,6 +35,7 @@ api.interceptors.request.use((config) => {
     };
     
     const token = getCookie("accessToken") || localStorage.getItem("accessToken");
+    console.log('[API 인터셉터] 요청 URL:', config.url, '토큰:', token ? '있음' : '없음');
     if (
       token &&
       config.url &&
@@ -68,7 +69,7 @@ export const fetchMyInfo = async (): Promise<UserResponse> => {
   };
 
   export type Gender = "MALE" | "FEMALE" | "OTHER";
-export type Role = "USER" | "ADMIN"; 
+export type Role = "USER" | "ADMIN" | "STREAMER"; 
 
 export interface User {
   id: string;             
