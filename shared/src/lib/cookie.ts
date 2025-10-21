@@ -5,23 +5,15 @@ const REFRESH_TOKEN_KEY = 'refreshToken';
 
 // 도메인 자동 감지 함수
 const getCookieDomain = (): string | undefined => {
-  // 환경 변수가 있으면 우선 사용
   if (import.meta.env.VITE_COOKIE_DOMAIN) {
     return import.meta.env.VITE_COOKIE_DOMAIN;
   }
   
-  // 현재 호스트가 euns.dev 서브도메인이면 .euns.dev 사용
   const hostname = window.location.hostname;
-  if (hostname.endsWith('.euns.dev')) {
-    return '.euns.dev';
-  }
-  
-  // localhost 개발 환경
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
     return 'localhost';
   }
   
-  // 기본값은 undefined (현재 도메인만)
   return undefined;
 };
 
