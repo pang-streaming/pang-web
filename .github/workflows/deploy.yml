@@ -35,14 +35,21 @@ jobs:
           pnpm --filter web build
           pnpm --filter streammer build
           pnpm --filter embed build
+          
+      - name: Verify build outputs
+        run: |
+          echo "Checking build outputs..."
+          ls -la apps/web/dist/ || echo "web/dist not found"
+          ls -la apps/streammer/dist/ || echo "streammer/dist not found"
+          ls -la apps/embed/dist/ || echo "embed/dist not found"
 
       - name: Prepare artifacts (dist only)
         run: |
           mkdir -p out/apps/web out/apps/streammer out/apps/embed
           mkdir -p out/apps/web/dist out/apps/streammer/dist out/apps/embed/dist
-          cp -r apps/web/dist/* out/apps/web/dist/
-          cp -r apps/streammer/dist/* out/apps/streammer/dist/
-          cp -r apps/embed/dist/* out/apps/embed/dist/
+          if [ -d "apps/web/dist" ]; then cp -r apps/web/dist/* out/apps/web/dist/; fi
+          if [ -d "apps/streammer/dist" ]; then cp -r apps/streammer/dist/* out/apps/streammer/dist/; fi
+          if [ -d "apps/embed/dist" ]; then cp -r apps/embed/dist/* out/apps/embed/dist/; fi
 
       - name: Write SSL certificates into artifacts
         run: |
