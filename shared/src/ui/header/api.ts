@@ -52,13 +52,13 @@ api.interceptors.request.use((config) => {
 
 
 export const fetchMyInfo = async (): Promise<UserResponse> => {
-    const res = await api.get("/user/me");
-    const data = await res.data;
-    console.log("내 정보 : ", data);
-    return data;
-  };
+  const res = await api.get("/user/me");
+  const data = await res.data;
+  console.log("내 정보 : ", data);
+  return data;
+};
 
-  export type Gender = "MALE" | "FEMALE" | "OTHER";
+export type Gender = "MALE" | "FEMALE" | "OTHER";
 export type Role = "USER" | "ADMIN"; 
 
 export interface User {

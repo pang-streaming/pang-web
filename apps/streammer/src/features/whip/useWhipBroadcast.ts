@@ -35,8 +35,6 @@ export const useWhipBroadcast = (
   const audioSenderRef = useRef<RTCRtpSender | null>(null);
   const lastFrameTime = useRef<number>(0);
   const frameCounter = useRef<number>(0);
-	
-	// 오디오 믹싱 - Zustand store에서 자동으로 가져옴
 	const mixedAudioTrack = useAudioMixer();
 	
 	// FPS 계산을 위한 함수
@@ -147,13 +145,14 @@ export const useWhipBroadcast = (
           };
         }
       });
-
+			
+			const whipUrl = config.whipUrl + config.bearerToken;
+			
       // WHIP 서버에 연결
-      const response = await fetch(config.whipUrl, {
+      const response = await fetch(whipUrl, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/sdp',
-          ...(config.bearerToken && { 'Authorization': `Bearer ${config.bearerToken}` }),
+          'Content-Type': 'application/sdp'
         },
         body: pc.localDescription?.sdp,
       });
