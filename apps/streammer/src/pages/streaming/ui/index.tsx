@@ -8,7 +8,8 @@ import { AddSourceModal } from '../../../features/modal/components/AddSourceModa
 import { useAddSourceModal } from '../../../features/modal/hooks/useAddSourceModal';
 import { type Screen } from '../../../features/canvas/constants/canvas-constants';
 import { useAudioStore } from '../../../features/audio/stores/useAudioStore';
-import { fetchStreamKey, createStreamKey } from '../../../features/stream/api';
+import { fetchStreamKey, createStreamKey, fetchMyInfo } from '../../../features/stream/api';
+import { useQuery } from '@tanstack/react-query';
 
 const StreamingPage = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -23,6 +24,14 @@ const StreamingPage = () => {
   const [isVTuberEnabled, setIsVTuberEnabled] = useState(false);
   const [streamKey, setStreamKey] = useState<string | null>(null);
   const [isLoadingKey, setIsLoadingKey] = useState(true);
+
+  // 내 정보 불러오기
+  const { data: myInfo, isLoading: isLoadingMyInfo } = useQuery({
+    queryKey: ['myInfo'],
+    queryFn: fetchMyInfo,
+    staleTime: 1000 * 60,
+    refetchOnWindowFocus: false,
+  });
 
   useEffect(() => {
     const initializeStreamKey = async () => {
@@ -140,10 +149,31 @@ const StreamingPage = () => {
 	      </VideoWrapper>
         <ChatSection>
           <h2>채팅 영역</h2>
-          {/* <StreamKeyInfo> */}
-            {/* <StreamKeyLabel>스트림 키:</StreamKeyLabel>
-            <StreamKeyValue>{streamKey}</StreamKeyValue> */}
-          {/* </StreamKeyInfo> */}
+          
+          {myInfo?.data && (
+            <UserInfoBox>
+              <InfoLabel>사용자 정보</InfoLabel>
+              <InfoRow>
+                <InfoKey>닉네임:</InfoKey>
+                <InfoValue>{myInfo.data.nickname}</InfoValue>
+              </InfoRow>
+              <InfoRow>
+                <InfoKey>이메일:</InfoKey>
+                <InfoValue>{myInfo.data.email}</InfoValue>
+              </InfoRow>
+              <InfoRow>
+                <InfoKey>커뮤니티 ID:</InfoKey>
+                <InfoValue>{myInfo.data.communityId || '없음'}</InfoValue>
+              </InfoRow>
+            </UserInfoBox>
+          )}
+
+          {streamKey && (
+            <StreamKeyInfo>
+              <StreamKeyLabel>스트림 키:</StreamKeyLabel>
+              <StreamKeyValue>{streamKey}</StreamKeyValue>
+            </StreamKeyInfo>
+          )}
         </ChatSection>
       </DashboardContainer>
       
@@ -240,6 +270,43 @@ const RetryButton = styled.button`
   &:hover {
     background-color: ${({ theme }) => theme.colors.hover.normal};
   }
+`;
+
+const UserInfoBox = styled.div`
+  margin-top: 15px;
+  padding: 15px;
+  background-color: ${({ theme }) => theme.colors.background.normal};
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+const InfoLabel = styled.div`
+  font-size: 16px;
+  color: ${({ theme }) => theme.colors.text.normal};
+  font-weight: bold;
+  margin-bottom: 5px;
+`;
+
+const InfoRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+`;
+
+const InfoKey = styled.div`
+  font-size: 13px;
+  color: ${({ theme }) => theme.colors.text.subtitle};
+  font-weight: 500;
+`;
+
+const InfoValue = styled.div`
+  font-size: 13px;
+  color: ${({ theme }) => theme.colors.text.normal};
+  word-break: break-word;
+  text-align: right;
 `;
 
 const StreamKeyInfo = styled.div`
