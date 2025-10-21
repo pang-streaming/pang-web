@@ -25,7 +25,7 @@ const StreamingPage = () => {
   const [streamKey, setStreamKey] = useState<string | null>(null);
   const [isLoadingKey, setIsLoadingKey] = useState(true);
 
-  const { data: myInfo, isLoading: isLoadingMyInfo } = useQuery({
+  const { data: myInfo, isLoading: isLoadingMyInfo, refetch: refetchMyInfo } = useQuery({
     queryKey: ['myInfo'],
     queryFn: fetchMyInfo,
     staleTime: 1000 * 60,
@@ -33,45 +33,45 @@ const StreamingPage = () => {
   });
 
   useEffect(() => {
+    if (isLoadingMyInfo || !myInfo?.data) {
+      return;
+    }
+
     const initializeStreamKey = async () => {
       try {
         setIsLoadingKey(true);
-        const response = await fetchStreamKey();
+        const userRole = myInfo.data.role;
+        console.log('내 정보 로드 완료. Role:', userRole);
         
-        if (response.data?.streamKey) {
-          console.log('스트림 키 불러오기 성공:', response.data.streamKey);
-          setStreamKey(response.data.streamKey);
-        } else {
-          console.log('스트림 키가 없어서 새로 발급합니다.');
-          const createResponse = await createStreamKey();
-          if (createResponse.data?.streamKey) {
-            console.log('스트림 키 발급 성공:', createResponse.data.streamKey);
-            setStreamKey(createResponse.data.streamKey);
-          }
-        }
-      } catch (error: any) {
-        console.error('스트림 키 불러오기 실패:', error);
-        
-        if (error.response?.status === 404 || error.response?.status === 400) {
-          try {
-            console.log('키가 없어서 새로 발급을 시도합니다.');
-            const createResponse = await createStreamKey();
-            if (createResponse.data?.streamKey) {
-              console.log('스트림 키 발급 성공:', createResponse.data.streamKey);
-              setStreamKey(createResponse.data.streamKey);
+        if (userRole !== 'STREAMER') {
+          console.log('STREAMER가 아니므로 스트림 키를 발급합니다.');
+          const createResponse = await createStreamKey({ 'stream-type': 'WHIP' });
+          console.log('스트림 키 발급 성공:', createResponse.data.streamKey);
+          setStreamKey(createResponse.data.streamKey);
+          
+          await refetchMyInfo();
+          } else {
+            console.log('STREAMER이므로 스트림 키를 조회합니다.');
+            const response = await fetchStreamKey({ 'stream-type': 'WHIP' });
+            
+            if (response.data?.streamKey) {
+              console.log('스트림 키 조회 성공:', response.data.streamKey);
+              setStreamKey(response.data.streamKey);
+            } else {
+              console.log('응답에 스트림 키가 없습니다.');
+              alert('스트림 키를 찾을 수 없습니다.');
             }
-          } catch (createError) {
-            console.error('스트림 키 발급 실패:', createError);
-            alert('스트림 키 발급에 실패했습니다. 페이지를 새로고침해주세요.');
           }
-        }
+      } catch (error: any) {
+        console.error('스트림 키 처리 실패:', error);
+        alert('스트림 키 처리 중 오류가 발생했습니다.');
       } finally {
         setIsLoadingKey(false);
       }
     };
 
     initializeStreamKey();
-  }, []);
+  }, [myInfo, isLoadingMyInfo, refetchMyInfo]);
 
   const handleAddScreen = (screen: Screen) => {
     addScreen(screen);
