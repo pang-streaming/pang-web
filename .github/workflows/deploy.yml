@@ -28,7 +28,7 @@ jobs:
           if [ -n "${{ secrets.ENV }}" ]; then echo "${{ secrets.ENV }}" > .env; fi
 
       - name: Install dependencies
-        run: pnpm -w install --no-frozen-lockfile
+        run: pnpm -w install
 
       - name: Build apps
         run: |
