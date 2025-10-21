@@ -1,0 +1,97 @@
+name: Deploy to EC2
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Write environment variables (.env at repo root)
+        run: |
+          if [ -n "${{ secrets.ENV }}" ]; then echo "${{ secrets.ENV }}" > .env; fi
+      - name: Install dependencies
+        run: pnpm -w install
+      - name: Build apps
+        run: |
+          pnpm --filter web build
+          pnpm --filter streammer build
+          pnpm --filter embed build
+
+      - name: Verify build outputs
+        run: |
+          echo "Checking build outputs..."
+          ls -la apps/web/dist/ || echo "web/dist not found"
+          ls -la apps/streammer/dist/ || echo "streammer/dist not found"
+          ls -la apps/embed/dist/ || echo "embed/dist not found"
+      - name: Prepare artifacts (dist only)
+        run: |
+          mkdir -p out/apps/web out/apps/streammer out/apps/embed
+          mkdir -p out/apps/web/dist out/apps/streammer/dist out/apps/embed/dist
+          if [ -d "apps/web/dist" ]; then cp -r apps/web/dist/* out/apps/web/dist/; fi
+          if [ -d "apps/streammer/dist" ]; then cp -r apps/streammer/dist/* out/apps/streammer/dist/; fi
+          if [ -d "apps/embed/dist" ]; then cp -r apps/embed/dist/* out/apps/embed/dist/; fi
+      - name: Write SSL certificates into artifacts
+        run: |
+          if [ -n "${{ secrets.SSL_CERT }}" ] && [ -n "${{ secrets.SSL_KEY }}" ]; then \
+            mkdir -p out/deploy/certs; \
+            printf "%s" "${{ secrets.SSL_CERT }}" > out/deploy/certs/wildcard.euns.dev.crt; \
+            printf "%s" "${{ secrets.SSL_KEY }}" > out/deploy/certs/wildcard.euns.dev.key; \
+            cp out/deploy/certs/wildcard.euns.dev.crt out/deploy/certs/pang.euns.dev.crt; \
+            cp out/deploy/certs/wildcard.euns.dev.key out/deploy/certs/pang.euns.dev.key; \
+            cp out/deploy/certs/wildcard.euns.dev.crt out/deploy/certs/pang-streamer.euns.dev.crt; \
+            cp out/deploy/certs/wildcard.euns.dev.key out/deploy/certs/pang-streamer.euns.dev.key; \
+            cp out/deploy/certs/wildcard.euns.dev.crt out/deploy/certs/pang-embed.euns.dev.crt; \
+            cp out/deploy/certs/wildcard.euns.dev.key out/deploy/certs/pang-embed.euns.dev.key; \
+          fi
+      - name: Upload artifacts via SCP
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "out/**,docker-compose.yml,deploy/**"
+          target: "/home/ec2-user/pang-frontend"
+          overwrite: true
+
+      - name: Remote deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+            sudo mkdir -p /var/www/pang/web /var/www/pang/streammer /var/www/pang/embed
+            sudo rsync -az --delete /home/ec2-user/pang-frontend/out/apps/web/dist/ /var/www/pang/web/
+            sudo rsync -az --delete /home/ec2-user/pang-frontend/out/apps/streammer/dist/ /var/www/pang/streammer/
+            sudo rsync -az --delete /home/ec2-user/pang-frontend/out/apps/embed/dist/ /var/www/pang/embed/
+            
+            # Docker Compose 실행
+            cd /home/ec2-user/pang-frontend
+            if [ -f "docker-compose.yml" ]; then \
+              docker-compose up -d; \
+            else \
+              echo "docker-compose.yml not found"; \
+            fi
+            
+            # SSL 인증서 업데이트
+            if [ -d "/home/ec2-user/pang-frontend/out/deploy/certs" ]; then \
+              if docker ps -q -f name=nginx-proxy | grep -q .; then \
+                docker cp /home/ec2-user/pang-frontend/out/deploy/certs/. nginx-proxy:/etc/nginx/certs/ || true; \
+                docker restart nginx-proxy || true; \
+              else \
+                echo "nginx-proxy container not found, skipping SSL certificate update"; \
+              fi; \
+            fi
