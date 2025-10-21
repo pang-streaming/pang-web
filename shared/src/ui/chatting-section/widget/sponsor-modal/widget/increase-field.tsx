@@ -1,9 +1,5 @@
-
-import React from "react";
-import styled from "styled-components";
-import { MyPungField } from "./my-pung-field";
-
-
+import React from 'react'
+import styled from 'styled-components';
 
 interface IncreaseFieldProps {
   pungAmount: number;
@@ -11,37 +7,51 @@ interface IncreaseFieldProps {
 }
 
 export const IncreaseField = ({ pungAmount, onPungChange }: IncreaseFieldProps) => {
-  const handleChipClick = (amount: number) => {
-    onPungChange(pungAmount + amount);
-  };
-
   return (
     <Container>
-      <MyPungField  userCash={pungAmount} />
-      <AmountChipRow>
-        {/* <AmountChip amount={1000} onClick={() => handleChipClick(1000)} />
-        <AmountChip amount={5000} onClick={() => handleChipClick(5000)} />
-        <AmountChip amount={10000} onClick={() => handleChipClick(10000)} />
-        <AmountChip amount={50000} onClick={() => handleChipClick(50000)} /> */}
-      </AmountChipRow>
+      <Text>후원할 펑</Text>
+      <AmountInput
+        type="number"
+        value={pungAmount}
+        onChange={(e) => onPungChange(Number(e.target.value))}
+        placeholder="0"
+        min="0"
+      />
     </Container>
   );
 };
 
 const Container = styled.div`
-  padding: 20px 16px 13px 16px;
+  padding: 20px 16px 16px 16px;
   box-sizing: border-box;
   width: 100%;
   display: flex;
-  flex-direction: column;
-  height: 114px;
+  justify-content: space-between;
+  align-items: center;
+
   border-radius: ${({ theme }) => theme.borders.large};
   background-color: transparent;
-  justify-content: space-between;
   border: 1px solid #262626;
 `;
 
-const AmountChipRow = styled.div`
-  display: flex;
-  gap: 5px;
+const Text = styled.span`
+  font-size: ${({theme}) => theme.font.large};
+  font-weight: 600;
+  color: ${({theme}) => theme.colors.text.subtitle};
 `;
+
+const AmountInput = styled.input`
+  font-size: ${({theme}) => theme.font.large};
+  font-weight: 900;
+  color: ${({theme}) => theme.colors.primary.normal};
+  background: transparent;
+  border: none;
+  outline: none;
+  text-align: right;
+  width: 100px;
+  
+  &::placeholder {
+    color: ${({theme}) => theme.colors.text.subtitle};
+  }
+`;
+

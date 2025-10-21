@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useState} from "react";
-import {CanvasSize, Screen} from "@/features/canvas/constants/canvas-constants";
-import {useAudioStore} from "@/features/audio/stores/useAudioStore";
+import { type CanvasSize, type Screen } from "../constants/canvas-constants";
+import {useAudioStore} from "../../audio/stores/useAudioStore";
 
 interface ScreenManagement {
 	screens: Screen[];

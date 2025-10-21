@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { useAudioStore } from "@/features/audio/stores/useAudioStore";
+import { useAudioStore } from "../../../../features/audio/stores/useAudioStore";
 
 interface VolumeMeterProps {
   label: string;

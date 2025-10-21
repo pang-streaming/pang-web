@@ -46,19 +46,20 @@ export const DefaultLayout = ({ type, full }: DefaultLayoutProps) => {
           sidebarItems={sidebarItems}
           type={type}
         >
-          {isLoading ? (
-            <></>
+         {isLoading ? (
+            <>
+              
+            </>
           ) : (
             followingData?.data.map((user) => (
-              <FollowingCard
+              <FollowingCard 
                 key={user.username}
-                profileImage={user.image}
+                profileImage={user.image} 
                 nickname={user.nickname}
                 username={user.username}
                 isSidebarOpen={tabs}
               />
-            ))
-          )}
+            )))}
         </Sidebar>
       )}
       <Header onClickMenu={() => setTabs(!tabs)} type={type} />

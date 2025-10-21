@@ -9,6 +9,7 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "composite": true,
+    "noEmitOnError": false,
     "baseUrl": ".",
     "paths": {
       "@pang/shared/*": ["shared/src/*"]
