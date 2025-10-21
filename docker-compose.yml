@@ -1,0 +1,63 @@
+version: "3.8"
+
+services:
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy:1.6
+    container_name: nginx-proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deploy/certs:/etc/nginx/certs:ro
+      - ./deploy/vhost.d:/etc/nginx/vhost.d
+      - ./deploy/html:/usr/share/nginx/html
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    networks:
+      - proxy-tier
+
+  web:
+    build:
+      context: .
+      dockerfile: deploy/dockerfiles/web.Dockerfile
+    container_name: pang-web
+    restart: unless-stopped
+    environment:
+      - VIRTUAL_HOST=pang.euns.dev
+      - VIRTUAL_PORT=80
+    networks:
+      - proxy-tier
+    depends_on:
+      - nginx-proxy
+
+  streammer:
+    build:
+      context: .
+      dockerfile: deploy/dockerfiles/streamer.Dockerfile
+    container_name: pang-streammer
+    restart: unless-stopped
+    environment:
+      - VIRTUAL_HOST=pang-streamer.euns.dev
+      - VIRTUAL_PORT=80
+    networks:
+      - proxy-tier
+    depends_on:
+      - nginx-proxy
+
+  embed:
+    build:
+      context: .
+      dockerfile: deploy/dockerfiles/embed.Dockerfile
+    container_name: pang-embed
+    restart: unless-stopped
+    environment:
+      - VIRTUAL_HOST=pang-embed.euns.dev
+      - VIRTUAL_PORT=80
+    networks:
+      - proxy-tier
+    depends_on:
+      - nginx-proxy
+
+networks:
+  proxy-tier:
+    driver: bridge

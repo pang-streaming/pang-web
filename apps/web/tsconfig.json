@@ -1,0 +1,20 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
+  "references": [
+    { "path": "../../shared" },
+    // { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ],
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.png",
+    "**/*.svg"
+, "src/features/follow/ui/following-card/index.tsx"  ]
+}

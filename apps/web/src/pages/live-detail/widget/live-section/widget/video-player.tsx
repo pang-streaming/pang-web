@@ -1,0 +1,66 @@
+import { useRef, useState } from "react";
+import Pause from "@/app/assets/pause.svg?react";
+import { VideoControls } from "./video-controlls";
+import { useHlsPlayer } from "@/entities/stream/model/useHlsPlayer";
+import * as V from "@/entities/video/model/index";
+import * as S from "../style";
+import { useHover, useVolume, useFullScreen } from "@/entities/video/model";
+
+interface VideoPlayerProps {
+  streamUrl?: string;
+  isMobile: boolean;
+}
+
+export const VideoPlayer = ({ streamUrl, isMobile }: VideoPlayerProps) => {
+  const [hoverRef, hover] = useHover<HTMLDivElement>();
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { volume, muted, updateVolume, toggleMuted } = useVolume(videoRef);
+  const [pause, setPause] = useState(false);
+  const { handleFullScreen } = useFullScreen(containerRef);
+  const videoReady = V.useVideoReady(videoRef);
+  const { handlePip } = V.usePip(videoRef);
+  useHlsPlayer(videoRef, streamUrl);  
+
+  const handlePause = () => {
+    setPause(!pause);
+  };
+
+  return (
+    <S.VideoContainer ref={hoverRef}>
+      <S.VideoWrapperInner ref={containerRef}>
+        {streamUrl && (
+          <S.VideoOverlayArea>
+            <S.Video
+              ref={videoRef}
+              autoPlay
+              playsInline
+              muted={muted}
+              onClick={handlePause}
+              controls={false}
+              disablePictureInPicture={false}
+            />
+          </S.VideoOverlayArea>
+        )}
+        {pause && (
+          <S.VideoCenterController>
+            <Pause />
+          </S.VideoCenterController>
+        )}
+        <VideoControls
+          isVisible={hover}
+          isMobile={isMobile}
+          pause={pause}
+          volume={volume}
+          muted={muted}
+          videoRef={videoRef}
+          onPause={handlePause}
+          onToggleMuted={toggleMuted}
+          onUpdateVolume={updateVolume}
+          onPip={handlePip}
+          onFullScreen={handleFullScreen}
+        />
+      </S.VideoWrapperInner>
+    </S.VideoContainer>
+  );
+};
