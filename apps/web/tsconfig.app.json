@@ -3,7 +3,6 @@
   "compilerOptions": {
     "noEmit": true,
     "allowImportingTsExtensions": true,
-    allowImportingTsExtensions
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "useDefineForClassFields": true,
     "verbatimModuleSyntax": true,

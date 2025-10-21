@@ -1,5 +1,5 @@
 import {useEffect, useRef, useState} from 'react';
-import {useAudioStore} from "@/features/audio/stores/useAudioStore";
+import {useAudioStore} from "../stores/useAudioStore";
 
 export const useAudioMixer = () => {
   const [mixedTrack, setMixedTrack] = useState<MediaStreamTrack | null>(null);

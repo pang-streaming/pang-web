@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Screen, CanvasSize } from '@/features/canvas/constants/canvas-constants';
-import { useAudioStore } from '@/features/audio/stores/useAudioStore';
+import { type Screen, type CanvasSize } from "../../../features/canvas/constants/canvas-constants";
+import { useAudioStore } from "../../../features/audio/stores/useAudioStore";
 
 interface ScreenShareOptionProps {
   canvasSize: CanvasSize;

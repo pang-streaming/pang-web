@@ -1,11 +1,11 @@
 import React, {useEffect, useRef} from "react";
 import styled from "styled-components";
 import { AiOutlineEye, AiOutlineHeart } from "react-icons/ai";
-import {LiveCanvas} from "@/features/canvas/ui/live-canvas";
-import {CanvasSize, Screen} from "@/features/canvas/constants/canvas-constants";
+import {LiveCanvas} from "../../../../features/canvas/ui/live-canvas";
+import { type CanvasSize, type Screen } from "../../../../features/canvas/constants/canvas-constants";
 import {VscDebugStart, VscDebugStop} from "react-icons/vsc";
-import { useWhipBroadcast } from "@/features/whip/useWhipBroadcast";
-import {useVrmScreen} from "@/features/vrm/hooks/useVrmScreen";
+import { useWhipBroadcast } from "../../../../features/whip/useWhipBroadcast";
+import {useVrmScreen} from "../../../../features/vrm/hooks/useVrmScreen";
 
 interface VideoProps {
 	containerRef: React.RefObject<HTMLDivElement | null>;

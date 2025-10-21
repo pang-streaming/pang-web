@@ -2,12 +2,12 @@ import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import { Video } from './components/video';
 import { StreamSetting } from './components/streamSetting';
-import { useCanvasSize } from '@/features/canvas/hooks/useCanvasSize';
-import { useScreenManagement } from '@/features/canvas/hooks/useScreenManagement';
-import { AddSourceModal } from '@/features/modal/components/AddSourceModal';
-import { useAddSourceModal } from '@/features/modal/hooks/useAddSourceModal';
-import { Screen } from '@/features/canvas/constants/canvas-constants';
-import { useAudioStore } from '@/features/audio/stores/useAudioStore';
+import { useCanvasSize } from '../../../features/canvas/hooks/useCanvasSize';
+import { useScreenManagement } from '../../../features/canvas/hooks/useScreenManagement';
+import { AddSourceModal } from '../../../features/modal/components/AddSourceModal';
+import { useAddSourceModal } from '../../../features/modal/hooks/useAddSourceModal';
+import { type Screen } from '../../../features/canvas/constants/canvas-constants';
+import { useAudioStore } from '../../../features/audio/stores/useAudioStore';
 
 const StreamingPage = () => {
   const containerRef = useRef<HTMLDivElement>(null);

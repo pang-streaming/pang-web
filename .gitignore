@@ -32,6 +32,12 @@ out/
 build
 dist
 
+<<<<<<< HEAD
+# TypeScript
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+=======
+>>>>>>> main
 
 # Debug
 npm-debug.log*
@@ -42,4 +48,9 @@ yarn-error.log*
 .DS_Store
 *.pem
 
+<<<<<<< HEAD
+# Lock files
+# pnpm-lock.yaml
+=======
 pnpm-lock.yaml
+>>>>>>> main
