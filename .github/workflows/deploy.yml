@@ -74,7 +74,6 @@ jobs:
           source: "out/**,docker-compose.yml"
           target: "/home/ec2-user/pang-frontend"
           overwrite: true
-          strip_components: 1
 
       - name: Remote deploy
         uses: appleboy/ssh-action@v1.0.3
@@ -85,9 +84,9 @@ jobs:
           script: |
             set -e
             sudo mkdir -p /var/www/pang/web /var/www/pang/streammer /var/www/pang/embed
-            sudo rsync -az --delete /home/ec2-user/pang-frontend/apps/web/dist/ /var/www/pang/web/
-            sudo rsync -az --delete /home/ec2-user/pang-frontend/apps/streammer/dist/ /var/www/pang/streammer/
-            sudo rsync -az --delete /home/ec2-user/pang-frontend/apps/embed/dist/ /var/www/pang/embed/
+            sudo rsync -az --delete /home/ec2-user/pang-frontend/out/apps/web/dist/ /var/www/pang/web/
+            sudo rsync -az --delete /home/ec2-user/pang-frontend/out/apps/streammer/dist/ /var/www/pang/streammer/
+            sudo rsync -az --delete /home/ec2-user/pang-frontend/out/apps/embed/dist/ /var/www/pang/embed/
             
             # Docker Compose 실행
             cd /home/ec2-user/pang-frontend
@@ -98,9 +97,9 @@ jobs:
             fi
             
             # SSL 인증서 업데이트
-            if [ -d "/home/ec2-user/pang-frontend/deploy/certs" ]; then \
+            if [ -d "/home/ec2-user/pang-frontend/out/deploy/certs" ]; then \
               if docker ps -q -f name=nginx-proxy | grep -q .; then \
-                docker cp /home/ec2-user/pang-frontend/deploy/certs/. nginx-proxy:/etc/nginx/certs/ || true; \
+                docker cp /home/ec2-user/pang-frontend/out/deploy/certs/. nginx-proxy:/etc/nginx/certs/ || true; \
                 docker restart nginx-proxy || true; \
               else \
                 echo "nginx-proxy container not found, skipping SSL certificate update"; \
