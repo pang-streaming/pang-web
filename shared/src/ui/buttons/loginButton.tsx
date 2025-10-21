@@ -31,7 +31,7 @@ export const LoginButton = ({ isLoggedIn, appType }: LoginButtonProps) => {
   const handleProfileClick = () => {
     if (appType === "streamer") {
       
-      window.location.href = `${import.meta.env.PANG_URL}/mypage?from=streamer`;
+      window.location.href = `${import.meta.env.VITE_PANG_URL}/mypage?from=streamer`;
     } else {
       navigate("/mypage");
     }
