@@ -88,10 +88,19 @@ jobs:
             sudo rsync -az --delete /home/ec2-user/pang-frontend/out/apps/streammer/dist/ /var/www/pang/streammer/
             sudo rsync -az --delete /home/ec2-user/pang-frontend/out/apps/embed/dist/ /var/www/pang/embed/
             
-            # Docker Compose 실행
+            # Docker Compose 재시작
             cd /home/ec2-user/pang-frontend
             if [ -f "docker-compose.yml" ]; then \
+              echo "Checking Docker Compose status..."; \
+              if docker-compose ps -q | grep -q .; then \
+                echo "Stopping existing containers..."; \
+                docker-compose down; \
+              else \
+                echo "No running containers found"; \
+              fi; \
+              echo "Starting containers..."; \
               docker-compose up -d; \
+              echo "Docker Compose started successfully"; \
             else \
               echo "docker-compose.yml not found"; \
             fi
