@@ -28,18 +28,22 @@ export const Header = ({ onClickMenu, type }: HeaderProps) => {
   const isLoggedIn = token != null;
   const from = searchParams.get("from");
 
+  const pangUrl = import.meta.env.VITE_PANG_URL;
+  const pangStreamerUrl = import.meta.env.VITE_STREAMER_URL;
+
+
 
   const handleMoveButtonClick = () => {
     if (type === "user") {
-      window.location.href = "http://localhost:5174";
+      window.location.href = pangStreamerUrl
     } else {
-      window.location.href = "http://localhost:5175";
+      window.location.href = pangUrl
     }
   };
 
   const handleLogoClick = () => {
     if (from === "streamer") {
-      window.location.href = "http://localhost:5174";
+      window.location.href = pangStreamerUrl
     } else {
       navigate("/");
     }
