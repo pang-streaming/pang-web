@@ -47,6 +47,9 @@ importers:
       react-toastify:
         specifier: ^11.0.5
         version: 11.0.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      react-youtube:
+        specifier: ^10.1.0
+        version: 10.1.0(react@19.2.0)
       socket.io-client:
         specifier: ^4.8.1
         version: 4.8.1
@@ -108,9 +111,6 @@ importers:
 
   apps/embed:
     dependencies:
-      react-youtube:
-        specifier: ^10.1.0
-        version: 10.1.0(react@19.2.0)
       socket.io-client:
         specifier: ^4.8.1
         version: 4.8.1
