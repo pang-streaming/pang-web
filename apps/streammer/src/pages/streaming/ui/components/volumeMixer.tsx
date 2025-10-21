@@ -1,20 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-<<<<<<< HEAD
-
-interface VolumeMeterProps {
-  label: string;
-  color?: string;
-}
-
-export const VolumeMixer: React.FC = () => {
-  return (
-    <MixerContainer>
-      <Title>볼륨 믹서</Title>
-      <VolumeMeter label="마이크" color="#ff4d6d" />
-      <VolumeMeter label="시스템" color="#ff4d6d" />
-=======
-import { useAudioStore } from "@/features/audio/stores/useAudioStore";
+import { useAudioStore } from "../../../../features/audio/stores/useAudioStore";
 
 interface VolumeMeterProps {
   label: string;
@@ -47,34 +33,18 @@ export const VolumeMixer: React.FC = () => {
           />
         ))
       )}
->>>>>>> main
     </MixerContainer>
   );
 };
 
-<<<<<<< HEAD
-const VolumeMeter: React.FC<VolumeMeterProps> = ({ label, color = "#ff4d6d" }) => {
-  const [volume, setVolume] = useState(-30);
-=======
 const VolumeMeter: React.FC<VolumeMeterProps> = ({ label, trackId, track, source, color = "#ff4d6d", onRemove }) => {
   const [volume, setVolume] = useState(0);
->>>>>>> main
   const [meterValue, setMeterValue] = useState(-60);
 
   // Web Audio API 관련
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const gainNodeRef = useRef<GainNode | null>(null);
-<<<<<<< HEAD
-
-  useEffect(() => {
-    if (label !== "마이크") return; 
-
-    const initAudio = async () => {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        const audioCtx = new AudioContext();
-=======
   const animationFrameRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -82,17 +52,13 @@ const VolumeMeter: React.FC<VolumeMeterProps> = ({ label, trackId, track, source
       try {
         const audioCtx = new AudioContext();
         const stream = new MediaStream([track]);
->>>>>>> main
         const source = audioCtx.createMediaStreamSource(stream);
 
         const analyser = audioCtx.createAnalyser();
         const gainNode = audioCtx.createGain();
 
         analyser.fftSize = 256;
-<<<<<<< HEAD
-=======
         analyser.smoothingTimeConstant = 0.8;
->>>>>>> main
         source.connect(gainNode).connect(analyser);
 
         audioContextRef.current = audioCtx;
@@ -102,14 +68,6 @@ const VolumeMeter: React.FC<VolumeMeterProps> = ({ label, trackId, track, source
         const dataArray = new Uint8Array(analyser.frequencyBinCount);
 
         const updateVolume = () => {
-<<<<<<< HEAD
-          analyser.getByteTimeDomainData(dataArray);
-          // 평균 진폭 계산
-          const avg = dataArray.reduce((a, b) => a + Math.abs(b - 128), 0) / dataArray.length;
-          const db = 20 * Math.log10(avg / 128);
-          setMeterValue(Math.max(-60, Math.min(db, 0))); // -60 ~ 0 dB 제한
-          requestAnimationFrame(updateVolume);
-=======
           if (!analyserRef.current) return;
           
           analyser.getByteTimeDomainData(dataArray);
@@ -118,30 +76,15 @@ const VolumeMeter: React.FC<VolumeMeterProps> = ({ label, trackId, track, source
           const db = avg > 0 ? 20 * Math.log10(avg / 128) : -60;
           setMeterValue(Math.max(-60, Math.min(db, 0))); // -60 ~ 0 dB 제한
           animationFrameRef.current = requestAnimationFrame(updateVolume);
->>>>>>> main
         };
 
         updateVolume();
       } catch (err) {
-<<<<<<< HEAD
-        console.error("마이크 접근 실패:", err);
-=======
         console.error("오디오 분석 실패:", err);
->>>>>>> main
       }
     };
 
     initAudio();
-<<<<<<< HEAD
-  }, [label]);
-
-  // 슬라이더 볼륨 조정
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = parseInt(e.target.value, 10);
-    setVolume(newVolume);
-    const gain = Math.pow(10, newVolume / 20); // dB → gain
-    if (gainNodeRef.current) gainNodeRef.current.gain.value = gain;
-=======
 
     return () => {
       if (animationFrameRef.current) {
@@ -163,7 +106,6 @@ const VolumeMeter: React.FC<VolumeMeterProps> = ({ label, trackId, track, source
     // store에 gain 업데이트 (믹서가 자동으로 적용)
     console.log(`Volume slider changed for ${trackId}: ${newVolume}dB`);
     setTrackGain(trackId, newVolume);
->>>>>>> main
   };
 
   const getMeterColor = (db: number) => {
@@ -176,9 +118,6 @@ const VolumeMeter: React.FC<VolumeMeterProps> = ({ label, trackId, track, source
 
   return (
     <MeterContainer>
-<<<<<<< HEAD
-      <Label>{label}</Label>
-=======
       <HeaderRow>
         <Label>
           {label}
@@ -190,28 +129,11 @@ const VolumeMeter: React.FC<VolumeMeterProps> = ({ label, trackId, track, source
           </RemoveButton>
         )}
       </HeaderRow>
->>>>>>> main
 
       <MeterTrack>
         <MeterFill style={{ width: `${meterPercent}%`, backgroundColor: getMeterColor(meterValue) }} />
       </MeterTrack>
 
-<<<<<<< HEAD
-      <Scale>
-        {Array.from({ length: 13 }, (_, i) => -60 + i * 5).map((db) => (
-          <span key={db}>{db}</span>
-        ))}
-      </Scale>
-
-      <Slider
-        type="range"
-        min={-60}
-        max={0}
-        value={volume}
-        onChange={handleVolumeChange}
-        color={color}
-      />
-=======
       <VolumeControl>
         <VolumeLabel>볼륨: {volume}dB</VolumeLabel>
         <Slider
@@ -223,7 +145,6 @@ const VolumeMeter: React.FC<VolumeMeterProps> = ({ label, trackId, track, source
           color={color}
         />
       </VolumeControl>
->>>>>>> main
     </MeterContainer>
   );
 };
@@ -232,11 +153,7 @@ const MixerContainer = styled.div`
   display: flex;
   flex-direction: column;
   border-radius: 12px;
-<<<<<<< HEAD
-  gap: 24px;
-=======
   gap: 16px;
->>>>>>> main
 `;
 
 const Title = styled.h3`
@@ -246,9 +163,6 @@ const Title = styled.h3`
   background-color: #3a3a3a;
   padding: 8px 15px;
   border-radius: 6px;
-<<<<<<< HEAD
-  margin-top: 0%;
-=======
   margin: 0;
 `;
 
@@ -257,23 +171,11 @@ const EmptyMessage = styled.div`
   color: #999;
   text-align: center;
   padding: 20px;
->>>>>>> main
 `;
 
 const MeterContainer = styled.div`
   display: flex;
   flex-direction: column;
-<<<<<<< HEAD
-  margin-top: -10%;
-  gap: 5px;
-`;
-
-const Label = styled.div`
-  font-size: 15px;
-  font-weight: 600;
-  color: #fff;
-  margin-top: 5px;
-=======
   gap: 8px;
   padding: 12px;
   background-color: #2a2a2a;
@@ -320,7 +222,6 @@ const RemoveButton = styled.button`
   &:hover {
     background-color: rgba(255, 107, 107, 0.1);
   }
->>>>>>> main
 `;
 
 const MeterTrack = styled.div`
@@ -338,14 +239,6 @@ const MeterFill = styled.div`
   transition: width 0.2s ease, background-color 0.2s ease;
 `;
 
-<<<<<<< HEAD
-const Scale = styled.div`
-  display: flex;
-  justify-content: space-between;
-  font-size: 10px;
-  color: #ccc;
-  margin-top: 1px;
-=======
 const VolumeControl = styled.div`
   display: flex;
   flex-direction: column;
@@ -355,7 +248,6 @@ const VolumeControl = styled.div`
 const VolumeLabel = styled.div`
   font-size: 11px;
   color: #aaa;
->>>>>>> main
 `;
 
 const Slider = styled.input<{ color: string }>`
@@ -365,10 +257,6 @@ const Slider = styled.input<{ color: string }>`
   background: linear-gradient(to right, ${({ color }) => color} 0%, #fff 100%);
   border-radius: 10px;
   outline: none;
-<<<<<<< HEAD
-  margin-bottom: 20px;
-=======
->>>>>>> main
 
   &::-webkit-slider-thumb {
     appearance: none;
@@ -378,8 +266,6 @@ const Slider = styled.input<{ color: string }>`
     background-color: ${({ color }) => color};
     cursor: pointer;
   }
-<<<<<<< HEAD
-=======
   
   &::-moz-range-thumb {
     width: 14px;
@@ -389,5 +275,4 @@ const Slider = styled.input<{ color: string }>`
     cursor: pointer;
     border: none;
   }
->>>>>>> main
 `;

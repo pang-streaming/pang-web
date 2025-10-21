@@ -52,7 +52,6 @@ api.interceptors.request.use((config) => {
 
 
 export const fetchMyInfo = async (): Promise<UserResponse> => {
-<<<<<<< HEAD
     const res = await api.get("/user/me");
     const data = await res.data;
     console.log("내 정보 : ", data);
@@ -60,15 +59,6 @@ export const fetchMyInfo = async (): Promise<UserResponse> => {
   };
 
   export type Gender = "MALE" | "FEMALE" | "OTHER";
-=======
-  const res = await api.get("/user/me");
-  const data = await res.data;
-  console.log("내 정보 : ", data);
-  return data;
-};
-
-export type Gender = "MALE" | "FEMALE" | "OTHER";
->>>>>>> main
 export type Role = "USER" | "ADMIN"; 
 
 export interface User {
