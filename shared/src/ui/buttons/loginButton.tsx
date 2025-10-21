@@ -30,7 +30,8 @@ export const LoginButton = ({ isLoggedIn, appType }: LoginButtonProps) => {
 
   const handleProfileClick = () => {
     if (appType === "streamer") {
-      handleLogout();
+      // 스트리머 페이지의 마이페이지로 이동 (웹 포트)
+      window.location.href = "http://localhost:5175/mypage?from=streamer";
     } else {
       navigate("/mypage");
     }

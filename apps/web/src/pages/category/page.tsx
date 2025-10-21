@@ -23,8 +23,11 @@ const tags: Tag[] = [
 
 
 export const Category = () => {
-	const { data: categories = [], isLoading, isError, error } = useCategory();
+	const { data, isLoading, isError, error } = useCategory();
 	const navigate = useNavigate();
+	
+	// Ensure categories is always an array
+	const categories = Array.isArray(data) ? data : [];
   
 	if (isLoading) {
 	  return (
@@ -51,6 +54,7 @@ export const Category = () => {
 		  <TagButton tags={tags} defaultTagId="all" />
 		</TagHeader> */}
 		<CategoryWrapper>
+			
 		  {categories.map((category) => (
 			<div key={category.id} onClick={() => handleCategoryClick(category)}>
 			  <CategoryBox category={category} />

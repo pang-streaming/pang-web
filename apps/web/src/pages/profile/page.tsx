@@ -3,7 +3,7 @@ import styled from "styled-components";
 import normalProfile from "@/app/assets/images/normal_profile.svg";
 import { FollowButton } from "@/shared/ui/button/follow-button";
 import { Segment, SegmentButtonGroup } from "@pang/shared/ui";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { ProfileHomeWidget } from "@/pages/profile/widget/profile-home-widget";
 import { ProfileVideoWidget } from "@/pages/profile/widget/profile-video-widget";
 import { ProfileCommunityWidget } from "@/pages/profile/widget/profile-community-widget";
@@ -16,16 +16,19 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchMyInfo } from "@/entities/user/api/api";
 import { SkeletonBox } from "@/shared/ui/skeleton";
 
-const segments: Segment[] = [
+const allSegments: Segment[] = [
   { id: "home", name: "홈" },
   { id: "video", name: "동영상" },
   { id: "community", name: "커뮤니티" },
   { id: "info", name: "정보" },
 ];
 
-const getStoredTab = (username: string): string => {
+const getStoredTab = (username: string, availableSegments: Segment[]): string => {
 	const storageKey = `profile-tab-${username}`;
-	return sessionStorage.getItem(storageKey) || segments[0].id;
+	const storedTab = sessionStorage.getItem(storageKey);
+	// 저장된 탭이 현재 사용 가능한 탭에 있는지 확인
+	const isTabAvailable = availableSegments.some(seg => seg.id === storedTab);
+	return isTabAvailable ? storedTab! : availableSegments[0].id;
 };
 
 const storeTab = (username: string, tabId: string): void => {
@@ -38,23 +41,6 @@ export const ProfilePage = () => {
 	const queryClient = useQueryClient();
 	const { mutate: followMutate, isPending } = useFollowUser();
 	
-	const [activeTabId, setActiveTabId] = useState<string>(() => 
-		username ? getStoredTab(username) : segments[0].id
-	);
-	
-	useEffect(() => {
-		if (username) {
-			setActiveTabId(getStoredTab(username));
-		}
-	}, [username]);
-	
-	const handleTabChange = (tabId: string) => {
-		setActiveTabId(tabId);
-		if (username) {
-			storeTab(username, tabId);
-		}
-	};
-	
 	const { data: myInfo } = useQuery({
 		queryKey: ["myInfo"],
 		queryFn: fetchMyInfo,
@@ -66,6 +52,34 @@ export const ProfilePage = () => {
 	  isError,
 	  error,
 	} = useUsernameToInfo({ username: username! });
+
+	// communityId에 따라 segments 동적 생성
+	const segments = useMemo(() => {
+		if (!userInfo?.data?.communityId) {
+			// communityId가 null이면 커뮤니티 탭 제외
+			return allSegments.filter(seg => seg.id !== "community");
+		}
+		return allSegments;
+	}, [userInfo?.data?.communityId]);
+
+	const [activeTabId, setActiveTabId] = useState<string>(() => 
+		username ? getStoredTab(username, allSegments) : allSegments[0].id
+	);
+	
+	// userInfo 로딩 후 segments 변경 시 activeTabId 재조정
+	useEffect(() => {
+		if (username && segments.length > 0) {
+			const storedTab = getStoredTab(username, segments);
+			setActiveTabId(storedTab);
+		}
+	}, [username, segments]);
+	
+	const handleTabChange = (tabId: string) => {
+		setActiveTabId(tabId);
+		if (username) {
+			storeTab(username, tabId);
+		}
+	};
 
 	const { data: myFollowingData } = useMyFollowing(myInfo?.data?.username);
 	
@@ -120,19 +134,21 @@ export const ProfilePage = () => {
 		</UserInfoContainer>
   
 		<SegmentButtonGroup
-	  segments={segments}
-	  defaultSegmentIndex={segments.findIndex(s => s.id === activeTabId)}
+	  segments={allSegments}
+	  defaultSegmentIndex={allSegments.findIndex(s => s.id === activeTabId)}
 	  onSegmentChange={handleTabChange}
 	/>
 
-	{activeTabId === "home" && <ProfileHomeWidget username={username || ""} />}
-	{activeTabId === "video" && <ProfileVideoWidget username={username || ""}/>}
-	{activeTabId === "community" && <ProfileCommunityWidget />}
-	{activeTabId === "info" && <ProfileInfoWidget />}
+	{activeTabId === "home" && <SkeletonBox width={100} height={100} radius={6} />}
+	{activeTabId === "video" && <SkeletonBox width={100} height={100} radius={6} />}
+	{activeTabId === "community" && <SkeletonBox width={100} height={100} radius={6} />}
+	{activeTabId === "info" && <SkeletonBox width={100} height={100} radius={6} />}
   </ProfileContainer>
 	)
 }
 if (isError || !userInfo) return <ErrorScreen error={String(error)} />;
+
+	const communityId = userInfo.data.communityId;
 
 	console.log(userInfo);
 	return (
@@ -161,7 +177,7 @@ if (isError || !userInfo) return <ErrorScreen error={String(error)} />;
   
 	{activeTabId === "home" && <ProfileHomeWidget username={username || ""} />}
 	{activeTabId === "video" && <ProfileVideoWidget username={username || ""}/>}
-	{activeTabId === "community" && <ProfileCommunityWidget />}
+	{activeTabId === "community" && communityId && <ProfileCommunityWidget communityId={communityId} />}
 	{activeTabId === "info" && <ProfileInfoWidget />}
   </ProfileContainer>
 );

@@ -12,6 +12,7 @@ export interface PostResponse {
     content: string;
     likes: number;
     nickname: string;
+    username: string;
     createdAt: string;
     updatedAt: string;
     liked: boolean;

@@ -10,6 +10,7 @@ export const fetchMyInfo = async (): Promise<UserResponse> => {
 };
 
 
+
 export const uploadImage = async (file: File) => {
   const formData = new FormData();
   formData.append("image", file); 
@@ -49,7 +50,7 @@ export const deleteUser = async () => {
 
 
 
-export const fetchOtherUserInfo = async ({ username }: { username: string }): Promise<OtherUserResponse> => {
+export const fetchOtherUserInfo = async ({ username }: {username: string}): Promise<OtherUserResponse> => {
   const res = await api.get(`/user/${username}`);
   return res.data;
 };

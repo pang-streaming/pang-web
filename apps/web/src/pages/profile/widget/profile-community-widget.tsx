@@ -14,7 +14,11 @@ const tags: Tag[] = [
   { id: "free", name: "자유게시판" },
 ];
 
-export const ProfileCommunityWidget = () => {
+interface ProfileCommunityWidgetProps {
+  communityId: number;
+}
+
+export const ProfileCommunityWidget = ({ communityId }: ProfileCommunityWidgetProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeTagId, setActiveTagId] = useState<string>("all");
   const navigate = useNavigate(); 
@@ -32,7 +36,7 @@ export const ProfileCommunityWidget = () => {
   };
 
   const { data, isLoading, isError } = usePostList({
-    communityId: 1,
+    communityId: communityId,
     filter: getFilter(activeTagId),
   });
 
@@ -95,7 +99,7 @@ export const ProfileCommunityWidget = () => {
 
       {isModalOpen && (
         <WritePostModal
-          communityId={1}
+          communityId={communityId}
           onClose={handleCloseModal}
           onSuccess={handleSuccess}
         />

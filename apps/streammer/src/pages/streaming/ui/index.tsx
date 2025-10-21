@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Video } from './components/video';
 import { StreamSetting } from './components/streamSetting';
@@ -8,6 +8,7 @@ import { AddSourceModal } from '../../../features/modal/components/AddSourceModa
 import { useAddSourceModal } from '../../../features/modal/hooks/useAddSourceModal';
 import { type Screen } from '../../../features/canvas/constants/canvas-constants';
 import { useAudioStore } from '../../../features/audio/stores/useAudioStore';
+import { fetchStreamKey, createStreamKey } from '../../../features/stream/api';
 
 const StreamingPage = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -20,6 +21,49 @@ const StreamingPage = () => {
   const [vrmUrl, setVrmUrl] = useState<string | null>(null);
   const [selectedDevice, setSelectedDevice] = useState<MediaDeviceInfo | null>(null);
   const [isVTuberEnabled, setIsVTuberEnabled] = useState(false);
+  const [streamKey, setStreamKey] = useState<string | null>(null);
+  const [isLoadingKey, setIsLoadingKey] = useState(true);
+
+  useEffect(() => {
+    const initializeStreamKey = async () => {
+      try {
+        setIsLoadingKey(true);
+        const response = await fetchStreamKey();
+        
+        if (response.data?.streamKey) {
+          console.log('스트림 키 불러오기 성공:', response.data.streamKey);
+          setStreamKey(response.data.streamKey);
+        } else {
+          console.log('스트림 키가 없어서 새로 발급합니다.');
+          const createResponse = await createStreamKey();
+          if (createResponse.data?.streamKey) {
+            console.log('스트림 키 발급 성공:', createResponse.data.streamKey);
+            setStreamKey(createResponse.data.streamKey);
+          }
+        }
+      } catch (error: any) {
+        console.error('스트림 키 불러오기 실패:', error);
+        
+        if (error.response?.status === 404 || error.response?.status === 400) {
+          try {
+            console.log('키가 없어서 새로 발급을 시도합니다.');
+            const createResponse = await createStreamKey();
+            if (createResponse.data?.streamKey) {
+              console.log('스트림 키 발급 성공:', createResponse.data.streamKey);
+              setStreamKey(createResponse.data.streamKey);
+            }
+          } catch (createError) {
+            console.error('스트림 키 발급 실패:', createError);
+            alert('스트림 키 발급에 실패했습니다. 페이지를 새로고침해주세요.');
+          }
+        }
+      } finally {
+        setIsLoadingKey(false);
+      }
+    };
+
+    initializeStreamKey();
+  }, []);
 
   const handleAddScreen = (screen: Screen) => {
     addScreen(screen);
@@ -55,6 +99,29 @@ const StreamingPage = () => {
     }
   };
 
+  if (isLoadingKey) {
+    return (
+      <PageContainer>
+        <LoadingContainer>
+          <LoadingText>스트림 키를 불러오는 중...</LoadingText>
+        </LoadingContainer>
+      </PageContainer>
+    );
+  }
+
+  if (!streamKey) {
+    return (
+      <PageContainer>
+        <LoadingContainer>
+          <LoadingText>스트림 키를 불러올 수 없습니다.</LoadingText>
+          <RetryButton onClick={() => window.location.reload()}>
+            새로고침
+          </RetryButton>
+        </LoadingContainer>
+      </PageContainer>
+    );
+  }
+
   return (
     <PageContainer>
       <DashboardContainer>
@@ -73,6 +140,10 @@ const StreamingPage = () => {
 	      </VideoWrapper>
         <ChatSection>
           <h2>채팅 영역</h2>
+          {/* <StreamKeyInfo> */}
+            {/* <StreamKeyLabel>스트림 키:</StreamKeyLabel>
+            <StreamKeyValue>{streamKey}</StreamKeyValue> */}
+          {/* </StreamKeyInfo> */}
         </ChatSection>
       </DashboardContainer>
       
@@ -140,4 +211,59 @@ const ChatSection = styled.div`
   padding: 20px;
   background-color: ${({ theme }) => theme.colors.background.light};
   border-radius: 16px;
+`;
+
+const LoadingContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  gap: 20px;
+`;
+
+const LoadingText = styled.div`
+  font-size: 18px;
+  color: ${({ theme }) => theme.colors.text.normal};
+`;
+
+const RetryButton = styled.button`
+  padding: 10px 20px;
+  background-color: ${({ theme }) => theme.colors.primary.normal};
+  color: ${({ theme }) => theme.colors.common.white};
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.hover.normal};
+  }
+`;
+
+const StreamKeyInfo = styled.div`
+  margin-top: 20px;
+  padding: 15px;
+  background-color: ${({ theme }) => theme.colors.background.normal};
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+
+const StreamKeyLabel = styled.div`
+  font-size: 14px;
+  color: ${({ theme }) => theme.colors.text.subtitle};
+  font-weight: bold;
+`;
+
+const StreamKeyValue = styled.div`
+  font-size: 12px;
+  color: ${({ theme }) => theme.colors.text.normal};
+  word-break: break-all;
+  font-family: monospace;
+  padding: 8px;
+  background-color: ${({ theme }) => theme.colors.background.light};
+  border-radius: 4px;
 `;

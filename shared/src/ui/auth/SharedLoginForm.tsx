@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { FiUser, FiLock } from "react-icons/fi";
 import { loginUser } from "./login-api";
 import { tokenStorage } from "../../lib/cookie";
@@ -28,6 +28,7 @@ export const SharedLoginForm = ({
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const $isActive = email.trim() !== "" && password.trim() !== "";
 
@@ -51,7 +52,12 @@ export const SharedLoginForm = ({
         onLoginSuccess();
       }
 
-      navigate(redirectTo);
+      const redirectParam = searchParams.get("redirect");
+      if (redirectParam === "streamer") {
+        window.location.href = "http://localhost:5174";
+      } else {
+        navigate(redirectTo);
+      }
     } catch (error: any) {
       const status = error.response?.status;
       const message = error.response?.data?.message || error.message || "";

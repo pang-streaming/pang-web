@@ -6,8 +6,9 @@ const REFRESH_TOKEN_KEY = 'refreshToken';
 // Cookie 옵션 (localhost에서 포트 간 공유)
 const cookieOptions: Cookies.CookieAttributes = {
   path: '/',
-  // sameSite: 'lax', // CSRF 방어
-  // secure: false, // 개발 환경에서는 false (배포 시 true)
+  domain: 'localhost', // localhost의 모든 포트에서 쿠키 공유
+  sameSite: 'lax', // CSRF 방어
+  secure: false, // 개발 환경에서는 false (배포 시 true)
 };
 
 export const tokenStorage = {
