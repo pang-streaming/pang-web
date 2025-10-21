@@ -88,6 +88,16 @@ jobs:
             sudo rsync -az --delete /home/ec2-user/pang-frontend/apps/web/dist/ /var/www/pang/web/
             sudo rsync -az --delete /home/ec2-user/pang-frontend/apps/streammer/dist/ /var/www/pang/streammer/
             sudo rsync -az --delete /home/ec2-user/pang-frontend/apps/embed/dist/ /var/www/pang/embed/
+            
+            # Docker Compose 실행
+            cd /home/ec2-user/pang-frontend
+            if [ -f "docker-compose.yml" ]; then \
+              docker-compose up -d; \
+            else \
+              echo "docker-compose.yml not found"; \
+            fi
+            
+            # SSL 인증서 업데이트
             if [ -d "/home/ec2-user/pang-frontend/deploy/certs" ]; then \
               if docker ps -q -f name=nginx-proxy | grep -q .; then \
                 docker cp /home/ec2-user/pang-frontend/deploy/certs/. nginx-proxy:/etc/nginx/certs/ || true; \
