@@ -3,7 +3,7 @@ export interface Store {
     id: string;
     name: string;
     description: string;
-    profileImage: string;
+    profileImage?: string;
     bannerImage: string;
   }
   

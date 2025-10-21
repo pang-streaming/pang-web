@@ -12,6 +12,7 @@ import {
 import { IconButton, SubmitButton } from "@pang/shared/ui";
 import Buy from "@/app/assets/shopping-cart.svg?react";
 import Gift from "@/app/assets/gift.svg?react";
+import { IoDownloadOutline } from "react-icons/io5";
 import panglogo from "@/app/assets/pang-emotion-logo.png";
 import { useSendGift } from "../../../mypage/widget/settings-menu/widget/gift-list/useGift";
 import {
@@ -67,6 +68,28 @@ export const MarketDetail = () => {
     }
   };
 
+  const handleDownload = () => {
+    if (!detail?.fileUrl) {
+      alert("다운로드할 파일이 없습니다.");
+      return;
+    }
+    
+    try {
+      const link = document.createElement('a');
+      link.href = detail.fileUrl;
+      link.download = detail.name || 'download';
+      link.target = '_blank';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      alert("파일 다운로드를 시작합니다!");
+    } catch (err) {
+      console.error("다운로드 실패:", err);
+      alert("다운로드 중 오류가 발생했습니다.");
+    }
+  };
+
   if (isLoading || topFiveLoading || !detail) {
     return (
       <S.Container>
@@ -92,15 +115,12 @@ export const MarketDetail = () => {
               <Divider verticalPadding={20} />
               <SkeletonBox width={120} height={25} />
 
-              <SubmitButton Icon={Buy} disabled>
-                상품 구매하기
-              </SubmitButton>
-              <SubmitButton Icon={Gift} type={"alternative"} disabled>
-                기프트 보내기
-              </SubmitButton>
+              <SkeletonBox width={'100%'} height={48} radius={8} />
+              <SkeletonBox width={'100%'} height={48} radius={8} />
             </S.ProductInfoSection>
           </S.ProductContainer>
           <S.DetailButtonContainer>
+            
             <S.DetailButtonText>상품 상세설명 더보기</S.DetailButtonText>
             <IoChevronDown />
           </S.DetailButtonContainer>
@@ -173,17 +193,28 @@ export const MarketDetail = () => {
             <Divider verticalPadding={20} />
             <S.Price>{formattedPrice(detail.price)}원</S.Price>
 
-            <SubmitButton Icon={Buy} onClick={() => setIsModalOpen(true)}>
-              상품 구매하기
-            </SubmitButton>
-            <SubmitButton
-              Icon={Gift}
-              type={"alternative"}
-              onClick={handleSendGift}
-              disabled={isPending}
-            >
-              {isPending ? "보내는 중..." : "기프트 보내기"}
-            </SubmitButton>
+            {detail.isPurchased ? (
+              <>
+                <SubmitButton Icon={IoDownloadOutline} onClick={handleDownload}>
+                  파일 저장하기
+                </SubmitButton>
+                <PurchasedBadge>✓ 구매 완료</PurchasedBadge>
+              </>
+            ) : (
+              <>
+                <SubmitButton Icon={Buy} onClick={() => setIsModalOpen(true)}>
+                  상품 구매하기
+                </SubmitButton>
+                <SubmitButton
+                  Icon={Gift}
+                  type={"alternative"}
+                  onClick={handleSendGift}
+                  disabled={isPending}
+                >
+                  {isPending ? "보내는 중..." : "기프트 보내기"}
+                </SubmitButton>
+              </>
+            )}
           </S.ProductInfoSection>
         </S.ProductContainer>
         
@@ -350,4 +381,17 @@ const FollowUsername = styled.span`
   margin-left: auto;
   font-size: ${({ theme }) => theme.font.small};
   color: ${({ theme }) => theme.colors.text.subtitle};
+`;
+
+const PurchasedBadge = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 16px;
+  background-color: ${({ theme }) => theme.colors.background.light};
+  color: ${({ theme }) => theme.colors.primary.normal};
+  border-radius: ${({ theme }) => theme.borders.medium};
+  font-size: ${({ theme }) => theme.font.medium};
+  font-weight: 700;
+  border: 2px solid ${({ theme }) => theme.colors.primary.normal};
 `;

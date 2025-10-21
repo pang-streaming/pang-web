@@ -2,11 +2,15 @@
 import React from 'react'
 import styled from 'styled-components';
 import { TopFiveProduct } from '@/pages/market/model/product';
+import { useNavigate } from 'react-router-dom';
 
 
 export const MainNoticeElem = (product :TopFiveProduct) => {
+  const navigate = useNavigate();
   return (
-    <Container>
+    <Container onClick={() => {
+      navigate(`/market-detail?productId=${product.id}`);
+    }}>
         <BackImage src={product.image}/>
         <InfoSection>
             <Title>{product.name}</Title>
