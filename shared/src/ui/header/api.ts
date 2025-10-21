@@ -1,5 +1,6 @@
-import { StreamSearchResponse } from "./type";
+
 import axios from "axios";
+import { SearchResponse } from "./type";
 
 export interface Pageable {
   page: number;
@@ -50,13 +51,11 @@ api.interceptors.request.use((config) => {
   export default api;
 
 
-  export const searchStream = async (keyword: string, pageable: Pageable) => {
-    const res = await api.post<StreamSearchResponse>(`/stream/search/${keyword}`, null, {
-      params: pageable,
-    });
-    console.log("검색 API 전체 응답:", res.data);
-    console.log("검색 결과 content:", res.data.data.content);
-    return res.data.data.content;
+
+  export const searchAll = async (keyword: string) => {
+    const res = await api.get<SearchResponse>(`/search/${keyword}`);
+    console.log("통합 검색 API 응답:", res.data);
+    return res.data;
   };
 
 
