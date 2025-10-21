@@ -16,8 +16,7 @@ export const SettingsMenu = ({ from }: SettingsMenuProps) => {
   const handleLogout = () => {
     logoutUser();
     if (from === "streamer") {
-      // 스트리머에서 온 경우 스트리머 로그인 페이지로
-      window.location.href = "http://localhost:5174/login";
+      window.location.href = `${import.meta.env.VITE_STREAMER_URL}/login`
     } else {
       navigate("/");
     }

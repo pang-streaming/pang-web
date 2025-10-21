@@ -28,6 +28,7 @@ export const Header = ({ onClickMenu, type }: HeaderProps) => {
   const isLoggedIn = token != null;
   const from = searchParams.get("from");
 
+
   const handleMoveButtonClick = () => {
     if (type === "user") {
       window.location.href = "http://localhost:5174";
@@ -38,7 +39,6 @@ export const Header = ({ onClickMenu, type }: HeaderProps) => {
 
   const handleLogoClick = () => {
     if (from === "streamer") {
-      // 스트리머에서 온 경우 스트리머 페이지로 돌아가기
       window.location.href = "http://localhost:5174";
     } else {
       navigate("/");

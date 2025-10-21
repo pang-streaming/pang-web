@@ -8,7 +8,7 @@ export const Login = () => {
     if (token) {
       window.location.href = "/";
     } else {
-      window.location.href = "http://localhost:5175/login";
+      window.location.href = `${import.meta.env.PANG_URL}/login`;
     }
   }, []);
 

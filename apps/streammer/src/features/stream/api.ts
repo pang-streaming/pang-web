@@ -19,7 +19,7 @@ export interface User {
   isAlarm: boolean;
   description: string;
   cash: number;
-  communityId: string;
+  communityId: number;
 }
 
 export interface UserResponse {

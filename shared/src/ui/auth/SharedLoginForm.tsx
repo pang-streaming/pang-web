@@ -54,7 +54,7 @@ export const SharedLoginForm = ({
 
       const redirectParam = searchParams.get("redirect");
       if (redirectParam === "streamer") {
-        window.location.href = "http://localhost:5174";
+        window.location.href = import.meta.env.VITE_STREAMER_URL;
       } else {
         navigate(redirectTo);
       }

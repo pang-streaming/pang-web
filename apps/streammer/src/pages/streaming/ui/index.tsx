@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Video } from './components/video';
 import { StreamSetting } from './components/streamSetting';
@@ -25,7 +25,6 @@ const StreamingPage = () => {
   const [streamKey, setStreamKey] = useState<string | null>(null);
   const [isLoadingKey, setIsLoadingKey] = useState(true);
 
-  // 내 정보 불러오기
   const { data: myInfo, isLoading: isLoadingMyInfo } = useQuery({
     queryKey: ['myInfo'],
     queryFn: fetchMyInfo,
