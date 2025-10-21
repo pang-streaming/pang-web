@@ -147,4 +147,4 @@ const StartButton = styled.button<{isStarted: boolean}>`
 	background-color: ${({theme, isStarted}) => isStarted ? theme.colors.primary.normal : theme.colors.content.normal};
 	cursor: pointer;
 	border: none;
-`
+`;

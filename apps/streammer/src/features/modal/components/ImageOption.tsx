@@ -8,11 +8,11 @@ interface ImageOptionProps {
   onClose: () => void;
 }
 
-export const ImageOption: React.FC<ImageOptionProps> = ({
+export const ImageOption = ({
   canvasSize,
   onAddScreen,
   onClose,
-}) => {
+}: ImageOptionProps) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);

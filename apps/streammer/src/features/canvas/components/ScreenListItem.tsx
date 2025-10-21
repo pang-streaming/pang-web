@@ -12,7 +12,7 @@ interface ScreenListItemProps {
   onRemove: () => void;
 }
 
-export const ScreenListItem: React.FC<ScreenListItemProps> = ({
+export const ScreenListItem = ({
   screen,
   index,
   isDragging,
@@ -20,7 +20,7 @@ export const ScreenListItem: React.FC<ScreenListItemProps> = ({
   onDragOver,
   onDragEnd,
   onRemove,
-}) => {
+}: ScreenListItemProps) => {
   const getScreenIcon = (type: Screen['type']): string => {
     switch (type) {
       case 'video':

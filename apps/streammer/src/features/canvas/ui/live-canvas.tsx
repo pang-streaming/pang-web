@@ -11,7 +11,12 @@ interface CanvasProps {
 	canvasSize: CanvasSize;
 }
 
-export const LiveCanvas = ({canvasRef, screens, setScreens, canvasSize}: CanvasProps) => {
+export const LiveCanvas = ({
+	canvasRef,
+	screens,
+	setScreens,
+	canvasSize
+}: CanvasProps) => {
 	const { cursorStyle, handleMouseDown, handleMouseMove, handleMouseUp } = useCanvasInteraction(screens, setScreens, canvasSize);
 	
 	useCanvasRenderer(canvasRef, screens, canvasSize);

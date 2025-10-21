@@ -9,11 +9,11 @@ interface ScreenShareOptionProps {
   onClose: () => void;
 }
 
-export const ScreenShareOption: React.FC<ScreenShareOptionProps> = ({
+export const ScreenShareOption = ({
   canvasSize,
   onAddScreen,
   onClose,
-}) => {
+}: ScreenShareOptionProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const { addAudioTrack } = useAudioStore();
 

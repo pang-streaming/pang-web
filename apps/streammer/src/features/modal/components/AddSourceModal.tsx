@@ -17,7 +17,7 @@ interface AddSourceModalProps {
   onAddVTuber: (vrmUrl: string | null, selectedDevice: MediaDeviceInfo) => void;
 }
 
-export const AddSourceModal: React.FC<AddSourceModalProps> = ({
+export const AddSourceModal = ({
   isOpen,
   selectedType,
   onClose,
@@ -26,7 +26,7 @@ export const AddSourceModal: React.FC<AddSourceModalProps> = ({
   canvasSize,
   onAddScreen,
   onAddVTuber,
-}) => {
+}: AddSourceModalProps) => {
   if (!isOpen) return null;
 
   if (!selectedType) {
@@ -92,7 +92,6 @@ export const AddSourceModal: React.FC<AddSourceModalProps> = ({
           )}
           {selectedType === 'vtuber' && (
             <VTuberOption
-              canvasSize={canvasSize}
               onAddVTuber={onAddVTuber}
               onClose={onClose}
             />

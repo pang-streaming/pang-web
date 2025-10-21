@@ -2,7 +2,12 @@ import React, { useState, useCallback } from 'react';
 import { Screen, CanvasSize } from '@/features/canvas/constants/canvas-constants';
 import ThreeCanvas from '../ui/ThreeCanvas';
 
-export const useVrmScreen = (canvasSize: CanvasSize, vrmUrl: string | null, isCameraEnabled: boolean, selectedDevice: MediaDeviceInfo | null) => {
+export const useVrmScreen = (
+	canvasSize: CanvasSize,
+	vrmUrl: string | null,
+	isCameraEnabled: boolean,
+	selectedDevice: MediaDeviceInfo | null
+) => {
   const [screen, setScreen] = useState<Screen | null>(null);
   const [isVisible, setIsVisible] = useState(true);
 

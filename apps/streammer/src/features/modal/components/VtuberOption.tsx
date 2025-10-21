@@ -3,16 +3,14 @@ import styled from 'styled-components';
 import { CanvasSize } from '@/features/canvas/constants/canvas-constants';
 
 interface VTuberOptionProps {
-  canvasSize: CanvasSize;
   onAddVTuber: (vrmUrl: string | null, selectedDevice: MediaDeviceInfo) => void;
   onClose: () => void;
 }
 
-export const VTuberOption: React.FC<VTuberOptionProps> = ({
-  canvasSize,
+export const VTuberOption = ({
   onAddVTuber,
   onClose,
-}) => {
+}: VTuberOptionProps) => {
   const [vrmFile, setVrmFile] = useState<File | null>(null);
   const [vrmUrl, setVrmUrl] = useState<string | null>(null);
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
