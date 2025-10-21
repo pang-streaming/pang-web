@@ -46,4 +46,4 @@ yarn-error.log*
 *.pem
 
 # Lock files
-pnpm-lock.yaml
+# pnpm-lock.yaml
