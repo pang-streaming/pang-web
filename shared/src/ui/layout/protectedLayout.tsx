@@ -1,12 +1,29 @@
-import { Navigate, Outlet } from "react-router-dom";
-import { tokenStorage } from "../../lib/cookie";
+import {Outlet, useNavigate} from "react-router-dom";
+import {LoginModal} from "../modals/loginModal";
+import {tokenStorage} from "../../lib/cookie";
 
 export const ProtectedLayout = () => {
-	const token = tokenStorage.getAccessToken();
+	const navigate = useNavigate();
+	const accessToken = tokenStorage.getAccessToken();
 	
-	if (!token) {
-		return <Navigate to="/login" replace />;
+	const handleCancel = () => {
+		navigate(-1);
 	}
 	
-	return <Outlet />;
+	const handleConfirm = () => {
+		navigate('/login');
+	}
+	
+	if (!accessToken) {
+		return (
+			<LoginModal
+				onCancel={handleCancel}
+				onConfirm={handleConfirm}
+			/>
+		);
+	}
+	
+	return (
+			<Outlet />
+	)
 }
