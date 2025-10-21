@@ -6,7 +6,15 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("accessToken");
+  const getCookie = (name: string) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop()?.split(';').shift();
+    return null;
+  };
+  
+  const token = getCookie("accessToken") || localStorage.getItem("accessToken");
+  console.log('[웹 API 인터셉터] 요청 URL:', config.url, '토큰:', token ? '있음' : '없음');
   if (
     token &&
     config.url &&

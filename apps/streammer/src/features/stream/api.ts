@@ -3,7 +3,7 @@ import { StreamKeyResponse } from "./type";
 
 
 export type Gender = "MALE" | "FEMALE" | "OTHER";
-export type Role = "USER" | "ADMIN"; 
+export type Role = "USER" | "ADMIN" | "STREAMER"; 
 
 export interface User {
   id: string;             
@@ -53,16 +53,19 @@ export interface OtherUserResponse {
 
 
 
-
-export const createStreamKey = async () => {
-    const res = await api.post('/stream/key');
+export const createStreamKey = async (params: StreamKeyType) => {
+    const res = await api.post("/stream/key?stream-type=WHIP");
     return res.data;
 }
 
-export const fetchStreamKey = async ():Promise<StreamKeyResponse> => {
+interface StreamKeyType {
+    'stream-type': 'WHIP' | 'RTMP'
+}
+
+export const fetchStreamKey = async (): Promise<StreamKeyResponse> => {
     const res = await api.get('/stream/key');
     return res.data;
-}
+  };
 
 
 export const fetchMyInfo = async (): Promise<UserResponse> => {

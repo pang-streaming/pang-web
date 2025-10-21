@@ -22,8 +22,9 @@ export * from "./modals/loginModal";
 export { ChattingSection } from "./chatting-section";
 
 //header
-export * from "./header/api";
-export * from "./header/type";
+export { api, searchAll } from "./header/api";
+export type { Pageable } from "./header/api";
+export type { SearchResponse, Stream, User as SearchUser, Product } from "./header/type";
 
 //auth
 export * from "./auth/login-api";
