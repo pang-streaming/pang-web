@@ -30,9 +30,9 @@ export const Category = () => {
 	  return (
 		<CategoryContainer>
 		  <TabTitleText>카테고리</TabTitleText>
-		  <TagHeader>
+		  {/* <TagHeader>
 			<TagButton tags={tags} defaultTagId="all" />
-		  </TagHeader>
+		  </TagHeader> */}
 		  <CategorySkeleton />
 		</CategoryContainer>
 	  );
@@ -47,9 +47,9 @@ export const Category = () => {
 	return (
 	  <CategoryContainer>
 		<TabTitleText>카테고리</TabTitleText>
-		<TagHeader>
+		{/* <TagHeader>
 		  <TagButton tags={tags} defaultTagId="all" />
-		</TagHeader>
+		</TagHeader> */}
 		<CategoryWrapper>
 		  {categories.map((category) => (
 			<div key={category.id} onClick={() => handleCategoryClick(category)}>

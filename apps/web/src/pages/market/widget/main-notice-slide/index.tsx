@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { MainNoticeElem } from "./components/main-notice-elem";
 import { useTopFiveProduct } from "../../hooks/useProduct";
 import { SkeletonBox } from "@/shared/ui/skeleton";
+import { EmptyMessage } from "../../page/store-detail/style";
 
 export const MainNoticeSlide = () => {
   const [index, setIndex] = useState(0);
@@ -13,7 +14,7 @@ export const MainNoticeSlide = () => {
   const productList = Array.isArray(topFiveProducts) ? topFiveProducts : [];
   const originalLength = productList.length;
 
-  const extendedList = [...productList, ...productList]; // 복제
+  const extendedList = [...productList, ...productList]; 
 
   useEffect(() => {
     if (originalLength === 0) return;
@@ -28,7 +29,6 @@ export const MainNoticeSlide = () => {
 
   const handleTransitionEnd = () => {
     if (index >= originalLength) {
-      // 복제 구간 끝에 도달하면 transition 없이 처음으로 이동
       setIsTransitioning(false);
       setIndex(0);
     }
@@ -36,17 +36,19 @@ export const MainNoticeSlide = () => {
 
   if (isLoading) {
     return (
-      <SlideContainer>
+      <div style={{display:'flex', gap: 20}}>
         <SkeletonBox width={445} height={264}/>
-      </SlideContainer>
+        <SkeletonBox width={445} height={264}/>
+        <SkeletonBox width={445} height={264}/>
+      </div>
     );
   }
 
   if (error || originalLength === 0) {
     return (
       <SlideContainer>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-          상품이 없습니다
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%',color: 'white' }}>
+          <EmptyMessage>상품이 없습니다</EmptyMessage>
         </div>
       </SlideContainer>
     );

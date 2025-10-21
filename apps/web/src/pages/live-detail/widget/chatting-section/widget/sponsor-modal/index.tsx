@@ -56,6 +56,7 @@ export const SponsorModal = ({
   ];
 
   const handleDonationTypeChange = (type: string) => {
+    console.log("🔄 후원 타입 변경:", type);
     setSelectedDonationType(type);
     onChangeDonationType(type);
   };
@@ -69,7 +70,7 @@ export const SponsorModal = ({
       />
       <W.MyPungField userCash={userCash} />
       <W.IncreaseField pungAmount={pungAmount} onPungChange={onPungChange} />
-      {selectedDonationType == "video" ? (
+      {selectedDonationType === "video" ? (
         <W.YoutubeField
           onYoutubeUrlChange={(url: string) => {
             const extractUrl = extractYouTubeID(url);

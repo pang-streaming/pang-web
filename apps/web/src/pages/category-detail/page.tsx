@@ -42,6 +42,8 @@
       nickname: live.nickname,
       profileImage: live.profileImage,
       followers: live.viewCount || 0,
+      viewCount: live.viewCount,
+      thumbnail: live.thumbnail || live.url,
     }));
 
     const categoryVideos = categoryVideosData?.data || [];
@@ -54,6 +56,8 @@
       nickname: video.nickname,
       profileImage: video.profileImage,
       followers: video.viewCount || 0,
+      viewCount: video.viewCount || 0,
+      thumbnail: video.thumbnail || video.url,
     }));
 
     const isLoading = activeTab === "live" ? livesLoading : videosLoading;
@@ -107,7 +111,7 @@
           lives.length === 0 ? (
             <ErrorStateTitle>현재 진행 중인 라이브 방송이 없습니다</ErrorStateTitle>
           ) : (
-            <VideoList videos={lives} />
+            <VideoList videos={lives}/>
           )
         )}
         

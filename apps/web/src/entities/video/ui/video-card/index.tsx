@@ -14,13 +14,16 @@ export const VideoCard = ({
   nickname,
   profileImage,
   thumbnail
+  
 }: IStreamDataResponse) => {
 	const {handleOnClickVideoCard, handleOnClickProfile} = useVideoCard({streamId, username});
+	
+	const displayThumbnail = thumbnail || url || nullThumbnail;
 
 	return (
 		<S.LiveCardContainer  onClick={handleOnClickVideoCard}>
 			<S.VideoContainer>
-				<S.Thumbnail src={thumbnail || nullThumbnail} alt={title} />
+				<S.Thumbnail src={displayThumbnail} alt={title} />
 			</S.VideoContainer>
 			<S.LiveInfo>
 				<S.ProfileImage src={profileImage || normalProfile} onClick={handleOnClickProfile} />

@@ -14,7 +14,9 @@ export const FollowingCard = ({
 }: FollowingCardProps) => {
   return (
     <S.FollowingCardContainer>
+      <S.ProfileImageContainer>
       <S.ProfileImage src={profileImage || normalProfile} alt="" />
+      </S.ProfileImageContainer>
       <S.StreamerName>{streamerName}</S.StreamerName>
       <S.FollowerCount>{followerCount}명</S.FollowerCount>
     </S.FollowingCardContainer>

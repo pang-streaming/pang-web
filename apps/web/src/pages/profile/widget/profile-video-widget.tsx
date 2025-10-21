@@ -30,6 +30,7 @@ export const ProfileVideoWidget = ({username}:{username: string}) => {
     profileImage: video.profileImage,
     followers: 0,
     thumbnail: video.thumbnail || "",
+    viewCount: video.viewCount || 0
   }));
   
   return <VideoList videos={videos} maxColumns={4} />;

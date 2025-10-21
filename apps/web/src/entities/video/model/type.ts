@@ -21,5 +21,6 @@ export interface IStreamDataResponse {
   nickname: string;
   profileImage: string;
   followers: number;
-  thumbnail? : string
+  thumbnail? : string;
+  viewCount: number;
 }

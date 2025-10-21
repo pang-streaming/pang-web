@@ -22,10 +22,10 @@ export const Market = () => {
       <MarketSection title="인기 스토어">
         <PopularModelStore />
       </MarketSection>
-      <Divider verticalPadding={34} />
-      <MarketSection title="지금 가입 가능한 멤버십">
+      {/* <Divider verticalPadding={34} /> */}
+      {/* <MarketSection title="지금 가입 가능한 멤버십">
         <MembershipSection />
-      </MarketSection>
+      </MarketSection> */}
     </S.MarketContainer>
   );
 };

@@ -86,8 +86,6 @@ export const ChatInput = ({ username, onSend, addSponsorMessage, voiceId }: Chat
       setYoutubeUrl("");
       setDonationType(""); 
     
-      // 사용후 잔액 계산
-      const newCash = userCash - pungAmount;
 
       sponsorEventManager.emit(userNickname, pungAmount);
       switch (donationType) {

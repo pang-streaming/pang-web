@@ -1,22 +1,19 @@
 import styled from "styled-components";
 import { VirtualModelElem } from "./components/virtual-model-elem";
 import { useProduct } from "@/pages/market/hooks/useProduct";
-import { VirtualModelElemSkeleton } from "@/shared/ui/skeleton";
+import { SkeletonGrid } from "@/shared/ui/skeleton";
+import { EmptyMessage } from "@/pages/market/page/store-detail/style";
 
 export const VirtualModelSection = () => {
   const { data: items, isLoading, isError, isSuccess } = useProduct();
 
-  if (isLoading)
+  if (isLoading) {
     return (
       <Container>
-        <Row>
-          {new Array(6).fill(0).map((_, i) => (
-            <VirtualModelElemSkeleton key={i} />
-          ))}
-        </Row>
+        <SkeletonGrid count={4} minWidth={168} itemHeight={224} gap={27} />
       </Container>
     );
-
+  }
   if (isError)
     return (
       <Container>
@@ -27,7 +24,7 @@ export const VirtualModelSection = () => {
   return (
     <Container>
       {isSuccess && items?.length === 0 ? (
-        <Message>아직 등록된 상품이 없어요 🥺</Message>
+        <EmptyMessage>아직 등록된 상품이 없어요 🥺</EmptyMessage>
       ) : (
         <Row>
           {items?.map((v) => (

@@ -4,6 +4,7 @@ import { IStreamDataResponse } from "../model/type";
 
 export const fetchVideos = async (): Promise<IStreamDataResponse[]> => {
         const res = await api.get("/stream");
+        console.log(res.data);
         return res.data.data || [];
 };
 
@@ -25,7 +26,7 @@ export const fetchFollowingLives = async (): Promise<IStreamDataResponse[]> => {
 
 export const fetchLiveByUsername = async (username: string): Promise<IStreamDataResponse[]> => {
     const res = await api.get('/video/streamer', { params: { username } });
-    return res.data?.data || []; 
+    return res.data || []; 
   };
   
 

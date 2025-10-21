@@ -21,6 +21,7 @@ import { StoreDetail } from "@/pages/market/page/store-detail/page";
 import { MarketCategoryDetail } from "@/pages/market/page/market-category-detail";
 import { CommunityDetail } from "@/pages/profile/page/community-detail/page";
 import { FollowingList } from "@/pages/mypage/widget/settings-menu/widget/following-list";
+import { Search } from "@/pages/search/page";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
       <Route element={<DefaultLayout type="user" />}>
         <Route path="/" element={<Home />} />
         <Route path="/explore" element={<Explore />} />
+        <Route path="/search" element={<Search />} />
         <Route path="/category" element={<Category />} />
 		<Route path="/category/:categoryId" element={<CategoryDetail />} />
         <Route path="/follow" element={<Following />} />

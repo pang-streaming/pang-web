@@ -4,6 +4,7 @@ import normalProfile from "@/app/assets/images/normal_profile.svg";
 import { useVideoCard } from "@/entities/video/hooks/controller/useVideoCard";
 import thumbnail from "@/app/assets/thumbnail.png";
 import { IStreamDataResponse } from "../../model/type";
+import { useMyFollower } from "@/features/follow/hooks/useFollow";
 
 interface HeaderVideoProps {
   videos: IStreamDataResponse[];
@@ -22,12 +23,14 @@ export const HeaderVideo = ({ videos, hideProfile }: HeaderVideoProps) => {
     return null;
   }
 
-  const { title, nickname, username, streamId, profileImage, url,  } =
-    currentVideo;
+  const { title, nickname, username, streamId, profileImage, url, thumbnail, followers, viewCount } = currentVideo;
   const { handleOnClickVideoCard, handleOnClickProfile } = useVideoCard({
     streamId,
     username,
   });
+
+  const { data: followerData } = useMyFollower(username);
+  const followerCount = followerData?.data?.length ?? followers ?? 0;
 
   return (
     <HeaderVideoContainer
@@ -38,7 +41,7 @@ export const HeaderVideo = ({ videos, hideProfile }: HeaderVideoProps) => {
         <LiveContainer>
           <LiveTag>LIVE</LiveTag>
           <LiveTitleContainer>
-            <LiveTitle>201명 시청 중</LiveTitle>
+            <LiveTitle>{viewCount}명 시청 중</LiveTitle>
           </LiveTitleContainer>
         </LiveContainer>
         <StreamingTitle>{title}</StreamingTitle>
@@ -51,7 +54,7 @@ export const HeaderVideo = ({ videos, hideProfile }: HeaderVideoProps) => {
           />
           <TitleContainer>
             <StreamerName>{nickname}</StreamerName>
-            <StreamerFollower>12.1만명</StreamerFollower>
+            <StreamerFollower>{followerCount.toLocaleString()}명</StreamerFollower>
           </TitleContainer>
           <StreamersContainer>
             {videos.map((video, index) => (

@@ -1,7 +1,7 @@
-// import { AmountChip } from "@/pages/charge/widget/charge-modal/widget/pung-charge/ui/amount-chip";
-import { MyPungField } from "./my-pung-field";
+
 import React from "react";
 import styled from "styled-components";
+import { MyPungField } from "./my-pung-field";
 
 
 
@@ -17,12 +17,12 @@ export const IncreaseField = ({ pungAmount, onPungChange }: IncreaseFieldProps) 
 
   return (
     <Container>
-      <MyPungField userCash={pungAmount} />
+      <MyPungField  userCash={pungAmount} />
       <AmountChipRow>
-        {/*<AmountChip amount={1000} onClick={() => handleChipClick(1000)} />*/}
-        {/*<AmountChip amount={5000} onClick={() => handleChipClick(5000)} />*/}
-        {/*<AmountChip amount={10000} onClick={() => handleChipClick(10000)} />*/}
-        {/*<AmountChip amount={50000} onClick={() => handleChipClick(50000)} />*/}
+        {/* <AmountChip amount={1000} onClick={() => handleChipClick(1000)} />
+        <AmountChip amount={5000} onClick={() => handleChipClick(5000)} />
+        <AmountChip amount={10000} onClick={() => handleChipClick(10000)} />
+        <AmountChip amount={50000} onClick={() => handleChipClick(50000)} /> */}
       </AmountChipRow>
     </Container>
   );

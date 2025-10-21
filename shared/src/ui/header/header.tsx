@@ -27,7 +27,7 @@ export const Header = ({ onClickMenu, type }: HeaderProps) => {
 
   const handleMoveButtonClick = () => {
     if (type === "user") {
-      window.location.href = "http://localhost:5175/streaming";
+      window.location.href = "http://localhost:5175";
     } else {
       window.location.href = " http://localhost:5174";
     }
@@ -45,7 +45,7 @@ export const Header = ({ onClickMenu, type }: HeaderProps) => {
       <ButtonWrapper>
         <HeaderButton Icon={MoveButton} onClick={handleMoveButtonClick} />
         <HeaderButton Icon={DarkLightModeIcon} onClick={toggleTheme} />
-        <LoginButton isLoggedIn={isLoggedIn} />
+        <LoginButton isLoggedIn={isLoggedIn} appType={type} />
       </ButtonWrapper>
     </HeaderContainer>
   );
