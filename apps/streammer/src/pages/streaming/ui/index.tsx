@@ -6,10 +6,14 @@ import { useCanvasSize } from '../../../features/canvas/hooks/useCanvasSize';
 import { useScreenManagement } from '../../../features/canvas/hooks/useScreenManagement';
 import { AddSourceModal } from '../../../features/modal/components/AddSourceModal';
 import { useAddSourceModal } from '../../../features/modal/hooks/useAddSourceModal';
+import { useStreamTitleModal } from '../../../features/modal/hooks/useStreamTitleModal';
 import { type Screen } from '../../../features/canvas/constants/canvas-constants';
 import { useAudioStore } from '../../../features/audio/stores/useAudioStore';
-import { fetchStreamKey, createStreamKey, fetchMyInfo } from '../../../features/stream/api';
+import { fetchStreamKey, createStreamKey, fetchMyInfo, fetchStreamStatus, Category } from '../../../features/stream/api';
 import { useQuery } from '@tanstack/react-query';
+import { Chat } from './components/chat';
+import { VscDebugStart, VscDebugStop } from "react-icons/vsc";
+import { StreamTitleModal } from '../../../features/modal/components/StreamTitleModal';
 
 const StreamingPage = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -17,6 +21,7 @@ const StreamingPage = () => {
   const { screens, setScreens, addVideoScreen, addScreen, clearScreens } = useScreenManagement(canvasSize);
   
   const modal = useAddSourceModal();
+  const streamTitleModal = useStreamTitleModal();
   const { removeAudioTrack } = useAudioStore();
   
   const [vrmUrl, setVrmUrl] = useState<string | null>(null);
@@ -24,6 +29,10 @@ const StreamingPage = () => {
   const [isVTuberEnabled, setIsVTuberEnabled] = useState(false);
   const [streamKey, setStreamKey] = useState<string | null>(null);
   const [isLoadingKey, setIsLoadingKey] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [hashtags, setHashtags] = useState<string[]>([]);
+  const [isStreaming, setIsStreaming] = useState(false);
+  
 
   const { data: myInfo, isLoading: isLoadingMyInfo } = useQuery({
     queryKey: ['myInfo'],
@@ -31,6 +40,21 @@ const StreamingPage = () => {
     staleTime: 1000 * 60,
     refetchOnWindowFocus: false,
   });
+
+  const { data: streamStatus, isLoading: isLoadingStreamStatus } = useQuery({
+    queryKey: ['streamStatus'],
+    queryFn: fetchStreamStatus,
+    staleTime: 1000 * 10, // 10초마다 상태 확인
+    refetchInterval: 1000 * 10, // 10초마다 자동 갱신
+    retry: (failureCount, error: any) => {
+      // 404 에러는 방송 중이 아니라는 의미이므로 재시도하지 않음
+      if (error?.response?.status === 404) {
+        return false;
+      }
+      return failureCount < 3;
+    },
+  });
+
 
   useEffect(() => {
     const initializeStreamKey = async () => {
@@ -107,6 +131,23 @@ const StreamingPage = () => {
     }
   };
 
+  const handleTitleClick = () => {
+    // 방송 중일 때만 모달 열기
+    if (streamStatus?.data?.status === 'LIVE') {
+      streamTitleModal.openModal();
+    } else {
+      alert('방송 중일 때만 방송 설정을 변경할 수 있습니다.');
+    }
+  };
+
+  const handleCategoryChange = (category: Category | null) => {
+    setSelectedCategory(category);
+  };
+
+  const handleHashtagsChange = (newHashtags: string[]) => {
+    setHashtags(newHashtags);
+  };
+
   if (isLoadingKey) {
     return (
       <PageContainer>
@@ -139,39 +180,63 @@ const StreamingPage = () => {
 			      containerRef={containerRef}
 			      screens={screens}
 			      setScreens={setScreens}
-			      viewers={123}
-			      likes={456}
 			      vrmUrl={vrmUrl}
 			      selectedDevice={selectedDevice}
 			      isVTuberEnabled={isVTuberEnabled}
+            streamKey={streamKey}
+            title={myInfo?.data?.nickname ?? ''}
+            onTitleClick={handleTitleClick}
+            titleChild={
+              <>
+              <HeaderLeft>
+                <CategorySection>
+                  {selectedCategory ? (
+                    <>
+                      {selectedCategory.postImage && (
+                        <CategoryImage src={selectedCategory.postImage} alt={selectedCategory.name} />
+                      )}
+                      <CategoryName>{selectedCategory.name}</CategoryName>
+                    </>
+                  ) : (
+                    <CategoryPlaceholder>카테고리 미선택</CategoryPlaceholder>
+                  )}
+                </CategorySection>
+                <StreamTitle onClick={streamStatus?.data?.status === 'LIVE' ? handleTitleClick : undefined} $clickable={streamStatus?.data?.status === 'LIVE'}>
+                  {myInfo?.data?.nickname}님의 방송 ✎
+                </StreamTitle>
+              </HeaderLeft>
+            </>
+            }
 		      />
 	      </VideoWrapper>
         <ChatSection>
-          <h2>채팅 영역</h2>
-          
+    
           {myInfo?.data && (
-            <UserInfoBox>
-              <InfoLabel>사용자 정보</InfoLabel>
-              <InfoRow>
-                <InfoKey>닉네임:</InfoKey>
-                <InfoValue>{myInfo.data.nickname}</InfoValue>
-              </InfoRow>
-              <InfoRow>
-                <InfoKey>이메일:</InfoKey>
-                <InfoValue>{myInfo.data.email}</InfoValue>
-              </InfoRow>
-              <InfoRow>
-                <InfoKey>커뮤니티 ID:</InfoKey>
-                <InfoValue>{myInfo.data.communityId || '없음'}</InfoValue>
-              </InfoRow>
-            </UserInfoBox>
-          )}
+          //   <UserInfoBox>
+          //     <InfoLabel>사용자 정보</InfoLabel>
+          //     <InfoRow>
+          //       <InfoKey>닉네임:</InfoKey>
+          //       <InfoValue>{myInfo.data.nickname}</InfoValue>
+          //     </InfoRow>
+          //     <InfoRow>
+          //       <InfoKey>유저네임:</InfoKey>
+          //       <InfoValue>{myInfo.data.username}</InfoValue>
+          //     </InfoRow>
+          //     <InfoRow>
+          //       <InfoKey>커뮤니티 ID:</InfoKey>
+          //       <InfoValue>{myInfo.data.communityId || '없음'}</InfoValue>
+          //     </InfoRow>
+          //   </UserInfoBox>
+          // )}
 
-          {streamKey && (
-            <StreamKeyInfo>
-              <StreamKeyLabel>스트림 키:</StreamKeyLabel>
-              <StreamKeyValue>{streamKey}</StreamKeyValue>
-            </StreamKeyInfo>
+          // {streamKey && (
+          //   <StreamKeyInfo>
+          //     <StreamKeyLabel>스트림 키:</StreamKeyLabel>
+          //     <StreamKeyValue>{streamKey}</StreamKeyValue>
+          //   </StreamKeyInfo>
+          // )}
+           
+            <Chat roomId={myInfo?.data?.username ?? ''} />
           )}
         </ChatSection>
       </DashboardContainer>
@@ -194,6 +259,22 @@ const StreamingPage = () => {
         canvasSize={canvasSize}
         onAddScreen={handleAddScreen}
         onAddVTuber={handleAddVTuber}
+      />
+
+      <StreamTitleModal
+        isOpen={streamTitleModal.isOpen}
+        onClose={streamTitleModal.closeModal}
+        currentTitle={streamTitleModal.currentTitle}
+        selectedCategory={selectedCategory}
+        onCategoryChange={handleCategoryChange}
+        hashtags={hashtags}
+        onHashtagsChange={handleHashtagsChange}
+        streamKey={streamKey || ''}
+        streamType={streamStatus?.data?.streamType || 'WHIP'}
+        onSuccess={() => {
+          // 성공 시 추가 처리 로직
+          console.log('스트리밍 정보가 성공적으로 업데이트되었습니다.');
+        }}
       />
     </PageContainer>
   );
@@ -240,6 +321,8 @@ const ChatSection = styled.div`
   padding: 20px;
   background-color: ${({ theme }) => theme.colors.background.light};
   border-radius: 16px;
+  max-height: calc(100vh - 200px);
+  overflow: hidden;
 `;
 
 const LoadingContainer = styled.div`
@@ -332,4 +415,88 @@ const StreamKeyValue = styled.div`
   padding: 8px;
   background-color: ${({ theme }) => theme.colors.background.light};
   border-radius: 4px;
+`;
+
+const StreamingHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: ${({ theme }) => theme.colors.background.light};
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+`;
+
+const HeaderLeft = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+`;
+
+const HeaderRight = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+`;
+
+const CategorySection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background-color: ${({ theme }) => theme.colors.background.normal};
+  border-radius: 8px;
+  max-width: 200px;
+`;
+
+const CategoryImage = styled.img`
+  width: 24px;
+  height: 24px;
+  object-fit: cover;
+  border-radius: 4px;
+`;
+
+const CategoryName = styled.span`
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: ${({ theme }) => theme.colors.text.normal};
+`;
+
+const CategoryPlaceholder = styled.span`
+  font-size: 0.875rem;
+  color: ${({ theme }) => theme.colors.text.subtitle};
+`;
+
+const StreamTitle = styled.h3<{ $clickable?: boolean }>`
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: ${({ theme }) => theme.colors.text.subtitle};
+  margin: 0;
+  cursor: ${({ $clickable }) => $clickable ? 'pointer' : 'default'};
+  transition: color 0.2s;
+  
+  ${({ $clickable, theme }) => $clickable && `
+    &:hover {
+      color: ${theme.colors.primary.normal};
+    }
+  `}
+`;
+
+const StartButton = styled.button<{isStarted: boolean}>`
+  padding: 8px;
+  border-radius: ${({theme}) => theme.borders.small};
+  color: ${({theme}) => theme.colors.text.normal};
+  background-color: ${({theme, isStarted}) => isStarted ? theme.colors.primary.normal : theme.colors.content.normal};
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.2s;
+
+  &:hover:not(:disabled) {
+    background-color: ${({theme, isStarted}) => isStarted ? theme.colors.primary.dark : theme.colors.content.dark};
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 `;

@@ -82,7 +82,7 @@ export const StreamSetting = ({
   setScreens,
   onRemoveScreen 
 }: StreamProps) => {
-  const [audioSections, setAudioSections] = useState<string[]>(["구글"]);
+  
 	const { addAudioTrack } = useAudioStore();
 	
 	const addMicrophoneAudio = async () => {
@@ -91,7 +91,6 @@ export const StreamSetting = ({
 			const audioTrack = stream.getAudioTracks()[0];
 			if (audioTrack) {
 			  addAudioTrack(audioTrack, 'microphone', audioTrack.label || 'Microphone');
-			  setAudioSections(prev => [...prev, '마이크']);
 			}
 		} catch (err) {
 			console.error("마이크 접근 실패:", err);
@@ -100,7 +99,6 @@ export const StreamSetting = ({
 	};
 	
   const screenDragState = useScreenDragAndDrop(screens, setScreens);
-  const audioDragState = useDragAndDrop(audioSections, setAudioSections);
 
   return (
     <SettingContainer>
@@ -129,7 +127,6 @@ export const StreamSetting = ({
 
       <ScreenSetContainer>
         <SectionTitle>오디오 소스</SectionTitle>
-	      <SectionsRenderer items={audioSections} dragState={audioDragState} />
 	      <AddButton onClick={addMicrophoneAudio}>+ 마이크 추가</AddButton>
       </ScreenSetContainer>
 
