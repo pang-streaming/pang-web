@@ -72,7 +72,7 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           source: "out/**"
-          target: ${{ secrets.EC2_TARGET_DIR }}
+          target: "/home/ec2-user/pang-frontend"
           overwrite: true
           strip_components: 1
 
@@ -85,12 +85,10 @@ jobs:
           script: |
             set -e
             sudo mkdir -p /var/www/pang/web /var/www/pang/streammer /var/www/pang/embed
-            sudo rsync -az --delete ${EC2_TARGET_DIR}/apps/web/dist/ /var/www/pang/web/
-            sudo rsync -az --delete ${EC2_TARGET_DIR}/apps/streammer/dist/ /var/www/pang/streammer/
-            sudo rsync -az --delete ${EC2_TARGET_DIR}/apps/embed/dist/ /var/www/pang/embed/
-            if [ -d "${EC2_TARGET_DIR}/deploy/certs" ]; then \
-              docker cp ${EC2_TARGET_DIR}/deploy/certs/. nginx-proxy:/etc/nginx/certs/ || true; \
+            sudo rsync -az --delete /home/ec2-user/pang-frontend/apps/web/dist/ /var/www/pang/web/
+            sudo rsync -az --delete /home/ec2-user/pang-frontend/apps/streammer/dist/ /var/www/pang/streammer/
+            sudo rsync -az --delete /home/ec2-user/pang-frontend/apps/embed/dist/ /var/www/pang/embed/
+            if [ -d "/home/ec2-user/pang-frontend/deploy/certs" ]; then \
+              docker cp /home/ec2-user/pang-frontend/deploy/certs/. nginx-proxy:/etc/nginx/certs/ || true; \
               docker restart nginx-proxy || true; \
             fi
-        env:
-          EC2_TARGET_DIR: ${{ secrets.EC2_TARGET_DIR }}
