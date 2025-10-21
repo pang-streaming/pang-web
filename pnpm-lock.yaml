@@ -35,6 +35,9 @@ importers:
       react-router-dom:
         specifier: ^7.8.2
         version: 7.9.4(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      react-toastify:
+        specifier: ^11.0.5
+        version: 11.0.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       styled-components:
         specifier: ^6.1.19
         version: 6.1.19(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -138,9 +141,6 @@ importers:
       js-confetti:
         specifier: ^0.13.1
         version: 0.13.1
-      react-toastify:
-        specifier: ^11.0.5
-        version: 11.0.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-use-pip:
         specifier: ^1.5.0
         version: 1.5.0(react@19.2.0)

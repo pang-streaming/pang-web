@@ -16,7 +16,6 @@
     "@mux/mux-video-react": "^0.27.0",
     "hls.js": "^1.6.12",
     "js-confetti": "^0.13.1",
-    "react-toastify": "^11.0.5",
     "react-use-pip": "^1.5.0",
     "react-youtube": "^10.1.0",
     "socket.io-client": "^4.8.1"
