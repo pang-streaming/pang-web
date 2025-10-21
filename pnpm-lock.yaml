@@ -23,6 +23,9 @@ importers:
       axios:
         specifier: ^1.11.0
         version: 1.12.2
+      hls.js:
+        specifier: ^1.6.12
+        version: 1.6.13
       js-confetti:
         specifier: ^0.13.1
         version: 0.13.1
@@ -141,9 +144,6 @@ importers:
       '@dnd-kit/utilities':
         specifier: ^3.2.2
         version: 3.2.2(react@19.2.0)
-      hls.js:
-        specifier: ^1.6.12
-        version: 1.6.13
       react-use-pip:
         specifier: ^1.5.0
         version: 1.5.0(react@19.2.0)
