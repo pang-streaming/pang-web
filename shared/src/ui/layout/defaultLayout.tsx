@@ -26,7 +26,7 @@ export const DefaultLayout = ({ type, full }: DefaultLayoutProps) => {
     staleTime: 1000 * 60,
     refetchOnWindowFocus: false,
   });
-  const { data: followingData, isLoading } = useFollowing(data?.data.username || "");
+  // const { data: followingData, isLoading } = useFollowing(data?.data.username || "");
 
   const [tabs, setTabs] = useState(false);
   const sidebarItems =
@@ -43,20 +43,20 @@ export const DefaultLayout = ({ type, full }: DefaultLayoutProps) => {
           sidebarItems={sidebarItems}
           type={type}
         >
-         {isLoading ? (
-            <>
-              
-            </>
-          ) : (
-            followingData?.data.map((user) => (
-              <FollowingCard 
-                key={user.username}
-                profileImage={user.image} 
-                nickname={user.nickname}
-                username={user.username}
-                isSidebarOpen={tabs}
-              />
-            )))}
+         {/*{isLoading ? (*/}
+         {/*   <>*/}
+         {/*     */}
+         {/*   </>*/}
+         {/* ) : (*/}
+         {/*   followingData?.data.map((user) => (*/}
+         {/*     <FollowingCard */}
+         {/*       key={user.username}*/}
+         {/*       profileImage={user.image} */}
+         {/*       nickname={user.nickname}*/}
+         {/*       username={user.username}*/}
+         {/*       isSidebarOpen={tabs}*/}
+         {/*     />*/}
+         {/*   )))}*/}
         </Sidebar>
       )}
       <Header onClickMenu={() => setTabs(!tabs)} type={type} />

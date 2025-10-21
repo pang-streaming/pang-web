@@ -6,7 +6,7 @@ export interface FollowingCardProps {
   isSidebarOpen?: boolean;
 }
 import * as S from "./style";
-import normalProfile from "@/app/assets/images/normal_profile.svg?url";
+import normalProfile from './../../../../asset/logo/normal_profile.svg?url'
 import { useNavigate } from "react-router-dom";
 
 

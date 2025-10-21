@@ -6,7 +6,7 @@ function App() {
   return (
     <Routes>
       <Route element={<DefaultLayout type="streamer" />}>
-        <Route path="/streaming" element={<StreamingPage />} />
+        <Route path="/" element={<StreamingPage />} />
       </Route>
     </Routes>
   );
