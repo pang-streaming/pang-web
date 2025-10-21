@@ -15,7 +15,6 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@mux/mux-video-react": "^0.27.0",
     "hls.js": "^1.6.12",
-    "js-confetti": "^0.13.1",
     "react-use-pip": "^1.5.0",
     "react-youtube": "^10.1.0",
     "socket.io-client": "^4.8.1"

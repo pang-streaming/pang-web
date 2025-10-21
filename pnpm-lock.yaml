@@ -20,6 +20,9 @@ importers:
       axios:
         specifier: ^1.11.0
         version: 1.12.2
+      js-confetti:
+        specifier: ^0.13.1
+        version: 0.13.1
       qs:
         specifier: ^6.14.0
         version: 6.14.0
@@ -138,9 +141,6 @@ importers:
       hls.js:
         specifier: ^1.6.12
         version: 1.6.13
-      js-confetti:
-        specifier: ^0.13.1
-        version: 0.13.1
       react-use-pip:
         specifier: ^1.5.0
         version: 1.5.0(react@19.2.0)
