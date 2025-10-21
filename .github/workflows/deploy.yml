@@ -71,7 +71,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "out/**,docker-compose.yml,deploy/**,pnpm-workspace.yaml,pnpm-lock.yaml,package.json,tsconfig.base.json,turbo.json,apps/**,shared/**"
+          source: "out/**,docker-compose.yml,deploy/**"
           target: "/home/ec2-user/pang-frontend"
           overwrite: true
 
