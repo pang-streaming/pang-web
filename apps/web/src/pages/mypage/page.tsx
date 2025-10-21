@@ -15,7 +15,7 @@ export const MyPage = () => {
     // popstate 이벤트 (브라우저 뒤로가기) 감지
     const handlePopState = () => {
       if (from === "streamer") {
-        window.location.href = "http://localhost:5174";
+        window.location.href = import.meta.env.VITE_STREAMER_URL;
       }
     };
 
