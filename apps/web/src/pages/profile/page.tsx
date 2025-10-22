@@ -103,7 +103,6 @@ export const ProfilePage = () => {
 				onSuccess: () => {
 					queryClient.invalidateQueries({ queryKey: ["otherUserInfo", username] });
 					queryClient.invalidateQueries({ queryKey: ["myFollowing", myInfo?.data?.username] });
-					alert(isFollowing ? "언팔로우했습니다." : "팔로우했습니다! 🎉");
 				},
 				onError: (error) => {
 					console.error("팔로우 실패:", error);

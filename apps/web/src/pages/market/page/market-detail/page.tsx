@@ -25,7 +25,7 @@ import { PurchaseModal } from "./widget/purchase-modal";
 import { SkeletonBox, VirtualModelElemSkeleton } from "@/shared/ui/skeleton";
 import { VirtualModelElem } from "../../widget/market-section/widget/virtual-model-section/components/virtual-model-elem";
 import { TabTitleText } from "@/shared/ui/tab-title-text";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 import { useQuery } from "@tanstack/react-query";
 import { fetchMyInfo } from "@/entities/user/api/api";
 import { useMyFollowing } from "@/features/follow/hooks/useFollow";
@@ -46,6 +46,8 @@ export const MarketDetail = () => {
 
   const { data: myInfo } = useQuery({ queryKey: ["myInfo"], queryFn: fetchMyInfo });
   const { data: followingData, isLoading: followingLoading } = useMyFollowing(myInfo?.data?.username);
+  const theme = useTheme();
+
 
   const handleSendGift = () => {
     if (!productId) return;
@@ -106,7 +108,7 @@ export const MarketDetail = () => {
                   {detail?.isLiked ? (
                     <IoHeart size={20} color="#ff4757" />
                   ) : (
-                    <IoHeartOutline size={20} color="white" />
+                    <span>dd</span>
                   )}
                   <span>{detail?.likes}</span>
                 </S.LikeButton>
@@ -148,7 +150,6 @@ export const MarketDetail = () => {
       { productId, username },
       {
         onSuccess: () => {
-          alert(`✨ ${username}님에게 선물을 보냈어요!`);
           setIsFollowModalOpen(false);
         },
         onError: (err: any) => {
@@ -184,7 +185,8 @@ export const MarketDetail = () => {
                 {detail.isLiked ? (
                   <IoHeart size={20} color="#ff4757" />
                 ) : (
-                  <IoHeartOutline size={20} color="white" />
+                  <IoHeartOutline size={20} color={theme.colors.text.normal} />
+
                 )}
                 <S.LikeText>{detail.likes}</S.LikeText>
               </S.LikeButton>
@@ -395,3 +397,4 @@ const PurchasedBadge = styled.div`
   font-weight: 700;
   border: 2px solid ${({ theme }) => theme.colors.primary.normal};
 `;
+
