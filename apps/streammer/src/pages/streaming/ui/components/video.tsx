@@ -34,15 +34,7 @@ export const Video = ({
 	titleChild,
 }: VideoProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-	const { status, startStreaming, stopStreaming } = useWhipBroadcast(
-		canvasRef,
-			{
-			whipUrl: import.meta.env.VITE_WHIP_URL,
-			bitrate: 6000000,
-			fps: 60,
-			secretKey: streamKey,
-		}
-		);
+	const { startStreaming } = useWhipBroadcast(canvasRef, streamKey);
 	
 	const { screen: vrmScreen, VrmRenderer } = useVrmScreen(
 	  canvasSize, 
@@ -81,8 +73,9 @@ export const Video = ({
 				<TitleRow>
 					{titleChild}
 					<StatsContainer>
-						<StartButton isStarted={status.isStreaming} onClick={status.isStreaming ? stopStreaming : startStreaming} disabled={status.iceState === 'checking'}>
-							{status.isStreaming ? <VscDebugStop size={20}/> : <VscDebugStart size={20}/>}
+						<StartButton isStarted={false} onClick={startStreaming} disabled={false}>
+							{/*{status.isStreaming ? <VscDebugStop size={20}/> : <VscDebugStart size={20}/>}*/}
+							<VscDebugStart size={20}/>
 						</StartButton>
 					</StatsContainer>
 				</TitleRow>

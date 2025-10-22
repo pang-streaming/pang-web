@@ -268,7 +268,7 @@ const StreamingPage = () => {
 			      selectedDevice={selectedDevice}
 			      username={myInfo?.data?.username ?? ''}
 			      isVTuberEnabled={isVTuberEnabled}
-			      streamKey={streamKey}
+			      streamKey={'06686bb4cddb1644c0d6a16745fed240kcf392de3fca5ea8f0991bb45c19a7167'}
 			      title={myInfo?.data?.nickname ?? ''}
 			      onTitleClick={handleTitleClick}
 			      titleChild={titleChildContent}
