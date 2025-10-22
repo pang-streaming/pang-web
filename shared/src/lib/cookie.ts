@@ -34,15 +34,7 @@ export const tokenStorage = {
       ...options,
       expires: 1,
     };
-    console.log('Setting accessToken cookie with options:', fullOptions);
-    console.log('Token value:', token);
-    
     Cookies.set(TOKEN_KEY, token, fullOptions);
-    
-    // 바로 확인
-    const savedToken = Cookies.get(TOKEN_KEY);
-    console.log('저장 후 즉시 확인한 accessToken:', savedToken);
-    console.log('저장 성공?', savedToken === token);
   },
 
   getAccessToken: (): string | undefined => {
@@ -60,15 +52,8 @@ export const tokenStorage = {
       ...options,
       expires: 7,
     };
-    console.log('Setting refreshToken cookie with options:', fullOptions);
-    console.log('Token value:', token);
     
     Cookies.set(REFRESH_TOKEN_KEY, token, fullOptions);
-    
-    // 바로 확인
-    const savedToken = Cookies.get(REFRESH_TOKEN_KEY);
-    console.log('저장 후 즉시 확인한 refreshToken:', savedToken);
-    console.log('저장 성공?', savedToken === token);
   },
 
   getRefreshToken: (): string | undefined => {
@@ -82,7 +67,6 @@ export const tokenStorage = {
 
   clearAll: () => {
     const options = getCookieOptions();
-    console.log('Clearing cookies with options:', options);
     
     // Remove with current cookie options
     Cookies.remove(TOKEN_KEY, options);
