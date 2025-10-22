@@ -17,6 +17,5 @@ export const loginUser = async (id: string, password: string): Promise<LoginResp
 
 export const logoutUser = () => {
   tokenStorage.clearAll();
-  localStorage.removeItem("accessToken");
 };
 
