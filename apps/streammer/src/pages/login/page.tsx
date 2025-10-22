@@ -1,7 +1,11 @@
 import { SharedLoginForm } from "@pang/shared/ui";
-const banner1 = "http://localhost:5173/src/app/assets/banner1.png";
-const banner2 = "http://localhost:5173/src/app/assets/banner2.png";
-const logo = "http://localhost:5173/src/app/assets/pang-white.svg";
+// const banner1 = "http://localhost:5173/src/app/assets/banner1.png";
+// const banner2 = "http://localhost:5173/src/app/assets/banner2.png";
+// const logo = "http://localhost:5173/src/app/assets/pang-white.svg";
+
+import banner1 from '../../assets/banner1.png';
+import banner2 from '../../assets/banner2.png';
+import logo from '../../assets/logo.svg';
 
 export const Login = () => {
   const handleLoginError = (error: any) => {
