@@ -30,11 +30,19 @@ const getCookieOptions = (): Cookies.CookieAttributes => {
 export const tokenStorage = {
   setAccessToken: (token: string) => {
     const options = getCookieOptions();
-    Cookies.set(TOKEN_KEY, token, {
+    const fullOptions = {
       ...options,
       expires: 1,
-    });
-    console.log('Setting accessToken cookie with options:', options);
+    };
+    console.log('Setting accessToken cookie with options:', fullOptions);
+    console.log('Token value:', token);
+    
+    Cookies.set(TOKEN_KEY, token, fullOptions);
+    
+    // 바로 확인
+    const savedToken = Cookies.get(TOKEN_KEY);
+    console.log('저장 후 즉시 확인한 accessToken:', savedToken);
+    console.log('저장 성공?', savedToken === token);
   },
 
   getAccessToken: (): string | undefined => {
@@ -48,11 +56,19 @@ export const tokenStorage = {
 
   setRefreshToken: (token: string) => {
     const options = getCookieOptions();
-    Cookies.set(REFRESH_TOKEN_KEY, token, {
+    const fullOptions = {
       ...options,
       expires: 7,
-    });
-    console.log('Setting refreshToken cookie with options:', options);
+    };
+    console.log('Setting refreshToken cookie with options:', fullOptions);
+    console.log('Token value:', token);
+    
+    Cookies.set(REFRESH_TOKEN_KEY, token, fullOptions);
+    
+    // 바로 확인
+    const savedToken = Cookies.get(REFRESH_TOKEN_KEY);
+    console.log('저장 후 즉시 확인한 refreshToken:', savedToken);
+    console.log('저장 성공?', savedToken === token);
   },
 
   getRefreshToken: (): string | undefined => {

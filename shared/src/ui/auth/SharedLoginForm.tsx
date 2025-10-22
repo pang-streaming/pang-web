@@ -39,14 +39,22 @@ export const SharedLoginForm = ({
     try {
       const data = await loginUser(email, password);
       
+      // 쿠키에 토큰 저장
+      console.log("=== 쿠키 저장 시작 ===");
+      console.log("accessToken:", data.data.accessToken);
+      console.log("현재 hostname:", window.location.hostname);
+      console.log("현재 protocol:", window.location.protocol);
+      console.log("VITE_COOKIE_DOMAIN:", import.meta.env.VITE_COOKIE_DOMAIN);
+      console.log("PROD 모드:", import.meta.env.PROD);
+      
       tokenStorage.setAccessToken(data.data.accessToken);
       if (data.data.refreshToken) {
         tokenStorage.setRefreshToken(data.data.refreshToken);
       }
       
-      localStorage.setItem("accessToken", data.data.accessToken);
-      
-      console.log("로그인 성공 - 토큰이 Cookie에 저장되었습니다");
+      console.log("쿠키 저장 함수 호출 완료");
+      console.log("저장된 쿠키 확인:", document.cookie);
+      console.log("=== 쿠키 저장 끝 ===");
 
       if (onLoginSuccess) {
         onLoginSuccess();
@@ -54,8 +62,10 @@ export const SharedLoginForm = ({
 
       const redirectParam = searchParams.get("redirect");
       if (redirectParam === "streamer") {
+        // window.location.href 사용 (전체 페이지 리로드)
         window.location.href = import.meta.env.VITE_STREAMER_URL;
       } else {
+        // SPA 내부 네비게이션
         navigate(redirectTo);
       }
     } catch (error: any) {
