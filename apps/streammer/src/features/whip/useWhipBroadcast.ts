@@ -99,13 +99,17 @@ export const useWhipBroadcast = (
       
       const videoSender = pc.addTrack(videoTrack, stream);
 
-      // 비디오 인코딩 파라미터 설정
+      // 비디오 인코딩 파라미터 설정 - 고화질 최적화
       const videoParams = videoSender.getParameters();
       if (!videoParams.encodings) {
         videoParams.encodings = [{}];
       }
-      videoParams.encodings[0].maxBitrate = config.bitrate || 8000000;
-      videoParams.encodings[0].maxFramerate = config.fps || 60;
+      videoParams.encodings[0].maxBitrate = config.bitrate
+      videoParams.encodings[0].maxFramerate = config.fps;
+      // 해상도 스케일링 방지 - 원본 해상도 유지
+      videoParams.encodings[0].scaleResolutionDownBy = 1.0;
+      // 화질 우선 모드 설정
+      videoParams.degradationPreference = 'maintain-resolution';
       await videoSender.setParameters(videoParams);
 
       // 연결 상태 모니터링

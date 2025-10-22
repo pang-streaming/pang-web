@@ -266,6 +266,7 @@ const StreamingPage = () => {
 			      setScreens={setScreens}
 			      vrmUrl={vrmUrl}
 			      selectedDevice={selectedDevice}
+			      username={myInfo?.data?.username ?? ''}
 			      isVTuberEnabled={isVTuberEnabled}
 			      streamKey={streamKey}
 			      title={myInfo?.data?.nickname ?? ''}
@@ -274,32 +275,7 @@ const StreamingPage = () => {
 		      />
 	      </VideoWrapper>
         <ChatSection>
-    
           {myInfo?.data && (
-          //   <UserInfoBox>
-          //     <InfoLabel>사용자 정보</InfoLabel>
-          //     <InfoRow>
-          //       <InfoKey>닉네임:</InfoKey>
-          //       <InfoValue>{myInfo.data.nickname}</InfoValue>
-          //     </InfoRow>
-          //     <InfoRow>
-          //       <InfoKey>유저네임:</InfoKey>
-          //       <InfoValue>{myInfo.data.username}</InfoValue>
-          //     </InfoRow>
-          //     <InfoRow>
-          //       <InfoKey>커뮤니티 ID:</InfoKey>
-          //       <InfoValue>{myInfo.data.communityId || '없음'}</InfoValue>
-          //     </InfoRow>
-          //   </UserInfoBox>
-          // )}
-
-          // {streamKey && (
-          //   <StreamKeyInfo>
-          //     <StreamKeyLabel>스트림 키:</StreamKeyLabel>
-          //     <StreamKeyValue>{streamKey}</StreamKeyValue>
-          //   </StreamKeyInfo>
-          // )}
-           
             <Chat roomId={myInfo?.data?.username ?? ''} />
           )}
         </ChatSection>
@@ -1001,89 +977,10 @@ const RetryButton = styled.button`
   }
 `;
 
-const UserInfoBox = styled.div`
-  margin-top: 15px;
-  padding: 15px;
-  background-color: ${({ theme }) => theme.colors.background.normal};
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-`;
-
-const InfoLabel = styled.div`
-  font-size: 16px;
-  color: ${({ theme }) => theme.colors.text.normal};
-  font-weight: bold;
-  margin-bottom: 5px;
-`;
-
-const InfoRow = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-`;
-
-const InfoKey = styled.div`
-  font-size: 13px;
-  color: ${({ theme }) => theme.colors.text.subtitle};
-  font-weight: 500;
-`;
-
-const InfoValue = styled.div`
-  font-size: 13px;
-  color: ${({ theme }) => theme.colors.text.normal};
-  word-break: break-word;
-  text-align: right;
-`;
-
-const StreamKeyInfo = styled.div`
-  margin-top: 20px;
-  padding: 15px;
-  background-color: ${({ theme }) => theme.colors.background.normal};
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-`;
-
-const StreamKeyLabel = styled.div`
-  font-size: 14px;
-  color: ${({ theme }) => theme.colors.text.subtitle};
-  font-weight: bold;
-`;
-
-const StreamKeyValue = styled.div`
-  font-size: 12px;
-  color: ${({ theme }) => theme.colors.text.normal};
-  word-break: break-all;
-  font-family: monospace;
-  padding: 8px;
-  background-color: ${({ theme }) => theme.colors.background.light};
-  border-radius: 4px;
-`;
-
-const StreamingHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: ${({ theme }) => theme.colors.background.light};
-  border-radius: 16px;
-  padding: 20px;
-  margin-bottom: 20px;
-`;
-
 const HeaderLeft = styled.div`
   display: flex;
   align-items: center;
   gap: 16px;
-`;
-
-const HeaderRight = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
 `;
 
 const CategorySection = styled.div`
@@ -1127,23 +1024,4 @@ const StreamTitle = styled.h3<{ $clickable?: boolean }>`
       color: ${theme.colors.primary.normal};
     }
   `}
-`;
-
-const StartButton = styled.button<{isStarted: boolean}>`
-  padding: 8px;
-  border-radius: ${({theme}) => theme.borders.small};
-  color: ${({theme}) => theme.colors.text.normal};
-  background-color: ${({theme, isStarted}) => isStarted ? theme.colors.primary.normal : theme.colors.content.normal};
-  cursor: pointer;
-  border: none;
-  transition: background-color 0.2s;
-
-  &:hover:not(:disabled) {
-    background-color: ${({theme, isStarted}) => isStarted ? theme.colors.primary.dark : theme.colors.content.dark};
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
 `;

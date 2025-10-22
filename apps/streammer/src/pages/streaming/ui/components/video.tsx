@@ -1,11 +1,10 @@
 import React, {useEffect, useRef} from "react";
 import styled from "styled-components";
-import { AiOutlineEye, AiOutlineHeart } from "react-icons/ai";
-import {LiveCanvas} from "../../../../features/canvas/ui/live-canvas";
-import { type CanvasSize, type Screen } from "../../../../features/canvas/constants/canvas-constants";
+import {LiveCanvas} from "@/features/canvas/ui/live-canvas";
+import { type CanvasSize, type Screen } from "@/features/canvas/constants/canvas-constants";
 import {VscDebugStart, VscDebugStop} from "react-icons/vsc";
-import { useWhipBroadcast } from "../../../../features/whip/useWhipBroadcast";
-import {useVrmScreen} from "../../../../features/vrm/hooks/useVrmScreen";
+import { useWhipBroadcast } from "@/features/whip/useWhipBroadcast";
+import {useVrmScreen} from "@/features/vrm/hooks/useVrmScreen";
 
 interface VideoProps {
 	containerRef: React.RefObject<HTMLDivElement | null>;
@@ -13,6 +12,7 @@ interface VideoProps {
 	setScreens: React.Dispatch<React.SetStateAction<Screen[]>>;
 	canvasSize: CanvasSize;
   streamKey: string;
+	username: string;
   vrmUrl: string | null;
   selectedDevice: MediaDeviceInfo | null;
   isVTuberEnabled: boolean;
@@ -27,11 +27,10 @@ export const Video = ({
 	containerRef, 
 	canvasSize, 
 	streamKey,
-	title,
+	username,
 	vrmUrl,
 	selectedDevice,
 	isVTuberEnabled,
-	onTitleClick,
 	titleChild,
 }: VideoProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -39,7 +38,7 @@ export const Video = ({
 		canvasRef,
 			{
 			whipUrl: import.meta.env.VITE_WHIP_URL,
-			bitrate: 8000000,
+			bitrate: 6000000,
 			fps: 60,
 			secretKey: streamKey,
 		}
@@ -88,6 +87,15 @@ export const Video = ({
 					</StatsContainer>
 				</TitleRow>
 				<CanvasContainer ref={containerRef}>
+					<DonationEmbed
+						width="550"
+						height="350"
+						allow="autoplay"
+						src={`https://pang-embed.euns.dev/events/donation?username=${username}`}
+					/>
+					<ChattingEmbed
+						src={`https://pang-embed.euns.dev/events/chat?username=${username}`}
+					/>
 					<LiveCanvas canvasRef={canvasRef} screens={screens} setScreens={setScreens} canvasSize={canvasSize} />
 				</CanvasContainer>
 			</LiveContainer>
@@ -106,10 +114,28 @@ const LiveContainer = styled.div`
 const CanvasContainer = styled.div`
   display: flex;
 	flex: 1;
+	position: relative;
   justify-content: center;
   align-items: center;
   width: 100%;
 `;
+
+const ChattingEmbed = styled.iframe`
+	position: absolute;
+  z-index: 5;
+	right: 0;
+  pointer-events: none;
+	border: none;
+`
+
+const DonationEmbed = styled.iframe`
+	position: absolute;
+  z-index: 5;
+	left: 50px;
+	top: 50px;
+  pointer-events: none;
+	border: none;
+`
 
 const TitleRow = styled.div`
   display: flex;
@@ -118,23 +144,9 @@ const TitleRow = styled.div`
   margin-bottom: 16px;
 `;
 
-const SectionTitle = styled.h3`
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: ${({ theme }) => theme.colors.text.subtitle};
-  margin: 0;
-`;
-
 const StatsContainer = styled.div`
   display: flex;
   gap: 12px;
-`;
-
-const StatItem = styled.span`
-  display: flex;
-  align-items: center;
-  font-size: 1rem;
-  color: ${({ theme }) => theme.colors.text.normal};
 `;
 
 const StartButton = styled.button<{isStarted: boolean}>`
