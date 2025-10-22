@@ -2,22 +2,21 @@ import React, { useRef, useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Video } from './components/video';
 import { StreamSetting } from './components/streamSetting';
-import { useCanvasSize } from '../../../features/canvas/hooks/useCanvasSize';
-import { useScreenManagement } from '../../../features/canvas/hooks/useScreenManagement';
-import { AddSourceModal } from '../../../features/modal/components/AddSourceModal';
-import { useAddSourceModal } from '../../../features/modal/hooks/useAddSourceModal';
-import { useStreamTitleModal } from '../../../features/modal/hooks/useStreamTitleModal';
-import { type Screen } from '../../../features/canvas/constants/canvas-constants';
-import { useAudioStore } from '../../../features/audio/stores/useAudioStore';
-import { fetchStreamKey, createStreamKey, fetchMyInfo, fetchStreamStatus, Category, updateStream } from '../../../features/stream/api';
+import { useCanvasSize } from '@/features/canvas/hooks/useCanvasSize';
+import { useScreenManagement } from '@/features/canvas/hooks/useScreenManagement';
+import { AddSourceModal } from '@/features/modal/components/AddSourceModal';
+import { useAddSourceModal } from '@/features/modal/hooks/useAddSourceModal';
+import { useStreamTitleModal } from '@/features/modal/hooks/useStreamTitleModal';
+import { type Screen } from '@/features/canvas/constants/canvas-constants';
+import { useAudioStore } from '@/features/audio/stores/useAudioStore';
+import { fetchStreamKey, createStreamKey, fetchMyInfo, fetchStreamStatus, Category, updateStream } from '@/features/stream/api';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { Chat } from './components/chat';
-import { VscDebugStart, VscDebugStop } from "react-icons/vsc";
-import { StreamTitleModal } from '../../../features/modal/components/StreamTitleModal';
+import { StreamTitleModal } from '@/features/modal/components/StreamTitleModal';
 
 const StreamingPage = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const canvasSize = useCanvasSize(containerRef);
+  const canvasSize = useCanvasSize();
   const { screens, setScreens, addVideoScreen, addScreen, clearScreens } = useScreenManagement(canvasSize);
   
   const modal = useAddSourceModal();

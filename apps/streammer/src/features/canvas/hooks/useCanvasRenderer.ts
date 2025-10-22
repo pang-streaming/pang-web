@@ -13,11 +13,11 @@ export const useCanvasRenderer = (
 		const canvas = canvasRef.current;
 		if (!canvas) return;
 		
-		const dpr = window.devicePixelRatio || 1;
+		// 내부 해상도를 1.5배로 설정 (2880x1620) - 스트리밍 화질 향상
+		const dpr = 1.5;
 		canvas.width = canvasSize.width * dpr;
 		canvas.height = canvasSize.height * dpr;
-		canvas.style.width = `${canvasSize.width}px`;
-		canvas.style.height = `${canvasSize.height}px`;
+		// CSS 크기는 설정하지 않음 - styled-component의 aspect-ratio가 자동으로 반응형 처리
 		
 		const ctx = canvas.getContext('2d', {
 			alpha: false,
