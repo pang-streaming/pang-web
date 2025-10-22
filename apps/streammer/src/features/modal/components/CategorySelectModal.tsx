@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { useQuery } from '@tanstack/react-query';
 import { fetchCategories, Category } from '../../stream/api';
 
@@ -17,6 +17,7 @@ export const CategorySelectModal: React.FC<CategorySelectModalProps> = ({
   selectedCategory
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [isClosing, setIsClosing] = useState(false);
 
   const { data: categoriesData, isLoading, error } = useQuery({
     queryKey: ['categories'],
@@ -37,15 +38,19 @@ export const CategorySelectModal: React.FC<CategorySelectModalProps> = ({
   };
 
   const handleClose = () => {
-    setSearchTerm('');
-    onClose();
+    setIsClosing(true);
+    setTimeout(() => {
+      setSearchTerm('');
+      setIsClosing(false);
+      onClose();
+    }, 300);
   };
 
   if (!isOpen) return null;
 
   return (
-    <ModalOverlay onClick={handleClose}>
-      <ModalContent onClick={(e) => e.stopPropagation()}>
+    <ModalOverlay onClick={handleClose} $isClosing={isClosing}>
+      <ModalContent onClick={(e) => e.stopPropagation()} $isClosing={isClosing}>
         <ModalHeader>
           <ModalTitle>카테고리 선택</ModalTitle>
           <CloseButton onClick={handleClose}>×</CloseButton>
@@ -121,7 +126,48 @@ export const CategorySelectModal: React.FC<CategorySelectModalProps> = ({
   );
 };
 
-const ModalOverlay = styled.div`
+// 애니메이션 keyframes
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
+
+const fadeOut = keyframes`
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+`;
+
+const slideIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(-50px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+`;
+
+const slideOut = keyframes`
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.95);
+  }
+`;
+
+const ModalOverlay = styled.div<{ $isClosing?: boolean }>`
   position: fixed;
   top: 0;
   left: 0;
@@ -132,9 +178,11 @@ const ModalOverlay = styled.div`
   justify-content: center;
   align-items: center;
   z-index: 1001;
+  animation: ${({ $isClosing }) => $isClosing ? fadeOut : fadeIn} 0.3s ease-out;
+  backdrop-filter: blur(4px);
 `;
 
-const ModalContent = styled.div`
+const ModalContent = styled.div<{ $isClosing?: boolean }>`
   background-color: ${({ theme }) => theme.colors.background.normal};
   border-radius: 16px;
   width: 95%;
@@ -143,6 +191,8 @@ const ModalContent = styled.div`
   overflow: hidden;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   box-sizing: border-box;
+  animation: ${({ $isClosing }) => $isClosing ? slideOut : slideIn} 0.3s ease-out;
+  transform-origin: center;
 `;
 
 const ModalHeader = styled.div`

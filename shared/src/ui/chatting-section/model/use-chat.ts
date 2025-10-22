@@ -21,11 +21,19 @@ export interface ISendDonationMessageRequest {
 }
 
 
+
 export const useChat = (streamId: string) => {
   const socket = useSocket();
   const [chatList, setChatList] = useState<ChatItem[]>([]);
   const [chat, setChat] = useState("");
+  const getCookie = (name: string) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop()?.split(';').shift();
+    return null;
+  };
 
+  
   useEffect(() => {
     if (!socket || !streamId) return;
 
@@ -77,7 +85,7 @@ export const useChat = (streamId: string) => {
 
   const sendMessage = (overrideMessage?: string) => {
     if (!socket || !socket.connected) return;
-    const token = localStorage.getItem("accessToken");
+    const token = getCookie("accessToken");
     const messageToSend = overrideMessage ?? chat;
     const trimmedMessage = messageToSend.trim();
     if (!trimmedMessage || !token) return;
@@ -93,7 +101,7 @@ export const useChat = (streamId: string) => {
 
   const addSponsorMessage = (data:ISendDonationMessageRequest) => {
     if (socket && socket.connected) {
-      data.token = String(localStorage.getItem("accessToken"));
+      data.token = String(getCookie("accessToken"));
       socket.emit("send_donation", data);
     }
   };

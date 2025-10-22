@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { updateStream, Category, UpdateStreamRequest } from '../../stream/api';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { CategorySelectModal } from './CategorySelectModal';
@@ -36,17 +36,38 @@ export const StreamTitleModal: React.FC<StreamTitleModalProps> = ({
   const [currentHashtags, setCurrentHashtags] = useState<string[]>(hashtags);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [successMessage, setSuccessMessage] = useState<string>('');
+  const [isClosing, setIsClosing] = useState(false);
   const queryClient = useQueryClient();
   const categorySelectModal = useCategorySelectModal();
 
   const updateStreamMutation = useMutation({
     mutationFn: ({ streamKey, updateData }: { streamKey: string; updateData: UpdateStreamRequest }) => 
       updateStream(streamKey, updateData),
+    onMutate: async ({ updateData }) => {
+      // 낙관적 업데이트: 서버 응답을 기다리지 않고 즉시 UI 업데이트
+      await queryClient.cancelQueries({ queryKey: ['streamStatus'] });
+      await queryClient.cancelQueries({ queryKey: ['streamInfo'] });
+      
+      const previousStreamStatus = queryClient.getQueryData(['streamStatus']);
+      const previousStreamInfo = queryClient.getQueryData(['streamInfo']);
+      
+      // 스트림 상태 업데이트
+      queryClient.setQueryData(['streamStatus'], (old: any) => ({
+        ...old,
+        data: {
+          ...old?.data,
+          title: updateData.title,
+          categoryId: updateData.categoryId,
+          tags: updateData.tags,
+          streamType: updateData.streamType
+        }
+      }));
+      
+      return { previousStreamStatus, previousStreamInfo };
+    },
     onSuccess: () => {
       setErrorMessage('');
       setSuccessMessage('스트리밍 정보가 성공적으로 업데이트되었습니다.');
-      queryClient.invalidateQueries({ queryKey: ['streamInfo'] });
-      queryClient.invalidateQueries({ queryKey: ['streamTitle'] });
       
       // 성공 메시지 표시 후 잠시 대기
       setTimeout(() => {
@@ -56,9 +77,17 @@ export const StreamTitleModal: React.FC<StreamTitleModalProps> = ({
         onClose();
       }, 1500);
     },
-    onError: (error: any) => {
+    onError: (error: any, variables, context) => {
       console.error('스트리밍 정보 업데이트 실패:', error);
       setSuccessMessage('');
+      
+      // 에러 발생 시 이전 상태로 롤백
+      if (context?.previousStreamStatus) {
+        queryClient.setQueryData(['streamStatus'], context.previousStreamStatus);
+      }
+      if (context?.previousStreamInfo) {
+        queryClient.setQueryData(['streamInfo'], context.previousStreamInfo);
+      }
       
       // 에러 메시지 설정
       if (error?.response?.status === 400) {
@@ -72,6 +101,11 @@ export const StreamTitleModal: React.FC<StreamTitleModalProps> = ({
       } else {
         setErrorMessage('스트리밍 정보 업데이트에 실패했습니다. 잠시 후 다시 시도해주세요.');
       }
+    },
+    onSettled: () => {
+      // 성공/실패 관계없이 최신 데이터로 동기화
+      queryClient.invalidateQueries({ queryKey: ['streamStatus'] });
+      queryClient.invalidateQueries({ queryKey: ['streamInfo'] });
     }
   });
 
@@ -123,19 +157,23 @@ export const StreamTitleModal: React.FC<StreamTitleModalProps> = ({
   };
 
   const handleClose = () => {
-    setTitle(currentTitle);
-    setCategory(selectedCategory || null);
-    setCurrentHashtags(hashtags);
-    setErrorMessage('');
-    setSuccessMessage('');
-    onClose();
+    setIsClosing(true);
+    setTimeout(() => {
+      setTitle(currentTitle);
+      setCategory(selectedCategory || null);
+      setCurrentHashtags(hashtags);
+      setErrorMessage('');
+      setSuccessMessage('');
+      setIsClosing(false);
+      onClose();
+    }, 300); // 애니메이션 시간과 맞춤
   };
 
   if (!isOpen) return null;
 
   return (
-    <ModalOverlay onClick={handleClose}>
-      <ModalContent onClick={(e) => e.stopPropagation()}>
+    <ModalOverlay onClick={handleClose} $isClosing={isClosing}>
+      <ModalContent onClick={(e) => e.stopPropagation()} $isClosing={isClosing}>
         <ModalHeader>
           <ModalTitle>방송 설정</ModalTitle>
           <CloseButton onClick={handleClose}>×</CloseButton>
@@ -222,7 +260,48 @@ export const StreamTitleModal: React.FC<StreamTitleModalProps> = ({
   );
 };
 
-const ModalOverlay = styled.div`
+// 애니메이션 keyframes
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
+
+const fadeOut = keyframes`
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+`;
+
+const slideIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(-50px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+`;
+
+const slideOut = keyframes`
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.95);
+  }
+`;
+
+const ModalOverlay = styled.div<{ $isClosing?: boolean }>`
   position: fixed;
   top: 0;
   left: 0;
@@ -233,9 +312,11 @@ const ModalOverlay = styled.div`
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  animation: ${({ $isClosing }) => $isClosing ? fadeOut : fadeIn} 0.3s ease-out;
+  backdrop-filter: blur(4px);
 `;
 
-const ModalContent = styled.div`
+const ModalContent = styled.div<{ $isClosing?: boolean }>`
   background-color: ${({ theme }) => theme.colors.background.normal};
   border-radius: 16px;
   width: 90%;
@@ -243,6 +324,8 @@ const ModalContent = styled.div`
   max-height: 90vh;
   overflow: hidden;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  animation: ${({ $isClosing }) => $isClosing ? slideOut : slideIn} 0.3s ease-out;
+  transform-origin: center;
 `;
 
 const ModalHeader = styled.div`

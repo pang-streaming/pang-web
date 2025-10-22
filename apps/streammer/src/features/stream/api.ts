@@ -103,6 +103,8 @@ export interface StreamStatusResponse {
   data: {
     status: "LIVE" | "ENDED";
     streamType: "RTMP" | "WHIP";
+    categoryId: number;
+    title: string;
   };
   timestamp: string;
 }
@@ -202,3 +204,4 @@ export const updateStream = async (
   });
   return res.data;
 };
+

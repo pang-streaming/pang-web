@@ -90,14 +90,6 @@ export const ChatInput = ({ username, onSend, addSponsorMessage, voiceId }: Chat
       sponsorEventManager.emit(userNickname, pungAmount);
       switch (donationType) {
         case "cash":
-
-          addSponsorMessage({
-            roomId: username,   
-            message: message, 
-            amount: pungAmount, 
-            voiceId: selectedVoiceId, // 선택한 음성 ID 사용
-          });
-
           donationApi.post({
             username:username,
             amount: pungAmount
@@ -106,15 +98,13 @@ export const ChatInput = ({ username, onSend, addSponsorMessage, voiceId }: Chat
               roomId: username,   
               message: message, 
               amount: pungAmount, 
-              voiceId: "gtbd9NwwnPeKoNkxPtk8Xn",
+              voiceId: selectedVoiceId,
             });
             setUserCash(newCash);
             setPungAmount(1000);
           }).catch(err=>{
             console.log(`후원실패 ${err.response.message}`)
           })
-          
-
           break;
         case "video":
           donationApi.post({
