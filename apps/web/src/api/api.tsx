@@ -13,7 +13,8 @@ api.interceptors.request.use((config) => {
     return null;
   };
   
-  const token = getCookie("accessToken");
+  const token = getCookie("accessToken") || localStorage.getItem("accessToken");
+  console.log('[웹 API 인터셉터] 요청 URL:', config.url, '토큰:', token ? '있음' : '없음');
   if (
     token &&
     config.url &&

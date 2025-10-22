@@ -19,16 +19,16 @@ export const MarketCategorySection = () => {
 
 
 
-  const handleCategoryClick = (category: string) => {
-    navigate(`/market-category-detail/${category}`);
+  const handleCategoryClick = (title: string) => {
+    navigate(`/market-category-detail/${encodeURIComponent(title)}`);
   };
 
   return (
     <Container>
       {categoryList.map((c) => (
         <MarketCategoryElem
-        query={c.query}
-          key={c.title}
+          query={c.query}
+          key={c.query}
           image={c.image}
           title={c.title}
           onClick={() => handleCategoryClick(c.title)}
@@ -39,7 +39,7 @@ export const MarketCategorySection = () => {
 };
 
 const Container = styled.div`
-  padding: 0 18px;
+  padding: 0 1px;
   display: flex;
   align-items: center;
 `;
