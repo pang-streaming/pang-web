@@ -11,9 +11,6 @@ interface ProfileHomeWidgetProps {
 export const ProfileHomeWidget = ({ username }: ProfileHomeWidgetProps) => {
   const { data: liveData, isLoading, isError, error } = useLiveByUsername(username);
 
-  console.log("username:", username);
-  console.log("liveData:", liveData);
-
   if (isLoading) {
     return (
       <div style={{ padding: '20px' }}>

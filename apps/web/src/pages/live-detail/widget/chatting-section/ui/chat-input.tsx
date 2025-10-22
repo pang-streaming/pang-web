@@ -63,10 +63,6 @@ export const ChatInput = ({ username, onSend, addSponsorMessage, voiceId }: Chat
   
   
   const handleSponsorPung = async () => {
-    if (!cardId) {
-      console.error("카드 정보가 없습니다.");
-      return;
-    }
 
     if (pungAmount > userCash) {
       return;

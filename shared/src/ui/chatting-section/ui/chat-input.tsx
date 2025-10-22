@@ -71,10 +71,6 @@ export const ChatInput = ({
   
   
   const handleSponsorPung = async () => {
-    if (!cardId) {
-      console.error("카드 정보가 없습니다.");
-      return;
-    }
 
     if (pungAmount > userCash) {
       return;
@@ -201,7 +197,6 @@ console.log("payload", payload)
         >
           {sendPungIcon && <img src={sendPungIcon} alt="후원" />}
         </button>
-        {AirplaneIcon && <AirplaneIcon onClick={handleSend} />}
       </Container>
 
       {isSponsorModalOpen && (
