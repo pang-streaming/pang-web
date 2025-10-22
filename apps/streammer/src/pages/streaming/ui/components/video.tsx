@@ -12,34 +12,38 @@ interface VideoProps {
 	screens: Screen[];
 	setScreens: React.Dispatch<React.SetStateAction<Screen[]>>;
 	canvasSize: CanvasSize;
-  viewers?: number;
-  likes?: number;
+  streamKey: string;
   vrmUrl: string | null;
   selectedDevice: MediaDeviceInfo | null;
   isVTuberEnabled: boolean;
+  title: string;
+  onTitleClick: () => void;
+  titleChild: React.ReactNode;
 }
 
 export const Video = ({ 
-  screens, 
-  setScreens, 
-  containerRef, 
-  canvasSize, 
-  viewers = 123, 
-  likes = 456,
-  vrmUrl,
-  selectedDevice,
-  isVTuberEnabled,
+	screens, 
+	setScreens, 
+	containerRef, 
+	canvasSize, 
+	streamKey,
+	title,
+	vrmUrl,
+	selectedDevice,
+	isVTuberEnabled,
+	onTitleClick,
+	titleChild,
 }: VideoProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 	const { status, startStreaming, stopStreaming } = useWhipBroadcast(
 		canvasRef,
-		{
-      whipUrl: import.meta.env.VITE_WHIP_URL,
-      bitrate: 8000000,
-      fps: 60,
-			secretKey: '604e28eb866d13d0beec154eb8f50613c494653fb1e8457f8e128c3dded1d124116c39abdd3086f22f6fdb5fb00d3e0961e7f48a938879d91ed03a9195eda5f3', //test - not real
-    }
-	);
+			{
+			whipUrl: import.meta.env.VITE_WHIP_URL,
+			bitrate: 8000000,
+			fps: 60,
+			secretKey: streamKey,
+		}
+		);
 	
 	const { screen: vrmScreen, VrmRenderer } = useVrmScreen(
 	  canvasSize, 
@@ -76,16 +80,8 @@ export const Video = ({
 			{isVTuberEnabled && selectedDevice && <VrmRenderer />}
 			<LiveContainer>
 				<TitleRow>
-					<SectionTitle>스트리머님의 방송 ✎</SectionTitle>
+					{titleChild}
 					<StatsContainer>
-						<StatItem>
-							<AiOutlineEye style={{ marginRight: "4px" }} />
-							{viewers}
-						</StatItem>
-						<StatItem>
-							<AiOutlineHeart style={{ marginRight: "4px" }} />
-							{likes}
-						</StatItem>
 						<StartButton isStarted={status.isStreaming} onClick={status.isStreaming ? stopStreaming : startStreaming} disabled={status.iceState === 'checking'}>
 							{status.isStreaming ? <VscDebugStop size={20}/> : <VscDebugStart size={20}/>}
 						</StartButton>
