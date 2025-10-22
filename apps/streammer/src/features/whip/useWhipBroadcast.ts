@@ -35,6 +35,7 @@ export const useWhipBroadcast = (
   const audioSenderRef = useRef<RTCRtpSender | null>(null);
   const lastFrameTime = useRef<number>(0);
   const frameCounter = useRef<number>(0);
+	const resourceLocation = useRef<string | null>(null);
 	const mixedAudioTrack = useAudioMixer();
 	
 	// FPS 계산을 위한 함수
@@ -108,7 +109,7 @@ export const useWhipBroadcast = (
       await videoSender.setParameters(videoParams);
 
       // 연결 상태 모니터링
-      pc.onconnectionstatechange = () => {
+      pc.onconnectionstatechange = async () => {
         const state = pc.connectionState;
         setStatus(prev => ({
           ...prev,
@@ -116,6 +117,21 @@ export const useWhipBroadcast = (
           isStreaming: state === 'connected',
           error: state === 'failed' || state === 'disconnected' ? 'Connection failed' : undefined,
         }));
+				
+				if (state == 'connected') {
+					try {
+						const videoSender = peerConnection.current?.getSenders().find(s => s.track?.kind === 'video');
+						if (videoSender) {
+							const params = videoSender.getParameters();
+							if (!params.encodings || params.encodings.length === 0) {
+								params.encodings = [{}];
+							}
+							await videoSender.setParameters(params);
+						}
+					} catch (error) {
+						console.error('Failed to force keyframe', error)
+					}
+				}
       };
 
       pc.oniceconnectionstatechange = () => {
@@ -146,7 +162,7 @@ export const useWhipBroadcast = (
         }
       });
 			
-			const whipUrl = config.whipUrl + config.secretKey;
+			const whipUrl = config.whipUrl + '/rtc/v1/whip/?app=live&stream=' + config.secretKey;
 			
       // WHIP 서버에 연결
       const response = await fetch(whipUrl, {
@@ -160,6 +176,11 @@ export const useWhipBroadcast = (
       if (!response.ok) {
         throw new Error(`WHIP connection failed: ${response.status} ${response.statusText}`);
       }
+			
+			const location = response.headers.get('Location');
+			if (location) {
+				resourceLocation.current = location;
+			}
 
       // Answer SDP 설정
       const answerSdp = await response.text();
@@ -183,7 +204,22 @@ export const useWhipBroadcast = (
     }
   }, [canvasRef, config, mixedAudioTrack, setCodecPreferences]);
 
-  const stopStreaming = useCallback(() => {
+  const stopStreaming = useCallback(async () => {
+		if (resourceLocation.current) {
+			try {
+				await fetch(config.whipUrl + resourceLocation.current, {
+					method: 'DELETE',
+				})
+				console.log('Streaming stopped successfully');
+				resourceLocation.current = null;
+				return;
+			} catch (error) {
+				console.error('Error stopping streaming:', error);
+			} finally {
+				resourceLocation.current = null;
+			}
+		}
+		
     if (mediaStream.current) {
       mediaStream.current.getTracks().forEach(track => track.stop());
       mediaStream.current = null;
