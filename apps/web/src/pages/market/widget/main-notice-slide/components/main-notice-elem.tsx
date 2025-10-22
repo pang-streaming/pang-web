@@ -14,7 +14,7 @@ export const MainNoticeElem = (product :TopFiveProduct) => {
         <BackImage src={product.image}/>
         <InfoSection>
             <Title>{product.name}</Title>
-            <SubTitle>혹시라도 아직 구매하지 못하신 분들을 위해 안내드립니다!</SubTitle>
+            <SubTitle>{product.description || "혹시라도 아직 구매하지 못하신 분들을 위해 안내드립니다!"}</SubTitle>
         </InfoSection>
     </Container>
   )
