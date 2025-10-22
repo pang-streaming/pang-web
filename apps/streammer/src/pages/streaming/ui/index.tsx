@@ -29,7 +29,11 @@ const StreamingPage = () => {
   const [isVTuberEnabled, setIsVTuberEnabled] = useState(false);
   const [streamKey, setStreamKey] = useState<string | null>(null);
   const [isLoadingKey, setIsLoadingKey] = useState(true);
-
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [hashtags, setHashtags] = useState<string[]>([]);
+  const [isStreamingSettingsOpen, setIsStreamingSettingsOpen] = useState(false);
+  const queryClient = useQueryClient();
+ 
   const { data: myInfo, isLoading: isLoadingMyInfo, refetch: refetchMyInfo } = useQuery({
     queryKey: ['myInfo'],
     queryFn: fetchMyInfo,
@@ -156,7 +160,7 @@ const StreamingPage = () => {
 
     try {
       setIsLoadingKey(true);
-      const response = await createStreamKey();
+      const response = await createStreamKey({ 'stream-type': 'WHIP' });
       if (response.data?.streamKey) {
         setStreamKey(response.data.streamKey);
         alert('새로운 스트림키가 생성되었습니다.');
