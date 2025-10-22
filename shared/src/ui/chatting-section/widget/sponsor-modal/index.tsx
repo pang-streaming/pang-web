@@ -40,7 +40,7 @@ export const SponsorModal = ({
   selectedVoiceId,
   onVoiceSelect,
 }: SponsorModalProps) => {
-  const isInsufficient = pungAmount > userCash;
+  const isInsufficient = pungAmount > userCash || pungAmount < 1000;
   const [selectedDonationType, setSelectedDonationType] = useState("cash");
   const [isVoiceSelectorOpen, setIsVoiceSelectorOpen] = useState(false);
 
