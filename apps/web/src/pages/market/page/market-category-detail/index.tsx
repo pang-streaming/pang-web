@@ -4,19 +4,32 @@ import { useParams, useLocation } from 'react-router-dom'
 import { useCategoryByProduct } from '../../hooks/useProduct'
 import styled from 'styled-components'
 import { SkeletonGrid } from '@/shared/ui/skeleton'
+import { VirtualModelElem } from '../../widget/market-section/widget/virtual-model-section/components/virtual-model-elem'
 
 
 export const MarketCategoryDetail = () => {
-  const { query } = useParams<{ query: string }>();
+  const { title } = useParams<{ title: string }>();
   const location = useLocation();
-  const title = location.state?.title || query;
+  const displayTitle = location.state?.title || title;
+  
+  // title을 query로 변환
+  const queryMap: Record<string, string> = {
+    "3D 모델": "VIRTUAL_MODEL",
+    "오디오 굿즈": "AUDIO_GOODS",
+    "굿즈": "GOODS",
+    "음악": "MUSIC",
+    "일러스트": "ILLUSTRATION",
+    "기타": "ETC",
+  };
+  
+  const query = queryMap[title || ""] || title;
   const { data: categoryByProducts, isLoading, isError } = useCategoryByProduct(query!);
 
   if (isLoading) {
     return (
       <Container>
-        <TabTitleText>{title!}</TabTitleText>
-        <SkeletonGrid count={12} minWidth={150} gap={16} itemHeight={150} />
+        <TabTitleText>{displayTitle!}</TabTitleText>
+        <SkeletonGrid count={12} minWidth={200} gap={27} itemHeight={240} />
       </Container>
     );
   }
@@ -24,8 +37,7 @@ export const MarketCategoryDetail = () => {
   if (isError) {
     return (
       <Container>
-        <TabTitleText>{title!}</TabTitleText>
-
+        <TabTitleText>{displayTitle!}</TabTitleText>
         <ErrorMessage>상품을 불러오는 중 오류가 발생했습니다.</ErrorMessage>
       </Container>
     );
@@ -34,8 +46,7 @@ export const MarketCategoryDetail = () => {
   if (!categoryByProducts || categoryByProducts.data.length === 0) {
     return (
       <Container>
-        <TabTitleText>{title!}</TabTitleText>
-
+        <TabTitleText>{displayTitle!}</TabTitleText>
         <EmptyMessage>해당 카테고리에 상품이 없습니다</EmptyMessage>
       </Container>
     );
@@ -43,16 +54,16 @@ export const MarketCategoryDetail = () => {
 
   return (
     <Container>
-      <TabTitleText>{title!}</TabTitleText>
+      <TabTitleText>{displayTitle!}</TabTitleText>
       <ProductGrid>
         {categoryByProducts.data.map((item) => (
-          <ProductCard key={item.id}>
-            <ProductImage src={item.image} alt={item.name} />
-            <ProductInfo>
-              <ProductName>{item.name}</ProductName>
-              <ProductPrice>{item.price.toLocaleString()}원</ProductPrice>
-            </ProductInfo>
-          </ProductCard>
+          <VirtualModelElem
+            key={item.id}
+            id={item.id}
+            image={item.image}
+            productName={item.name}
+            price={item.price}
+          />
         ))}
       </ProductGrid>
     </Container>
@@ -65,56 +76,29 @@ const Container = styled.div`
 `;
 
 const ProductGrid = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-`;
-
-const ProductCard = styled.div`
-  width: 150px;
-  display: flex;
-  flex-direction: column;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-
-  &:hover {
-    transform: translateY(-4px);
-  }
-`;
-
-const ProductImage = styled.img`
-  width: 100%;
-  height: 150px;
-  object-fit: cover;
-  border-radius: 8px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 27px;
+  padding: 18px;
   background-color: ${({ theme }) => theme.colors.content.normal};
-`;
+  border-radius: 12px;
 
-const ProductInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 8px 4px;
-  gap: 4px;
-`;
+  @media (max-width: 1400px) {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
+  }
 
-const ProductName = styled.p`
-  margin: 0;
-  font-size: ${({ theme }) => theme.font.medium};
-  color: ${({ theme }) => theme.colors.text.normal};
-  font-weight: 500;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  width: 100%;
-`;
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px;
+    padding: 12px;
+  }
 
-const ProductPrice = styled.p`
-  margin: 0;
-  font-size: ${({ theme }) => theme.font.large};
-  color: ${({ theme }) => theme.colors.primary.normal};
-  font-weight: 700;
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 10px;
+  }
 `;
 
 const ErrorMessage = styled.p`

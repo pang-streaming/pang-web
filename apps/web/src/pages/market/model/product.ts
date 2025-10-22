@@ -57,6 +57,8 @@ export interface ProductListResponse {
     username: string;
     isLiked: boolean;
     description: string;
+    isPurchased: boolean;
+    fileUrl?: string;
   }
   
 

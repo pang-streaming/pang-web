@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { Store } from "@/entities/store/type";
+import normalProfile from '@/app/assets/pang-emotion-logo.png'
 
 export const PopularModelStoreElem = ({
   id,
@@ -19,7 +20,10 @@ export const PopularModelStoreElem = ({
   return (
     <Container onClick={handleStore}>
       <BackImage src={bannerImage} />
-      <ProfileImage src={profileImage} />
+      <ProfileImage
+  src={profileImage && profileImage.trim() !== "" ? profileImage : normalProfile}
+  alt="프로필 이미지"
+/>
       <InfoSection>
         <StoreName>{name}</StoreName>
         <Description>{description}</Description>
