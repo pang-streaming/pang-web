@@ -10,6 +10,8 @@ import { LoginButton } from "../buttons/loginButton";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { PangLogo } from "../../asset/logo/pangLogo";
 import { tokenStorage } from "../../lib/cookie";
+import { LoginModal } from "../modals/loginModal";
+import { useState } from "react";
 
 interface HeaderProps {
   onClickMenu: () => void;
@@ -27,6 +29,7 @@ export const Header = ({ onClickMenu, type }: HeaderProps) => {
   const token = tokenStorage.getAccessToken();
   const isLoggedIn = token != null;
   const from = searchParams.get("from");
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
   const pangUrl = import.meta.env.VITE_PANG_URL;
   const pangStreamerUrl = import.meta.env.VITE_STREAMER_URL;
@@ -34,6 +37,11 @@ export const Header = ({ onClickMenu, type }: HeaderProps) => {
 
 
   const handleMoveButtonClick = () => {
+    if (!isLoggedIn) {
+      setIsLoginModalOpen(true);
+      return;
+    }
+    
     if (type === "user") {
       window.location.href = pangStreamerUrl
     } else {
@@ -49,21 +57,39 @@ export const Header = ({ onClickMenu, type }: HeaderProps) => {
     }
   };
 
+  const handleLoginModalConfirm = () => {
+    setIsLoginModalOpen(false);
+    navigate("/login");
+  };
+
+  const handleLoginModalCancel = () => {
+    setIsLoginModalOpen(false);
+  };
+
   return (
-    <HeaderContainer>
-      <LogoWrapper>
-        {type !== "streamer" && (
-          <SidebarToggleButton size={28} onClick={onClickMenu} />
-        )}
-        <PangLogo type={type} onClick={handleLogoClick} cursor="pointer" />
-      </LogoWrapper>
-      {type === "user" && <SearchBar />}
-      <ButtonWrapper>
-        <HeaderButton Icon={MoveButton} onClick={handleMoveButtonClick} />
-        <HeaderButton Icon={DarkLightModeIcon} onClick={toggleTheme} />
-        <LoginButton isLoggedIn={isLoggedIn} appType={type} />
-      </ButtonWrapper>
-    </HeaderContainer>
+    <>
+      <HeaderContainer>
+        <LogoWrapper>
+          {type !== "streamer" && (
+            <SidebarToggleButton size={28} onClick={onClickMenu} />
+          )}
+          <PangLogo type={type} onClick={handleLogoClick} cursor="pointer" />
+        </LogoWrapper>
+        {type === "user" && <SearchBar />}
+        <ButtonWrapper>
+          <HeaderButton Icon={MoveButton} onClick={handleMoveButtonClick} />
+          <HeaderButton Icon={DarkLightModeIcon} onClick={toggleTheme} />
+          <LoginButton isLoggedIn={isLoggedIn} appType={type} />
+        </ButtonWrapper>
+      </HeaderContainer>
+      
+      {isLoginModalOpen && (
+        <LoginModal 
+          onCancel={handleLoginModalCancel}
+          onConfirm={handleLoginModalConfirm}
+        />
+      )}
+    </>
   );
 };
 

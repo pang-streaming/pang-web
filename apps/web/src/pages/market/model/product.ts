@@ -76,6 +76,7 @@ export interface ProductDetailResponse {
       name: string,
       price: number,
       isLiked: boolean
+      description? : string;
   }
 
 
