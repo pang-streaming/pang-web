@@ -66,6 +66,7 @@ export const SponsorModal = ({
         segments={donationCategory}
         defaultSegmentIndex={0}
         onSegmentChange={handleDonationTypeChange}
+        selectedSegmentId={selectedDonationType}
       />
       <W.MyPungField userCash={userCash} />
       <W.IncreaseField pungAmount={pungAmount} onPungChange={onPungChange} />

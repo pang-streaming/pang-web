@@ -11,7 +11,6 @@ export const IncreaseField = ({ pungAmount, onPungChange }: IncreaseFieldProps) 
     <Container>
       <Text>후원할 펑</Text>
       <AmountInput
-        type="number"
         value={pungAmount}
         onChange={(e) => onPungChange(Number(e.target.value))}
         placeholder="0"
@@ -40,7 +39,7 @@ const Text = styled.span`
   color: ${({theme}) => theme.colors.text.subtitle};
 `;
 
-const AmountInput = styled.input`
+const AmountInput = styled.input.attrs({ type: "number" })`
   font-size: ${({theme}) => theme.font.large};
   font-weight: 900;
   color: ${({theme}) => theme.colors.primary.normal};
@@ -52,6 +51,16 @@ const AmountInput = styled.input`
   
   &::placeholder {
     color: ${({theme}) => theme.colors.text.subtitle};
+  }
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  &[type="number"] {
+    -moz-appearance: textfield;
   }
 `;
 
