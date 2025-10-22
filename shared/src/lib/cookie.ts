@@ -17,12 +17,11 @@ const getCookieDomain = (): string | undefined => {
   return undefined;
 };
 
-// Cookie 옵션 (서브도메인 간 공유)
 const cookieOptions: Cookies.CookieAttributes = {
   path: '/',
-  domain: getCookieDomain(), // 자동 감지된 도메인 사용
-  sameSite: 'lax', // CSRF 방어
-  secure: import.meta.env.PROD, // 프로덕션 환경에서는 true
+  domain: getCookieDomain(),
+  sameSite: 'lax',
+  secure: import.meta.env.PROD,
 };
 
 export const tokenStorage = {
