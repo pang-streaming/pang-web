@@ -105,6 +105,7 @@ const LiveContainer = styled.div`
 
 const CanvasContainer = styled.div`
   display: flex;
+	flex: 1;
   justify-content: center;
   align-items: center;
   width: 100%;

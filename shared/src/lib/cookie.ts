@@ -56,8 +56,25 @@ export const tokenStorage = {
   },
 
   clearAll: () => {
+    // Remove with current cookie options
     Cookies.remove(TOKEN_KEY, cookieOptions);
     Cookies.remove(REFRESH_TOKEN_KEY, cookieOptions);
+    
+    // Also try removing without domain option for fallback
+    Cookies.remove(TOKEN_KEY, { path: '/' });
+    Cookies.remove(REFRESH_TOKEN_KEY, { path: '/' });
+    
+    // For production domains, also try removing with root domain
+    const hostname = window.location.hostname;
+    if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
+      // Extract root domain (e.g., "euns.dev" from "www.euns.dev")
+      const parts = hostname.split('.');
+      if (parts.length >= 2) {
+        const rootDomain = '.' + parts.slice(-2).join('.');
+        Cookies.remove(TOKEN_KEY, { path: '/', domain: rootDomain });
+        Cookies.remove(REFRESH_TOKEN_KEY, { path: '/', domain: rootDomain });
+      }
+    }
   },
 };
 
