@@ -4,6 +4,7 @@ import { AgeSection } from "./age-section";
 import genderIcon from '@/app/assets/gender.svg';
 import calendarIcon from '@/app/assets/calander.svg';
 import { NicknameSection } from "./nickname-section";
+import { MdOutlineDriveFileRenameOutline } from "react-icons/md";
 
 export const ModalSection = ({
   type,
@@ -24,18 +25,25 @@ export const ModalSection = ({
 }) => {
   return (
     <ModalSectionContainer>
-      <img src={type == 'age' ? calendarIcon : type == 'gender' ?  genderIcon : ""} />
-      <ModalSectionDivider />
-      {type == 'age' ? (
-        <AgeSection birth={birth || ""} setBirth={setBirth!} />
-      ) : (
-        type == 'gender' ? ( 
-          <GenderPicker gender={gender || ""} setGender={setGender!} />
-        ) : <NicknameSection nickname={nickname || ""} setNickname={setNickname!} />
-      )
-      
-      }
-    </ModalSectionContainer>
+  {type === 'age' ? (
+    <img src={calendarIcon} />
+  ) : type === 'gender' ? (
+    <img src={genderIcon} />
+  ) : (
+    <MdOutlineDriveFileRenameOutline size={26} color="#A2A2A2" />
+  )}
+
+<ModalSectionDivider />
+
+  {type === 'age' ? (
+    <AgeSection birth={birth || ""} setBirth={setBirth!} />
+  ) : type === 'gender' ? (
+    <GenderPicker gender={gender || ""} setGender={setGender!} />
+  ) : (
+    <NicknameSection nickname={nickname || ""} setNickname={setNickname!} />
+  )}
+</ModalSectionContainer>
+
   );
 };
 

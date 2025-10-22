@@ -15,8 +15,12 @@ const categories = [
   "스터디",
 ];
 
-export const CategorySelector = () => {
-  const { selectedCategories, toggleCategory, submitCategories, loading } =  useCategorySelector();
+interface CategorySelectorProps {
+  onSuccess?: () => void;
+}
+
+export const CategorySelector = ({ onSuccess }: CategorySelectorProps) => {
+  const { selectedCategories, toggleCategory, submitCategories, loading } = useCategorySelector({ onSuccess });
 
   return (
     <Container>

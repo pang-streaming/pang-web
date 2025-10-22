@@ -38,7 +38,7 @@ export const Home = () => {
   }
 
   const headerVideos = lives.slice(0, 3);
-  const listVideos = lives.slice(3);
+  const listVideos = lives.slice(0);
 
   return (
     <S.Container>

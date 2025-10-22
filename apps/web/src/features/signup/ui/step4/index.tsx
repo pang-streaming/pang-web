@@ -42,7 +42,7 @@ export const Step4 = () => {
         return;
       }
 
-      alert("회원가입 성공!");
+
       navigate("/complete");
       reset()
     } catch (error) {

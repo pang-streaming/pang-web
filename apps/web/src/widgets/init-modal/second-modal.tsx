@@ -1,9 +1,12 @@
 import styled from "styled-components";
 import { CategorySelector } from "./ui/category-selector";
 
-export const InitModalStep2 = ({username}:{username?:string}) => {
+interface InitModalStep2Props {
+  username?: string;
+  onSuccess?: () => void;
+}
 
-
+export const InitModalStep2 = ({ username, onSuccess }: InitModalStep2Props) => {
   return (
     <Container>
       <Title>
@@ -11,7 +14,7 @@ export const InitModalStep2 = ({username}:{username?:string}) => {
         <br />
         취향을 선택해주세요
       </Title>
-      <CategorySelector />
+      <CategorySelector onSuccess={onSuccess} />
     </Container>
   );
 };
