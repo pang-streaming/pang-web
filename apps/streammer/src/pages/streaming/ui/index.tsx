@@ -268,10 +268,10 @@ const StreamingPage = () => {
 			      vrmUrl={vrmUrl}
 			      selectedDevice={selectedDevice}
 			      isVTuberEnabled={isVTuberEnabled}
-            streamKey={streamKey}
-            title={myInfo?.data?.nickname ?? ''}
-            onTitleClick={handleTitleClick}
-            titleChild={titleChildContent}
+			      streamKey={streamKey}
+			      title={myInfo?.data?.nickname ?? ''}
+			      onTitleClick={handleTitleClick}
+			      titleChild={titleChildContent}
 		      />
 	      </VideoWrapper>
         <ChatSection>
