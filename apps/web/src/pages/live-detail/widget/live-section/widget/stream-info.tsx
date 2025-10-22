@@ -81,6 +81,7 @@ const UserContainer = styled.div`
 
 const UserProfile = styled.img`
   user-select: none;
+  object-fit: cover;
   -webkit-user-drag: none;
   width: 60px;
   height: 60px;
