@@ -28,7 +28,7 @@ export const SegmentButtonGroup = ({
   );
 
   React.useEffect(() => {
-    if (selectedSegmentId && selectedSegmentId !== activeSegmentId) {
+    if (selectedSegmentId && selectedSegmentId === activeSegmentId) {
       setActiveSegmentId(selectedSegmentId);
     }
   }, [selectedSegmentId]);

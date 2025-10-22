@@ -21,12 +21,13 @@ export const fetchRecentVideo = async () => {
 
 export const fetchFollowingLives = async (): Promise<IStreamDataResponse[]> => {
     const res = await api.get('/stream/following');
-    return res.data || [];
+    return res.data.data || res.data || [];
 }
 
 export const fetchLiveByUsername = async (username: string): Promise<IStreamDataResponse[]> => {
     const res = await api.get('/video/streamer', { params: { username } });
-    return res.data || []; 
+    const data = res.data.data || res.data;
+    return Array.isArray(data) ? data : (data ? [data] : []);
   };
   
 

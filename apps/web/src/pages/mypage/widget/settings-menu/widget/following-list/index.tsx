@@ -83,7 +83,6 @@ export const FollowingList = () => {
                   { username: user.username, isFollowing: true },
                   {
                     onSuccess: () => {
-                      alert(`@${user.username}님을 언팔로우했습니다.`);
                     },
                     onError: (error) => {
                       console.error("언팔로우 실패:", error);
