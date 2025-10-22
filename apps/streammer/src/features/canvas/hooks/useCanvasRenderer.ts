@@ -13,11 +13,9 @@ export const useCanvasRenderer = (
 		const canvas = canvasRef.current;
 		if (!canvas) return;
 		
-		const dpr = window.devicePixelRatio || 1;
+		const dpr = 1;
 		canvas.width = canvasSize.width * dpr;
 		canvas.height = canvasSize.height * dpr;
-		canvas.style.width = `${canvasSize.width}px`;
-		canvas.style.height = `${canvasSize.height}px`;
 		
 		const ctx = canvas.getContext('2d', {
 			alpha: false,
