@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { saveUserInterests } from "./api/api";
+import { toast } from "react-toastify";
 
 const categoryMap: Record<string, string> = {
   게임: "GAME",
@@ -15,7 +16,11 @@ const categoryMap: Record<string, string> = {
   스터디: "STUDY",
 };
 
-export const useCategorySelector = () => {
+interface UseCategorySelectorProps {
+  onSuccess?: () => void;
+}
+
+export const useCategorySelector = ({ onSuccess }: UseCategorySelectorProps = {}) => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -32,11 +37,14 @@ export const useCategorySelector = () => {
       setLoading(true);
       const mapped = selectedCategories.map((c) => categoryMap[c]);
       const data = await saveUserInterests(mapped);
-      alert("관심사 저장 완료");
       console.log("서버 응답:", data);
+      
+      toast.success("관심사 저장 성공");
+      
+      onSuccess?.();
     } catch (err) {
       console.error("관심사 저장 실패:", err);
-      alert("서버 요청 실패");
+      toast.error("관심사 저장에 실패했습니다.");
     } finally {
       setLoading(false);
     }

@@ -59,7 +59,7 @@ export const InitModal = ({ isOpen, onClose, username }: InitModalProps) => {
             setNickname={setNickname}
           />
         )}
-        {step === 2 && <InitModalStep2 username={username} />}
+        {step === 2 && <InitModalStep2 username={username} onSuccess={onClose} />}
 
         <ButtonWrapper>
           {step === 1 ? (
