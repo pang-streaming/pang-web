@@ -18,7 +18,6 @@ export const VideoPlayer = ({ streamUrl, isMobile }: VideoPlayerProps) => {
   const { volume, muted, updateVolume, toggleMuted } = useVolume(videoRef);
   const [pause, setPause] = useState(false);
   const { handleFullScreen } = useFullScreen(containerRef);
-  const videoReady = V.useVideoReady(videoRef);
   const { handlePip } = V.usePip(videoRef);
   useHlsPlayer(videoRef, streamUrl);  
 
@@ -32,13 +31,10 @@ export const VideoPlayer = ({ streamUrl, isMobile }: VideoPlayerProps) => {
         {streamUrl && (
           <S.VideoOverlayArea>
             <S.Video
-              ref={videoRef}
-              autoPlay
-              playsInline
+	            src={"cf392de3fca5ea8f0991bb45c19a7167"}
               muted={muted}
-              onClick={handlePause}
-              controls={false}
-              disablePictureInPicture={false}
+	            autoplay={true}
+	            controls={false}
             />
           </S.VideoOverlayArea>
         )}
