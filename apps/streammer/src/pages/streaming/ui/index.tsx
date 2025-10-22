@@ -181,6 +181,34 @@ const StreamingPage = () => {
     setIsStreamingSettingsOpen(false);
   };
 
+  // titleChild를 별도 변수로 분리하여 스코프 문제 해결
+  const titleChildContent = (
+    <>
+      <HeaderLeft>
+        <CategorySection>
+          {selectedCategory ? (
+            <>
+              {selectedCategory.postImage && (
+                <CategoryImage src={selectedCategory.postImage} alt={selectedCategory.name} />
+              )}
+              <CategoryName>{selectedCategory.name}</CategoryName>
+            </>
+          ) : (
+            <CategoryPlaceholder>카테고리 미선택</CategoryPlaceholder>
+          )}
+        </CategorySection>
+        {streamStatus?.data?.status === 'LIVE' ? 
+          (<StreamTitle onClick={streamStatus?.data?.status === 'LIVE' ? handleTitleClick : undefined} $clickable={streamStatus?.data?.status === 'LIVE'}>
+            {streamStatus?.data?.title}
+          </StreamTitle>) 
+          : 
+          (<StreamTitle>방송 대시보드</StreamTitle>)
+        }
+        
+      </HeaderLeft>
+    </>
+  );
+
   if (isLoadingKey) {
     return (
       <PageContainer>
@@ -243,32 +271,7 @@ const StreamingPage = () => {
             streamKey={streamKey}
             title={myInfo?.data?.nickname ?? ''}
             onTitleClick={handleTitleClick}
-            titleChild={
-              <>
-              <HeaderLeft>
-                <CategorySection>
-                  {selectedCategory ? (
-                    <>
-                      {selectedCategory.postImage && (
-                        <CategoryImage src={selectedCategory.postImage} alt={selectedCategory.name} />
-                      )}
-                      <CategoryName>{selectedCategory.name}</CategoryName>
-                    </>
-                  ) : (
-                    <CategoryPlaceholder>카테고리 미선택</CategoryPlaceholder>
-                  )}
-                </CategorySection>
-                {streamStatus?.data?.status === 'LIVE' ? 
-                  (<StreamTitle onClick={streamStatus?.data?.status === 'LIVE' ? handleTitleClick : undefined} $clickable={streamStatus?.data?.status === 'LIVE'}>
-                    {streamStatus?.data?.title}
-                  </StreamTitle>) 
-                  : 
-                  (<StreamTitle>방송 대시보드</StreamTitle>)
-                }
-                
-              </HeaderLeft>
-            </>
-            }
+            titleChild={titleChildContent}
 		      />
 	      </VideoWrapper>
         <ChatSection>
