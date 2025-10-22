@@ -43,10 +43,10 @@ const StreamingPage = () => {
   const { data: streamStatus, isLoading: isLoadingStreamStatus } = useQuery({
     queryKey: ['streamStatus'],
     queryFn: fetchStreamStatus,
-    staleTime: 1000 * 10, // 10초마다 상태 확인
-    refetchInterval: 1000 * 10, // 10초마다 자동 갱신
+    staleTime: 1000 * 10,
+    refetchInterval: 1000 * 10,
     retry: (failureCount, error: any) => {
-      // 404 에러는 방송 중이 아니라는 의미이므로 재시도하지 않음
+      
       if (error?.response?.status === 404) {
         return false;
       }

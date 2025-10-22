@@ -33,11 +33,7 @@ function App() {
         <Route path="/search" element={<Search />} />
         <Route path="/category" element={<Category />} />
 				<Route path="/category/:categoryId" element={<CategoryDetail />} />
-        <Route path="/market" element={<Market />} />
-        <Route path="/market-detail" element={<MarketDetail />} />
         <Route path="/profile/:username" element={<ProfilePage />} />
-				<Route path="/store-detail/:storeId" element={<StoreDetail />} />
-				<Route path="/market-category-detail/:title" element={<MarketCategoryDetail />} />
 				<Route path="/community-detail/:id" element={<CommunityDetail />} />
         <Route path="*" element={<NotFound />} />
       </Route>
@@ -49,6 +45,11 @@ function App() {
 			    <Route path="/recent-video" element={<RecentVideo />} />
 			    <Route path="/follow" element={<Following />} />
 			    <Route path="/following-list" element={<FollowingList />} />
+          <Route path="/market" element={<Market />} />
+          <Route path="/store-detail/:storeId" element={<StoreDetail />} />
+				<Route path="/market-category-detail/:title" element={<MarketCategoryDetail />} />
+        <Route path="/market-detail" element={<MarketDetail />} />
+
 		    </Route>
 	    </Route>
       <Route element={<DefaultLayout type={"user"} full />}>

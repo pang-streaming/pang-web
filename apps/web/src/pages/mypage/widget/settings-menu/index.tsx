@@ -16,7 +16,7 @@ export const SettingsMenu = ({ from }: SettingsMenuProps) => {
   const handleLogout = () => {
     logoutUser();
     if (from === "streamer") {
-      window.location.href = `${import.meta.env.VITE_STREAMER_URL}/login`
+      window.location.href = `${import.meta.env.VITE_PANG_URL}/login`
     } else {
       navigate("/");
     }
