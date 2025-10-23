@@ -51,15 +51,19 @@ export interface OtherUserResponse {
     timestamp: string
 }
 
-
-
-export const createStreamKey = async (params: StreamKeyType) => {
-    const res = await api.post("/stream/key?stream-type=WHIP");
-    return res.data;
+export interface TempKeyResponse {
+	"status": string,
+	"message": string,
+	"data": {
+		"key": string,
+		"webRtcUrl": string
+	},
+	"timestamp": string
 }
 
-interface StreamKeyType {
-    'stream-type': 'WHIP' | 'RTMP'
+export const createStreamKey = async (): Promise<TempKeyResponse> => {
+    const res = await api.post("/temp");
+    return res.data;
 }
 
 export const fetchStreamKey = async (): Promise<StreamKeyResponse> => {
@@ -73,7 +77,7 @@ export const fetchMyInfo = async (): Promise<UserResponse> => {
     const data = await res.data;
     console.log("내 정보 : ", data);
     return data;
-  };
+};
   
   
   

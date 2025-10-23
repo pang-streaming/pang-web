@@ -30,8 +30,7 @@ export const LiveSection = () => {
            <Loading />
         ) : streamData ? (
           <>
-            <VideoPlayer streamUrl={streamData.url} isMobile={isMobile} />
-            {/* <VideoPlayer streamUrl={streamData.url} isMobile={isMobile} /> */}
+            <VideoPlayer streamUrl={streamData.url} isMobile={isMobile} url={streamData.url} />
             <StreamInfo
               streamId={streamId}
               username={streamData.username}

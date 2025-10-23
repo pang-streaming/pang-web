@@ -9,16 +9,16 @@ import { useHover, useVolume, useFullScreen } from "@/entities/video/model";
 interface VideoPlayerProps {
   streamUrl?: string;
   isMobile: boolean;
+	url:  string;
 }
 
-export const VideoPlayer = ({ streamUrl, isMobile }: VideoPlayerProps) => {
+export const VideoPlayer = ({ streamUrl, isMobile, url }: VideoPlayerProps) => {
   const [hoverRef, hover] = useHover<HTMLDivElement>();
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const { volume, muted, updateVolume, toggleMuted } = useVolume(videoRef);
   const [pause, setPause] = useState(false);
   const { handleFullScreen } = useFullScreen(containerRef);
-  const videoReady = V.useVideoReady(videoRef);
   const { handlePip } = V.usePip(videoRef);
   useHlsPlayer(videoRef, streamUrl);  
 
@@ -32,13 +32,11 @@ export const VideoPlayer = ({ streamUrl, isMobile }: VideoPlayerProps) => {
         {streamUrl && (
           <S.VideoOverlayArea>
             <S.Video
-              ref={videoRef}
-              autoPlay
-              playsInline
+	            // src={"cf392de3fca5ea8f0991bb45c19a7167"}
+	            src={url}
               muted={muted}
-              onClick={handlePause}
-              controls={false}
-              disablePictureInPicture={false}
+	            autoplay={true}
+	            controls={false}
             />
           </S.VideoOverlayArea>
         )}

@@ -9,5 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@eyevinn/whip-web-client": "^1.1.7"
+  }
 }

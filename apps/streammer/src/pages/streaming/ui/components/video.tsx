@@ -12,6 +12,7 @@ interface VideoProps {
 	setScreens: React.Dispatch<React.SetStateAction<Screen[]>>;
 	canvasSize: CanvasSize;
   streamKey: string;
+	whipUrl: string | null;
 	username: string;
   vrmUrl: string | null;
   selectedDevice: MediaDeviceInfo | null;
@@ -27,6 +28,7 @@ export const Video = ({
 	containerRef, 
 	canvasSize, 
 	streamKey,
+	whipUrl,
 	username,
 	vrmUrl,
 	selectedDevice,
@@ -34,15 +36,7 @@ export const Video = ({
 	titleChild,
 }: VideoProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-	const { status, startStreaming, stopStreaming } = useWhipBroadcast(
-		canvasRef,
-			{
-			whipUrl: import.meta.env.VITE_WHIP_URL,
-			bitrate: 6000000,
-			fps: 60,
-			secretKey: streamKey,
-		}
-		);
+	const { startStreaming } = useWhipBroadcast(canvasRef, streamKey, whipUrl);
 	
 	const { screen: vrmScreen, VrmRenderer } = useVrmScreen(
 	  canvasSize, 
@@ -74,6 +68,7 @@ export const Video = ({
 		  setScreens(prev => prev.filter(s => s.id !== 999));
 		}
 	}, [vrmScreen, setScreens, isVTuberEnabled]);
+	
 	return (
 		<>
 			{isVTuberEnabled && selectedDevice && <VrmRenderer />}
@@ -81,8 +76,9 @@ export const Video = ({
 				<TitleRow>
 					{titleChild}
 					<StatsContainer>
-						<StartButton isStarted={status.isStreaming} onClick={status.isStreaming ? stopStreaming : startStreaming} disabled={status.iceState === 'checking'}>
-							{status.isStreaming ? <VscDebugStop size={20}/> : <VscDebugStart size={20}/>}
+						<StartButton isStarted={false} onClick={startStreaming} disabled={false}>
+							{/*{status.isStreaming ? <VscDebugStop size={20}/> : <VscDebugStart size={20}/>}*/}
+							<VscDebugStart size={20}/>
 						</StartButton>
 					</StatsContainer>
 				</TitleRow>
