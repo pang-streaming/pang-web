@@ -46,6 +46,7 @@ const StreamingPage = () => {
     queryFn: fetchStreamStatus,
     staleTime: 1000 * 10,
     refetchInterval: 1000 * 10,
+    enabled: !isLoadingKey && !!streamKey,
     retry: (failureCount, error: any) => {
       
       if (error?.response?.status === 404) {
@@ -66,13 +67,11 @@ const StreamingPage = () => {
         setIsLoadingKey(true);
         const userRole = myInfo.data.role;
         
-        if (userRole !== 'STREAMER') {
-          console.log('STREAMER가 아니므로 스트림 키를 발급합니다.');
-          const createResponse = await createStreamKey();
-          console.log('스트림 키 발급 성공:', createResponse.data.key);
-          setStreamKey(createResponse.data.key);
-					setWhipUrl(createResponse.data.webRtcUrl);
-        }
+        console.log('STREAMER가 아니므로 스트림 키를 발급합니다.');
+        const createResponse = await createStreamKey();
+        console.log('스트림 키 발급 성공:', createResponse.data.key);
+        setStreamKey(createResponse.data.key);
+				setWhipUrl(createResponse.data.webRtcUrl);
       } catch (error: any) {
         console.error('스트림 키 처리 실패:', error);
         alert('스트림 키 처리 중 오류가 발생했습니다.');
