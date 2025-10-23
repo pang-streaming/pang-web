@@ -11,7 +11,7 @@ export const useWhipBroadcast = (
 	const isStreaming = useRef<boolean>(false);
 	
 	const createStream = async (): Promise<null> => {
-		const res = await api.post(`/stream`, {
+		const res = await api.post(`/stream`, {}, {
 			headers: {
 				"X-Stream-Key": streamKey,
 			}
