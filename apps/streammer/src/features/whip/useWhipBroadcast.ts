@@ -1,5 +1,6 @@
 import { RefObject, useCallback, useRef } from 'react';
 import { WHIPClient } from '@eyevinn/whip-web-client';
+import {api} from "@pang/shared/ui";
 
 export const useWhipBroadcast = (
 	canvasRef: RefObject<HTMLCanvasElement | null>,
@@ -7,6 +8,7 @@ export const useWhipBroadcast = (
 	whipUrl?: string | null
 ) => {
 	const clientRef = useRef<WHIPClient | null>(null);
+	const isStreaming = useRef<boolean>(false);
 	
 	const startStreaming = useCallback(async () => {
 		if (!canvasRef.current) {
@@ -39,11 +41,25 @@ export const useWhipBroadcast = (
 			await client.ingest(stream);
 			
 			console.log('Streaming started with canvas at 60fps');
+			isStreaming.current = true;
 		} catch (error) {
 			console.error('Failed to start streaming:', error);
 			throw error;
 		}
 	}, [canvasRef, streamKey, whipUrl]);
 	
-	return { startStreaming };
+	const stopStreaming = useCallback(async () => {
+		clientRef.current?.destroy()
+			.then(async ()=> {
+				await api.delete("/stream", {
+					headers: {
+						"X-Stream-Key": streamKey
+					}
+				})
+				isStreaming.current = false;
+			})
+			.catch(err=>console.log(err));
+	}, [streamKey]);
+	
+	return { isStreaming, startStreaming, stopStreaming };
 };
