@@ -10,6 +10,5 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@eyevinn/whip-web-client": "^1.1.7"
   }
 }
