@@ -10,6 +10,15 @@ export const useWhipBroadcast = (
 	const clientRef = useRef<WHIPClient | null>(null);
 	const isStreaming = useRef<boolean>(false);
 	
+	const createStream = async (streamId:string): Promise<null> => {
+		const res = await api.post(`/stream`, {
+			headers: {
+				"X-Stream-Key": streamKey,
+			}
+		});
+		return res.data.data || [];
+	};
+	
 	const startStreaming = useCallback(async () => {
 		if (!canvasRef.current) {
 			throw new Error('Canvas reference is missing');
@@ -25,7 +34,9 @@ export const useWhipBroadcast = (
 			// Canvas 스트림 60fps
 			const stream = canvas.captureStream(60);
 			
-			console.log(stream)
+			console.log(whipUrl)
+			
+			await createStream(streamKey);
 			
 			// WHIPClient 생성 - streamKey를 endpoint URL에 포함
 			const client = new WHIPClient({

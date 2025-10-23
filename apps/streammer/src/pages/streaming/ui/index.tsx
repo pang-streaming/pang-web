@@ -65,8 +65,6 @@ const StreamingPage = () => {
     const initializeStreamKey = async () => {
       try {
         setIsLoadingKey(true);
-        const userRole = myInfo.data.role;
-        
         console.log('STREAMER가 아니므로 스트림 키를 발급합니다.');
         const createResponse = await createStreamKey();
         console.log('스트림 키 발급 성공:', createResponse.data.key);

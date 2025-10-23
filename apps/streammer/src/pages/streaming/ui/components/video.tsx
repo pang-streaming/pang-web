@@ -76,9 +76,8 @@ export const Video = ({
 				<TitleRow>
 					{titleChild}
 					<StatsContainer>
-						<StartButton isStarted={isStreaming.current} onClick={() => isStreaming.current ? stopStreaming : startStreaming} disabled={false}>
+						<StartButton isStarted={isStreaming.current} onClick={startStreaming}>
 							{isStreaming.current ? <VscDebugStop size={20}/> : <VscDebugStart size={20}/>}
-							<VscDebugStart size={20}/>
 						</StartButton>
 					</StatsContainer>
 				</TitleRow>
