@@ -10,7 +10,7 @@ export const useWhipBroadcast = (
 	const clientRef = useRef<WHIPClient | null>(null);
 	const isStreaming = useRef<boolean>(false);
 	
-	const createStream = async (streamId:string): Promise<null> => {
+	const createStream = async (): Promise<null> => {
 		const res = await api.post(`/stream`, {
 			headers: {
 				"X-Stream-Key": streamKey,
@@ -36,7 +36,7 @@ export const useWhipBroadcast = (
 			
 			console.log(whipUrl)
 			
-			await createStream(streamKey);
+			await createStream();
 			
 			// WHIPClient 생성 - streamKey를 endpoint URL에 포함
 			const client = new WHIPClient({
