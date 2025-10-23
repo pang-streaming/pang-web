@@ -11,6 +11,9 @@ importers:
       '@cloudflare/stream-react':
         specifier: ^1.9.3
         version: 1.9.3(react@19.2.0)
+      '@eyevinn/whip-web-client':
+        specifier: ^1.1.7
+        version: 1.1.7
       '@mux/mux-video-react':
         specifier: ^0.27.0
         version: 0.27.0(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -127,11 +130,7 @@ importers:
         specifier: ^4.8.1
         version: 4.8.1
 
-  apps/streammer:
-    dependencies:
-      '@eyevinn/whip-web-client':
-        specifier: ^1.1.7
-        version: 1.1.7
+  apps/streammer: {}
 
   apps/web:
     dependencies:
