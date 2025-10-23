@@ -4,6 +4,7 @@ import { WHIPClient } from '@eyevinn/whip-web-client';
 export const useWhipBroadcast = (
 	canvasRef: RefObject<HTMLCanvasElement | null>,
 	streamKey?: string | null,
+	whipUrl?: string | null
 ) => {
 	const clientRef = useRef<WHIPClient | null>(null);
 	
@@ -12,7 +13,7 @@ export const useWhipBroadcast = (
 			throw new Error('Canvas reference is missing');
 		}
 		
-		if (!streamKey) {
+		if (!streamKey || !whipUrl) {
 			throw new Error('Stream key is missing');
 		}
 		
@@ -26,7 +27,7 @@ export const useWhipBroadcast = (
 			
 			// WHIPClient 생성 - streamKey를 endpoint URL에 포함
 			const client = new WHIPClient({
-				endpoint: `https://customer-0z4kxqofwc4dm6km.cloudflarestream.com/${streamKey}/webRTC/publish`,
+				endpoint: whipUrl,
 				opts: { debug: true }
 			});
 			clientRef.current = client;
@@ -42,7 +43,7 @@ export const useWhipBroadcast = (
 			console.error('Failed to start streaming:', error);
 			throw error;
 		}
-	}, [canvasRef, streamKey]);
+	}, [canvasRef, streamKey, whipUrl]);
 	
 	return { startStreaming };
 };

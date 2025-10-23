@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import MuxVideo from "@mux/mux-video-react";
 import { Stream } from "@cloudflare/stream-react";
 
 export const LiveDetailContainer = styled.div`
@@ -83,11 +82,9 @@ export const Video = styled(Stream)`
 	width: 100%;
 	background-color: gray;
 	display: block;
-	border-radius: 20px;
-	z-index: 1;
 	pointer-events: none;
-	
-	&:fullscreen,
+
+  &:fullscreen,
 	&:-webkit-full-screen,
 	&:-moz-full-screen {
 		width: 100vw;

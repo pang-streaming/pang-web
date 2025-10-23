@@ -12,6 +12,7 @@ interface VideoProps {
 	setScreens: React.Dispatch<React.SetStateAction<Screen[]>>;
 	canvasSize: CanvasSize;
   streamKey: string;
+	whipUrl: string | null;
 	username: string;
   vrmUrl: string | null;
   selectedDevice: MediaDeviceInfo | null;
@@ -27,6 +28,7 @@ export const Video = ({
 	containerRef, 
 	canvasSize, 
 	streamKey,
+	whipUrl,
 	username,
 	vrmUrl,
 	selectedDevice,
@@ -34,7 +36,7 @@ export const Video = ({
 	titleChild,
 }: VideoProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-	const { startStreaming } = useWhipBroadcast(canvasRef, streamKey);
+	const { startStreaming } = useWhipBroadcast(canvasRef, streamKey, whipUrl);
 	
 	const { screen: vrmScreen, VrmRenderer } = useVrmScreen(
 	  canvasSize, 
@@ -66,6 +68,7 @@ export const Video = ({
 		  setScreens(prev => prev.filter(s => s.id !== 999));
 		}
 	}, [vrmScreen, setScreens, isVTuberEnabled]);
+	
 	return (
 		<>
 			{isVTuberEnabled && selectedDevice && <VrmRenderer />}

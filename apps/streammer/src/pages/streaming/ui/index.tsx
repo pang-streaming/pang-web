@@ -27,6 +27,7 @@ const StreamingPage = () => {
   const [selectedDevice, setSelectedDevice] = useState<MediaDeviceInfo | null>(null);
   const [isVTuberEnabled, setIsVTuberEnabled] = useState(false);
   const [streamKey, setStreamKey] = useState<string | null>(null);
+  const [whipUrl, setWhipUrl] = useState<string | null>(null);
   const [isLoadingKey, setIsLoadingKey] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [hashtags, setHashtags] = useState<string[]>([]);
@@ -64,27 +65,14 @@ const StreamingPage = () => {
       try {
         setIsLoadingKey(true);
         const userRole = myInfo.data.role;
-        console.log('내 정보 로드 완료. Role:', userRole);
         
         if (userRole !== 'STREAMER') {
           console.log('STREAMER가 아니므로 스트림 키를 발급합니다.');
-          const createResponse = await createStreamKey({ 'stream-type': 'WHIP' });
-          console.log('스트림 키 발급 성공:', createResponse.data.streamKey);
-          setStreamKey(createResponse.data.streamKey);
-          
-          await refetchMyInfo();
-          } else {
-            console.log('STREAMER이므로 스트림 키를 조회합니다.');
-            const response = await fetchStreamKey();
-            
-            if (response.data?.streamKey) {
-              console.log('스트림 키 조회 성공:', response.data.streamKey);
-              setStreamKey(response.data.streamKey);
-            } else {
-              console.log('응답에 스트림 키가 없습니다.');
-              alert('스트림 키를 찾을 수 없습니다.');
-            }
-          }
+          const createResponse = await createStreamKey();
+          console.log('스트림 키 발급 성공:', createResponse.data.key);
+          setStreamKey(createResponse.data.key);
+					setWhipUrl(createResponse.data.webRtcUrl);
+        }
       } catch (error: any) {
         console.error('스트림 키 처리 실패:', error);
         alert('스트림 키 처리 중 오류가 발생했습니다.');
@@ -145,31 +133,6 @@ const StreamingPage = () => {
 
   const handleHashtagsChange = (newHashtags: string[]) => {
     setHashtags(newHashtags);
-  };
-
-  const handleRegenerateStreamKey = async () => {
-    if (streamStatus?.data?.status === 'LIVE') {
-      alert('방송 중에는 스트림키를 변경할 수 없습니다.');
-      return;
-    }
-
-    if (!confirm('스트림키를 새로 생성하시겠습니까? 기존 키는 더 이상 사용할 수 없습니다.')) {
-      return;
-    }
-
-    try {
-      setIsLoadingKey(true);
-      const response = await createStreamKey({ 'stream-type': 'WHIP' });
-      if (response.data?.streamKey) {
-        setStreamKey(response.data.streamKey);
-        alert('새로운 스트림키가 생성되었습니다.');
-      }
-    } catch (error) {
-      console.error('스트림키 생성 실패:', error);
-      alert('스트림키 생성에 실패했습니다.');
-    } finally {
-      setIsLoadingKey(false);
-    }
   };
 
   const handleStreamingSettingsClick = () => {
@@ -267,8 +230,9 @@ const StreamingPage = () => {
 			      vrmUrl={vrmUrl}
 			      selectedDevice={selectedDevice}
 			      username={myInfo?.data?.username ?? ''}
+			      whipUrl={whipUrl}
 			      isVTuberEnabled={isVTuberEnabled}
-			      streamKey={'06686bb4cddb1644c0d6a16745fed240kcf392de3fca5ea8f0991bb45c19a7167'}
+			      streamKey={streamKey}
 			      title={myInfo?.data?.nickname ?? ''}
 			      onTitleClick={handleTitleClick}
 			      titleChild={titleChildContent}
