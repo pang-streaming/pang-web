@@ -13,7 +13,7 @@ import { useUsernameToInfo } from "./hook/useProfile";
 import { ErrorScreen } from "@/shared/ui/error-screen";
 import { useQueryClient } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
-import { fetchMyInfo } from "@/entities/user/api/api";
+import { fetchMyInfo } from "@/entities/user/api";
 import { SkeletonBox } from "@/shared/ui/skeleton";
 
 const allSegments: Segment[] = [

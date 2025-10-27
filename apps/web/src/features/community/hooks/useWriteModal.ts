@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { uploadImage, uploadPost } from "../../api/api";
+import { uploadImage, uploadPost } from "../api/api";
 
 
 interface UseWriteModalProps {

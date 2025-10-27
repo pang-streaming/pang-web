@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { MarketCategoryElem, MarketCategoryElemProps } from "./components/market-category-elem";
 import { marketCategoryIcons } from "@/app/assets/market/_index";
 import { useNavigate } from "react-router-dom"; // react-router-dom 필요
-import { useCategoryByProduct } from "@/pages/market/hooks/useProduct";
+import { useCategoryByProduct } from "@/features/market/useProduct";
 
 export const MarketCategorySection = () => {
   const navigate = useNavigate();

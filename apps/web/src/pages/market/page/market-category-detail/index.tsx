@@ -1,7 +1,6 @@
 import { TabTitleText } from '@/shared/ui/tab-title-text'
-import React from 'react'
 import { useParams, useLocation } from 'react-router-dom'
-import { useCategoryByProduct } from '../../hooks/useProduct'
+import { useCategoryByProduct } from '@/features/market/hooks/useProduct'
 import styled from 'styled-components'
 import { SkeletonGrid } from '@/shared/ui/skeleton'
 import { VirtualModelElem } from '../../widget/market-section/widget/virtual-model-section/components/virtual-model-elem'
@@ -12,7 +11,6 @@ export const MarketCategoryDetail = () => {
   const location = useLocation();
   const displayTitle = location.state?.title || title;
   
-  // title을 query로 변환
   const queryMap: Record<string, string> = {
     "3D 모델": "VIRTUAL_MODEL",
     "오디오 굿즈": "AUDIO_GOODS",

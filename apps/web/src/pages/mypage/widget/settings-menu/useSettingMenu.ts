@@ -1,5 +1,5 @@
-import { updateMyInfo, fetchMyInfo } from "@/entities/user/api/api";
-import { UserResponse } from "@/entities/user/model/type";
+import { updateMyInfo, fetchMyInfo } from "@/entities/user/api";
+import { UserResponse } from "@/entities/user/type";
 import { useState, useEffect } from "react";
 
 interface UseSettingMenuProps {

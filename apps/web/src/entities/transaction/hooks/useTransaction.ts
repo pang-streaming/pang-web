@@ -1,6 +1,6 @@
 import { fetchPurchaseList, fetchTransaction } from "../api";
 import { useQuery } from "@tanstack/react-query";
-import type { BalanceResponse, PurchaseHistoryResponse } from "../model/type";
+import type { BalanceResponse, PurchaseHistoryResponse } from "../type";
 
 
 export const useTransaction = () => {

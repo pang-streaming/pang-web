@@ -1,5 +1,5 @@
 import api from "@/api/api";
-import type { BalanceResponse, PurchaseHistoryResponse } from "./model/type";
+import type { BalanceResponse, PurchaseHistoryResponse } from "./type";
 
 export const fetchTransaction = async (): Promise<BalanceResponse> => {
   const res = await api.get("/cash");

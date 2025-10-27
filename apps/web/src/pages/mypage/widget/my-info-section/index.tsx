@@ -1,5 +1,5 @@
-import { fetchMyInfo } from "@/entities/user/api/api";
-import { User } from "@/entities/user/model/type";
+import { fetchMyInfo } from "@/entities/user/api";
+import { User } from "@/entities/user/type";
 import normalProfile from "@/app/assets/images/normal_profile.svg";
 import * as S from "./style";
 import { useQuery } from "@tanstack/react-query";

@@ -1,4 +1,4 @@
-import {Chip} from "@/entities/chip/model/type";
+import {Chip} from "@/entities/chip/type";
 import styled from "styled-components";
 import {Link} from "react-router-dom";
 

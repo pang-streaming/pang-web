@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { VirtualModelElem } from "./components/virtual-model-elem";
-import { useProduct } from "@/pages/market/hooks/useProduct";
+import { useProduct } from "@/features/market/hooks/useProduct";
 import { SkeletonGrid } from "@/shared/ui/skeleton";
 import { EmptyMessage } from "@/pages/market/page/store-detail/style";
 

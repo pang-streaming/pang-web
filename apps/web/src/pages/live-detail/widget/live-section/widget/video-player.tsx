@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import Pause from "@/app/assets/pause.svg?react";
 import { VideoControls } from "./video-controlls";
-import { useHlsPlayer } from "@/entities/stream/model/useHlsPlayer";
+import { useHlsPlayer } from "@/entities/stream/hook/useHlsPlayer";
 import * as V from "@/entities/video/model/index";
 import * as S from "../style";
 import { useHover, useVolume, useFullScreen } from "@/entities/video/model";

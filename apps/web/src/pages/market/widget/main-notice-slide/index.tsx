@@ -1,9 +1,9 @@
 import { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { MainNoticeElem } from "./components/main-notice-elem";
-import { useTopFiveProduct } from "../../hooks/useProduct";
 import { SkeletonBox } from "@/shared/ui/skeleton";
 import { EmptyMessage } from "../../page/store-detail/style";
+import { useTopFiveProduct } from "@/features/market/hooks/useProduct";
 
 export const MainNoticeSlide = () => {
   const [index, setIndex] = useState(0);

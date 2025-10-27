@@ -1,5 +1,5 @@
 import api from "@/api/api";
-import * as P  from "./model/type";
+import * as P  from "./type";
 
 
 export const paymentApi = {

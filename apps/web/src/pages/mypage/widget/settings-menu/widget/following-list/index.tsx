@@ -3,7 +3,7 @@ import { useMyFollowing, useFollowUser } from '@/features/follow/hooks/useFollow
 import { TabTitleText } from '@/shared/ui/tab-title-text'
 import styled from 'styled-components'
 import { useQuery } from '@tanstack/react-query'
-import { fetchMyInfo } from '@/entities/user/api/api'
+import { fetchMyInfo } from '@/entities/user/api'
 import { useNavigate } from 'react-router-dom'
 import normalProfile from '@/app/assets/images/normal_profile.svg'
 import { SkeletonBox } from '@/shared/ui/skeleton'

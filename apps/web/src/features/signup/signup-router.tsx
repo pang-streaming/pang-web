@@ -1,10 +1,8 @@
-import { Routes, Route, useSearchParams, redirect, useNavigate } from 'react-router-dom';
-import SignupLayout from './signup-layout';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Step1 } from './ui/step1';
 import { Step2 } from './ui/step2';
 import { Step3 } from './ui/step3';
 import { Step4 } from './ui/step4';
-import { Complete } from './ui/complete';
 import { useRegisterStore } from '../auth/store/register-store';
 import { useEffect } from 'react';
 

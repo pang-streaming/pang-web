@@ -5,7 +5,7 @@ import { ChattingSection as SharedChattingSection } from "@pang/shared/ui";
 import ChattingArrow from "@/app/assets/chatting-arrow.svg?react";
 import sendPung from "@/app/assets/send-pung.svg";
 import Airplane from "@/app/assets/airplane.svg?react";
-import { fetchMyInfo } from "@/entities/user/api/api";
+import { fetchMyInfo } from "@/entities/user/api";
 import { paymentApi } from "@/entities/payment/api";
 import { useChat } from "./model/use-chat";
 

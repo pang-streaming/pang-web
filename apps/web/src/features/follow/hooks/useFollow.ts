@@ -28,7 +28,6 @@ export const useFollowUser = () => {
     mutationFn: ({ username, isFollowing }: { username: string; isFollowing: boolean }) => 
       isFollowing ? unfollowOtherUser(username) : followingOtherUser(username),
     onSuccess: (_, variables) => {
-      // 모든 관련 쿼리 즉시 invalidate
       queryClient.invalidateQueries({ queryKey: ["otherUserInfo", variables.username] });
       queryClient.invalidateQueries({ queryKey: ["myFollowing"] });
       queryClient.invalidateQueries({ queryKey: ["myFollower"] });

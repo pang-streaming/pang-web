@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchLiveStreamDetail } from "@/entities/stream/api";
-import type { LiveStreamDetailData } from "@/entities/stream/model/type";
+import type { LiveStreamDetailData } from "@/entities/stream/type";
 
 export function useStreamDetail(streamId?: string) {
   const [streamData, setStreamData] = useState<LiveStreamDetailData | undefined>(

@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import * as W from './widget/index';
 import { SubmitButton } from "@pang/shared/ui";
+import { FinalAmountField } from "../../ui";
 
 interface PungChargeProps {
   pungAmount: number;
@@ -13,7 +14,7 @@ export const PungCharge = ({ pungAmount, onPungChange, toPaymentChoice }: PungCh
   return (
     <Container>
       <W.IncreaseField pungAmount={pungAmount} onPungChange={onPungChange} />
-      <W.FinalAmountField pungAmount={pungAmount} />
+      <FinalAmountField pungAmount={pungAmount} />
       <W.AgreeRow />
       <SubmitButton onClick={toPaymentChoice}>결제수단 선택하기</SubmitButton>
     </Container>

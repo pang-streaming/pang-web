@@ -55,7 +55,7 @@ export const useUpdateGiftInfo = () => {
       address: string; 
       deliveryStatus: DeliveryStatus 
     }) => {
-      console.log("🚀 useUpdateGiftInfo mutationFn 호출:", {
+      console.log("useUpdateGiftInfo mutationFn 호출:", {
         purchaseId,
         address,
         deliveryStatus

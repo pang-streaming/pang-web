@@ -1,6 +1,6 @@
 import { CardListSection } from './widget/card-list-section'
 import { AddCardSection } from './widget/add-card-section'
-import { FinalAmountField } from '../pung-charge/widget'
+import { FinalAmountField } from '../../ui'
 import { SubmitButton } from '@pang/shared/ui'
 import styled from 'styled-components'
 import { useState } from 'react'

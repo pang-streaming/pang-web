@@ -3,7 +3,7 @@ import normalProfile from "@/app/assets/images/normal_profile.svg";
 import { Post } from "@/features/community/model/post";
 import * as S from "../style";
 import { useQuery } from "@tanstack/react-query";
-import { fetchMyInfo, fetchOtherUserInfo } from "@/entities/user/api/api";
+import { fetchMyInfo, fetchOtherUserInfo } from "@/entities/user/api";
 
 interface PostDetailProps {
   post: Post;

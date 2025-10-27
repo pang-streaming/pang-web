@@ -1,4 +1,4 @@
-import { Product } from "@/entities/product/model/type";
+import { Product } from "@/entities/product/type";
 
 export interface Store {
     name: string;

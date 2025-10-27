@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { SubmitButton } from "@pang/shared/ui";
 import styled from "styled-components";
-import { useBuyProduct } from "@/pages/market/hooks/useProduct";
+import { useBuyProduct } from "@/features/market/hooks/useProduct";
+
 
 declare global {
   interface Window {

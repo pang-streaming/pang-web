@@ -5,6 +5,7 @@ export const GlobalStyle = createGlobalStyle`
 	html {
 		scrollbar-gutter: stable;
 		background-color: ${({theme}) => theme.colors.background.normal};
+		overflow-x: hidden;
 	}
 
 	body {

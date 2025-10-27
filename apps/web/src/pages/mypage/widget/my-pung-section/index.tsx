@@ -4,7 +4,7 @@ import { ChargeButton } from "@/pages/charge/ui/charge-button";
 import { ChargeModal } from "@/pages/charge/widget/charge-modal";
 import styled from "styled-components";
 import { useQuery } from "@tanstack/react-query";
-import { fetchMyInfo } from "@/entities/user/api/api";
+import { fetchMyInfo } from "@/entities/user/api";
 
 export const MyPungSection = () => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);

@@ -1,6 +1,6 @@
 import styled, {css} from "styled-components";
 import { VideoCard } from "@/entities/video/ui/video-card";
-import { LastVideoListProps } from "./type";
+import { LastVideoListProps } from "../type";
 
 
 

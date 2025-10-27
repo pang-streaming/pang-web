@@ -1,11 +1,11 @@
 import { TabTitleText } from "@/shared/ui/tab-title-text";
 import styled from "styled-components";
-import { useGifts, useUpdateGiftInfo } from "./useGift";
 import { SkeletonGrid } from "@/shared/ui/skeleton";
 import { useState } from "react";
 import { Gift, DeliveryStatus } from "@/features/gift/model/type";
 import panglogo from "@/app/assets/pang-emotion-logo.png";
 import { formattedPrice } from "@/pages/market/util/formatted-price";
+import { useGifts, useUpdateGiftInfo } from "@/features/gift/hook/useGift";
 
 export const GiftList = () => {
   const { data, isLoading, isError } = useGifts();

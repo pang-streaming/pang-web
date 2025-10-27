@@ -1,6 +1,6 @@
 import React from "react";
 import { SubmitButton } from "@pang/shared/ui";
-import { useWriteModal } from "./useWriteModal";
+import { useWriteModal } from "../../hooks/useWriteModal";
 import * as S from "./style";
 
 interface WritePostModalProps {
@@ -40,7 +40,6 @@ export const WritePostModal = ({ communityId, onClose, onSuccess }: WritePostMod
           onChange={(e) => setContent(e.target.value)}
         />
         
-        {/* 이미지 업로드 섹션 */}
         <S.ImageSection>
           <S.FileInput
             id="file-upload"
@@ -50,7 +49,7 @@ export const WritePostModal = ({ communityId, onClose, onSuccess }: WritePostMod
             onChange={(e) => handleFileChange(e.target.files)}
           />
           <S.FileInputLabel htmlFor="file-upload">
-            📷 이미지 추가하기
+            이미지 추가하기
           </S.FileInputLabel>
           
           {files.length > 0 && (

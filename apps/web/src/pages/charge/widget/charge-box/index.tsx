@@ -4,7 +4,7 @@ import { ChargeButton } from "../../ui/charge-button";
 import { ChargeModal } from "../charge-modal";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { fetchMyInfo } from "@/entities/user/api/api";
+import { fetchMyInfo } from "@/entities/user/api";
 
 interface ChargeBoxProps {
   type: "mypung" | "autochargepung";
