@@ -36,14 +36,14 @@ export const useCanvasInteraction = (
 	const getMousePos = useCallback((e: React.MouseEvent<HTMLCanvasElement>): MousePosition => {
 		const canvas = e.target as HTMLCanvasElement;
 		const rect = canvas.getBoundingClientRect();
-		// 화면 표시 크기에서 실제 캔버스 해상도(1920x1080)로 좌표 변환
-		const scaleX = 1920 / rect.width;
-		const scaleY = 1080 / rect.height;
+		// 화면 표시 크기에서 실제 캔버스 해상도로 좌표 변환
+		const scaleX = canvasSize.width / rect.width;
+		const scaleY = canvasSize.height / rect.height;
 		return {
 			x: (e.clientX - rect.left) * scaleX,
 			y: (e.clientY - rect.top) * scaleY
 		};
-	}, []);
+	}, [canvasSize]);
 	
 	const handleMouseDown = useCallback((e: React.MouseEvent<HTMLCanvasElement>): void => {
 		const pos = getMousePos(e);
