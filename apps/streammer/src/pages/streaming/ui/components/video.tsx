@@ -3,8 +3,8 @@ import styled from "styled-components";
 import {LiveCanvas} from "@/features/canvas/ui/live-canvas";
 import { type CanvasSize, type Screen } from "@/features/canvas/constants/canvas-constants";
 import {VscDebugStart, VscDebugStop} from "react-icons/vsc";
-import { useWhipBroadcast } from "@/features/whip/useWhipBroadcast";
 import {useVrmScreen} from "@/features/vrm/hooks/useVrmScreen";
+import { useWhipBroadcast2 } from "@/features/whip/useWhipBroadcast";
 
 interface VideoProps {
 	containerRef: React.RefObject<HTMLDivElement | null>;
@@ -36,7 +36,7 @@ export const Video = ({
 	titleChild,
 }: VideoProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-	const { isStreaming, startStreaming, stopStreaming } = useWhipBroadcast(canvasRef, streamKey, whipUrl);
+	const { isStreaming, startStreaming, stopStreaming } = useWhipBroadcast2(canvasRef, streamKey, whipUrl);
 	
 	const { screen: vrmScreen, VrmRenderer } = useVrmScreen(
 	  canvasSize, 

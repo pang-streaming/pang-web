@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
-import { Video } from './components/video';
+
 import { StreamSetting } from './components/streamSetting';
 import { useCanvasSize } from '@/features/canvas/hooks/useCanvasSize';
 import { useScreenManagement } from '@/features/canvas/hooks/useScreenManagement';
@@ -13,6 +13,7 @@ import { fetchStreamKey, createStreamKey, fetchMyInfo, fetchStreamStatus, Catego
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { Chat } from './components/chat';
 import { StreamTitleModal } from '@/features/modal/components/StreamTitleModal';
+import { Video } from './components/\bvideo';
 
 const StreamingPage = () => {
   const containerRef = useRef<HTMLDivElement>(null);
