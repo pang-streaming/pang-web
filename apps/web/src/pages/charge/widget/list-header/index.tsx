@@ -1,6 +1,6 @@
 import { useTransaction, usePurchase } from "@/entities/transaction/hooks/useTransaction";
 import styled from "styled-components";
-import { Transaction, BalanceData, PurchaseHistory } from "@/entities/transaction/model/type";
+import { Transaction, PurchaseHistory } from "@/entities/transaction/type";
 import { TransactionSkeleton } from "@/shared/ui/skeleton";
 import { ErrorScreen } from "@/shared/ui/error-screen";
 

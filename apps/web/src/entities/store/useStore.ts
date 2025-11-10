@@ -1,7 +1,7 @@
 
 
 import { useQuery } from "@tanstack/react-query";
-import { StoreProduct, StoreProductResponse, StoreResponse } from "./type";
+import { StoreProductResponse, StoreResponse } from "./type";
 import { fetchStore, fetchStoreProducts, } from "./api";
 
 export const useStore = () => {
@@ -14,7 +14,7 @@ export const useStore = () => {
 };
 
 export const useStoreProduct = (storeId: string) => {
-  console.log("🎯 useStoreProduct 호출 - storeId:", storeId);
+  console.log("useStoreProduct 호출 - storeId:", storeId);
   
   return useQuery<StoreProductResponse>({
     queryKey: ["storeProduct", storeId],

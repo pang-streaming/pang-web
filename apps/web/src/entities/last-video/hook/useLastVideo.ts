@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
-import { LastVideo, LastVideoResponse } from "./type"
-import { fetchAllLastVideo, fetchFollowingLastVideo, fetchLastVideoByUsername } from "./api"
+import { LastVideo, LastVideoResponse } from "../type"
+import { fetchAllLastVideo, fetchFollowingLastVideo, fetchLastVideoByUsername } from "../api"
 
 export const useLastVideoByUsername = (username?: string) => {
   return useQuery<LastVideoResponse>({

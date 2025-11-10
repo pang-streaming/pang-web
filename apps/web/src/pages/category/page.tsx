@@ -26,7 +26,6 @@ export const Category = () => {
 	const { data, isLoading, isError, error } = useCategory();
 	const navigate = useNavigate();
 	
-	// Ensure categories is always an array
 	const categories = Array.isArray(data) ? data : [];
   
 	if (isLoading) {

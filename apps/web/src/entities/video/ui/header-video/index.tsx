@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { useState } from "react";
 import normalProfile from "@/app/assets/images/normal_profile.svg";
 import { useVideoCard } from "@/entities/video/hooks/controller/useVideoCard";
-import thumbnail from "@/app/assets/thumbnail.png";
+import normalThumbnail from '@/app/assets/video-thumbnail.png'
 import { IStreamDataResponse } from "../../model/type";
 import { useMyFollower } from "@/features/follow/hooks/useFollow";
 
@@ -31,11 +31,11 @@ export const HeaderVideo = ({ videos, hideProfile }: HeaderVideoProps) => {
 
   const { data: followerData } = useMyFollower(username);
   const followerCount = followerData?.data?.length ?? followers ?? 0;
-
+  console.log("headerthumbmail: ",thumbnail)
   return (
     <HeaderVideoContainer
       onClick={handleOnClickVideoCard}
-      backgroundImage={thumbnail || url}
+      backgroundImage={thumbnail || normalThumbnail}
     >
       <LiveCardContainer>
         <LiveContainer>

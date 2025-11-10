@@ -14,12 +14,12 @@ import Buy from "@/app/assets/shopping-cart.svg?react";
 import Gift from "@/app/assets/gift.svg?react";
 import { IoDownloadOutline } from "react-icons/io5";
 import panglogo from "@/app/assets/pang-emotion-logo.png";
-import { useSendGift } from "../../../mypage/widget/settings-menu/widget/gift-list/useGift";
+import { useSendGift } from "@/features/gift/hook/useGift";
 import {
   useLikeProduct,
   useProductDetail,
   useTopFiveProduct,
-} from "@/pages/market/hooks/useProduct";
+} from "@/features/market/hooks/useProduct";
 import { useState } from "react";
 import { PurchaseModal } from "./widget/purchase-modal";
 import { SkeletonBox, VirtualModelElemSkeleton } from "@/shared/ui/skeleton";
@@ -27,7 +27,7 @@ import { VirtualModelElem } from "../../widget/market-section/widget/virtual-mod
 import { TabTitleText } from "@/shared/ui/tab-title-text";
 import styled, { useTheme } from "styled-components";
 import { useQuery } from "@tanstack/react-query";
-import { fetchMyInfo } from "@/entities/user/api/api";
+import { fetchMyInfo } from "@/entities/user/api";
 import { useMyFollowing } from "@/features/follow/hooks/useFollow";
 
 export const MarketDetail = () => {

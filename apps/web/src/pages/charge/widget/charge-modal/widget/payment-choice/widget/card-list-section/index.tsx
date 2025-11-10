@@ -3,7 +3,7 @@ import { paymentIcons } from "@/app/assets/payment/_index";
 import * as S from './style'
 import { useEffect, useState } from "react";
 import { paymentApi } from "@/entities/payment/api";
-import { CardListItem } from "@/entities/payment/model/type";
+import { CardListItem } from "@/entities/payment/type";
 
 export interface CardData {
   id: string;

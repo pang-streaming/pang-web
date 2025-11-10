@@ -1,23 +1,12 @@
 import styled, { keyframes } from "styled-components";
 
 const fadeIn = keyframes`
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 `;
-
 const slideUp = keyframes`
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 `;
 
 export const ModalOverlay = styled.div`
@@ -34,31 +23,35 @@ export const ModalOverlay = styled.div`
 
 export const ModalContainer = styled.div`
   background: ${({ theme }) => theme.colors.background.normal};
-  padding: 60px; // 위/아래 여백 충분히
+  padding: 40px;
   border-radius: ${({ theme }) => theme.borders.xlarge};
-  width: 600px;
+  width: 640px;
   max-width: 90vw;
   max-height: 90vh;
-  overflow: hidden;
+  box-sizing: border-box;
+  overflow: auto; 
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  align-items: stretch; 
+  gap: 20px;
+  align-items: flex-start;  
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   animation: ${slideUp} 0.3s ease-out;
 `;
 
 export const Title = styled.h2`
+  width: 100%;
   margin: 0;
   font-size: ${({ theme }) => theme.font.xxLarge};
   font-weight: 700;
   color: ${({ theme }) => theme.colors.text.normal};
-  padding-bottom: 16px;
+  padding-bottom: 12px;
   border-bottom: 2px solid ${({ theme }) => theme.colors.primary.normal};
+  text-align: center; 
 `;
 
 export const TitleInput = styled.input`
   width: 100%;
+  box-sizing: border-box;
   padding: 14px 16px;
   border-radius: ${({ theme }) => theme.borders.medium};
   outline: none;
@@ -69,23 +62,18 @@ export const TitleInput = styled.input`
   background-color: ${({ theme }) => theme.colors.background.light};
   transition: all 0.2s ease;
 
-  &::placeholder {
-    color: ${({ theme }) => theme.colors.text.subtitle};
-  }
+  &::placeholder { color: ${({ theme }) => theme.colors.text.subtitle}; }
 
   &:focus {
     border-color: ${({ theme }) => theme.colors.primary.normal};
     background-color: ${({ theme }) => theme.colors.background.normal};
     box-shadow: 0 0 0 3px ${({ theme }) => theme.colors.primary.normal}20;
   }
-
-  &:hover {
-    border-color: ${({ theme }) => theme.colors.primary.light};
-  }
 `;
 
 export const ContentTextarea = styled.textarea`
   width: 100%;
+  box-sizing: border-box;
   padding: 14px 16px;
   border-radius: ${({ theme }) => theme.borders.medium};
   border: 2px solid ${({ theme }) => theme.colors.border.normal};
@@ -99,9 +87,7 @@ export const ContentTextarea = styled.textarea`
   background-color: ${({ theme }) => theme.colors.background.light};
   transition: all 0.2s ease;
 
-  &::placeholder {
-    color: ${({ theme }) => theme.colors.text.subtitle};
-  }
+  &::placeholder { color: ${({ theme }) => theme.colors.text.subtitle}; }
 
   &:focus {
     border-color: ${({ theme }) => theme.colors.primary.normal};
@@ -109,23 +95,9 @@ export const ContentTextarea = styled.textarea`
     box-shadow: 0 0 0 3px ${({ theme }) => theme.colors.primary.normal}20;
   }
 
-  &:hover {
-    border-color: ${({ theme }) => theme.colors.primary.light};
-  }
-
-  &::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: ${({ theme }) => theme.colors.background.light};
-    border-radius: 4px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: ${({ theme }) => theme.colors.border.normal};
-    border-radius: 4px;
-  }
+  &::-webkit-scrollbar { width: 8px; }
+  &::-webkit-scrollbar-track { background: ${({ theme }) => theme.colors.background.light}; border-radius: 4px; }
+  &::-webkit-scrollbar-thumb { background: ${({ theme }) => theme.colors.border.normal}; border-radius: 4px; }
 `;
 
 export const FileInput = styled.input`
@@ -136,9 +108,12 @@ export const ButtonContainer = styled.div`
   display: flex;
   gap: 12px;
   margin-top: 8px;
+  width: 100%;
+  justify-content: flex-end; 
 `;
 
 export const ErrorText = styled.p`
+  width: 100%;
   color: #ff4757;
   font-size: ${({ theme }) => theme.font.small};
   margin: 0;
@@ -149,6 +124,7 @@ export const ErrorText = styled.p`
 `;
 
 export const ImageSection = styled.div`
+  width: 92%;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -163,8 +139,9 @@ export const ImageSection = styled.div`
     background-color: ${({ theme }) => theme.colors.background.normal};
   }
 `;
+
 export const FileInputLabel = styled.label`
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
@@ -181,17 +158,15 @@ export const FileInputLabel = styled.label`
     background-color: ${({ theme }) => theme.colors.primary.dark};
     box-shadow: 0 4px 12px ${({ theme }) => theme.colors.primary.normal}40;
   }
-
-  &:active {
-    transform: none;
-  }
 `;
 
 export const ImagePreviewContainer = styled.div`
+  width: 100%;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
   gap: 12px;
 `;
+
 export const ImagePreviewItem = styled.div`
   position: relative;
   width: 100%;
@@ -199,11 +174,11 @@ export const ImagePreviewItem = styled.div`
   border-radius: ${({ theme }) => theme.borders.medium};
   overflow: hidden;
   transition: box-shadow 0.2s ease;
-
-  &:hover {
-    box-shadow: ${({ theme }) => theme.shadows.medium};
-  }
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
+
 export const ImagePreview = styled.img`
   width: 100%;
   height: 100%;
@@ -228,21 +203,12 @@ export const RemoveImageButton = styled.button`
   font-size: 16px;
   font-weight: bold;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   opacity: 0;
 
-  ${ImagePreviewItem}:hover & {
-    opacity: 1;
-  }
+  ${ImagePreviewItem}:hover & { opacity: 1; }
 
-  &:hover {
-    background-color: #ff4757;
-    transform: scale(1.15) rotate(90deg);
-  }
-
-  &:active {
-    transform: scale(0.95) rotate(90deg);
-  }
+  &:hover { background-color: #ff4757; transform: scale(1.15) rotate(90deg); }
+  &:active { transform: scale(0.95) rotate(90deg); }
 `;
 
 export const ImageCount = styled.p`

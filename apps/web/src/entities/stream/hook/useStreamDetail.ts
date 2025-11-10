@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { LiveStreamDetailData } from "./type";
+import { LiveStreamDetailData } from "../type";
 import { fetchLiveStreamDetail } from "../api";
 
 export function useStreamDetail(streamId?: string) {

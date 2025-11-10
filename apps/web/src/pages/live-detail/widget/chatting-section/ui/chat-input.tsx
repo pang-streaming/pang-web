@@ -3,7 +3,7 @@ import styled from "styled-components";
 import sendPung from "@/app/assets/send-pung.svg";
 import Airplane from "@/app/assets/airplane.svg?react";
 import { SponsorModal } from "../widget/sponsor-modal";
-import { fetchMyInfo } from "@/entities/user/api/api";
+import { fetchMyInfo } from "@/entities/user/api";
 import { useQuery } from "@tanstack/react-query";
 import { paymentApi } from "@/entities/payment/api";
 import { sponsorEventManager } from "@/shared/lib/sponsor-event";

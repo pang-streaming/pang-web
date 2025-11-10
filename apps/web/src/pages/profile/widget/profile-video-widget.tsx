@@ -1,4 +1,4 @@
-import { useLastVideoByUsername } from "@/entities/last-video/useLastVideo";
+import { useLastVideoByUsername } from "@/entities/last-video/hook/useLastVideo";
 import { IStreamDataResponse } from "@/entities/video/model/type";
 import { ErrorScreen } from "@/shared/ui/error-screen";
 import { SkeletonGrid } from "@/shared/ui/skeleton";

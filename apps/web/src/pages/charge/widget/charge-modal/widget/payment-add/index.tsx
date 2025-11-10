@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { CardInfoSection } from "./widget/card-info-section";
 import { SubmitButton } from "@pang/shared/ui";
 import { paymentApi } from "@/entities/payment/api";
-import { CardInfo } from "@/entities/payment/model/type";
+import { CardInfo } from "@/entities/payment/type";
 import { isAxiosError } from "axios";
 
 interface PaymentAddProps {

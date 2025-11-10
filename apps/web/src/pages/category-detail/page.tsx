@@ -1,8 +1,6 @@
   import styled from "styled-components";
-  import { TabTitleText } from "@/shared/ui/tab-title-text";
   import { Segment, SegmentButtonGroup } from "@pang/shared/ui";
   import { ChipList } from "@/shared/ui/chip/chip-list";
-  import { Chip } from "@/entities/chip/model/type";
   import { VideoList } from "@/shared/ui/video/video-list";
   import { useLocation, useParams } from "react-router-dom";
   import { useCategoryLives, useCategoryVideos } from "../category/hook/useCategory";

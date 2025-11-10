@@ -5,7 +5,7 @@ import { VideoList } from "@/shared/ui/video/video-list";
 import { SkeletonGrid } from "@/shared/ui/skeleton";
 import { ErrorScreen } from "@/shared/ui/error-screen";
 import { useLives } from "@/entities/video/hooks/useLive";
-import { useAllLastVideo } from "@/entities/last-video/useLastVideo";
+import { useAllLastVideo } from "@/entities/last-video/hook/useLastVideo";
 import { useState } from "react";
 
 const segments: Segment[] = [

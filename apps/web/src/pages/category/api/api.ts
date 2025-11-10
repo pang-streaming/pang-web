@@ -5,7 +5,6 @@ import { Category, CategoryLiveResponse } from "../model/category"
 export const fetchCategory = async (): Promise<Category[]> => {
     const res =  await api.get("/categories");
     const data = res.data?.data ?? res.data;
-    // Ensure we always return an array
     return Array.isArray(data) ? data : [];
 }
 

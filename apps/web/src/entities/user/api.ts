@@ -1,5 +1,5 @@
 import api from "@/api/api";
-import type { UserResponse } from "../model/type";
+import type { UserResponse } from "./type";
 import { OtherUser, OtherUserResponse } from "@/pages/profile/model/other-user";
 
 export const fetchMyInfo = async (): Promise<UserResponse> => {

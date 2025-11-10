@@ -1,4 +1,4 @@
-import { fetchOtherUserInfo } from "@/entities/user/api/api";
+import { fetchOtherUserInfo } from "@/entities/user/api";
 import { useQuery } from "@tanstack/react-query";
 import { fetchPostList } from "@/features/community/api/api";
 

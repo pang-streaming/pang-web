@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { fetchMyInfo } from "@/entities/user/api/api";
-import { User } from "@/entities/user/model/type";
+import { fetchMyInfo } from "@/entities/user/api";
+import { User } from "@/entities/user/type";
 
 export const useProvider = () => {
   const [user, setUser] = useState<User>();

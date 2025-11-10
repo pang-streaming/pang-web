@@ -4,7 +4,7 @@ import { useState } from "react";
 import { formatBirthToDate } from "./ui/modal-section/age-section";
 import { InitModalStep1 } from "./first-modal";
 import { InitModalStep2 } from "./second-modal";
-import { updateMyInfo } from "@/entities/user/api/api";
+import { updateMyInfo } from "@/entities/user/api";
 
 interface InitModalProps {
   isOpen: boolean;

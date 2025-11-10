@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { SubmitButton } from "@pang/shared/ui";
 import { useSettingMenu } from "../../useSettingMenu";
-import { uploadImage } from "@/entities/user/api/api";
+import { uploadImage } from "@/entities/user/api";
 import * as S from "./style";
 
 interface ProfileEditModalProps {

@@ -3,13 +3,14 @@
 
 import { formattedPrice } from '@/pages/market/util/formatted-price'
 import styled from 'styled-components'
+import { calculateTotalAmount } from '../lib';
 
 interface FinalAmountFieldProps {
   pungAmount: number;
 }
 
 export const FinalAmountField = ({ pungAmount }: FinalAmountFieldProps) => {
-  const totalAmount = Math.floor(pungAmount * 1.1);
+  const totalAmount = calculateTotalAmount(pungAmount);
   
   return (
     <Container>
@@ -18,7 +19,6 @@ export const FinalAmountField = ({ pungAmount }: FinalAmountFieldProps) => {
     </Container>
   )
 }
-
 
 const Container = styled.div`
     width: 100%;
@@ -31,7 +31,6 @@ const Container = styled.div`
     border-radius: ${({theme}) => theme.borders.large};
     background-color: ${({theme}) => theme.colors.background.normal};
 `
-
 
 const LeftText = styled.span`
     font-size: ${({theme}) => theme.font.medium};

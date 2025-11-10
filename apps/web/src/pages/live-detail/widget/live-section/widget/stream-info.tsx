@@ -4,7 +4,7 @@ import {FollowButton} from "@/shared/ui/button/follow-button";
 import {useVideoCard} from "@/entities/video/hooks/controller/useVideoCard";
 import { useMyFollower, useFollowUser, useMyFollowing } from "@/features/follow/hooks/useFollow";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
-import { fetchMyInfo } from "@/entities/user/api/api";
+import { fetchMyInfo } from "@/entities/user/api";
 
 interface StreamInfoProps {
 	streamId: string;
