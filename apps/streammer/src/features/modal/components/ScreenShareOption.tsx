@@ -141,7 +141,8 @@ const CancelButton = styled(Button)`
 
 const ConfirmButton = styled(Button)`
   background-color: ${({ theme }) => theme.colors.primary || '#4CAF50'};
-  color: white;
+  color: ${({theme}) => theme.colors.background.dark};
+
 
   &:hover:not(:disabled) {
     opacity: 0.9;
