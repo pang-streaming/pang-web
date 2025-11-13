@@ -160,12 +160,30 @@ const StreamingPage = () => {
         {streamStatus?.data?.status === 'LIVE' ? 
           (<StreamTitle onClick={streamStatus?.data?.status === 'LIVE' ? handleTitleClick : undefined} $clickable={streamStatus?.data?.status === 'LIVE'}>
             {streamStatus?.data?.title}
-          </StreamTitle>) 
-          : 
-          (<StreamTitle>방송 대시보드</StreamTitle>)
-        }
-        
+          </StreamTitle>
+        ) : (
+          <StreamTitle>방송 대시보드</StreamTitle>
+        )}
+        <StatusIndicator $isLive={streamStatus?.data?.status === "LIVE"}>
+          <StatusDot $isLive={streamStatus?.data?.status === "LIVE"} />
+        </StatusIndicator>
+
+        <StreamInfo>
+          <StreamType>
+            {streamStatus?.data?.streamType === "RTMP"
+              ? "외부에서 방송"
+              : "팡 스트리밍을 통해 방송"}
+          </StreamType>
+        </StreamInfo>
       </HeaderLeft>
+      <HeaderRight>
+        <StreamKeyButton
+          onClick={handleStreamingSettingsClick}
+          disabled={isLoadingKey}
+        >
+          방송 설정
+        </StreamKeyButton>
+      </HeaderRight>
     </>
   );
 
@@ -194,52 +212,26 @@ const StreamingPage = () => {
 
   return (
     <PageContainer>
-      <StreamBottomSection>
-        <StatusSection>
-          <StatusIndicator $isLive={streamStatus?.data?.status === 'LIVE'}>
-            <StatusDot $isLive={streamStatus?.data?.status === 'LIVE'} />
-            <StatusText>
-              {streamStatus?.data?.status === 'LIVE' ? 'LIVE' : 'OFFLINE'}
-            </StatusText>
-          </StatusIndicator>
-          
-          <StreamInfo>
-            <StreamType>
-              {streamStatus?.data?.streamType === 'RTMP' ? '외부에서 방송' : '팡 스트리밍을 통해 방송'}
-            </StreamType>
-          </StreamInfo>
-        </StatusSection>
-        
-        <ActionSection>
-           <StreamKeyButton onClick={handleStreamingSettingsClick} disabled={isLoadingKey}>
-             방송 설정
-           </StreamKeyButton>
-        </ActionSection>
-      </StreamBottomSection>
-
       <DashboardContainer>
-        
-	      <VideoWrapper ref={containerRef}>
-		      <Video
-			      canvasSize={canvasSize}
-			      containerRef={containerRef}
-			      screens={screens}
-			      setScreens={setScreens}
-			      vrmUrl={vrmUrl}
-			      selectedDevice={selectedDevice}
-			      username={myInfo?.data?.username ?? ''}
-			      whipUrl={whipUrl}
-			      isVTuberEnabled={isVTuberEnabled}
-			      streamKey={streamKey}
-			      title={myInfo?.data?.nickname ?? ''}
-			      onTitleClick={handleTitleClick}
-			      titleChild={titleChildContent}
-		      />
-	      </VideoWrapper>
+        <VideoWrapper ref={containerRef}>
+          <Video
+            canvasSize={canvasSize}
+            containerRef={containerRef}
+            screens={screens}
+            setScreens={setScreens}
+            vrmUrl={vrmUrl}
+            selectedDevice={selectedDevice}
+            username={myInfo?.data?.username ?? ""}
+            whipUrl={whipUrl}
+            isVTuberEnabled={isVTuberEnabled}
+            streamKey={streamKey}
+            title={myInfo?.data?.nickname ?? ""}
+            onTitleClick={handleTitleClick}
+            titleChild={titleChildContent}
+          />
+        </VideoWrapper>
         <ChatSection>
-          {myInfo?.data && (
-            <Chat roomId={myInfo?.data?.username ?? ''} />
-          )}
+          {myInfo?.data && <Chat roomId={myInfo?.data?.username ?? ""} />}
         </ChatSection>
       </DashboardContainer>
       
@@ -595,22 +587,20 @@ const OptionButton = styled.button<{ $isSelected: boolean }>`
   align-items: center;
   gap: 16px;
   padding: 16px;
-  border: 2px solid ${({ $isSelected, theme }) => 
-    $isSelected ? theme.colors.primary.normal : theme.colors.border.normal
-  };
+  border: 2px solid
+    ${({ $isSelected, theme }) =>
+      $isSelected ? theme.colors.primary.normal : theme.colors.border.normal};
   border-radius: 12px;
-  background-color: ${({ $isSelected, theme }) => 
-    $isSelected ? 'rgba(59, 130, 246, 0.05)' : theme.colors.background.normal
-  };
+  background-color: ${({ $isSelected, theme }) =>
+    $isSelected ? "rgba(59, 130, 246, 0.05)" : theme.colors.background.normal};
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: left;
 
   &:hover {
     border-color: ${({ theme }) => theme.colors.primary.normal};
-    background-color: ${({ $isSelected, theme }) => 
-      $isSelected ? 'rgba(59, 130, 246, 0.1)' : 'rgba(59, 130, 246, 0.05)'
-    };
+    background-color: ${({ $isSelected, theme }) =>
+      $isSelected ? "rgba(59, 130, 246, 0.1)" : "rgba(59, 130, 246, 0.05)"};
   }
 `;
 
@@ -943,6 +933,13 @@ const HeaderLeft = styled.div`
   display: flex;
   align-items: center;
   gap: 16px;
+`;
+
+const HeaderRight = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
 `;
 
 const CategorySection = styled.div`
