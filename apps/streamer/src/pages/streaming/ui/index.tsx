@@ -1,5 +1,4 @@
 import React, { useRef, useState, useEffect } from 'react';
-import styled, { keyframes } from 'styled-components';
 
 import { StreamSetting } from './components/streamSetting';
 import { useCanvasSize } from '@/features/canvas/hooks/useCanvasSize';
@@ -14,6 +13,8 @@ import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { Chat } from './components/chat';
 import { StreamTitleModal } from '@/features/modal/components/StreamTitleModal';
 import { Video } from './components/\bvideo';
+import { StreamingSettingsModal } from './components/StreamingSettingsModal';
+import * as S from './styles';
 
 const StreamingPage = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -144,76 +145,76 @@ const StreamingPage = () => {
   // titleChild를 별도 변수로 분리하여 스코프 문제 해결
   const titleChildContent = (
     <>
-      <HeaderLeft>
-        <CategorySection>
+      <S.HeaderLeft>
+        <S.CategorySection>
           {selectedCategory ? (
             <>
               {selectedCategory.postImage && (
-                <CategoryImage src={selectedCategory.postImage} alt={selectedCategory.name} />
+                <S.CategoryImage src={selectedCategory.postImage} alt={selectedCategory.name} />
               )}
-              <CategoryName>{selectedCategory.name}</CategoryName>
+              <S.CategoryName>{selectedCategory.name}</S.CategoryName>
             </>
           ) : (
-            <CategoryPlaceholder>카테고리 미선택</CategoryPlaceholder>
+            <S.CategoryPlaceholder>카테고리 미선택</S.CategoryPlaceholder>
           )}
-        </CategorySection>
+        </S.CategorySection>
         {streamStatus?.data?.status === 'LIVE' ? 
-          (<StreamTitle onClick={streamStatus?.data?.status === 'LIVE' ? handleTitleClick : undefined} $clickable={streamStatus?.data?.status === 'LIVE'}>
+          (<S.StreamTitle onClick={streamStatus?.data?.status === 'LIVE' ? handleTitleClick : undefined} $clickable={streamStatus?.data?.status === 'LIVE'}>
             {streamStatus?.data?.title}
-          </StreamTitle>
+          </S.StreamTitle>
         ) : (
-          <StreamTitle>방송 대시보드</StreamTitle>
+          <S.StreamTitle>방송 대시보드</S.StreamTitle>
         )}
-        <StatusIndicator $isLive={streamStatus?.data?.status === "LIVE"}>
-          <StatusDot $isLive={streamStatus?.data?.status === "LIVE"} />
-        </StatusIndicator>
+        <S.StatusIndicator $isLive={streamStatus?.data?.status === "LIVE"}>
+          <S.StatusDot $isLive={streamStatus?.data?.status === "LIVE"} />
+        </S.StatusIndicator>
 
-        <StreamInfo>
-          <StreamType>
+        <S.StreamInfo>
+          <S.StreamType>
             {streamStatus?.data?.streamType === "RTMP"
               ? "외부에서 방송"
               : "팡 스트리밍을 통해 방송"}
-          </StreamType>
-        </StreamInfo>
-      </HeaderLeft>
-      <HeaderRight>
-        <StreamKeyButton
+          </S.StreamType>
+        </S.StreamInfo>
+      </S.HeaderLeft>
+      <S.HeaderRight>
+        <S.StreamKeyButton
           onClick={handleStreamingSettingsClick}
           disabled={isLoadingKey}
         >
           방송 설정
-        </StreamKeyButton>
-      </HeaderRight>
+        </S.StreamKeyButton>
+      </S.HeaderRight>
     </>
   );
 
   if (isLoadingKey) {
     return (
-      <PageContainer>
-        <LoadingContainer>
-          <LoadingText>스트림 키를 불러오는 중...</LoadingText>
-        </LoadingContainer>
-      </PageContainer>
+      <S.PageContainer>
+        <S.LoadingContainer>
+          <S.LoadingText>스트림 키를 불러오는 중...</S.LoadingText>
+        </S.LoadingContainer>
+      </S.PageContainer>
     );
   }
 
   if (!streamKey) {
     return (
-      <PageContainer>
-        <LoadingContainer>
-          <LoadingText>스트림 키를 불러올 수 없습니다.</LoadingText>
-          <RetryButton onClick={() => window.location.reload()}>
+      <S.PageContainer>
+        <S.LoadingContainer>
+          <S.LoadingText>스트림 키를 불러올 수 없습니다.</S.LoadingText>
+          <S.RetryButton onClick={() => window.location.reload()}>
             새로고침
-          </RetryButton>
-        </LoadingContainer>
-      </PageContainer>
+          </S.RetryButton>
+        </S.LoadingContainer>
+      </S.PageContainer>
     );
   }
 
   return (
-    <PageContainer>
-      <DashboardContainer>
-        <VideoWrapper ref={containerRef}>
+    <S.PageContainer>
+      <S.DashboardContainer>
+        <S.VideoWrapper ref={containerRef}>
           <Video
             canvasSize={canvasSize}
             containerRef={containerRef}
@@ -229,20 +230,20 @@ const StreamingPage = () => {
             onTitleClick={handleTitleClick}
             titleChild={titleChildContent}
           />
-        </VideoWrapper>
-        <ChatSection>
+        </S.VideoWrapper>
+        <S.ChatSection>
           {myInfo?.data && <Chat roomId={myInfo?.data?.username ?? ""} />}
-        </ChatSection>
-      </DashboardContainer>
+        </S.ChatSection>
+      </S.DashboardContainer>
       
-      <StreamSettingSection>
+      <S.StreamSettingSection>
 	      <StreamSetting
 		      onVideoAddButtonClick={modal.openModal}
 		      screens={screens}
 		      setScreens={setScreens}
 		      onRemoveScreen={handleRemoveScreen}
 	      />
-      </StreamSettingSection>
+      </S.StreamSettingSection>
 
       <AddSourceModal
         isOpen={modal.isOpen}
@@ -280,707 +281,8 @@ const StreamingPage = () => {
         queryClient={queryClient}
         streamStatus={streamStatus}
       />
-    </PageContainer>
+    </S.PageContainer>
   );
 };
 
 export default StreamingPage;
-
-const StreamBottomSection = styled.div`
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  box-sizing: border-box;
-  padding: 14px;
-  padding-top:0;
-  padding-bottom:5px;
-`;
-
-const StatusSection = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  justify-content: center;
-`;
-
-const StatusIndicator = styled.div<{ $isLive: boolean }>`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  
-  background-color: ${({ theme }) => theme.colors.background.normal};
-  
-`;
-
-const StatusDot = styled.div<{ $isLive: boolean }>`
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: ${({ $isLive }) => $isLive ? '#22c55e' : '#6b7280'};
-  animation: ${({ $isLive }) => $isLive ? 'pulse 2s infinite' : 'none'};
-  
-  @keyframes pulse {
-    0%, 100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.5;
-    }
-  }
-`;
-
-const StatusText = styled.span`
-  font-size: 14px;
-  font-weight: 500;
-  color: ${({ theme }) => theme.colors.text.normal};
-`;
-
-const StreamInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-`;
-
-const StreamType = styled.div`
-  font-size: 12px;
-  color: ${({ theme }) => theme.colors.text.subtitle};
-  font-weight: 500;
-`;
-
-const StreamKeyDisplay = styled.div`
-  font-size: 12px;
-  color: ${({ theme }) => theme.colors.text.normal};
-  font-family: monospace;
-  background-color: ${({ theme }) => theme.colors.background.light};
-  padding: 4px 8px;
-  border-radius: 4px;
-  word-break: break-all;
-`;
-
-const ActionSection = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-left: auto;
-`;
-
-const StreamKeyButton = styled.button`
-  padding: 8px 16px;
-  background-color: ${({ theme }) => theme.colors.primary.normal};
-  color: ${({ theme }) => theme.colors.common.white};
-  border: none;
-  border-radius: ${({ theme }) => theme.borders.small};
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s;
-
-  &:hover:not(:disabled) {
-    background-color: ${({ theme }) => theme.colors.hover.normal};
-  }
-
-  &:disabled {
-    background-color: ${({ theme }) => theme.colors.text.subtitle};
-    cursor: not-allowed;
-  }
-`;
-
-// StreamingSettingsModal 컴포넌트
-interface StreamingSettingsModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  currentStreamType: 'RTMP' | 'WHIP';
-  streamKey: string;
-  queryClient: any;
-  streamStatus: any;
-}
-
-const StreamingSettingsModal: React.FC<StreamingSettingsModalProps> = ({
-  isOpen,
-  onClose,
-  currentStreamType,
-  streamKey,
-  queryClient,
-  streamStatus
-}) => {
-  const [selectedType, setSelectedType] = useState<'RTMP' | 'WHIP'>(currentStreamType);
-  const [isClosing, setIsClosing] = useState(false);
-
-  // currentStreamType이 변경되면 selectedType도 업데이트
-  useEffect(() => {
-    setSelectedType(currentStreamType);
-  }, [currentStreamType]);
-
-  // 스트림 타입 변경 mutation
-  const updateStreamTypeMutation = useMutation({
-    mutationFn: (streamType: 'RTMP' | 'WHIP') => updateStream(streamKey, { 
-      title: streamStatus?.data?.title || '', // 기존 제목 유지
-      categoryId: streamStatus?.data?.categoryId || 0, // 기존 카테고리 유지
-      tags: streamStatus?.data?.tags || [], // 기존 태그 유지
-      streamType: streamType 
-    }),
-    onMutate: async (newStreamType) => {
-      // 낙관적 업데이트: 서버 응답을 기다리지 않고 즉시 UI 업데이트
-      await queryClient.cancelQueries({ queryKey: ['streamStatus'] });
-      
-      const previousStreamStatus = queryClient.getQueryData(['streamStatus']);
-      
-      queryClient.setQueryData(['streamStatus'], (old: any) => ({
-        ...old,
-        data: {
-          ...old?.data,
-          streamType: newStreamType
-        }
-      }));
-      
-      return { previousStreamStatus };
-    },
-    onError: (err, newStreamType, context) => {
-      // 에러 발생 시 이전 상태로 롤백
-      if (context?.previousStreamStatus) {
-        queryClient.setQueryData(['streamStatus'], context.previousStreamStatus);
-      }
-      console.error('스트림 타입 변경 실패:', err);
-    },
-    onSettled: () => {
-      // 성공/실패 관계없이 최신 데이터로 동기화
-      queryClient.invalidateQueries({ queryKey: ['streamStatus'] });
-    },
-  });
-
-  const handleClose = () => {
-    setIsClosing(true);
-    setTimeout(() => {
-      setIsClosing(false);
-      onClose();
-    }, 300);
-  };
-
-  const handleTypeChange = (type: 'RTMP' | 'WHIP') => {
-    setSelectedType(type);
-    console.log(`방송 방식이 ${type === 'RTMP' ? '외부 송출 프로그램' : '팡 스트리머'}로 변경되었습니다.`);
-  };
-
-  const handleSave = () => {
-    console.log(`방송 설정 저장: ${selectedType}`);
-    
-    // mutation 실행 (낙관적 업데이트 포함)
-    updateStreamTypeMutation.mutate(selectedType, {
-      onSuccess: () => {
-        console.log('스트림 타입 변경 성공');
-        handleClose();
-      },
-      onError: (error) => {
-        console.error('스트림 타입 변경 실패:', error);
-        alert('스트림 타입 변경에 실패했습니다.');
-      }
-    });
-  };
-
-  if (!isOpen) return null;
-
-  return (
-    <ModalOverlay onClick={handleClose} $isClosing={isClosing}>
-      <ModalContent onClick={(e) => e.stopPropagation()} $isClosing={isClosing}>
-        <ModalHeader>
-          <ModalTitle>방송 설정</ModalTitle>
-          <CloseButton onClick={handleClose}>×</CloseButton>
-        </ModalHeader>
-        
-        <ModalBody>
-          <Form as="div">
-            <FormGroup>
-              <Label>방송 방식 선택</Label>
-              <OptionContainer>
-                <OptionButton
-                  type="button"
-                  $isSelected={selectedType === 'RTMP'}
-                  onClick={() => handleTypeChange('RTMP')}
-                >
-                  <OptionIcon>📺</OptionIcon>
-                  <OptionContent>
-                    <OptionTitle>외부 송출 프로그램</OptionTitle>
-                    <OptionDescription>OBS, XSplit 등 외부 프로그램 사용</OptionDescription>
-                  </OptionContent>
-                </OptionButton>
-
-                <OptionButton
-                  type="button"
-                  $isSelected={selectedType === 'WHIP'}
-                  onClick={() => handleTypeChange('WHIP')}
-                >
-                  <OptionIcon>🎮</OptionIcon>
-                  <OptionContent>
-                    <OptionTitle>팡 스트리머</OptionTitle>
-                    <OptionDescription>팡 플랫폼 내장 스트리머 사용</OptionDescription>
-                  </OptionContent>
-                </OptionButton>
-              </OptionContainer>
-            </FormGroup>
-
-            {selectedType === 'RTMP' && (
-              <FormGroup>
-                <Label>RTMP 설정 정보</Label>
-                <InfoContainer>
-                  <InfoItem>
-                    <StreamingInfoLabel>서버 주소:</StreamingInfoLabel>
-                    <StreamingInfoValue>
-                      rtmp://{import.meta.env.VITE_RTMP_SERVER_URL || 'stream.pang.com'}:{import.meta.env.VITE_RTMP_SERVER_PORT || '1935'}
-                    </StreamingInfoValue>
-                    <CopyButton onClick={() => navigator.clipboard.writeText(
-                      `rtmp://${import.meta.env.VITE_RTMP_SERVER_URL || 'stream.pang.com'}:${import.meta.env.VITE_RTMP_SERVER_PORT || '1935'}`
-                    )}>
-                      복사
-                    </CopyButton>
-                  </InfoItem>
-                  <InfoItem>
-                    <StreamingInfoLabel>스트림 키:</StreamingInfoLabel>
-                    <StreamingInfoValue>{streamKey}</StreamingInfoValue>
-                    <CopyButton onClick={() => navigator.clipboard.writeText(streamKey)}>
-                      복사
-                    </CopyButton>
-                  </InfoItem>
-                </InfoContainer>
-              </FormGroup>
-            )}
-
-            {selectedType === 'WHIP' && (
-              <FormGroup>
-                <Label>팡 스트리머</Label>
-                <InfoContainer>
-                  <InfoText>
-                    팡 스트리머를 사용하면 별도의 설정 없이 바로 방송을 시작할 수 있습니다.
-                    브라우저에서 직접 스트리밍이 가능합니다.
-                  </InfoText>
-                </InfoContainer>
-              </FormGroup>
-            )}
-            
-            <ButtonGroup>
-              <CancelButton type="button" onClick={handleClose}>
-                취소
-              </CancelButton>
-              <SaveButton 
-                type="button" 
-                onClick={handleSave}
-                disabled={updateStreamTypeMutation.isPending}
-              >
-                {updateStreamTypeMutation.isPending ? '저장 중...' : '저장'}
-              </SaveButton>
-            </ButtonGroup>
-          </Form>
-        </ModalBody>
-      </ModalContent>
-    </ModalOverlay>
-  );
-};
-
-// StreamingSettingsModal 스타일 컴포넌트들
-const OptionContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-`;
-
-const OptionButton = styled.button<{ $isSelected: boolean }>`
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 16px;
-  border: 2px solid
-    ${({ $isSelected, theme }) =>
-      $isSelected ? theme.colors.primary.normal : theme.colors.border.normal};
-  border-radius: 12px;
-  background-color: ${({ $isSelected, theme }) =>
-    $isSelected ? "rgba(59, 130, 246, 0.05)" : theme.colors.background.normal};
-  cursor: pointer;
-  transition: all 0.2s ease;
-  text-align: left;
-
-  &:hover {
-    border-color: ${({ theme }) => theme.colors.primary.normal};
-    background-color: ${({ $isSelected, theme }) =>
-      $isSelected ? "rgba(59, 130, 246, 0.1)" : "rgba(59, 130, 246, 0.05)"};
-  }
-`;
-
-const OptionIcon = styled.div`
-  font-size: 24px;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: ${({ theme }) => theme.colors.background.light};
-  border-radius: 8px;
-`;
-
-const OptionContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  flex: 1;
-`;
-
-const OptionTitle = styled.div`
-  font-size: 16px;
-  font-weight: 600;
-  color: ${({ theme }) => theme.colors.text.normal};
-`;
-
-const OptionDescription = styled.div`
-  font-size: 14px;
-  color: ${({ theme }) => theme.colors.text.subtitle};
-`;
-
-const InfoContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 16px;
-  background-color: ${({ theme }) => theme.colors.background.light};
-  border-radius: 8px;
-  border: 1px solid ${({ theme }) => theme.colors.border.normal};
-`;
-
-const InfoItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-`;
-
-const StreamingInfoLabel = styled.div`
-  font-size: 14px;
-  font-weight: 500;
-  color: ${({ theme }) => theme.colors.text.normal};
-  min-width: 80px;
-`;
-
-const StreamingInfoValue = styled.div`
-  flex: 1;
-  font-size: 13px;
-  color: ${({ theme }) => theme.colors.text.normal};
-  font-family: monospace;
-  background-color: ${({ theme }) => theme.colors.background.normal};
-  padding: 8px 12px;
-  border-radius: 4px;
-  border: 1px solid ${({ theme }) => theme.colors.border.normal};
-  word-break: break-all;
-`;
-
-const CopyButton = styled.button`
-  padding: 6px 12px;
-  background-color: ${({ theme }) => theme.colors.primary.normal};
-  color: ${({ theme }) => theme.colors.common.white};
-  border: none;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.primary.dark || '#1d4ed8'};
-  }
-`;
-
-const InfoText = styled.div`
-  font-size: 14px;
-  color: ${({ theme }) => theme.colors.text.normal};
-  line-height: 1.5;
-`;
-
-// 모달 공통 스타일 컴포넌트들
-const fadeIn = keyframes`
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-`;
-
-const fadeOut = keyframes`
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-`;
-
-const slideIn = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(-50px) scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-`;
-
-const slideOut = keyframes`
-  from {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-  to {
-    opacity: 0;
-    transform: translateY(-30px) scale(0.95);
-  }
-`;
-
-const ModalOverlay = styled.div<{ $isClosing?: boolean }>`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  animation: ${({ $isClosing }) => $isClosing ? fadeOut : fadeIn} 0.3s ease-out;
-  backdrop-filter: blur(4px);
-`;
-
-const ModalContent = styled.div<{ $isClosing?: boolean }>`
-  background-color: ${({ theme }) => theme.colors.background.normal};
-  border-radius: 16px;
-  width: 90%;
-  max-width: 500px;
-  max-height: 90vh;
-  overflow: hidden;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  animation: ${({ $isClosing }) => $isClosing ? slideOut : slideIn} 0.3s ease-out;
-  transform-origin: center;
-`;
-
-const ModalHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 24px 24px 0 24px;
-`;
-
-const ModalTitle = styled.h2`
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: ${({ theme }) => theme.colors.text.normal};
-  margin: 0;
-`;
-
-const CloseButton = styled.button`
-  background: none;
-  border: none;
-  font-size: 2rem;
-  color: ${({ theme }) => theme.colors.text.subtitle};
-  cursor: pointer;
-  padding: 0;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: background-color 0.2s;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.background.light};
-  }
-`;
-
-const ModalBody = styled.div`
-  padding: 24px;
-`;
-
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-`;
-
-const FormGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-`;
-
-const Label = styled.label`
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: ${({ theme }) => theme.colors.text.normal};
-`;
-
-const ButtonGroup = styled.div`
-  display: flex;
-  gap: 12px;
-  justify-content: flex-end;
-`;
-
-const CancelButton = styled.button`
-  padding: 12px 24px;
-  border: 2px solid ${({ theme }) => theme.colors.border.normal};
-  border-radius: 8px;
-  background-color: transparent;
-  color: ${({ theme }) => theme.colors.text.normal};
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.background.light};
-  }
-`;
-
-const SaveButton = styled.button`
-  padding: 12px 24px;
-  border: none;
-  border-radius: 8px;
-  background-color: ${({ theme }) => theme.colors.primary.normal};
-  color: ${({ theme }) => theme.colors.common.white};
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s;
-
-  &:hover:not(:disabled) {
-    background-color: ${({ theme }) => theme.colors.hover.normal};
-  }
-
-  &:disabled {
-    background-color: ${({ theme }) => theme.colors.text.subtitle};
-    cursor: not-allowed;
-  }
-`;
-
-const PageContainer = styled.div`
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-`;
-
-const DashboardContainer = styled.div`
-  display: flex;
-  flex: 1;
-  gap: 16px;
-  padding: 14px;
-  overflow: hidden;
-  min-height: 0;
-`;
-
-const VideoWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-width: 0;
-  min-height: 0;
-`;
-
-const StreamSettingSection = styled.div`
-  display: flex;
-  flex-direction: row;
-	width: 100%;
-	box-sizing: border-box;
-`;
-
-const ChatSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 400px;
-  padding: 20px;
-  background-color: ${({ theme }) => theme.colors.background.light};
-  border-radius: 16px;
-  max-height: calc(100vh - 200px);
-  overflow: hidden;
-`;
-
-const LoadingContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  gap: 20px;
-`;
-
-const LoadingText = styled.div`
-  font-size: 18px;
-  color: ${({ theme }) => theme.colors.text.normal};
-`;
-
-const RetryButton = styled.button`
-  padding: 10px 20px;
-  background-color: ${({ theme }) => theme.colors.primary.normal};
-  color: ${({ theme }) => theme.colors.common.white};
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: bold;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.hover.normal};
-  }
-`;
-
-const HeaderLeft = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 16px;
-`;
-
-const HeaderRight = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-left: auto;
-`;
-
-const CategorySection = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  background-color: ${({ theme }) => theme.colors.background.normal};
-  border-radius: 8px;
-  max-width: 200px;
-`;
-
-const CategoryImage = styled.img`
-  width: 24px;
-  height: 24px;
-  object-fit: cover;
-  border-radius: 4px;
-`;
-
-const CategoryName = styled.span`
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: ${({ theme }) => theme.colors.text.normal};
-`;
-
-const CategoryPlaceholder = styled.span`
-  font-size: 0.875rem;
-  color: ${({ theme }) => theme.colors.text.subtitle};
-`;
-
-const StreamTitle = styled.h3<{ $clickable?: boolean }>`
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: ${({ theme }) => theme.colors.text.subtitle};
-  margin: 0;
-  cursor: ${({ $clickable }) => $clickable ? 'pointer' : 'default'};
-  transition: color 0.2s;
-  
-  ${({ $clickable, theme }) => $clickable && `
-    &:hover {
-      color: ${theme.colors.primary.normal};
-    }
-  `}
-`;
