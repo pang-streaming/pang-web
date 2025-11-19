@@ -12,7 +12,7 @@ import { fetchStreamKey, createStreamKey, fetchMyInfo, fetchStreamStatus, Catego
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { Chat } from './components/chat';
 import { StreamTitleModal } from '@/features/modal/components/StreamTitleModal';
-import { Video } from './components/\bvideo';
+import { Video } from './components/video';
 import { StreamingSettingsModal } from './components/StreamingSettingsModal';
 import * as S from './styles';
 

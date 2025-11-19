@@ -85,7 +85,7 @@ const MainContainer = styled.main<{ full?: boolean; type: string }>`
   min-height: calc(100vh - 67px);
   margin-top: 67px;
   margin-left: ${({ type }) => (type === "streamer" ? "0" : "60px")};
-  padding: 2em;
+  padding: ${({ type }) => (type === "streamer" ? "0" : "2em")};
   box-sizing: border-box;
   display: flex;
   flex-direction: column;

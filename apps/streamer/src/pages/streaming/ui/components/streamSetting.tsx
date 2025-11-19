@@ -186,6 +186,7 @@ const VolumeMixerContainer = styled(BaseSectionContainer)`
 
 const SectionTitle = styled.h4`
   padding-left: 12px;
+  margin: 0 0 8px 0;
   font-size: 1rem;
   font-weight: 600;
   color: ${({ theme }) => theme.colors.text.normal};

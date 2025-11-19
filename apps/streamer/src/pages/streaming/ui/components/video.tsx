@@ -102,8 +102,8 @@ const LiveContainer = styled.div`
   display: flex;
   flex-direction: column;
   background-color: ${({ theme }) => theme.colors.background.light};
-  border-radius: 16px;
-  padding: 20px;
+  border-radius: 12px;
+  padding: 12px;
 `;
 
 const CanvasContainer = styled.div`
@@ -136,7 +136,7 @@ const TitleRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 `;
 
 const StatsContainer = styled.div`
