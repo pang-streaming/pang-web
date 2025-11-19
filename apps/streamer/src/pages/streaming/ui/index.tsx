@@ -83,6 +83,79 @@ const StreamingPage = () => {
     initializeStreamKey();
   }, [myInfo, isLoadingMyInfo, refetchMyInfo]);
 
+  // 기본 배경 이미지 추가
+  useEffect(() => {
+    if (screens.length === 0 && !isLoadingKey && streamKey) {
+      const img = new Image();
+      img.src = '/example/background.png';
+      img.onload = () => {
+        const defaultBackground: Screen = {
+          id: Date.now(),
+          type: 'image',
+          source: img,
+          x: 0,
+          y: 0,
+          width: canvasSize.width,
+          height: canvasSize.height,
+        };
+        addScreen(defaultBackground);
+      };
+      img.onerror = () => {
+        console.warn('기본 배경 이미지를 불러올 수 없습니다. /example/background.png 파일을 추가해주세요.');
+      };
+    }
+  }, [screens.length, isLoadingKey, streamKey, canvasSize, addScreen]);
+
+  // 기본 VRM 및 카메라 권한 체크
+  useEffect(() => {
+    if (!isLoadingKey && streamKey && !isVTuberEnabled) {
+      const initializeDefaultVRM = async () => {
+        try {
+          // 카메라 사용 가능 여부 확인
+          const devices = await navigator.mediaDevices.enumerateDevices();
+          const hasCamera = devices.some(device => device.kind === 'videoinput');
+          
+          if (!hasCamera) {
+            console.warn('카메라가 감지되지 않아 VRM 아바타 기능을 제공하지 않습니다.');
+            alert('ℹ️ 카메라가 발견되지 않아 버추얼 아바타 제공이 중단됩니다.\n\n버추얼 아바타 기능을 사용하시려면 카메라를 연결한 후 페이지를 새로고침해주세요.\n\n※ 카메라 없이도 일반 방송은 가능합니다.');
+            return;
+          }
+
+          // 카메라 권한 요청
+          const stream = await navigator.mediaDevices.getUserMedia({ 
+            video: true,
+            audio: false 
+          });
+          
+          // 권한을 받았으면 스트림 중지 (트래킹용으로만 사용할 것이므로)
+          stream.getTracks().forEach(track => track.stop());
+          
+          // 카메라 기기 목록 가져오기
+          const updatedDevices = await navigator.mediaDevices.enumerateDevices();
+          const videoDevices = updatedDevices.filter(device => device.kind === 'videoinput');
+          
+          if (videoDevices.length > 0) {
+            // 기본 VRM 파일 추가
+            setVrmUrl('/example/avatar.vrm');
+            setSelectedDevice(videoDevices[0]);
+            setIsVTuberEnabled(true);
+          }
+        } catch (error: any) {
+          console.warn('카메라 권한 요청 실패:', error);
+          if (error.name === 'NotAllowedError') {
+            console.log('사용자가 카메라 권한을 거부했습니다. VRM 기능을 건너뜁니다.');
+            // 권한 거부 시 조용히 넘어감 (일반 방송은 가능하므로)
+          } else if (error.name === 'NotFoundError') {
+            console.log('카메라를 찾을 수 없습니다. VRM 기능을 건너뜁니다.');
+            // 카메라 없음 시 조용히 넘어감
+          }
+        }
+      };
+      
+      initializeDefaultVRM();
+    }
+  }, [isLoadingKey, streamKey, isVTuberEnabled]);
+
   const handleAddScreen = (screen: Screen) => {
     addScreen(screen);
   };

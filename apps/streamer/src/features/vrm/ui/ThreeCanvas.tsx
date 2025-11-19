@@ -205,11 +205,13 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled, selectedDevice, onCanvasReady, i
   
     const setupCamera = async () => {
       try {
+        console.log('[VRM] 카메라 설정 시작...');
 				const videoConstrains: MediaTrackConstraints = {
 					width: 640,
 					height: 480
 				}
 				if (selectedDevice) {
+          console.log('[VRM] 선택된 카메라:', selectedDevice.label);
 					videoConstrains.deviceId = { exact: selectedDevice.deviceId };
 				}
 				
@@ -217,11 +219,13 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled, selectedDevice, onCanvasReady, i
           video: videoConstrains,
           audio: false,
         });
+        console.log('[VRM] 카메라 스트림 획득 성공');
         videoElement.srcObject = stream;
         await videoElement.play();
+        console.log('[VRM] 비디오 재생 시작');
       } catch (error) {
-        console.error("Failed to get user media", error);
-        console.log("카메라 에러")
+        console.error("[VRM] 카메라 접근 실패:", error);
+        alert('카메라 접근에 실패했습니다. 카메라 권한을 확인해주세요.');
       }
     };
 
@@ -229,48 +233,62 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled, selectedDevice, onCanvasReady, i
       if (!currentVrm.current) return;
       animateVRM(currentVrm.current, results);
     };
-    setupCamera()
 
-    let HolisticConstructor = (window as any).Holistic;
-    if (!HolisticConstructor) {
-      console.error("Holistic constructor not found on window object.");
-      if (isHolisticLoaded) {
-        console.log("초기화 에러")
+    const initializeTracking = async () => {
+      console.log('[VRM] 트래킹 초기화 시작...');
+      
+      // 먼저 카메라를 설정하고 대기
+      await setupCamera();
+
+      let HolisticConstructor = (window as any).Holistic;
+      if (!HolisticConstructor) {
+        console.error("[VRM] Holistic constructor를 찾을 수 없습니다.");
+        return;
       }
-      return;
-    }
-    // Handle cases where the library might be nested under a .default property
-    if (typeof HolisticConstructor.default === 'function') {
-      HolisticConstructor = HolisticConstructor.default;
-    }
+      // Handle cases where the library might be nested under a .default property
+      if (typeof HolisticConstructor.default === 'function') {
+        HolisticConstructor = HolisticConstructor.default;
+      }
 
-    holistic = new HolisticConstructor({
-      locateFile: (file: string) => {
-        return `https://cdn.jsdelivr.net/npm/@mediapipe/holistic@0.5.1635989137/${file}`;
-      },
-    });
+      console.log('[VRM] Holistic 초기화 중...');
+      holistic = new HolisticConstructor({
+        locateFile: (file: string) => {
+          return `https://cdn.jsdelivr.net/npm/@mediapipe/holistic@0.5.1635989137/${file}`;
+        },
+      });
 
-    holistic.setOptions({
-      modelComplexity: 1,
-      smoothLandmarks: true,
-      minDetectionConfidence: 0.7,
-      minTrackingConfidence: 0.7,
-      refineFaceLandmarks: true,
-    });
+      holistic.setOptions({
+        modelComplexity: 1,
+        smoothLandmarks: true,
+        minDetectionConfidence: 0.7,
+        minTrackingConfidence: 0.7,
+        refineFaceLandmarks: true,
+      });
 
-    holistic.onResults(onResults);
+      holistic.onResults(onResults);
+      console.log('[VRM] Holistic 설정 완료');
 
-    const sendToHolistic = async () => {
+      const sendToHolistic = async () => {
+        if (videoElement.readyState >= 2) {
+          await holistic.send({ image: videoElement });
+        }
+        holisticFrameId = requestAnimationFrame(sendToHolistic);
+      };
+
+      const loadedDataHandler = () => {
+        console.log('[VRM] 비디오 데이터 로드 완료, 트래킹 시작');
+        sendToHolistic();
+      };
+      videoElement.addEventListener("loadeddata", loadedDataHandler);
+      
+      // 이미 데이터가 로드된 경우 즉시 시작
       if (videoElement.readyState >= 2) {
-        await holistic.send({ image: videoElement });
+        console.log('[VRM] 비디오 이미 준비됨, 즉시 트래킹 시작');
+        sendToHolistic();
       }
-      holisticFrameId = requestAnimationFrame(sendToHolistic);
     };
 
-    const loadedDataHandler = () => {
-      sendToHolistic();
-    };
-    videoElement.addEventListener("loadeddata", loadedDataHandler);
+    initializeTracking();
 
     return () => {
       cancelAnimationFrame(holisticFrameId);
