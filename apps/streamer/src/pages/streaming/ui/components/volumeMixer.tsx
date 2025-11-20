@@ -12,7 +12,7 @@ interface VolumeMeterProps {
 }
 
 export const VolumeMixer: React.FC = () => {
-  const audioTracks = useAudioStore(state => state.audioTracks);
+  const audioTracks = useAudioStore((state) => state.audioTracks);
   const { removeAudioTrack } = useAudioStore();
 
   return (
@@ -24,11 +24,17 @@ export const VolumeMixer: React.FC = () => {
         audioTracks.map((audioTrack) => (
           <VolumeMeter
             key={audioTrack.id}
-            label={audioTrack.label || 'Unknown'}
+            label={audioTrack.label || "Unknown"}
             trackId={audioTrack.id}
             track={audioTrack.track}
             source={audioTrack.source}
-            color={audioTrack.source === 'microphone' ? '#ff4d6d' : audioTrack.source === 'screen' ? '#4d9fff' : '#9f4dff'}
+            color={
+              audioTrack.source === "microphone"
+                ? "#ff4d6d"
+                : audioTrack.source === "screen"
+                  ? "#4d9fff"
+                  : "#9f4dff"
+            }
             onRemove={() => removeAudioTrack(audioTrack.id)}
           />
         ))
@@ -37,7 +43,14 @@ export const VolumeMixer: React.FC = () => {
   );
 };
 
-const VolumeMeter: React.FC<VolumeMeterProps> = ({ label, trackId, track, source, color = "#ff4d6d", onRemove }) => {
+const VolumeMeter: React.FC<VolumeMeterProps> = ({
+  label,
+  trackId,
+  track,
+  source,
+  color = "#ff4d6d",
+  onRemove,
+}) => {
   const [volume, setVolume] = useState(0);
   const [meterValue, setMeterValue] = useState(-60);
 
@@ -69,10 +82,12 @@ const VolumeMeter: React.FC<VolumeMeterProps> = ({ label, trackId, track, source
 
         const updateVolume = () => {
           if (!analyserRef.current) return;
-          
+
           analyser.getByteTimeDomainData(dataArray);
           // 평균 진폭 계산
-          const avg = dataArray.reduce((a, b) => a + Math.abs(b - 128), 0) / dataArray.length;
+          const avg =
+            dataArray.reduce((a, b) => a + Math.abs(b - 128), 0) /
+            dataArray.length;
           const db = avg > 0 ? 20 * Math.log10(avg / 128) : -60;
           setMeterValue(Math.max(-60, Math.min(db, 0))); // -60 ~ 0 dB 제한
           animationFrameRef.current = requestAnimationFrame(updateVolume);
@@ -98,13 +113,12 @@ const VolumeMeter: React.FC<VolumeMeterProps> = ({ label, trackId, track, source
 
   // 슬라이더 볼륨 조정
   const { setTrackGain } = useAudioStore();
-  
+
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseInt(e.target.value, 10);
     setVolume(newVolume);
-    
+
     // store에 gain 업데이트 (믹서가 자동으로 적용)
-    console.log(`Volume slider changed for ${trackId}: ${newVolume}dB`);
     setTrackGain(trackId, newVolume);
   };
 
@@ -131,7 +145,12 @@ const VolumeMeter: React.FC<VolumeMeterProps> = ({ label, trackId, track, source
       </HeaderRow>
 
       <MeterTrack>
-        <MeterFill style={{ width: `${meterPercent}%`, backgroundColor: getMeterColor(meterValue) }} />
+        <MeterFill
+          style={{
+            width: `${meterPercent}%`,
+            backgroundColor: getMeterColor(meterValue),
+          }}
+        />
       </MeterTrack>
 
       <VolumeControl>
@@ -201,10 +220,12 @@ const SourceBadge = styled.span<{ source: string }>`
   font-size: 10px;
   padding: 2px 6px;
   border-radius: 4px;
-  background-color: ${({ source }) => 
-    source === 'microphone' ? '#ff4d6d' : 
-    source === 'screen' ? '#4d9fff' : 
-    '#9f4dff'};
+  background-color: ${({ source }) =>
+    source === "microphone"
+      ? "#ff4d6d"
+      : source === "screen"
+        ? "#4d9fff"
+        : "#9f4dff"};
   color: white;
   font-weight: 500;
 `;
@@ -236,7 +257,9 @@ const MeterTrack = styled.div`
 const MeterFill = styled.div`
   height: 100%;
   border-radius: 6px;
-  transition: width 0.2s ease, background-color 0.2s ease;
+  transition:
+    width 0.2s ease,
+    background-color 0.2s ease;
 `;
 
 const VolumeControl = styled.div`
@@ -266,7 +289,7 @@ const Slider = styled.input<{ color: string }>`
     background-color: ${({ color }) => color};
     cursor: pointer;
   }
-  
+
   &::-moz-range-thumb {
     width: 14px;
     height: 14px;

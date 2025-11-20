@@ -19,45 +19,55 @@ import * as S from './styles';
 const StreamingPage = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasSize = useCanvasSize();
-  const { screens, setScreens, addVideoScreen, addScreen, clearScreens } = useScreenManagement(canvasSize);
-  
+  const { screens, setScreens, addVideoScreen, addScreen, clearScreens } =
+    useScreenManagement(canvasSize);
+
   const modal = useAddSourceModal();
   const streamTitleModal = useStreamTitleModal();
   const { removeAudioTrack } = useAudioStore();
-  
+
   const [vrmUrl, setVrmUrl] = useState<string | null>(null);
-  const [selectedDevice, setSelectedDevice] = useState<MediaDeviceInfo | null>(null);
+  const [selectedDevice, setSelectedDevice] = useState<MediaDeviceInfo | null>(
+    null
+  );
   const [isVTuberEnabled, setIsVTuberEnabled] = useState(false);
   const [streamKey, setStreamKey] = useState<string | null>(null);
   const [whipUrl, setWhipUrl] = useState<string | null>(null);
   const [isLoadingKey, setIsLoadingKey] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [hasInitializedVRM, setHasInitializedVRM] = useState(false);
+  const [hasInitializedBackground, setHasInitializedBackground] =
+    useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
+    null
+  );
   const [hashtags, setHashtags] = useState<string[]>([]);
   const [isStreamingSettingsOpen, setIsStreamingSettingsOpen] = useState(false);
   const queryClient = useQueryClient();
- 
-  const { data: myInfo, isLoading: isLoadingMyInfo, refetch: refetchMyInfo } = useQuery({
-    queryKey: ['myInfo'],
+
+  const {
+    data: myInfo,
+    isLoading: isLoadingMyInfo,
+    refetch: refetchMyInfo,
+  } = useQuery({
+    queryKey: ["myInfo"],
     queryFn: fetchMyInfo,
     staleTime: 1000 * 60,
     refetchOnWindowFocus: false,
   });
 
   const { data: streamStatus, isLoading: isLoadingStreamStatus } = useQuery({
-    queryKey: ['streamStatus'],
+    queryKey: ["streamStatus"],
     queryFn: fetchStreamStatus,
     staleTime: 1000 * 10,
     refetchInterval: 1000 * 10,
     enabled: !isLoadingKey && !!streamKey,
     retry: (failureCount, error: any) => {
-      
       if (error?.response?.status === 404) {
         return false;
       }
       return failureCount < 3;
     },
   });
-
 
   useEffect(() => {
     if (isLoadingMyInfo || !myInfo?.data) {
@@ -67,14 +77,12 @@ const StreamingPage = () => {
     const initializeStreamKey = async () => {
       try {
         setIsLoadingKey(true);
-        console.log('STREAMER가 아니므로 스트림 키를 발급합니다.');
         const createResponse = await createStreamKey();
-        console.log('스트림 키 발급 성공:', createResponse.data.key);
         setStreamKey(createResponse.data.key);
-				setWhipUrl(createResponse.data.webRtcUrl);
+        setWhipUrl(createResponse.data.webRtcUrl);
       } catch (error: any) {
-        console.error('스트림 키 처리 실패:', error);
-        alert('스트림 키 처리 중 오류가 발생했습니다.');
+        console.error("스트림 키 처리 실패:", error);
+        alert("스트림 키 처리 중 오류가 발생했습니다.");
       } finally {
         setIsLoadingKey(false);
       }
@@ -83,15 +91,21 @@ const StreamingPage = () => {
     initializeStreamKey();
   }, [myInfo, isLoadingMyInfo, refetchMyInfo]);
 
-  // 기본 배경 이미지 추가
+  // 기본 배경 이미지 추가 (한 번만)
   useEffect(() => {
-    if (screens.length === 0 && !isLoadingKey && streamKey) {
+    if (
+      screens.length === 0 &&
+      !isLoadingKey &&
+      streamKey &&
+      !hasInitializedBackground
+    ) {
+      setHasInitializedBackground(true);
       const img = new Image();
-      img.src = '/example/background.png';
+      img.src = "/example/background.png";
       img.onload = () => {
         const defaultBackground: Screen = {
           id: Date.now(),
-          type: 'image',
+          type: "image",
           source: img,
           x: 0,
           y: 0,
@@ -101,60 +115,71 @@ const StreamingPage = () => {
         addScreen(defaultBackground);
       };
       img.onerror = () => {
-        console.warn('기본 배경 이미지를 불러올 수 없습니다. /example/background.png 파일을 추가해주세요.');
+        console.warn(
+          "기본 배경 이미지를 불러올 수 없습니다. /example/background.png 파일을 추가해주세요."
+        );
       };
     }
-  }, [screens.length, isLoadingKey, streamKey, canvasSize, addScreen]);
+  }, [
+    screens.length,
+    isLoadingKey,
+    streamKey,
+    canvasSize,
+    addScreen,
+    hasInitializedBackground,
+  ]);
 
-  // 기본 VRM 및 카메라 권한 체크
   useEffect(() => {
-    if (!isLoadingKey && streamKey && !isVTuberEnabled) {
+    if (!isLoadingKey && streamKey && !hasInitializedVRM) {
       const initializeDefaultVRM = async () => {
+        setHasInitializedVRM(true);
+
         try {
           // 카메라 사용 가능 여부 확인
           const devices = await navigator.mediaDevices.enumerateDevices();
-          const hasCamera = devices.some(device => device.kind === 'videoinput');
-          
+          const hasCamera = devices.some(
+            (device) => device.kind === "videoinput"
+          );
+
           if (!hasCamera) {
-            console.warn('카메라가 감지되지 않아 VRM 아바타 기능을 제공하지 않습니다.');
-            alert('ℹ️ 카메라가 발견되지 않아 버추얼 아바타 제공이 중단됩니다.\n\n버추얼 아바타 기능을 사용하시려면 카메라를 연결한 후 페이지를 새로고침해주세요.\n\n※ 카메라 없이도 일반 방송은 가능합니다.');
+            console.warn(
+              "카메라가 감지되지 않아 VRM 아바타 기능을 제공하지 않습니다."
+            );
+            alert(
+              "카메라가 발견되지 않아 버추얼 아바타 제공이 중단됩니다.\n\n버추얼 아바타 기능을 사용하시려면 카메라를 연결한 후 페이지를 새로고침해주세요.\n\n※ 카메라 없이도 일반 방송은 가능합니다."
+            );
             return;
           }
 
           // 카메라 권한 요청
-          const stream = await navigator.mediaDevices.getUserMedia({ 
+          const stream = await navigator.mediaDevices.getUserMedia({
             video: true,
-            audio: false 
+            audio: false,
           });
-          
+
           // 권한을 받았으면 스트림 중지 (트래킹용으로만 사용할 것이므로)
-          stream.getTracks().forEach(track => track.stop());
-          
+          stream.getTracks().forEach((track) => track.stop());
+
           // 카메라 기기 목록 가져오기
-          const updatedDevices = await navigator.mediaDevices.enumerateDevices();
-          const videoDevices = updatedDevices.filter(device => device.kind === 'videoinput');
-          
+          const updatedDevices =
+            await navigator.mediaDevices.enumerateDevices();
+          const videoDevices = updatedDevices.filter(
+            (device) => device.kind === "videoinput"
+          );
+
           if (videoDevices.length > 0) {
-            // 기본 VRM 파일 추가
-            setVrmUrl('/example/avatar.vrm');
+            setVrmUrl("/example/avatar.vrm");
             setSelectedDevice(videoDevices[0]);
             setIsVTuberEnabled(true);
           }
         } catch (error: any) {
-          console.warn('카메라 권한 요청 실패:', error);
-          if (error.name === 'NotAllowedError') {
-            console.log('사용자가 카메라 권한을 거부했습니다. VRM 기능을 건너뜁니다.');
-            // 권한 거부 시 조용히 넘어감 (일반 방송은 가능하므로)
-          } else if (error.name === 'NotFoundError') {
-            console.log('카메라를 찾을 수 없습니다. VRM 기능을 건너뜁니다.');
-            // 카메라 없음 시 조용히 넘어감
-          }
+          console.warn("카메라 권한 요청 실패:", error);
         }
       };
-      
+
       initializeDefaultVRM();
     }
-  }, [isLoadingKey, streamKey, isVTuberEnabled]);
+  }, [isLoadingKey, streamKey, hasInitializedVRM]);
 
   const handleAddScreen = (screen: Screen) => {
     addScreen(screen);
@@ -167,35 +192,32 @@ const StreamingPage = () => {
   };
 
   const handleRemoveScreen = (screenId: number) => {
-    if (screenId === 999) {
-      setIsVTuberEnabled(false);
-      setVrmUrl(null);
-      setSelectedDevice(null);
-    } else {
-      setScreens((prev) => {
-        const screen = prev.find(s => s.id === screenId);
-        if (screen) {
-          if (screen.stream) {
-            const audioTrack = screen.stream.getAudioTracks()[0];
-            if (audioTrack) {
-              console.log(`Removing audio track for screen ${screenId}:`, audioTrack.id);
-              removeAudioTrack(audioTrack.id);
-            }
-            
-            screen.stream.getVideoTracks().forEach(track => track.stop());
-          }
+    setScreens((prev) => {
+      const screen = prev.find((s) => s.id === screenId);
+      if (screen) {
+        if (screen.type === "canvas") {
+          setIsVTuberEnabled(false);
+          setVrmUrl(null);
+          setSelectedDevice(null);
         }
-        return prev.filter(s => s.id !== screenId);
-      });
-    }
+        if (screen.stream) {
+          const audioTrack = screen.stream.getAudioTracks()[0];
+          if (audioTrack) {
+            removeAudioTrack(audioTrack.id);
+          }
+          screen.stream.getVideoTracks().forEach((track) => track.stop());
+        }
+      }
+      return prev.filter((s) => s.id !== screenId);
+    });
   };
 
   const handleTitleClick = () => {
     // 방송 중일 때만 모달 열기
-    if (streamStatus?.data?.status === 'LIVE') {
+    if (streamStatus?.data?.status === "LIVE") {
       streamTitleModal.openModal();
     } else {
-      alert('방송 중일 때만 방송 설정을 변경할 수 있습니다.');
+      alert("방송 중일 때만 방송 설정을 변경할 수 있습니다.");
     }
   };
 
@@ -223,7 +245,10 @@ const StreamingPage = () => {
           {selectedCategory ? (
             <>
               {selectedCategory.postImage && (
-                <S.CategoryImage src={selectedCategory.postImage} alt={selectedCategory.name} />
+                <S.CategoryImage
+                  src={selectedCategory.postImage}
+                  alt={selectedCategory.name}
+                />
               )}
               <S.CategoryName>{selectedCategory.name}</S.CategoryName>
             </>
@@ -231,8 +256,15 @@ const StreamingPage = () => {
             <S.CategoryPlaceholder>카테고리 미선택</S.CategoryPlaceholder>
           )}
         </S.CategorySection>
-        {streamStatus?.data?.status === 'LIVE' ? 
-          (<S.StreamTitle onClick={streamStatus?.data?.status === 'LIVE' ? handleTitleClick : undefined} $clickable={streamStatus?.data?.status === 'LIVE'}>
+        {streamStatus?.data?.status === "LIVE" ? (
+          <S.StreamTitle
+            onClick={
+              streamStatus?.data?.status === "LIVE"
+                ? handleTitleClick
+                : undefined
+            }
+            $clickable={streamStatus?.data?.status === "LIVE"}
+          >
             {streamStatus?.data?.title}
           </S.StreamTitle>
         ) : (
@@ -308,14 +340,14 @@ const StreamingPage = () => {
           {myInfo?.data && <Chat roomId={myInfo?.data?.username ?? ""} />}
         </S.ChatSection>
       </S.DashboardContainer>
-      
+
       <S.StreamSettingSection>
-	      <StreamSetting
-		      onVideoAddButtonClick={modal.openModal}
-		      screens={screens}
-		      setScreens={setScreens}
-		      onRemoveScreen={handleRemoveScreen}
-	      />
+        <StreamSetting
+          onVideoAddButtonClick={modal.openModal}
+          screens={screens}
+          setScreens={setScreens}
+          onRemoveScreen={handleRemoveScreen}
+        />
       </S.StreamSettingSection>
 
       <AddSourceModal
@@ -329,7 +361,6 @@ const StreamingPage = () => {
         onAddVTuber={handleAddVTuber}
       />
 
-      
       <StreamTitleModal
         isOpen={streamTitleModal.isOpen}
         onClose={streamTitleModal.closeModal}
@@ -338,19 +369,16 @@ const StreamingPage = () => {
         onCategoryChange={handleCategoryChange}
         hashtags={hashtags}
         onHashtagsChange={handleHashtagsChange}
-        streamKey={streamKey || ''}
-        streamType={streamStatus?.data?.streamType || 'WHIP'}
-        onSuccess={() => {
-          // 성공 시 추가 처리 로직
-          console.log('스트리밍 정보가 성공적으로 업데이트되었습니다.');
-        }}
+        streamKey={streamKey || ""}
+        streamType={streamStatus?.data?.streamType || "WHIP"}
+        onSuccess={() => {}}
       />
 
       <StreamingSettingsModal
         isOpen={isStreamingSettingsOpen}
         onClose={handleStreamingSettingsClose}
-        currentStreamType={streamStatus?.data?.streamType || 'WHIP'}
-        streamKey={streamKey || ''}
+        currentStreamType={streamStatus?.data?.streamType || "WHIP"}
+        streamKey={streamKey || ""}
         queryClient={queryClient}
         streamStatus={streamStatus}
       />
