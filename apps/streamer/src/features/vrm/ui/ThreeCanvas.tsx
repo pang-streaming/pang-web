@@ -170,18 +170,18 @@ const ThreeCanvas = ({
             rigRotation(vrm, "leftLowerArm", riggedPose.LeftLowerArm, 1, 0.3);
           }
 
-          if (getVisibility(23) > VISIBILITY_THRESHOLD && getVisibility(25) > VISIBILITY_THRESHOLD) {
-            rigRotation(vrm, "leftUpperLeg", riggedPose.LeftUpperLeg, 1, 0.3);
-          }
-          if (getVisibility(25) > VISIBILITY_THRESHOLD && getVisibility(27) > VISIBILITY_THRESHOLD) {
-            rigRotation(vrm, "leftLowerLeg", riggedPose.LeftLowerLeg, 1, 0.3);
-          }
-          if (getVisibility(24) > VISIBILITY_THRESHOLD && getVisibility(26) > VISIBILITY_THRESHOLD) {
-            rigRotation(vrm, "rightUpperLeg", riggedPose.RightUpperLeg, 1, 0.3);
-          }
-          if (getVisibility(26) > VISIBILITY_THRESHOLD && getVisibility(28) > VISIBILITY_THRESHOLD) {
-            rigRotation(vrm, "rightLowerLeg", riggedPose.RightLowerLeg, 1, 0.3);
-          }
+          // if (getVisibility(23) > VISIBILITY_THRESHOLD && getVisibility(25) > VISIBILITY_THRESHOLD) {
+          //   rigRotation(vrm, "leftUpperLeg", riggedPose.LeftUpperLeg, 1, 0.3);
+          // }
+          // if (getVisibility(25) > VISIBILITY_THRESHOLD && getVisibility(27) > VISIBILITY_THRESHOLD) {
+          //   rigRotation(vrm, "leftLowerLeg", riggedPose.LeftLowerLeg, 1, 0.3);
+          // }
+          // if (getVisibility(24) > VISIBILITY_THRESHOLD && getVisibility(26) > VISIBILITY_THRESHOLD) {
+          //   rigRotation(vrm, "rightUpperLeg", riggedPose.RightUpperLeg, 1, 0.3);
+          // }
+          // if (getVisibility(26) > VISIBILITY_THRESHOLD && getVisibility(28) > VISIBILITY_THRESHOLD) {
+          //   rigRotation(vrm, "rightLowerLeg", riggedPose.RightLowerLeg, 1, 0.3);
+          // }
 
           if (hands.length > 0) {
             hands.forEach((hand) => {
