@@ -19,7 +19,6 @@ interface ThreeCanvasProps {
   height: number;
 }
 
-// Animate Rotation Helper function
 const rigRotation = (
   vrm: VRM,
   name: keyof VRMHumanoid["humanBones"],
@@ -42,7 +41,6 @@ const rigRotation = (
   Part.quaternion.slerp(quaternion, lerpAmount);
 };
 
-// Animate Position Helper Function
 const rigPosition = (
   vrm: VRM,
   name: keyof VRMHumanoid["humanBones"],
@@ -77,7 +75,6 @@ const ThreeCanvas = ({
   const poseDetectorRef = useRef<poseDetection.PoseDetector | null>(null);
   const handDetectorRef = useRef<handPoseDetection.HandDetector | null>(null);
   const faceDetectorRef = useRef<faceLandmarksDetection.FaceLandmarksDetector | null>(null);
-  const oldLookTarget = useRef(new THREE.Euler());
 
   useEffect(() => {
     if (currentVrm.current) {
@@ -244,48 +241,46 @@ const ThreeCanvas = ({
           if (faces.length > 0) {
             const face = faces[0];
 
-            if (!face.box || (face.box.width < 50 || face.box.height < 50)) {
-              return;
-            }
-
-            const landmarks = face.keypoints.map(kp => ({
+            if (face.box && face.box.width >= 50 && face.box.height >= 50) {
+              const landmarks = face.keypoints.map(kp => ({
               x: kp.x || 0,
               y: kp.y || 0,
               z: kp.z || 0,
             }));
 
-            const riggedFace = Kalidokit.Face.solve(landmarks, {
-              runtime: "tfjs",
-              video: videoElement,
-              imageSize: {
-                width: videoElement.videoWidth,
-                height: videoElement.videoHeight,
-              },
-              smoothBlink: true,
-              blinkSettings: [0.25, 0.75],
-            });
+              const riggedFace = Kalidokit.Face.solve(landmarks, {
+                runtime: "tfjs",
+                video: videoElement,
+                imageSize: {
+                  width: videoElement.videoWidth,
+                  height: videoElement.videoHeight,
+                },
+                smoothBlink: true,
+                blinkSettings: [0.25, 0.75],
+              });
 
-            if (riggedFace && vrm.expressionManager) {
-              const expressionManager = vrm.expressionManager;
+              if (riggedFace && vrm.expressionManager) {
+                const expressionManager = vrm.expressionManager;
 
-              rigRotation(vrm, "neck", riggedFace.head, 0.7);
+                rigRotation(vrm, "neck", riggedFace.head, 0.7);
 
-              const eyeLookDown = THREE.MathUtils.clamp(riggedFace.eye.l + riggedFace.eye.r, 0, 1);
-              expressionManager.setValue("lookDown", eyeLookDown);
-              expressionManager.setValue("lookLeft", THREE.MathUtils.clamp(riggedFace.pupil.x, 0, 1));
-              expressionManager.setValue("lookRight", THREE.MathUtils.clamp(-riggedFace.pupil.x, 0, 1));
-              expressionManager.setValue("lookUp", THREE.MathUtils.clamp(-riggedFace.eye.l - riggedFace.eye.r, 0, 1));
+                const eyeLookDown = THREE.MathUtils.clamp(riggedFace.eye.l + riggedFace.eye.r, 0, 1);
+                expressionManager.setValue("lookDown", eyeLookDown);
+                expressionManager.setValue("lookLeft", THREE.MathUtils.clamp(riggedFace.pupil.x * 0.3, 0, 1));
+                expressionManager.setValue("lookRight", THREE.MathUtils.clamp(-riggedFace.pupil.x * 0.3, 0, 1));
+                expressionManager.setValue("lookUp", THREE.MathUtils.clamp(-riggedFace.eye.l - riggedFace.eye.r, 0, 1));
 
-              expressionManager.setValue("blinkLeft", 1 - riggedFace.eye.l);
-              expressionManager.setValue("blinkRight", 1 - riggedFace.eye.r);
+                expressionManager.setValue("blinkLeft", 1 - riggedFace.eye.l);
+                expressionManager.setValue("blinkRight", 1 - riggedFace.eye.r);
 
-              expressionManager.setValue("aa", riggedFace.mouth.shape.A);
-              expressionManager.setValue("ee", riggedFace.mouth.shape.E);
-              expressionManager.setValue("ih", riggedFace.mouth.shape.I);
-              expressionManager.setValue("oh", riggedFace.mouth.shape.O);
-              expressionManager.setValue("ou", riggedFace.mouth.shape.U);
+                expressionManager.setValue("aa", riggedFace.mouth.shape.A);
+                expressionManager.setValue("ee", riggedFace.mouth.shape.E);
+                expressionManager.setValue("ih", riggedFace.mouth.shape.I);
+                expressionManager.setValue("oh", riggedFace.mouth.shape.O);
+                expressionManager.setValue("ou", riggedFace.mouth.shape.U);
 
-              expressionManager.update();
+                expressionManager.update();
+              }
             }
           }
         }
@@ -529,7 +524,6 @@ const ThreeCanvas = ({
           vrm.scene.visible = isVisible;
           currentVrm.current = vrm;
 
-          // VRM 모델의 밝기 조정
           vrm.scene.traverse((child) => {
             if (child instanceof THREE.Mesh) {
               if (Array.isArray(child.material)) {
@@ -581,7 +575,7 @@ const ThreeCanvas = ({
       }
       renderer.dispose();
     };
-  }, [height, onCanvasReady, vrmUrl, width]);
+  }, [height, onCanvasReady, vrmUrl, width, isVisible]);
 
   return <video ref={videoRef} style={{ display: "none" }}></video>;
 };
