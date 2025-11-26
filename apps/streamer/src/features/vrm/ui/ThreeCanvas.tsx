@@ -5,6 +5,7 @@ import { VRM, VRMUtils, VRMLoaderPlugin, VRMHumanoid } from "@pixiv/three-vrm";
 import * as Kalidokit from "kalidokit";
 import * as poseDetection from "@tensorflow-models/pose-detection";
 import * as handPoseDetection from "@tensorflow-models/hand-pose-detection";
+import * as faceLandmarksDetection from "@tensorflow-models/face-landmarks-detection";
 import * as tf from "@tensorflow/tfjs-core";
 import "@tensorflow/tfjs-backend-webgl";
 
@@ -75,6 +76,7 @@ const ThreeCanvas = ({
   const currentVrm = useRef<VRM | null>(null);
   const poseDetectorRef = useRef<poseDetection.PoseDetector | null>(null);
   const handDetectorRef = useRef<handPoseDetection.HandDetector | null>(null);
+  const faceDetectorRef = useRef<faceLandmarksDetection.FaceLandmarksDetector | null>(null);
   const oldLookTarget = useRef(new THREE.Euler());
 
   useEffect(() => {
@@ -85,7 +87,7 @@ const ThreeCanvas = ({
 
 
   const animateVRMWithBlazePose = useCallback(
-    (vrm: VRM, blazePoseResult: poseDetection.Pose | null, hands: handPoseDetection.Hand[] = []) => {
+    (vrm: VRM, blazePoseResult: poseDetection.Pose | null, hands: handPoseDetection.Hand[] = [], faces: faceLandmarksDetection.Face[] = []) => {
       if (!currentVrm.current || !blazePoseResult) return;
 
       const videoElement = videoRef.current;
@@ -135,21 +137,25 @@ const ThreeCanvas = ({
         });
         if (riggedPose) {
 
-          rigRotation(vrm, "hips", riggedPose.Hips.rotation, 0.5, 0.3);
-          rigPosition(
-            vrm,
-            "hips",
-            {
-              x: -riggedPose.Hips.position.x,
-              y: riggedPose.Hips.position.y + 1,
-              z: -riggedPose.Hips.position.z,
-            },
-            1,
-            0.07
-          );
+          if (getVisibility(23) > VISIBILITY_THRESHOLD && getVisibility(24) > VISIBILITY_THRESHOLD) {
+            rigRotation(vrm, "hips", riggedPose.Hips.rotation, 0.5, 0.3);
+            rigPosition(
+              vrm,
+              "hips",
+              {
+                x: -riggedPose.Hips.position.x,
+                y: riggedPose.Hips.position.y + 1,
+                z: -riggedPose.Hips.position.z,
+              },
+              1,
+              0.07
+            );
+          }
 
-          rigRotation(vrm, "chest", riggedPose.Spine, 0.5, 0.3);
-          rigRotation(vrm, "spine", riggedPose.Spine, 0.5, 0.3);
+          if (getVisibility(11) > VISIBILITY_THRESHOLD && getVisibility(12) > VISIBILITY_THRESHOLD) {
+            rigRotation(vrm, "chest", riggedPose.Spine, 0.5, 0.3);
+            rigRotation(vrm, "spine", riggedPose.Spine, 0.5, 0.3);
+          }
 
           if (getVisibility(12) > VISIBILITY_THRESHOLD && getVisibility(14) > VISIBILITY_THRESHOLD) {
             rigRotation(vrm, "rightUpperArm", riggedPose.RightUpperArm, 1, 0.3);
@@ -179,6 +185,8 @@ const ThreeCanvas = ({
 
           if (hands.length > 0) {
             hands.forEach((hand) => {
+              if (hand.score && hand.score < 0.5) return;
+
               const handedness = hand.handedness === "Left" ? "Right" : "Left";
               const landmarks = (hand.keypoints3D || hand.keypoints).map(kp => ({
                 x: kp.x || 0,
@@ -231,6 +239,54 @@ const ThreeCanvas = ({
                 }
               }
             });
+          }
+
+          if (faces.length > 0) {
+            const face = faces[0];
+
+            if (!face.box || (face.box.width < 50 || face.box.height < 50)) {
+              return;
+            }
+
+            const landmarks = face.keypoints.map(kp => ({
+              x: kp.x || 0,
+              y: kp.y || 0,
+              z: kp.z || 0,
+            }));
+
+            const riggedFace = Kalidokit.Face.solve(landmarks, {
+              runtime: "tfjs",
+              video: videoElement,
+              imageSize: {
+                width: videoElement.videoWidth,
+                height: videoElement.videoHeight,
+              },
+              smoothBlink: true,
+              blinkSettings: [0.25, 0.75],
+            });
+
+            if (riggedFace && vrm.expressionManager) {
+              const expressionManager = vrm.expressionManager;
+
+              rigRotation(vrm, "neck", riggedFace.head, 0.7);
+
+              const eyeLookDown = THREE.MathUtils.clamp(riggedFace.eye.l + riggedFace.eye.r, 0, 1);
+              expressionManager.setValue("lookDown", eyeLookDown);
+              expressionManager.setValue("lookLeft", THREE.MathUtils.clamp(riggedFace.pupil.x, 0, 1));
+              expressionManager.setValue("lookRight", THREE.MathUtils.clamp(-riggedFace.pupil.x, 0, 1));
+              expressionManager.setValue("lookUp", THREE.MathUtils.clamp(-riggedFace.eye.l - riggedFace.eye.r, 0, 1));
+
+              expressionManager.setValue("blinkLeft", 1 - riggedFace.eye.l);
+              expressionManager.setValue("blinkRight", 1 - riggedFace.eye.r);
+
+              expressionManager.setValue("aa", riggedFace.mouth.shape.A);
+              expressionManager.setValue("ee", riggedFace.mouth.shape.E);
+              expressionManager.setValue("ih", riggedFace.mouth.shape.I);
+              expressionManager.setValue("oh", riggedFace.mouth.shape.O);
+              expressionManager.setValue("ou", riggedFace.mouth.shape.U);
+
+              expressionManager.update();
+            }
           }
         }
       } catch (error) {
@@ -332,6 +388,18 @@ const ThreeCanvas = ({
       handDetectorRef.current = handDetector;
       console.log("[HandDetection] 디텍터 초기화 완료");
 
+      console.log("[FaceMesh] 디텍터 생성 중...");
+      const faceDetector = await faceLandmarksDetection.createDetector(
+        faceLandmarksDetection.SupportedModels.MediaPipeFaceMesh,
+        {
+          runtime: "tfjs",
+          refineLandmarks: false,
+          maxFaces: 1,
+        }
+      );
+      faceDetectorRef.current = faceDetector;
+      console.log("[FaceMesh] 디텍터 초기화 완료");
+
       let isDetecting = false;
 
       const detectPose = async () => {
@@ -342,21 +410,38 @@ const ThreeCanvas = ({
           return;
         }
 
-        if (videoElement.readyState >= 2 && poseDetectorRef.current && handDetectorRef.current && currentVrm.current) {
+        if (videoElement.readyState >= 2 && poseDetectorRef.current && handDetectorRef.current && faceDetectorRef.current && currentVrm.current) {
           isDetecting = true;
           try {
-            const [poses, hands] = await Promise.all([
-              poseDetectorRef.current.estimatePoses(videoElement, {
-                flipHorizontal: true,
-              }),
-              handDetectorRef.current.estimateHands(videoElement, {
+            const poses = await poseDetectorRef.current.estimatePoses(videoElement, {
+              flipHorizontal: true,
+            });
+
+            if (poses.length === 0) {
+              isDetecting = false;
+              animationFrameId = requestAnimationFrame(detectPose);
+              return;
+            }
+
+            const pose = poses[0];
+            const landmarks2D = pose.keypoints;
+            const getVisibility = (index: number) => landmarks2D[index]?.score || 0;
+
+            const shouldDetectHands =
+              getVisibility(15) > 0.6 || getVisibility(16) > 0.6;
+
+            const [hands, faces] = await Promise.all([
+              shouldDetectHands
+                ? handDetectorRef.current.estimateHands(videoElement, {
+                    flipHorizontal: true,
+                  })
+                : Promise.resolve([]),
+              faceDetectorRef.current.estimateFaces(videoElement, {
                 flipHorizontal: true,
               })
             ]);
 
-            if (poses.length > 0) {
-              animateVRMWithBlazePose(currentVrm.current, poses[0], hands);
-            }
+            animateVRMWithBlazePose(currentVrm.current, pose, hands, faces);
           } catch (error) {
             console.error("[BlazePose] 감지 에러:", error);
           } finally {
