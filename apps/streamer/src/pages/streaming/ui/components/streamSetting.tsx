@@ -1,11 +1,11 @@
 import React, {useState} from "react";
 import styled from "styled-components";
-import { VolumeMixer } from "./volumeMixer";
-import {useDragAndDrop} from "../../hooks/useDragAndDrop";
-import {useAudioStore} from "../../../../features/audio/stores/useAudioStore";
-import { type Screen } from "../../../../features/canvas/constants/canvas-constants";
-import { ScreenListItem } from "../../../../features/canvas/components/ScreenListItem";
-import { useScreenDragAndDrop } from "../../../../features/canvas/hooks/useScreenDragAndDrop";
+import { VolumeMixer } from "@/pages/streaming/ui/components/volumeMixer";
+import {useDragAndDrop} from "@/pages/streaming/hooks/useDragAndDrop";
+import {useAudioStore} from "@/features/audio/stores/useAudioStore";
+import { type Screen } from "@/features/canvas/constants/canvas-constants";
+import { ScreenListItem } from "@/features/canvas/components/ScreenListItem";
+import { useScreenDragAndDrop } from "@/features/canvas/hooks/useScreenDragAndDrop";
 
 interface DragState {
   draggingIndex: number | null;
