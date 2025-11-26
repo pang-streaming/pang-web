@@ -34,7 +34,7 @@ services:
     build:
       context: .
       dockerfile: deploy/dockerfiles/streamer.Dockerfile
-    container_name: pang-streammer
+    container_name: pang-streamer
     restart: unless-stopped
     environment:
       - VIRTUAL_HOST=pang-streamer.euns.dev

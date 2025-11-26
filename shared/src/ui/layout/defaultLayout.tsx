@@ -80,12 +80,14 @@ const BlurContainer = styled.div`
   z-index: 11;
 `;
 
+const CONTENT_PADDING = "2em";
+
 const MainContainer = styled.main<{ full?: boolean; type: string }>`
   flex: 1;
   min-height: calc(100vh - 67px);
   margin-top: 67px;
   margin-left: ${({ type }) => (type === "streamer" ? "0" : "60px")};
-  padding: 2em;
+  padding: ${({ type }) => (type === "streamer" ? "0" : CONTENT_PADDING)};
   box-sizing: border-box;
   display: flex;
   flex-direction: column;

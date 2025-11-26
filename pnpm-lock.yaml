@@ -130,7 +130,7 @@ importers:
         specifier: ^4.8.1
         version: 4.8.1
 
-  apps/streammer: {}
+  apps/streamer: {}
 
   apps/web:
     dependencies:
