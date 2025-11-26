@@ -130,7 +130,11 @@ importers:
         specifier: ^4.8.1
         version: 4.8.1
 
-  apps/streamer: {}
+  apps/streamer:
+    dependencies:
+      socket.io-client:
+        specifier: ^4.8.1
+        version: 4.8.1
 
   apps/web:
     dependencies:

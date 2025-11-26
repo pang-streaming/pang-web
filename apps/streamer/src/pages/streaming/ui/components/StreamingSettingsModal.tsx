@@ -10,6 +10,8 @@ interface StreamingSettingsModalProps {
   streamKey: string;
   queryClient: any;
   streamStatus: any;
+  rtmpUrls?: string[];
+  onRtmpUrlsChange?: (urls: string[]) => void;
 }
 
 export const StreamingSettingsModal: React.FC<StreamingSettingsModalProps> = ({
@@ -18,15 +20,24 @@ export const StreamingSettingsModal: React.FC<StreamingSettingsModalProps> = ({
   currentStreamType,
   streamKey,
   queryClient,
-  streamStatus
+  streamStatus,
+  rtmpUrls = [],
+  onRtmpUrlsChange
 }) => {
   const [selectedType, setSelectedType] = useState<'RTMP' | 'WHIP'>(currentStreamType);
   const [isClosing, setIsClosing] = useState(false);
+  const [localRtmpUrls, setLocalRtmpUrls] = useState<string[]>(rtmpUrls.length > 0 ? rtmpUrls : ['', '', '']);
 
   // currentStreamType이 변경되면 selectedType도 업데이트
   useEffect(() => {
     setSelectedType(currentStreamType);
   }, [currentStreamType]);
+
+  useEffect(() => {
+    if (rtmpUrls.length > 0) {
+      setLocalRtmpUrls(rtmpUrls);
+    }
+  }, [rtmpUrls]);
 
   // 스트림 타입 변경 mutation
   const updateStreamTypeMutation = useMutation({
@@ -78,8 +89,19 @@ export const StreamingSettingsModal: React.FC<StreamingSettingsModalProps> = ({
     console.log(`방송 방식이 ${type === 'RTMP' ? '외부 송출 프로그램' : '팡 스트리머'}로 변경되었습니다.`);
   };
 
+  const handleRtmpUrlChange = (index: number, value: string) => {
+    const newUrls = [...localRtmpUrls];
+    newUrls[index] = value;
+    setLocalRtmpUrls(newUrls);
+  };
+
   const handleSave = () => {
     console.log(`방송 설정 저장: ${selectedType}`);
+    
+    // RTMP URLs 저장
+    if (selectedType === 'WHIP' && onRtmpUrlsChange) {
+      onRtmpUrlsChange(localRtmpUrls);
+    }
     
     // mutation 실행 (낙관적 업데이트 포함)
     updateStreamTypeMutation.mutate(selectedType, {
@@ -163,13 +185,39 @@ export const StreamingSettingsModal: React.FC<StreamingSettingsModalProps> = ({
 
             {selectedType === 'WHIP' && (
               <S.FormGroup>
-                <S.Label>팡 스트리머</S.Label>
+                <S.Label>팡 스트리머 - RTMP URL 설정</S.Label>
                 <S.InfoContainer>
                   <S.InfoText>
-                    팡 스트리머를 사용하면 별도의 설정 없이 바로 방송을 시작할 수 있습니다.
-                    브라우저에서 직접 스트리밍이 가능합니다.
+                    로컬 에이전트로 전송할 RTMP URL을 최대 3개까지 설정할 수 있습니다.
                   </S.InfoText>
                 </S.InfoContainer>
+                <S.FormGroup>
+                  <S.Label>RTMP URL 1</S.Label>
+                  <S.Input
+                    type="text"
+                    value={localRtmpUrls[0] || ''}
+                    onChange={(e) => handleRtmpUrlChange(0, e.target.value)}
+                    placeholder="rtmp://서버주소:포트/앱/스트림키"
+                  />
+                </S.FormGroup>
+                <S.FormGroup>
+                  <S.Label>RTMP URL 2 (선택)</S.Label>
+                  <S.Input
+                    type="text"
+                    value={localRtmpUrls[1] || ''}
+                    onChange={(e) => handleRtmpUrlChange(1, e.target.value)}
+                    placeholder="rtmp://서버주소:포트/앱/스트림키"
+                  />
+                </S.FormGroup>
+                <S.FormGroup>
+                  <S.Label>RTMP URL 3 (선택)</S.Label>
+                  <S.Input
+                    type="text"
+                    value={localRtmpUrls[2] || ''}
+                    onChange={(e) => handleRtmpUrlChange(2, e.target.value)}
+                    placeholder="rtmp://서버주소:포트/앱/스트림키"
+                  />
+                </S.FormGroup>
               </S.FormGroup>
             )}
             

@@ -510,3 +510,22 @@ export const InfoText = styled.div`
   color: ${({ theme }) => theme.colors.text.normal};
   line-height: 1.5;
 `;
+
+export const Input = styled.input`
+  width: 100%;
+  padding: 10px;
+  border: 1px solid ${({ theme }) => theme.colors.border.normal || '#ccc'};
+  border-radius: ${({ theme }) => theme.borders.small || '4px'};
+  background-color: ${({ theme }) => theme.colors.background.light || '#fff'};
+  color: ${({ theme }) => theme.colors.text.normal};
+  font-size: 14px;
+  
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.primary.normal || '#3b82f6'};
+  }
+  
+  &::placeholder {
+    color: ${({ theme }) => theme.colors.text.subtle || '#999'};
+  }
+`;
