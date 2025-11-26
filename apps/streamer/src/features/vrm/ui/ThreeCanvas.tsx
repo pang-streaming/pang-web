@@ -4,6 +4,7 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { VRM, VRMUtils, VRMLoaderPlugin, VRMHumanoid } from "@pixiv/three-vrm";
 import * as Kalidokit from "kalidokit";
 import * as poseDetection from "@tensorflow-models/pose-detection";
+import * as handPoseDetection from "@tensorflow-models/hand-pose-detection";
 import * as tf from "@tensorflow/tfjs-core";
 import "@tensorflow/tfjs-backend-webgl";
 
@@ -73,6 +74,7 @@ const ThreeCanvas = ({
   const videoRef = useRef<HTMLVideoElement>(null);
   const currentVrm = useRef<VRM | null>(null);
   const poseDetectorRef = useRef<poseDetection.PoseDetector | null>(null);
+  const handDetectorRef = useRef<handPoseDetection.HandDetector | null>(null);
   const oldLookTarget = useRef(new THREE.Euler());
 
   useEffect(() => {
@@ -83,7 +85,7 @@ const ThreeCanvas = ({
 
 
   const animateVRMWithBlazePose = useCallback(
-    (vrm: VRM, blazePoseResult: poseDetection.Pose | null) => {
+    (vrm: VRM, blazePoseResult: poseDetection.Pose | null, hands: handPoseDetection.Hand[] = []) => {
       if (!currentVrm.current || !blazePoseResult) return;
 
       const videoElement = videoRef.current;
@@ -174,6 +176,62 @@ const ThreeCanvas = ({
           if (getVisibility(26) > VISIBILITY_THRESHOLD && getVisibility(28) > VISIBILITY_THRESHOLD) {
             rigRotation(vrm, "rightLowerLeg", riggedPose.RightLowerLeg, 1, 0.3);
           }
+
+          if (hands.length > 0) {
+            hands.forEach((hand) => {
+              const handedness = hand.handedness === "Left" ? "Right" : "Left";
+              const landmarks = (hand.keypoints3D || hand.keypoints).map(kp => ({
+                x: kp.x || 0,
+                y: kp.y || 0,
+                z: kp.z || 0,
+              }));
+              const riggedHand = Kalidokit.Hand.solve(landmarks, handedness);
+
+              if (riggedHand) {
+                if (handedness === "Right") {
+                  rigRotation(vrm, "rightHand", {
+                    z: riggedPose.RightHand?.z || 0,
+                    y: riggedHand.RightWrist.y,
+                    x: riggedHand.RightWrist.x,
+                  });
+                  rigRotation(vrm, "rightRingProximal", riggedHand.RightRingProximal);
+                  rigRotation(vrm, "rightRingIntermediate", riggedHand.RightRingIntermediate);
+                  rigRotation(vrm, "rightRingDistal", riggedHand.RightRingDistal);
+                  rigRotation(vrm, "rightIndexProximal", riggedHand.RightIndexProximal);
+                  rigRotation(vrm, "rightIndexIntermediate", riggedHand.RightIndexIntermediate);
+                  rigRotation(vrm, "rightIndexDistal", riggedHand.RightIndexDistal);
+                  rigRotation(vrm, "rightMiddleProximal", riggedHand.RightMiddleProximal);
+                  rigRotation(vrm, "rightMiddleIntermediate", riggedHand.RightMiddleIntermediate);
+                  rigRotation(vrm, "rightMiddleDistal", riggedHand.RightMiddleDistal);
+                  rigRotation(vrm, "rightThumbMetacarpal", riggedHand.RightThumbProximal);
+                  rigRotation(vrm, "rightThumbProximal", riggedHand.RightThumbDistal);
+                  rigRotation(vrm, "rightLittleProximal", riggedHand.RightLittleProximal);
+                  rigRotation(vrm, "rightLittleIntermediate", riggedHand.RightLittleIntermediate);
+                  rigRotation(vrm, "rightLittleDistal", riggedHand.RightLittleDistal);
+                } else {
+                  rigRotation(vrm, "leftHand", {
+                    z: riggedPose.LeftHand?.z || 0,
+                    y: riggedHand.LeftWrist.y,
+                    x: riggedHand.LeftWrist.x,
+                  });
+                  rigRotation(vrm, "leftRingProximal", riggedHand.LeftRingProximal);
+                  rigRotation(vrm, "leftRingIntermediate", riggedHand.LeftRingIntermediate);
+                  rigRotation(vrm, "leftRingDistal", riggedHand.LeftRingDistal);
+                  rigRotation(vrm, "leftIndexProximal", riggedHand.LeftIndexProximal);
+                  rigRotation(vrm, "leftIndexIntermediate", riggedHand.LeftIndexIntermediate);
+                  rigRotation(vrm, "leftIndexDistal", riggedHand.LeftIndexDistal);
+                  rigRotation(vrm, "leftMiddleProximal", riggedHand.LeftMiddleProximal);
+                  rigRotation(vrm, "leftMiddleIntermediate", riggedHand.LeftMiddleIntermediate);
+                  rigRotation(vrm, "leftMiddleDistal", riggedHand.LeftMiddleDistal);
+                  rigRotation(vrm, "leftThumbMetacarpal", riggedHand.LeftThumbProximal);
+                  rigRotation(vrm, "leftThumbProximal", riggedHand.LeftThumbDistal);
+                  rigRotation(vrm, "leftLittleProximal", riggedHand.LeftLittleProximal);
+                  rigRotation(vrm, "leftLittleIntermediate", riggedHand.LeftLittleIntermediate);
+                  rigRotation(vrm, "leftLittleDistal", riggedHand.LeftLittleDistal);
+                }
+              }
+            });
+          }
         }
       } catch (error) {
         console.error("[BlazePose] VRM 애니메이션 에러:", error);
@@ -262,6 +320,18 @@ const ThreeCanvas = ({
       poseDetectorRef.current = detector;
       console.log("[BlazePose] 디텍터 초기화 완료");
 
+      console.log("[HandDetection] 디텍터 생성 중...");
+      const handDetector = await handPoseDetection.createDetector(
+        handPoseDetection.SupportedModels.MediaPipeHands,
+        {
+          runtime: "tfjs",
+          modelType: "full",
+          maxHands: 2,
+        }
+      );
+      handDetectorRef.current = handDetector;
+      console.log("[HandDetection] 디텍터 초기화 완료");
+
       let isDetecting = false;
 
       const detectPose = async () => {
@@ -272,15 +342,20 @@ const ThreeCanvas = ({
           return;
         }
 
-        if (videoElement.readyState >= 2 && poseDetectorRef.current && currentVrm.current) {
+        if (videoElement.readyState >= 2 && poseDetectorRef.current && handDetectorRef.current && currentVrm.current) {
           isDetecting = true;
           try {
-            const poses = await poseDetectorRef.current.estimatePoses(videoElement, {
-              flipHorizontal: true,
-            });
+            const [poses, hands] = await Promise.all([
+              poseDetectorRef.current.estimatePoses(videoElement, {
+                flipHorizontal: true,
+              }),
+              handDetectorRef.current.estimateHands(videoElement, {
+                flipHorizontal: true,
+              })
+            ]);
 
             if (poses.length > 0) {
-              animateVRMWithBlazePose(currentVrm.current, poses[0]);
+              animateVRMWithBlazePose(currentVrm.current, poses[0], hands);
             }
           } catch (error) {
             console.error("[BlazePose] 감지 에러:", error);
