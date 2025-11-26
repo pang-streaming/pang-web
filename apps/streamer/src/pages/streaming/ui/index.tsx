@@ -8,9 +8,9 @@ import { useAddSourceModal } from '@/features/modal/hooks/useAddSourceModal';
 import { useStreamTitleModal } from '@/features/modal/hooks/useStreamTitleModal';
 import { type Screen } from '@/features/canvas/constants/canvas-constants';
 import { useAudioStore } from '@/features/audio/stores/useAudioStore';
-import { createStreamKey, Category } from '@/features/stream/api';
+import { Category } from '@/features/stream/api';
 import { useQueryClient } from '@tanstack/react-query';
-import { useMyInfo, useStreamStatus } from '../hooks/useStreamQueries';
+import { useMyInfo, useStreamStatus, useStreamKeyInitializer } from '../hooks/useStreamQueries';
 import { Chat } from './components/chat';
 import { StreamTitleModal } from '@/features/modal/components/StreamTitleModal';
 import { Video } from './components/video';
@@ -48,32 +48,11 @@ const StreamingPage = () => {
   const {
     data: myInfo,
     isLoading: isLoadingMyInfo,
-    refetch: refetchMyInfo,
   } = useMyInfo();
 
   const { data: streamStatus } = useStreamStatus(streamKey, isLoadingKey);
 
-  useEffect(() => {
-    if (isLoadingMyInfo || !myInfo?.data) {
-      return;
-    }
-
-    const initializeStreamKey = async () => {
-      try {
-        setIsLoadingKey(true);
-        const createResponse = await createStreamKey();
-        setStreamKey(createResponse.data.key);
-        setWhipUrl(createResponse.data.webRtcUrl);
-      } catch (error: any) {
-        console.error("스트림 키 처리 실패:", error);
-        alert("스트림 키 처리 중 오류가 발생했습니다.");
-      } finally {
-        setIsLoadingKey(false);
-      }
-    };
-
-    initializeStreamKey();
-  }, [myInfo, isLoadingMyInfo, refetchMyInfo]);
+  useStreamKeyInitializer(myInfo, isLoadingMyInfo, setStreamKey, setWhipUrl, setIsLoadingKey);
 
   // 기본 배경 이미지 추가 (한 번만)
   useEffect(() => {

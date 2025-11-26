@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchMyInfo, fetchStreamStatus } from '@/features/stream/api';
+import { useEffect } from 'react';
+import { fetchMyInfo, fetchStreamStatus, createStreamKey } from '@/features/stream/api';
 
 export const useMyInfo = () => {
   return useQuery({
@@ -24,4 +25,34 @@ export const useStreamStatus = (streamKey: string | null, isLoadingKey: boolean)
       return failureCount < 3;
     },
   });
+};
+
+export const useStreamKeyInitializer = (
+  myInfo: any,
+  isLoadingMyInfo: boolean,
+  setStreamKey: (key: string) => void,
+  setWhipUrl: (url: string) => void,
+  setIsLoadingKey: (loading: boolean) => void
+) => {
+  useEffect(() => {
+    if (isLoadingMyInfo || !myInfo?.data) {
+      return;
+    }
+
+    const initializeStreamKey = async () => {
+      try {
+        setIsLoadingKey(true);
+        const createResponse = await createStreamKey();
+        setStreamKey(createResponse.data.key);
+        setWhipUrl(createResponse.data.webRtcUrl);
+      } catch (error: any) {
+        console.error("스트림 키 처리 실패:", error);
+        alert("스트림 키 처리 중 오류가 발생했습니다.");
+      } finally {
+        setIsLoadingKey(false);
+      }
+    };
+
+    initializeStreamKey();
+  }, [myInfo, isLoadingMyInfo, setStreamKey, setWhipUrl, setIsLoadingKey]);
 };
