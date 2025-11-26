@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { SourceType } from '../hooks/useAddSourceModal';
 import { ScreenShareOption } from './ScreenShareOption';
@@ -27,6 +27,8 @@ export const AddSourceModal = ({
   onAddScreen,
   onAddVTuber,
 }: AddSourceModalProps) => {
+  const [sourceName, setSourceName] = useState('');
+
   if (!isOpen) return null;
 
   if (!selectedType) {
@@ -34,30 +36,38 @@ export const AddSourceModal = ({
       <ModalOverlay onClick={onClose}>
         <ModalContent onClick={(e) => e.stopPropagation()}>
           <ModalHeader>
-            <h2>소스 추가</h2>
+            <h2>화면 소스</h2>
             <CloseButton onClick={onClose}>✕</CloseButton>
           </ModalHeader>
+          <Divider />
           <ModalBody>
-            <SourceTypeGrid>
-              <SourceTypeCard onClick={() => onSelectType('screen')}>
-                <IconWrapper>🖥️</IconWrapper>
-                <SourceTypeName>화면 캡쳐</SourceTypeName>
-                <SourceTypeDesc>화면 공유하기</SourceTypeDesc>
-              </SourceTypeCard>
-              
-              <SourceTypeCard onClick={() => onSelectType('image')}>
-                <IconWrapper>🖼️</IconWrapper>
-                <SourceTypeName>이미지</SourceTypeName>
-                <SourceTypeDesc>이미지 파일 추가</SourceTypeDesc>
-              </SourceTypeCard>
-              
-              <SourceTypeCard onClick={() => onSelectType('vtuber')}>
-                <IconWrapper>👤</IconWrapper>
-                <SourceTypeName>VTuber</SourceTypeName>
-                <SourceTypeDesc>아바타 추가</SourceTypeDesc>
-              </SourceTypeCard>
-            </SourceTypeGrid>
+            <SourceNameInput
+              type="text"
+              placeholder="소스 이름"
+              value={sourceName}
+              onChange={(e) => setSourceName(e.target.value)}
+            />
+            
+            <TagSection>
+              <TagGroup>
+                <SourceTag onClick={() => onSelectType('screen')} $isActive={false}>
+                  화면 캡처
+                </SourceTag>
+                <SourceTag onClick={() => onSelectType('image')} $isActive={false}>
+                  이미지
+                </SourceTag>
+                <SourceTag onClick={() => onSelectType('vtuber')} $isActive={false}>
+                  VTuber
+                </SourceTag>
+              </TagGroup>
+              <AILink>AI 배경 생성</AILink>
+            </TagSection>
+
+            <HelpText>
+              화면 공유 시작을 누르면 화면 선택 다이얼로그가 표시됩니다.
+            </HelpText>
           </ModalBody>
+          <ActionButton onClick={() => {}}>화면 공유 시작</ActionButton>
         </ModalContent>
       </ModalOverlay>
     );
@@ -67,35 +77,55 @@ export const AddSourceModal = ({
     <ModalOverlay onClick={onClose}>
       <ModalContent onClick={(e) => e.stopPropagation()}>
         <ModalHeader>
-          <BackButton onClick={onGoBack}>← 뒤로</BackButton>
-          <h2>
-            {selectedType === 'screen' && '화면 캡쳐'}
-            {selectedType === 'image' && '이미지 추가'}
-            {selectedType === 'vtuber' && 'VTuber 추가'}
-          </h2>
+          <h2>화면 소스</h2>
           <CloseButton onClick={onClose}>✕</CloseButton>
         </ModalHeader>
+        <Divider />
         <ModalBody>
-          {selectedType === 'screen' && (
-            <ScreenShareOption
-              canvasSize={canvasSize}
-              onAddScreen={onAddScreen}
-              onClose={onClose}
-            />
-          )}
-          {selectedType === 'image' && (
-            <ImageOption
-              canvasSize={canvasSize}
-              onAddScreen={onAddScreen}
-              onClose={onClose}
-            />
-          )}
-          {selectedType === 'vtuber' && (
-            <VTuberOption
-              onAddVTuber={onAddVTuber}
-              onClose={onClose}
-            />
-          )}
+          <SourceNameInput
+            type="text"
+            placeholder="소스 이름"
+            value={sourceName}
+            onChange={(e) => setSourceName(e.target.value)}
+          />
+          
+          <TagSection>
+            <TagGroup>
+              <SourceTag onClick={() => onSelectType('screen')} $isActive={selectedType === 'screen'}>
+                화면 캡처
+              </SourceTag>
+              <SourceTag onClick={() => onSelectType('image')} $isActive={selectedType === 'image'}>
+                이미지
+              </SourceTag>
+              <SourceTag onClick={() => onSelectType('vtuber')} $isActive={selectedType === 'vtuber'}>
+                VTuber
+              </SourceTag>
+            </TagGroup>
+            <AILink>AI 배경 생성</AILink>
+          </TagSection>
+
+          <ContentArea>
+            {selectedType === 'screen' && (
+              <ScreenShareOption
+                canvasSize={canvasSize}
+                onAddScreen={onAddScreen}
+                onClose={onClose}
+              />
+            )}
+            {selectedType === 'image' && (
+              <ImageOption
+                canvasSize={canvasSize}
+                onAddScreen={onAddScreen}
+                onClose={onClose}
+              />
+            )}
+            {selectedType === 'vtuber' && (
+              <VTuberOption
+                onAddVTuber={onAddVTuber}
+                onClose={onClose}
+              />
+            )}
+          </ContentArea>
         </ModalBody>
       </ModalContent>
     </ModalOverlay>
@@ -116,10 +146,10 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalContent = styled.div`
-  background-color: ${({ theme }) => theme.colors.background.normal};
-  border-radius: 16px;
+  background-color: #000000;
+  border-radius: 20px;
   width: 90%;
-  max-width: 600px;
+  max-width: 730px;
   max-height: 80vh;
   overflow-y: auto;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
@@ -128,91 +158,144 @@ const ModalContent = styled.div`
 const ModalHeader = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 20px 24px;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.border.normal};
+  justify-content: center;
+  padding: 23px 24px;
   position: relative;
 
   h2 {
     margin: 0;
-    font-size: 1.5rem;
-    color: ${({ theme }) => theme.colors.text.normal};
-    flex: 1;
+    font-size: 20px;
+    font-weight: 900;
+    color: #f2f2f2;
     text-align: center;
-  }
-`;
-
-const BackButton = styled.button`
-  background: none;
-  border: none;
-  color: ${({ theme }) => theme.colors.text.normal};
-  font-size: 1rem;
-  cursor: pointer;
-  padding: 8px 12px;
-  border-radius: 8px;
-  position: absolute;
-  left: 24px;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.hover.normal};
   }
 `;
 
 const CloseButton = styled.button`
   background: none;
   border: none;
-  color: ${({ theme }) => theme.colors.text.normal};
+  color: #f2f2f2;
   font-size: 1.5rem;
   cursor: pointer;
   padding: 8px 12px;
   border-radius: 8px;
   position: absolute;
   right: 24px;
+  line-height: 1;
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.hover.normal};
+    opacity: 0.7;
   }
+`;
+
+const Divider = styled.div`
+  width: 100%;
+  height: 1px;
+  background-color: #404040;
 `;
 
 const ModalBody = styled.div`
-  padding: 24px;
-`;
-
-const SourceTypeGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  padding: 20px 20px 0 20px;
+  display: flex;
+  flex-direction: column;
   gap: 16px;
 `;
 
-const SourceTypeCard = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 24px;
-  background-color: ${({ theme }) => theme.colors.content.normal};
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.2s;
+const SourceNameInput = styled.input`
+  width: 100%;
+  padding: 12px 17px;
+  background-color: transparent;
+  border: 1px solid #262626;
+  border-radius: 8px;
+  color: #929bad;
+  font-size: 15px;
+  font-family: 'Wanted Sans', sans-serif;
+  outline: none;
 
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.hover.normal};
-    transform: translateY(-2px);
+  &::placeholder {
+    color: #929bad;
+  }
+
+  &:focus {
+    border-color: #404040;
   }
 `;
 
-const IconWrapper = styled.div`
-  font-size: 3rem;
-  margin-bottom: 12px;
+const TagSection = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 `;
 
-const SourceTypeName = styled.div`
-  font-size: 1.1rem;
+const TagGroup = styled.div`
+  display: flex;
+  gap: 10px;
+`;
+
+const SourceTag = styled.button<{ $isActive: boolean }>`
+  padding: 6px 12px;
+  background-color: ${({ $isActive }) => ($isActive ? '#404040' : '#262626')};
+  border: none;
+  border-radius: 999px;
+  color: #929bad;
+  font-size: 14px;
+  font-family: 'Wanted Sans', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background-color: #404040;
+  }
+`;
+
+const AILink = styled.button`
+  background: none;
+  border: none;
+  color: #ff0055;
+  font-size: 14px;
+  font-family: 'Wanted Sans', sans-serif;
+  cursor: pointer;
+  padding: 0;
+
+  &:hover {
+    opacity: 0.8;
+  }
+`;
+
+const HelpText = styled.p`
+  margin: 0;
+  color: #929bad;
+  font-size: 14px;
+  font-family: 'Wanted Sans', sans-serif;
+  line-height: 18px;
+`;
+
+const ContentArea = styled.div`
+  margin-top: 4px;
+`;
+
+const ActionButton = styled.button`
+  width: 100%;
+  padding: 16px 24px;
+  background-color: #ff0055;
+  border: none;
+  border-radius: 0 0 20px 20px;
+  color: white;
+  font-size: 16px;
   font-weight: 600;
-  color: ${({ theme }) => theme.colors.text.normal};
-  margin-bottom: 4px;
-`;
+  font-family: 'Wanted Sans', sans-serif;
+  cursor: pointer;
+  margin-top: 20px;
 
-const SourceTypeDesc = styled.div`
-  font-size: 0.9rem;
-  color: ${({ theme }) => theme.colors.text.subtitle};
+  &:hover {
+    background-color: #e6004d;
+  }
+
+  &:active {
+    background-color: #cc0044;
+  }
 `;
