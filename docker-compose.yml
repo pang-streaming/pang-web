@@ -30,7 +30,7 @@ services:
     depends_on:
       - nginx-proxy
 
-  streammer:
+  streamer:
     build:
       context: .
       dockerfile: deploy/dockerfiles/streamer.Dockerfile
