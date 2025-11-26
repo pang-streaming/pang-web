@@ -7,7 +7,6 @@ interface VolumeMeterProps {
   trackId: string;
   track: MediaStreamTrack;
   source?: string;
-  color?: string;
   onRemove?: () => void;
 }
 
@@ -28,13 +27,6 @@ export const VolumeMixer: React.FC = () => {
             trackId={audioTrack.id}
             track={audioTrack.track}
             source={audioTrack.source}
-            color={
-              audioTrack.source === "microphone"
-                ? "#ff4d6d"
-                : audioTrack.source === "screen"
-                  ? "#4d9fff"
-                  : "#9f4dff"
-            }
             onRemove={() => removeAudioTrack(audioTrack.id)}
           />
         ))
@@ -48,7 +40,6 @@ const VolumeMeter: React.FC<VolumeMeterProps> = ({
   trackId,
   track,
   source,
-  color = "#ff4d6d",
   onRemove,
 }) => {
   const [volume, setVolume] = useState(0);
@@ -161,7 +152,7 @@ const VolumeMeter: React.FC<VolumeMeterProps> = ({
           max={12}
           value={volume}
           onChange={handleVolumeChange}
-          color={color}
+          source={source}
         />
       </VolumeControl>
     </MeterContainer>
@@ -220,12 +211,12 @@ const SourceBadge = styled.span<{ source: string }>`
   font-size: 10px;
   padding: 2px 6px;
   border-radius: 4px;
-  background-color: ${({ source }) =>
+  background-color: ${({ theme, source }) =>
     source === "microphone"
-      ? "#ff4d6d"
+      ? theme.colors.status.negative
       : source === "screen"
-        ? "#4d9fff"
-        : "#9f4dff"};
+        ? theme.colors.secondary.normal
+        : theme.colors.primary.normal};
   color: white;
   font-weight: 500;
 `;
@@ -273,11 +264,17 @@ const VolumeLabel = styled.div`
   color: #aaa;
 `;
 
-const Slider = styled.input<{ color: string }>`
+const Slider = styled.input<{ source?: string }>`
   width: 100%;
   height: 6px;
   appearance: none;
-  background: linear-gradient(to right, ${({ color }) => color} 0%, #fff 100%);
+  background: linear-gradient(to right, ${({ theme, source }) =>
+    source === "microphone"
+      ? theme.colors.status.negative
+      : source === "screen"
+        ? theme.colors.secondary.normal
+        : theme.colors.primary.normal
+  } 0%, #fff 100%);
   border-radius: 10px;
   outline: none;
 
@@ -286,7 +283,13 @@ const Slider = styled.input<{ color: string }>`
     width: 14px;
     height: 14px;
     border-radius: 50%;
-    background-color: ${({ color }) => color};
+    background-color: ${({ theme, source }) =>
+      source === "microphone"
+        ? theme.colors.status.negative
+        : source === "screen"
+          ? theme.colors.secondary.normal
+          : theme.colors.primary.normal
+    };
     cursor: pointer;
   }
 
@@ -294,7 +297,13 @@ const Slider = styled.input<{ color: string }>`
     width: 14px;
     height: 14px;
     border-radius: 50%;
-    background-color: ${({ color }) => color};
+    background-color: ${({ theme, source }) =>
+      source === "microphone"
+        ? theme.colors.status.negative
+        : source === "screen"
+          ? theme.colors.secondary.normal
+          : theme.colors.primary.normal
+    };
     cursor: pointer;
     border: none;
   }

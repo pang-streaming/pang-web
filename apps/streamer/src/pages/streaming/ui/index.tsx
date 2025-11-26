@@ -8,8 +8,9 @@ import { useAddSourceModal } from '@/features/modal/hooks/useAddSourceModal';
 import { useStreamTitleModal } from '@/features/modal/hooks/useStreamTitleModal';
 import { type Screen } from '@/features/canvas/constants/canvas-constants';
 import { useAudioStore } from '@/features/audio/stores/useAudioStore';
-import { fetchStreamKey, createStreamKey, fetchMyInfo, fetchStreamStatus, Category, updateStream } from '@/features/stream/api';
-import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
+import { createStreamKey, Category } from '@/features/stream/api';
+import { useQueryClient } from '@tanstack/react-query';
+import { useMyInfo, useStreamStatus } from '../hooks/useStreamQueries';
 import { Chat } from './components/chat';
 import { StreamTitleModal } from '@/features/modal/components/StreamTitleModal';
 import { Video } from './components/video';
@@ -19,7 +20,7 @@ import * as S from './styles';
 const StreamingPage = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasSize = useCanvasSize();
-  const { screens, setScreens, addVideoScreen, addScreen, clearScreens } =
+  const { screens, setScreens, addScreen } =
     useScreenManagement(canvasSize);
 
   const modal = useAddSourceModal();
@@ -48,26 +49,9 @@ const StreamingPage = () => {
     data: myInfo,
     isLoading: isLoadingMyInfo,
     refetch: refetchMyInfo,
-  } = useQuery({
-    queryKey: ["myInfo"],
-    queryFn: fetchMyInfo,
-    staleTime: 1000 * 60,
-    refetchOnWindowFocus: false,
-  });
+  } = useMyInfo();
 
-  const { data: streamStatus, isLoading: isLoadingStreamStatus } = useQuery({
-    queryKey: ["streamStatus"],
-    queryFn: fetchStreamStatus,
-    staleTime: 1000 * 10,
-    refetchInterval: 1000 * 10,
-    enabled: !isLoadingKey && !!streamKey,
-    retry: (failureCount, error: any) => {
-      if (error?.response?.status === 404) {
-        return false;
-      }
-      return failureCount < 3;
-    },
-  });
+  const { data: streamStatus } = useStreamStatus(streamKey, isLoadingKey);
 
   useEffect(() => {
     if (isLoadingMyInfo || !myInfo?.data) {

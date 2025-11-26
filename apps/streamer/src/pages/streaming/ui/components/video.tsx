@@ -39,7 +39,7 @@ export const Video = ({
   titleChild,
 }: VideoProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { isStreaming, startStreaming, stopStreaming } = useWhipBroadcast2(
+  const { isStreaming, startStreaming } = useWhipBroadcast2(
     canvasRef,
     streamKey,
     whipUrl
