@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -33,22 +33,22 @@ jobs:
       - name: Build apps
         run: |
           pnpm --filter web build
-          pnpm --filter streammer build
+          pnpm --filter streamer build
           pnpm --filter embed build
-          
+
       - name: Verify build outputs
         run: |
           echo "Checking build outputs..."
           ls -la apps/web/dist/ || echo "web/dist not found"
-          ls -la apps/streammer/dist/ || echo "streammer/dist not found"
+          ls -la apps/streamer/dist/ || echo "streamer/dist not found"
           ls -la apps/embed/dist/ || echo "embed/dist not found"
 
       - name: Prepare artifacts (dist only)
         run: |
-          mkdir -p out/apps/web out/apps/streammer out/apps/embed
-          mkdir -p out/apps/web/dist out/apps/streammer/dist out/apps/embed/dist
+          mkdir -p out/apps/web out/apps/streamer out/apps/embed
+          mkdir -p out/apps/web/dist out/apps/streamer/dist out/apps/embed/dist
           if [ -d "apps/web/dist" ]; then cp -r apps/web/dist/* out/apps/web/dist/; fi
-          if [ -d "apps/streammer/dist" ]; then cp -r apps/streammer/dist/* out/apps/streammer/dist/; fi
+          if [ -d "apps/streamer/dist" ]; then cp -r apps/streamer/dist/* out/apps/streamer/dist/; fi
           if [ -d "apps/embed/dist" ]; then cp -r apps/embed/dist/* out/apps/embed/dist/; fi
 
       - name: Write SSL certificates into artifacts
@@ -83,9 +83,9 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             set -e
-            sudo mkdir -p /var/www/pang/web /var/www/pang/streammer /var/www/pang/embed
+            sudo mkdir -p /var/www/pang/web /var/www/pang/streamer /var/www/pang/embed
             sudo rsync -az --delete /home/ec2-user/pang-frontend/out/apps/web/dist/ /var/www/pang/web/
-            sudo rsync -az --delete /home/ec2-user/pang-frontend/out/apps/streammer/dist/ /var/www/pang/streammer/
+            sudo rsync -az --delete /home/ec2-user/pang-frontend/out/apps/streamer/dist/ /var/www/pang/streamer/
             sudo rsync -az --delete /home/ec2-user/pang-frontend/out/apps/embed/dist/ /var/www/pang/embed/
             
             cd /home/ec2-user/pang-frontend
