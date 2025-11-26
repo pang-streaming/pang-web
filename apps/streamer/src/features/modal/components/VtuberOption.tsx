@@ -1,35 +1,37 @@
-import React, { useState, useRef, useEffect } from 'react';
-import styled from 'styled-components';
-import { CanvasSize } from '@/features/canvas/constants/canvas-constants';
+import React, { useState, useRef, useEffect } from "react";
+import styled from "styled-components";
+import { CanvasSize } from "@/features/canvas/constants/canvas-constants";
 
 interface VTuberOptionProps {
   onAddVTuber: (vrmUrl: string | null, selectedDevice: MediaDeviceInfo) => void;
   onClose: () => void;
 }
 
-export const VTuberOption = ({
-  onAddVTuber,
-  onClose,
-}: VTuberOptionProps) => {
+export const VTuberOption = ({ onAddVTuber, onClose }: VTuberOptionProps) => {
   const [vrmFile, setVrmFile] = useState<File | null>(null);
   const [vrmUrl, setVrmUrl] = useState<string | null>(null);
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
-  const [selectedDevice, setSelectedDevice] = useState<MediaDeviceInfo | null>(null);
+  const [selectedDevice, setSelectedDevice] = useState<MediaDeviceInfo | null>(
+    null
+  );
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const getDevices = async () => {
       try {
         await navigator.mediaDevices.getUserMedia({ video: true });
-        const availableDevices = await navigator.mediaDevices.enumerateDevices();
-        const videoDevices = availableDevices.filter((device) => device.kind === 'videoinput');
+        const availableDevices =
+          await navigator.mediaDevices.enumerateDevices();
+        const videoDevices = availableDevices.filter(
+          (device) => device.kind === "videoinput"
+        );
         setDevices(videoDevices);
         if (videoDevices.length > 0 && !selectedDevice) {
           setSelectedDevice(videoDevices[0]);
         }
       } catch (err) {
-        console.error('카메라 접근 오류:', err);
-        alert('카메라 권한이 필요합니다.');
+        console.error("카메라 접근 오류:", err);
+        alert("카메라 권한이 필요합니다.");
       }
     };
     getDevices();
@@ -38,8 +40,8 @@ export const VTuberOption = ({
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (!file.name.endsWith('.vrm')) {
-        alert('.vrm 파일만 선택 가능합니다.');
+      if (!file.name.endsWith(".vrm")) {
+        alert(".vrm 파일만 선택 가능합니다.");
         return;
       }
       setVrmFile(file);
@@ -58,7 +60,7 @@ export const VTuberOption = ({
 
   const handleConfirm = () => {
     if (!selectedDevice) {
-      alert('카메라를 선택해주세요.');
+      alert("카메라를 선택해주세요.");
       return;
     }
 
@@ -69,7 +71,8 @@ export const VTuberOption = ({
   return (
     <OptionContainer>
       <Description>
-        VTuber 아바타를 추가합니다. VRM 파일을 선택하지 않으면 기본 아바타가 사용됩니다.
+        VTuber 아바타를 추가합니다. VRM 파일을 선택하지 않으면 기본 아바타가
+        사용됩니다.
       </Description>
 
       <Section>
@@ -90,14 +93,16 @@ export const VTuberOption = ({
               <ClearButton onClick={handleClearFile}>✕</ClearButton>
             </FileInfo>
           )}
-          {!vrmFile && <HelperText>선택하지 않으면 기본 아바타 사용</HelperText>}
+          {!vrmFile && (
+            <HelperText>선택하지 않으면 기본 아바타 사용</HelperText>
+          )}
         </FileInputWrapper>
       </Section>
 
       <Section>
         <SectionLabel>카메라 선택 (필수)</SectionLabel>
         <Select
-          value={selectedDevice?.deviceId || ''}
+          value={selectedDevice?.deviceId || ""}
           onChange={(e) => {
             const device = devices.find((d) => d.deviceId === e.target.value);
             setSelectedDevice(device || null);
@@ -218,7 +223,7 @@ const Select = styled.select`
 
   &:focus {
     outline: none;
-    border-color: ${({ theme }) => theme.colors.primary || '#4CAF50'};
+    border-color: ${({ theme }) => theme.colors.primary || "#4CAF50"};
   }
 `;
 
@@ -252,8 +257,8 @@ const CancelButton = styled(Button)`
 `;
 
 const ConfirmButton = styled(Button)`
-  background-color: ${({ theme }) => theme.colors.primary || '#4CAF50'};
-  color: white;
+  background-color: ${({ theme }) => theme.colors.primary || "#4CAF50"};
+  color: black;
 
   &:hover:not(:disabled) {
     opacity: 0.9;

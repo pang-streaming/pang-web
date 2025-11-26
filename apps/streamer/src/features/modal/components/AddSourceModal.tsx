@@ -62,12 +62,7 @@ export const AddSourceModal = ({
               </TagGroup>
               <AILink>AI 배경 생성</AILink>
             </TagSection>
-
-            <HelpText>
-              화면 공유 시작을 누르면 화면 선택 다이얼로그가 표시됩니다.
-            </HelpText>
           </ModalBody>
-          <ActionButton onClick={() => {}}>화면 공유 시작</ActionButton>
         </ModalContent>
       </ModalOverlay>
     );
@@ -148,7 +143,7 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalContent = styled.div`
-  background-color: #000000;
+  background-color: ${({ theme }) => theme.colors.background.dark};
   border-radius: 20px;
   width: 90%;
   max-width: 730px;
@@ -168,7 +163,7 @@ const ModalHeader = styled.div`
     margin: 0;
     font-size: 20px;
     font-weight: 900;
-    color: #f2f2f2;
+    color: ${({ theme }) => theme.colors.text.normal};
     text-align: center;
   }
 `;
@@ -176,7 +171,7 @@ const ModalHeader = styled.div`
 const CloseButton = styled.button`
   background: none;
   border: none;
-  color: #f2f2f2;
+  color: ${({ theme }) => theme.colors.text.normal};
   font-size: 1.5rem;
   cursor: pointer;
   padding: 8px 12px;
@@ -193,11 +188,11 @@ const CloseButton = styled.button`
 const Divider = styled.div`
   width: 100%;
   height: 1px;
-  background-color: #404040;
+  background-color: ${({ theme }) => theme.colors.content.dark};
 `;
 
 const ModalBody = styled.div`
-  padding: 20px 20px 0 20px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -207,19 +202,19 @@ const SourceNameInput = styled.input`
   width: 100%;
   padding: 12px 17px;
   background-color: transparent;
-  border: 1px solid #262626;
+  border: 1px solid ${({ theme }) => theme.colors.content.normal};
   border-radius: 8px;
-  color: #929bad;
+  color: ${({ theme }) => theme.colors.text.subtitle};
   font-size: 15px;
   font-family: 'Wanted Sans', sans-serif;
   outline: none;
 
   &::placeholder {
-    color: #929bad;
+    color: ${({ theme }) => theme.colors.text.subtitle};
   }
 
   &:focus {
-    border-color: #404040;
+    border-color: ${({ theme }) => theme.colors.content.dark};
   }
 `;
 
@@ -236,10 +231,10 @@ const TagGroup = styled.div`
 
 const SourceTag = styled.button<{ $isActive: boolean }>`
   padding: 6px 12px;
-  background-color: ${({ $isActive }) => ($isActive ? '#404040' : '#262626')};
+  background-color: ${({ $isActive, theme }) => ($isActive ? theme.colors.content.dark : theme.colors.content.normal)};
   border: none;
   border-radius: 999px;
-  color: #929bad;
+  color: ${({ theme }) => theme.colors.text.subtitle};
   font-size: 14px;
   font-family: 'Wanted Sans', sans-serif;
   cursor: pointer;
@@ -250,14 +245,14 @@ const SourceTag = styled.button<{ $isActive: boolean }>`
   justify-content: center;
 
   &:hover {
-    background-color: #404040;
+    background-color: ${({ theme }) => theme.colors.content.dark};
   }
 `;
 
 const AILink = styled.button`
   background: none;
   border: none;
-  color: #ff0055;
+  color: ${({ theme }) => theme.colors.primary.normal};
   font-size: 14px;
   font-family: 'Wanted Sans', sans-serif;
   cursor: pointer;
@@ -268,36 +263,6 @@ const AILink = styled.button`
   }
 `;
 
-const HelpText = styled.p`
-  margin: 0;
-  color: #929bad;
-  font-size: 14px;
-  font-family: 'Wanted Sans', sans-serif;
-  line-height: 18px;
-`;
-
 const ContentArea = styled.div`
   margin-top: 4px;
-`;
-
-const ActionButton = styled.button`
-  width: 100%;
-  padding: 16px 24px;
-  background-color: #ff0055;
-  border: none;
-  border-radius: 0 0 20px 20px;
-  color: white;
-  font-size: 16px;
-  font-weight: 600;
-  font-family: 'Wanted Sans', sans-serif;
-  cursor: pointer;
-  margin-top: 20px;
-
-  &:hover {
-    background-color: #e6004d;
-  }
-
-  &:active {
-    background-color: #cc0044;
-  }
 `;
