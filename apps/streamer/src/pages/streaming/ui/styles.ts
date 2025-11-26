@@ -1,4 +1,4 @@
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes } from "styled-components";
 
 // Animations
 export const fadeIn = keyframes`
@@ -126,6 +126,7 @@ export const HeaderRight = styled.div`
   align-items: center;
   gap: 12px;
   margin-left: auto;
+  padding-right: 10px;
 `;
 
 export const CategorySection = styled.div`
@@ -161,10 +162,12 @@ export const StreamTitle = styled.h3<{ $clickable?: boolean }>`
   font-weight: 600;
   color: ${({ theme }) => theme.colors.text.subtitle};
   margin: 0;
-  cursor: ${({ $clickable }) => $clickable ? 'pointer' : 'default'};
+  cursor: ${({ $clickable }) => ($clickable ? "pointer" : "default")};
   transition: color 0.2s;
-  
-  ${({ $clickable, theme }) => $clickable && `
+
+  ${({ $clickable, theme }) =>
+    $clickable &&
+    `
     &:hover {
       color: ${theme.colors.primary.normal};
     }
@@ -200,11 +203,12 @@ export const StatusDot = styled.div<{ $isLive: boolean }>`
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: ${({ $isLive }) => $isLive ? '#22c55e' : '#6b7280'};
-  animation: ${({ $isLive }) => $isLive ? 'pulse 2s infinite' : 'none'};
-  
+  background-color: ${({ $isLive }) => ($isLive ? "#22c55e" : "#6b7280")};
+  animation: ${({ $isLive }) => ($isLive ? "pulse 2s infinite" : "none")};
+
   @keyframes pulse {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 1;
     }
     50% {
@@ -281,7 +285,8 @@ export const ModalOverlay = styled.div<{ $isClosing?: boolean }>`
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  animation: ${({ $isClosing }) => $isClosing ? fadeOut : fadeIn} 0.3s ease-out;
+  animation: ${({ $isClosing }) => ($isClosing ? fadeOut : fadeIn)} 0.3s
+    ease-out;
   backdrop-filter: blur(4px);
 `;
 
@@ -292,8 +297,11 @@ export const ModalContent = styled.div<{ $isClosing?: boolean }>`
   max-width: 500px;
   max-height: 90vh;
   overflow: hidden;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  animation: ${({ $isClosing }) => $isClosing ? slideOut : slideIn} 0.3s ease-out;
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  animation: ${({ $isClosing }) => ($isClosing ? slideOut : slideIn)} 0.3s
+    ease-out;
   transform-origin: center;
 `;
 
@@ -501,7 +509,11 @@ export const CopyButton = styled.button`
   transition: background-color 0.2s;
 
   &:hover {
+<<<<<<< HEAD
     background-color: ${({ theme }) => theme.colors.primary.dark};
+=======
+    background-color: ${({ theme }) => theme.colors.primary.dark || "#1d4ed8"};
+>>>>>>> a898f40 (chore: z)
   }
 `;
 
