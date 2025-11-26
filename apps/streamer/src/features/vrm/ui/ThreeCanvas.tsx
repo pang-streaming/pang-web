@@ -1,80 +1,47 @@
-import { useCallback, useEffect, useRef } from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { VRM, VRMUtils, VRMLoaderPlugin, VRMHumanoid } from "@pixiv/three-vrm";
 import * as Kalidokit from "kalidokit";
-import * as poseDetection from "@tensorflow-models/pose-detection";
-import * as handPoseDetection from "@tensorflow-models/hand-pose-detection";
-import * as faceLandmarksDetection from "@tensorflow-models/face-landmarks-detection";
-import * as tf from "@tensorflow/tfjs-core";
-import "@tensorflow/tfjs-backend-webgl";
 
 interface ThreeCanvasProps {
   vrmUrl: string | null;
   isCameraEnabled: boolean;
-  selectedDevice: MediaDeviceInfo | null;
+	selectedDevice: MediaDeviceInfo | null;
   onCanvasReady: (canvas: HTMLCanvasElement) => void;
   isVisible: boolean;
   width: number;
   height: number;
 }
 
-const rigRotation = (
-  vrm: VRM,
-  name: keyof VRMHumanoid["humanBones"],
-  rotation = { x: 0, y: 0, z: 0 },
-  dampener = 1,
-  lerpAmount = 0.3
-) => {
+// Animate Rotation Helper function
+const rigRotation = (vrm: VRM, name: keyof VRMHumanoid["humanBones"], rotation = { x: 0, y: 0, z: 0 }, dampener = 1, lerpAmount = 0.3) => {
   if (!vrm.humanoid) return;
 
   const Part = vrm.humanoid.getNormalizedBoneNode(name);
   if (!Part) return;
 
-  const euler = new THREE.Euler(
-    rotation.x * dampener,
-    rotation.y * dampener,
-    rotation.z * dampener,
-    "XYZ"
-  );
+  const euler = new THREE.Euler(rotation.x * dampener, rotation.y * dampener, rotation.z * dampener, "XYZ");
   const quaternion = new THREE.Quaternion().setFromEuler(euler);
   Part.quaternion.slerp(quaternion, lerpAmount);
 };
 
-const rigPosition = (
-  vrm: VRM,
-  name: keyof VRMHumanoid["humanBones"],
-  position = { x: 0, y: 0, z: 0 },
-  dampener = 1,
-  lerpAmount = 0.3
-) => {
+// Animate Position Helper Function
+const rigPosition = (vrm: VRM, name: keyof VRMHumanoid["humanBones"], position = { x: 0, y: 0, z: 0 }, dampener = 1, lerpAmount = 0.3) => {
   if (!vrm.humanoid) return;
 
   const Part = vrm.humanoid.getNormalizedBoneNode(name);
   if (!Part) return;
 
-  const vector = new THREE.Vector3(
-    position.x * dampener,
-    position.y * dampener,
-    position.z * dampener
-  );
+  const vector = new THREE.Vector3(position.x * dampener, position.y * dampener, position.z * dampener);
   Part.position.lerp(vector, lerpAmount);
 };
 
-const ThreeCanvas = ({
-  vrmUrl,
-  isCameraEnabled,
-  selectedDevice,
-  onCanvasReady,
-  isVisible,
-  width,
-  height,
-}: ThreeCanvasProps) => {
+const ThreeCanvas = ({ vrmUrl, isCameraEnabled, selectedDevice, onCanvasReady, isVisible, width, height }: ThreeCanvasProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const currentVrm = useRef<VRM | null>(null);
-  const poseDetectorRef = useRef<poseDetection.PoseDetector | null>(null);
-  const handDetectorRef = useRef<handPoseDetection.HandDetector | null>(null);
-  const faceDetectorRef = useRef<faceLandmarksDetection.FaceLandmarksDetector | null>(null);
+  const [isHolisticLoaded, setIsHolisticLoaded] = useState(false);
+  const oldLookTarget = useRef(new THREE.Euler());
 
   useEffect(() => {
     if (currentVrm.current) {
@@ -82,398 +49,237 @@ const ThreeCanvas = ({
     }
   }, [isVisible]);
 
+	const rigFace = useCallback((vrm: VRM, riggedFace: any) => {
+    if (!vrm.expressionManager || !vrm.lookAt || !vrm.humanoid) return;
 
-  const animateVRMWithBlazePose = useCallback(
-    (vrm: VRM, blazePoseResult: poseDetection.Pose | null, hands: handPoseDetection.Hand[] = [], faces: faceLandmarksDetection.Face[] = []) => {
-      if (!currentVrm.current || !blazePoseResult) return;
+    rigRotation(vrm, "neck", riggedFace.head, 0.7);
 
-      const videoElement = videoRef.current;
-      if (!videoElement) return;
+    const expressionManager = vrm.expressionManager;
+    // Eye blinking
+    const stabilizedBlink = Kalidokit.Face.stabilizeBlink(
+      { l: 1 - riggedFace.eye.l, r: 1 - riggedFace.eye.r },
+      riggedFace.head.y
+    );
+    expressionManager.setValue("blink", stabilizedBlink.l);
 
-      try {
-        const worldLandmarks = blazePoseResult.keypoints3D;
-        const landmarks2D = blazePoseResult.keypoints;
+    // Mouth movements
+    const lerpVal = 0.5;
+    expressionManager.setValue("ih", Kalidokit.Vector.lerp(riggedFace.mouth.shape.I, expressionManager.getValue("i") || 0, lerpVal));
+    expressionManager.setValue("aa", Kalidokit.Vector.lerp(riggedFace.mouth.shape.A, expressionManager.getValue("a") || 0, lerpVal));
+    expressionManager.setValue("ee", Kalidokit.Vector.lerp(riggedFace.mouth.shape.E, expressionManager.getValue("e") || 0, lerpVal));
+    expressionManager.setValue("oh", Kalidokit.Vector.lerp(riggedFace.mouth.shape.O, expressionManager.getValue("o") || 0, lerpVal));
+    expressionManager.setValue("ou", Kalidokit.Vector.lerp(riggedFace.mouth.shape.U, expressionManager.getValue("u") || 0, lerpVal));
 
-        if (!worldLandmarks || !landmarks2D) {
-          return;
-        }
+    // Pupil tracking
+    let lookTarget = new THREE.Euler(
+      Kalidokit.Vector.lerp(oldLookTarget.current.x, riggedFace.pupil.y, 0.4),
+      Kalidokit.Vector.lerp(oldLookTarget.current.y, riggedFace.pupil.x, 0.4),
+      0,
+      "XYZ"
+    );
+    oldLookTarget.current.copy(lookTarget);
+    if (vrm.lookAt.target) {
+      vrm.lookAt.target.position.set(Math.sin(lookTarget.y) * 2, -Math.sin(lookTarget.x) * 2, -5);
+    }
+	}, [])
 
-        const getVisibility = (index: number) => landmarks2D[index]?.score || 0;
-        const VISIBILITY_THRESHOLD = 0.5;
+  const animateVRM = useCallback((vrm: VRM, results: any) => {
+	  if (!currentVrm.current) return;
 
-        const coreVisibility = [
-          getVisibility(11),
-          getVisibility(12),
-          getVisibility(23),
-          getVisibility(24),
-        ];
-        const avgCoreVisibility = coreVisibility.reduce((a, b) => a + b, 0) / coreVisibility.length;
+	  let riggedPose, riggedLeftHand, riggedRightHand, riggedFace;
+	  const videoElement = videoRef.current;
+	  if (!videoElement) return;
 
-        if (avgCoreVisibility < VISIBILITY_THRESHOLD) {
-          return;
-        }
+	  try {
+		  const faceLandmarks = results.faceLandmarks;
+		  const pose3DLandmarks = results.ea;
+		  const pose2DLandmarks = results.poseLandmarks;
+		  const leftHandLandmarks = results.rightHandLandmarks;
+		  const rightHandLandmarks = results.leftHandLandmarks;
 
-        const filteredWorldLandmarks = worldLandmarks.filter(lm =>
-          lm && typeof lm.x === 'number' && typeof lm.y === 'number' && typeof lm.z === 'number'
-        );
-        const filteredLandmarks2D = landmarks2D.filter(lm =>
-          lm && typeof lm.x === 'number' && typeof lm.y === 'number'
-        );
+		  // Animate Face
+		  if (faceLandmarks) {
+			  riggedFace = Kalidokit.Face.solve(faceLandmarks, { runtime: "mediapipe", video: videoElement });
+			  if (riggedFace) rigFace(vrm, riggedFace);
+		  }
 
-        if (filteredWorldLandmarks.length < 33 || filteredLandmarks2D.length < 33) {
-          return;
-        }
+		  // Animate Pose
+		  if (pose2DLandmarks && pose3DLandmarks) {
+			  riggedPose = Kalidokit.Pose.solve(pose3DLandmarks, pose2DLandmarks, { runtime: "mediapipe", video: videoElement });
+			  if (riggedPose) {
+				  rigRotation(vrm, "hips", riggedPose.Hips.rotation, 0.3);
+				  rigPosition(vrm, "hips", {
+					  x: -riggedPose.Hips.position.x,
+					  y: riggedPose.Hips.position.y + 1,
+					  z: -riggedPose.Hips.position.z,
+				  }, 1, 0.07);
 
-        const riggedPose = Kalidokit.Pose.solve(filteredWorldLandmarks, filteredLandmarks2D, {
-          runtime: "tfjs",
-          video: videoElement,
-          imageSize: {
-            width: videoElement.videoWidth,
-            height: videoElement.videoHeight,
-          },
-        });
-        if (riggedPose) {
+				  rigRotation(vrm, "chest", riggedPose.Spine, 0.25, 0.3);
+				  rigRotation(vrm, "spine", riggedPose.Spine, 0.45, 0.3);
+				  rigRotation(vrm, "rightUpperArm", riggedPose.RightUpperArm, 1, 0.3);
+				  rigRotation(vrm, "rightLowerArm", riggedPose.RightLowerArm, 1, 0.3);
+				  rigRotation(vrm, "leftUpperArm", riggedPose.LeftUpperArm, 1, 0.3);
+				  rigRotation(vrm, "leftLowerArm", riggedPose.LeftLowerArm, 1, 0.3);
+				  rigRotation(vrm, "leftUpperLeg", riggedPose.LeftUpperLeg, 1, 0.3);
+				  rigRotation(vrm, "leftLowerLeg", riggedPose.LeftLowerLeg, 1, 0.3);
+				  rigRotation(vrm, "rightUpperLeg", riggedPose.RightUpperLeg, 1, 0.3);
+				  rigRotation(vrm, "rightLowerLeg", riggedPose.RightLowerLeg, 1, 0.3);
 
-          if (getVisibility(23) > VISIBILITY_THRESHOLD && getVisibility(24) > VISIBILITY_THRESHOLD) {
-            rigRotation(vrm, "hips", riggedPose.Hips.rotation, 0.5, 0.3);
-            rigPosition(
-              vrm,
-              "hips",
-              {
-                x: -riggedPose.Hips.position.x,
-                y: riggedPose.Hips.position.y + 1,
-                z: -riggedPose.Hips.position.z,
-              },
-              1,
-              0.07
-            );
-          }
-
-          if (getVisibility(11) > VISIBILITY_THRESHOLD && getVisibility(12) > VISIBILITY_THRESHOLD) {
-            rigRotation(vrm, "chest", riggedPose.Spine, 0.5, 0.3);
-            rigRotation(vrm, "spine", riggedPose.Spine, 0.5, 0.3);
-          }
-
-          if (getVisibility(12) > VISIBILITY_THRESHOLD && getVisibility(14) > VISIBILITY_THRESHOLD) {
-            rigRotation(vrm, "rightUpperArm", riggedPose.RightUpperArm, 1, 0.3);
-          }
-          if (getVisibility(14) > VISIBILITY_THRESHOLD && getVisibility(16) > VISIBILITY_THRESHOLD) {
-            rigRotation(vrm, "rightLowerArm", riggedPose.RightLowerArm, 1, 0.3);
-          }
-          if (getVisibility(11) > VISIBILITY_THRESHOLD && getVisibility(13) > VISIBILITY_THRESHOLD) {
-            rigRotation(vrm, "leftUpperArm", riggedPose.LeftUpperArm, 1, 0.3);
-          }
-          if (getVisibility(13) > VISIBILITY_THRESHOLD && getVisibility(15) > VISIBILITY_THRESHOLD) {
-            rigRotation(vrm, "leftLowerArm", riggedPose.LeftLowerArm, 1, 0.3);
-          }
-
-          // if (getVisibility(23) > VISIBILITY_THRESHOLD && getVisibility(25) > VISIBILITY_THRESHOLD) {
-          //   rigRotation(vrm, "leftUpperLeg", riggedPose.LeftUpperLeg, 1, 0.3);
-          // }
-          // if (getVisibility(25) > VISIBILITY_THRESHOLD && getVisibility(27) > VISIBILITY_THRESHOLD) {
-          //   rigRotation(vrm, "leftLowerLeg", riggedPose.LeftLowerLeg, 1, 0.3);
-          // }
-          // if (getVisibility(24) > VISIBILITY_THRESHOLD && getVisibility(26) > VISIBILITY_THRESHOLD) {
-          //   rigRotation(vrm, "rightUpperLeg", riggedPose.RightUpperLeg, 1, 0.3);
-          // }
-          // if (getVisibility(26) > VISIBILITY_THRESHOLD && getVisibility(28) > VISIBILITY_THRESHOLD) {
-          //   rigRotation(vrm, "rightLowerLeg", riggedPose.RightLowerLeg, 1, 0.3);
-          // }
-
-          if (hands.length > 0) {
-            hands.forEach((hand) => {
-              if (hand.score && hand.score < 0.5) return;
-
-              const handedness = hand.handedness === "Left" ? "Right" : "Left";
-              const landmarks = (hand.keypoints3D || hand.keypoints).map(kp => ({
-                x: kp.x || 0,
-                y: kp.y || 0,
-                z: kp.z || 0,
-              }));
-              const riggedHand = Kalidokit.Hand.solve(landmarks, handedness);
-
-              if (riggedHand) {
-                if (handedness === "Right") {
-                  rigRotation(vrm, "rightHand", {
-                    z: riggedPose.RightHand?.z || 0,
-                    y: riggedHand.RightWrist.y,
-                    x: riggedHand.RightWrist.x,
-                  });
-                  rigRotation(vrm, "rightRingProximal", riggedHand.RightRingProximal);
-                  rigRotation(vrm, "rightRingIntermediate", riggedHand.RightRingIntermediate);
-                  rigRotation(vrm, "rightRingDistal", riggedHand.RightRingDistal);
-                  rigRotation(vrm, "rightIndexProximal", riggedHand.RightIndexProximal);
-                  rigRotation(vrm, "rightIndexIntermediate", riggedHand.RightIndexIntermediate);
-                  rigRotation(vrm, "rightIndexDistal", riggedHand.RightIndexDistal);
-                  rigRotation(vrm, "rightMiddleProximal", riggedHand.RightMiddleProximal);
-                  rigRotation(vrm, "rightMiddleIntermediate", riggedHand.RightMiddleIntermediate);
-                  rigRotation(vrm, "rightMiddleDistal", riggedHand.RightMiddleDistal);
-                  rigRotation(vrm, "rightThumbMetacarpal", riggedHand.RightThumbProximal);
-                  rigRotation(vrm, "rightThumbProximal", riggedHand.RightThumbDistal);
-                  rigRotation(vrm, "rightLittleProximal", riggedHand.RightLittleProximal);
-                  rigRotation(vrm, "rightLittleIntermediate", riggedHand.RightLittleIntermediate);
-                  rigRotation(vrm, "rightLittleDistal", riggedHand.RightLittleDistal);
-                } else {
-                  rigRotation(vrm, "leftHand", {
-                    z: riggedPose.LeftHand?.z || 0,
-                    y: riggedHand.LeftWrist.y,
-                    x: riggedHand.LeftWrist.x,
-                  });
-                  rigRotation(vrm, "leftRingProximal", riggedHand.LeftRingProximal);
-                  rigRotation(vrm, "leftRingIntermediate", riggedHand.LeftRingIntermediate);
-                  rigRotation(vrm, "leftRingDistal", riggedHand.LeftRingDistal);
-                  rigRotation(vrm, "leftIndexProximal", riggedHand.LeftIndexProximal);
-                  rigRotation(vrm, "leftIndexIntermediate", riggedHand.LeftIndexIntermediate);
-                  rigRotation(vrm, "leftIndexDistal", riggedHand.LeftIndexDistal);
-                  rigRotation(vrm, "leftMiddleProximal", riggedHand.LeftMiddleProximal);
-                  rigRotation(vrm, "leftMiddleIntermediate", riggedHand.LeftMiddleIntermediate);
-                  rigRotation(vrm, "leftMiddleDistal", riggedHand.LeftMiddleDistal);
-                  rigRotation(vrm, "leftThumbMetacarpal", riggedHand.LeftThumbProximal);
-                  rigRotation(vrm, "leftThumbProximal", riggedHand.LeftThumbDistal);
-                  rigRotation(vrm, "leftLittleProximal", riggedHand.LeftLittleProximal);
-                  rigRotation(vrm, "leftLittleIntermediate", riggedHand.LeftLittleIntermediate);
-                  rigRotation(vrm, "leftLittleDistal", riggedHand.LeftLittleDistal);
-                }
-              }
-            });
-          }
-
-          if (faces.length > 0) {
-            const face = faces[0];
-
-            if (face.box && face.box.width >= 50 && face.box.height >= 50) {
-              const landmarks = face.keypoints.map(kp => ({
-              x: kp.x || 0,
-              y: kp.y || 0,
-              z: kp.z || 0,
-            }));
-
-              const riggedFace = Kalidokit.Face.solve(landmarks, {
-                runtime: "tfjs",
-                video: videoElement,
-                imageSize: {
-                  width: videoElement.videoWidth,
-                  height: videoElement.videoHeight,
-                },
-                smoothBlink: true,
-                blinkSettings: [0.25, 0.75],
-              });
-
-              if (riggedFace && vrm.expressionManager) {
-                const expressionManager = vrm.expressionManager;
-
-                rigRotation(vrm, "neck", riggedFace.head, 0.7);
-
-                const eyeLookDown = THREE.MathUtils.clamp(riggedFace.eye.l + riggedFace.eye.r, 0, 1);
-                expressionManager.setValue("lookDown", eyeLookDown);
-                expressionManager.setValue("lookLeft", THREE.MathUtils.clamp(riggedFace.pupil.x * 0.3, 0, 1));
-                expressionManager.setValue("lookRight", THREE.MathUtils.clamp(-riggedFace.pupil.x * 0.3, 0, 1));
-                expressionManager.setValue("lookUp", THREE.MathUtils.clamp(-riggedFace.eye.l - riggedFace.eye.r, 0, 1));
-
-                expressionManager.setValue("blinkLeft", 1 - riggedFace.eye.l);
-                expressionManager.setValue("blinkRight", 1 - riggedFace.eye.r);
-
-                expressionManager.setValue("aa", riggedFace.mouth.shape.A);
-                expressionManager.setValue("ee", riggedFace.mouth.shape.E);
-                expressionManager.setValue("ih", riggedFace.mouth.shape.I);
-                expressionManager.setValue("oh", riggedFace.mouth.shape.O);
-                expressionManager.setValue("ou", riggedFace.mouth.shape.U);
-
-                expressionManager.update();
-              }
-            }
-          }
-        }
-      } catch (error) {
-        console.error("[BlazePose] VRM 애니메이션 에러:", error);
-      }
-    },
-    []
-  );
+				  // Animate Hands
+				  if (leftHandLandmarks) {
+					  riggedLeftHand = Kalidokit.Hand.solve(leftHandLandmarks, "Left");
+					  if (riggedLeftHand) {
+						  rigRotation(vrm, "leftHand", { z: riggedPose.LeftHand.z, y: riggedLeftHand.LeftWrist.y, x: riggedLeftHand.LeftWrist.x, });
+						  rigRotation(vrm, "leftRingProximal", riggedLeftHand.LeftRingProximal);
+						  rigRotation(vrm, "leftRingIntermediate", riggedLeftHand.LeftRingIntermediate);
+						  rigRotation(vrm, "leftRingDistal", riggedLeftHand.LeftRingDistal);
+						  rigRotation(vrm, "leftIndexProximal", riggedLeftHand.LeftIndexProximal);
+						  rigRotation(vrm, "leftIndexIntermediate", riggedLeftHand.LeftIndexIntermediate);
+						  rigRotation(vrm, "leftIndexDistal", riggedLeftHand.LeftIndexDistal);
+						  rigRotation(vrm, "leftMiddleProximal", riggedLeftHand.LeftMiddleProximal);
+						  rigRotation(vrm, "leftMiddleIntermediate", riggedLeftHand.LeftMiddleIntermediate);
+						  rigRotation(vrm, "leftMiddleDistal", riggedLeftHand.LeftMiddleDistal);
+						  rigRotation(vrm, "leftThumbProximal", riggedLeftHand.LeftThumbProximal);
+						  rigRotation(vrm, "leftThumbDistal", riggedLeftHand.LeftThumbDistal);
+						  rigRotation(vrm, "leftLittleProximal", riggedLeftHand.LeftLittleProximal);
+						  rigRotation(vrm, "leftLittleIntermediate", riggedLeftHand.LeftLittleIntermediate);
+						  rigRotation(vrm, "leftLittleDistal", riggedLeftHand.LeftLittleDistal);
+					  }
+				  }
+				  if (rightHandLandmarks) {
+					  riggedRightHand = Kalidokit.Hand.solve(rightHandLandmarks, "Right");
+					  if (riggedRightHand) {
+						  rigRotation(vrm, "rightHand", { z: riggedPose.RightHand.z, y: riggedRightHand.RightWrist.y, x: riggedRightHand.RightWrist.x, });
+						  rigRotation(vrm, "rightRingProximal", riggedRightHand.RightRingProximal);
+						  rigRotation(vrm, "rightRingIntermediate", riggedRightHand.RightRingIntermediate);
+						  rigRotation(vrm, "rightRingDistal", riggedRightHand.RightRingDistal);
+						  rigRotation(vrm, "rightIndexProximal", riggedRightHand.RightIndexProximal);
+						  rigRotation(vrm, "rightIndexIntermediate", riggedRightHand.RightIndexIntermediate);
+						  rigRotation(vrm, "rightIndexDistal", riggedRightHand.RightIndexDistal);
+						  rigRotation(vrm, "rightMiddleProximal", riggedRightHand.RightMiddleProximal);
+						  rigRotation(vrm, "rightMiddleIntermediate", riggedRightHand.RightMiddleIntermediate);
+						  rigRotation(vrm, "rightMiddleDistal", riggedRightHand.RightMiddleDistal);
+						  rigRotation(vrm, "rightThumbProximal", riggedRightHand.RightThumbProximal);
+						  rigRotation(vrm, "rightThumbDistal", riggedRightHand.RightThumbDistal);
+						  rigRotation(vrm, "rightLittleProximal", riggedRightHand.RightLittleProximal);
+						  rigRotation(vrm, "rightLittleIntermediate", riggedRightHand.RightLittleIntermediate);
+						  rigRotation(vrm, "rightLittleDistal", riggedRightHand.RightLittleDistal);
+					  }
+				  }
+			  }
+		  }
+	  } catch (error) {
+		  console.error("Kalidokit solve error:", error);
+	  }
+  },[rigFace]);
 
   useEffect(() => {
-    if (!isCameraEnabled || !videoRef.current) return;
+    const scriptId = "mediapipe-holistic-script";
+    let script = document.getElementById(scriptId) as HTMLScriptElement;
+
+    const loadScript = () => {
+      if (script) {
+        setIsHolisticLoaded(true);
+        return;
+      }
+      script = document.createElement("script");
+      script.id = scriptId;
+      script.src = "https://cdn.jsdelivr.net/npm/@mediapipe/holistic@0.5.1635989137/holistic.js";
+      script.crossOrigin = "anonymous";
+      script.async = true;
+      script.onload = () => setIsHolisticLoaded(true);
+      script.onerror = () => {
+        console.log("에러발생")
+      };
+      document.body.appendChild(script);
+    };
+    loadScript();
+  }, []);
+
+  useEffect(() => {
+    if (!isCameraEnabled || !videoRef.current || !isHolisticLoaded) return;
 
     const videoElement = videoRef.current;
-    let animationFrameId: number | undefined;
-    let isRunning = true;
+    let holistic: any;
+    let holisticFrameId: number;
 
     const setupCamera = async () => {
-      const existingStream = videoElement.srcObject as MediaStream;
-      if (existingStream) {
-        existingStream.getTracks().forEach(track => track.stop());
-      }
-
       try {
-        const videoConstrains: MediaTrackConstraints = {
-          width: 640,
-          height: 480,
-        };
-        if (selectedDevice) {
-          videoConstrains.deviceId = { exact: selectedDevice.deviceId };
-        }
+				const videoConstrains: MediaTrackConstraints = {
+					width: 640,
+					height: 480
+				}
+				if (selectedDevice) {
+					videoConstrains.deviceId = { exact: selectedDevice.deviceId };
+				}
 
         const stream = await navigator.mediaDevices.getUserMedia({
           video: videoConstrains,
           audio: false,
         });
         videoElement.srcObject = stream;
-
-        return new Promise<void>((resolve, reject) => {
-          videoElement.onloadedmetadata = () => {
-            videoElement.play()
-              .then(() => {
-                videoElement.width = videoElement.videoWidth;
-                videoElement.height = videoElement.videoHeight;
-
-                if (videoElement.videoWidth === 0 || videoElement.videoHeight === 0) {
-                  console.error("[BlazePose] 비디오 크기가 0입니다");
-                  reject(new Error("Invalid video dimensions"));
-                  return;
-                }
-
-                console.log("[BlazePose] 카메라 설정 완료, 크기:", videoElement.width, "x", videoElement.height);
-                resolve();
-              })
-              .catch(reject);
-          };
-        });
+        await videoElement.play();
       } catch (error) {
-        console.error("[BlazePose] 카메라 접근 실패:", error);
-        throw error;
+        console.error("Failed to get user media", error);
+        console.log("카메라 에러")
       }
     };
 
-    const initializeBlazePose = async () => {
-      if (poseDetectorRef.current) {
-        console.log("[BlazePose] 이미 초기화됨, 재사용");
-        return;
+    const onResults = (results: any) => {
+      if (!currentVrm.current) return;
+      animateVRM(currentVrm.current, results);
+    };
+    setupCamera()
+
+    let HolisticConstructor = (window as any).Holistic;
+    if (!HolisticConstructor) {
+      console.error("Holistic constructor not found on window object.");
+      if (isHolisticLoaded) {
+        console.log("초기화 에러")
       }
+      return;
+    }
+    // Handle cases where the library might be nested under a .default property
+    if (typeof HolisticConstructor.default === 'function') {
+      HolisticConstructor = HolisticConstructor.default;
+    }
 
-      try {
-        await setupCamera();
+    holistic = new HolisticConstructor({
+      locateFile: (file: string) => {
+        return `https://cdn.jsdelivr.net/npm/@mediapipe/holistic@0.5.1635989137/${file}`;
+      },
+    });
 
-      console.log("[BlazePose] TensorFlow 초기화 시작...");
-      await tf.ready();
-      await tf.setBackend("webgl");
-      console.log("[BlazePose] 백엔드:", tf.getBackend());
+    holistic.setOptions({
+      modelComplexity: 1,
+      smoothLandmarks: true,
+      minDetectionConfidence: 0.7,
+      minTrackingConfidence: 0.7,
+      refineFaceLandmarks: true,
+    });
 
-      console.log("[BlazePose] 디텍터 생성 중...");
-      const detector = await poseDetection.createDetector(
-        poseDetection.SupportedModels.BlazePose,
-        {
-          runtime: "tfjs",
-          modelType: "lite",
-          enableSmoothing: true,
-          enableSegmentation: false,
-        }
-      );
-      poseDetectorRef.current = detector;
-      console.log("[BlazePose] 디텍터 초기화 완료");
+    holistic.onResults(onResults);
 
-      console.log("[HandDetection] 디텍터 생성 중...");
-      const handDetector = await handPoseDetection.createDetector(
-        handPoseDetection.SupportedModels.MediaPipeHands,
-        {
-          runtime: "tfjs",
-          modelType: "full",
-          maxHands: 2,
-        }
-      );
-      handDetectorRef.current = handDetector;
-      console.log("[HandDetection] 디텍터 초기화 완료");
-
-      console.log("[FaceMesh] 디텍터 생성 중...");
-      const faceDetector = await faceLandmarksDetection.createDetector(
-        faceLandmarksDetection.SupportedModels.MediaPipeFaceMesh,
-        {
-          runtime: "tfjs",
-          refineLandmarks: false,
-          maxFaces: 1,
-        }
-      );
-      faceDetectorRef.current = faceDetector;
-      console.log("[FaceMesh] 디텍터 초기화 완료");
-
-      let isDetecting = false;
-
-      const detectPose = async () => {
-        if (!isRunning) return;
-
-        if (isDetecting) {
-          animationFrameId = requestAnimationFrame(detectPose);
-          return;
-        }
-
-        if (videoElement.readyState >= 2 && poseDetectorRef.current && handDetectorRef.current && faceDetectorRef.current && currentVrm.current) {
-          isDetecting = true;
-          try {
-            const poses = await poseDetectorRef.current.estimatePoses(videoElement, {
-              flipHorizontal: true,
-            });
-
-            if (poses.length === 0) {
-              isDetecting = false;
-              animationFrameId = requestAnimationFrame(detectPose);
-              return;
-            }
-
-            const pose = poses[0];
-            const landmarks2D = pose.keypoints;
-            const getVisibility = (index: number) => landmarks2D[index]?.score || 0;
-
-            const shouldDetectHands =
-              getVisibility(15) > 0.6 || getVisibility(16) > 0.6;
-
-            const [hands, faces] = await Promise.all([
-              shouldDetectHands
-                ? handDetectorRef.current.estimateHands(videoElement, {
-                    flipHorizontal: true,
-                  })
-                : Promise.resolve([]),
-              faceDetectorRef.current.estimateFaces(videoElement, {
-                flipHorizontal: true,
-              })
-            ]);
-
-            animateVRMWithBlazePose(currentVrm.current, pose, hands, faces);
-          } catch (error) {
-            console.error("[BlazePose] 감지 에러:", error);
-          } finally {
-            isDetecting = false;
-          }
-        }
-
-        if (isRunning) {
-          animationFrameId = requestAnimationFrame(detectPose);
-        }
-      };
-
-        detectPose();
-      } catch (error) {
-        console.error("[BlazePose] 초기화 실패:", error);
+    const sendToHolistic = async () => {
+      if (videoElement.readyState >= 2) {
+        await holistic.send({ image: videoElement });
       }
+      holisticFrameId = requestAnimationFrame(sendToHolistic);
     };
 
-    initializeBlazePose();
+    const loadedDataHandler = () => {
+      sendToHolistic();
+    };
+    videoElement.addEventListener("loadeddata", loadedDataHandler);
 
     return () => {
-      console.log("[BlazePose] Cleanup 시작");
-      isRunning = false;
-
-      if (animationFrameId !== undefined) {
-        cancelAnimationFrame(animationFrameId);
-      }
-
+      cancelAnimationFrame(holisticFrameId);
+      holistic?.close();
       const stream = videoElement.srcObject as MediaStream;
-      if (stream) {
-        stream.getTracks().forEach((track) => track.stop());
-      }
-      videoElement.srcObject = null;
+      stream?.getTracks().forEach(track => track.stop());
+      videoElement.removeEventListener("loadeddata", loadedDataHandler);
     };
-  }, [animateVRMWithBlazePose, isCameraEnabled, selectedDevice]);
-
-
+  }, [animateVRM, isCameraEnabled, isHolisticLoaded]);
 
   useEffect(() => {
     if (width === 0 || height === 0) return;
@@ -482,11 +288,7 @@ const ThreeCanvas = ({
     const camera = new THREE.PerspectiveCamera(30.0, width / height, 0.1, 20.0);
     camera.position.set(0.0, 1.4, 1.5);
 
-    const renderer = new THREE.WebGLRenderer({
-      antialias: true,
-      alpha: true,
-      preserveDrawingBuffer: true,
-    });
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
     renderer.setSize(width, height);
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -507,8 +309,7 @@ const ThreeCanvas = ({
     const clock = new THREE.Clock();
     let animationFrameId: number;
 
-    const urlToLoad =
-      vrmUrl || "https://d1l5n2avb89axj.cloudfront.net/avatar-first.vrm";
+    const urlToLoad = vrmUrl || "https://d1l5n2avb89axj.cloudfront.net/avatar-first.vrm";
 
     if (urlToLoad) {
       loader.load(
@@ -520,14 +321,14 @@ const ThreeCanvas = ({
             VRMUtils.deepDispose(currentVrm.current.scene);
           }
           scene.add(vrm.scene);
-          vrm.scene.rotation.y = Math.PI;
-          vrm.scene.visible = isVisible;
+          vrm.scene.rotation.y = Math.PI; // Rotate model to face camera
           currentVrm.current = vrm;
 
+          // VRM 모델의 밝기 조정
           vrm.scene.traverse((child) => {
             if (child instanceof THREE.Mesh) {
               if (Array.isArray(child.material)) {
-                child.material = child.material.map((mat) => mat.clone());
+                child.material = child.material.map(mat => mat.clone());
               } else {
                 child.material = child.material.clone();
               }
@@ -546,14 +347,21 @@ const ThreeCanvas = ({
             }
           });
 
-          if (vrm.lookAt) {
+          if(vrm.lookAt){
             vrm.lookAt.target = new THREE.Object3D();
             vrm.scene.add(vrm.lookAt.target);
+          }
+
+          if (!vrmUrl) {
+            console.log("기본 아바타 로드됨")
+          } else {
+            console.log("아바타 로드됨")
           }
         },
         undefined,
         (error) => {
-          console.error("[VRM] 로드 실패:", error);
+          console.error(error);
+          console.log("로드 실패")
         }
       );
     }
@@ -570,14 +378,16 @@ const ThreeCanvas = ({
 
     return () => {
       cancelAnimationFrame(animationFrameId);
-      if (currentVrm.current) {
+      if(currentVrm.current) {
         VRMUtils.deepDispose(currentVrm.current.scene);
       }
       renderer.dispose();
     };
-  }, [height, onCanvasReady, vrmUrl, width, isVisible]);
+  }, [height, onCanvasReady, vrmUrl, width]);
 
-  return <video ref={videoRef} style={{ display: "none" }}></video>;
+  return (
+    <video ref={videoRef} style={{ display: "none" }}></video>
+  );
 };
 
 export default ThreeCanvas;
