@@ -7,12 +7,14 @@ interface ScreenShareOptionProps {
   canvasSize: CanvasSize;
   onAddScreen: (screen: Screen) => void;
   onClose: () => void;
+  sourceName?: string;
 }
 
 export const ScreenShareOption = ({
   canvasSize,
   onAddScreen,
   onClose,
+  sourceName,
 }: ScreenShareOptionProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const { addAudioTrack } = useAudioStore();
@@ -66,6 +68,7 @@ export const ScreenShareOption = ({
         y: y,
         width: width,
         height: height,
+        name: sourceName || '화면 캡처',
       };
 
       onAddScreen(screenObj);

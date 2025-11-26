@@ -45,6 +45,7 @@ export interface Screen {
 	y: number;
 	width: number;
 	height: number;
+	name?: string;
 }
 
 export interface Offset {

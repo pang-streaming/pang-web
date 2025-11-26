@@ -6,12 +6,14 @@ interface ImageOptionProps {
   canvasSize: CanvasSize;
   onAddScreen: (screen: Screen) => void;
   onClose: () => void;
+  sourceName?: string;
 }
 
 export const ImageOption = ({
   canvasSize,
   onAddScreen,
   onClose,
+  sourceName,
 }: ImageOptionProps) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -52,6 +54,7 @@ export const ImageOption = ({
         y: y,
         width: width,
         height: height,
+        name: sourceName || '이미지',
       };
 
       onAddScreen(screenObj);

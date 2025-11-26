@@ -35,6 +35,7 @@ export const ScreenListItem = ({
   };
 
   const getScreenName = (screen: Screen): string => {
+    if (screen.name) return screen.name;
     if (screen.id === 999) return 'VTuber';
     if (screen.type === 'video') return `화면 공유 ${index + 1}`;
     if (screen.type === 'image') return `이미지 ${index + 1}`;

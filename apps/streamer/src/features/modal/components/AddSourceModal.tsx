@@ -110,6 +110,7 @@ export const AddSourceModal = ({
                 canvasSize={canvasSize}
                 onAddScreen={onAddScreen}
                 onClose={onClose}
+                sourceName={sourceName}
               />
             )}
             {selectedType === 'image' && (
@@ -117,6 +118,7 @@ export const AddSourceModal = ({
                 canvasSize={canvasSize}
                 onAddScreen={onAddScreen}
                 onClose={onClose}
+                sourceName={sourceName}
               />
             )}
             {selectedType === 'vtuber' && (
