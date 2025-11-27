@@ -4,6 +4,7 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { VRM, VRMUtils, VRMLoaderPlugin, VRMHumanoid } from "@pixiv/three-vrm";
 import * as Kalidokit from "kalidokit";
 import { DepthCorrectionSystem } from "../utils/depth-correction";
+import { useExpressionHotkeys } from "../hooks/useExpressionHotkeys";
 
 interface ThreeCanvasProps {
   vrmUrl: string | null;
@@ -42,6 +43,8 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled, selectedDevice, onCanvasReady, i
   const [isHolisticLoaded, setIsHolisticLoaded] = useState(false);
   const oldLookTarget = useRef(new THREE.Euler());
   const depthCorrection = useRef(new DepthCorrectionSystem());
+
+  useExpressionHotkeys(currentVrm.current, isCameraEnabled);
 
   useEffect(() => {
     if (currentVrm.current) {
