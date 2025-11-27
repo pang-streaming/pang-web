@@ -99,14 +99,14 @@ export const useSocketBroadcast = (
 				console.warn('마이크 접근 실패:', err);
 			}
 			
-			// MediaRecorder 설정
-			let options = {
+			// MediaRecorder 설정 - H.264 우선 사용
+			const options: MediaRecorderOptions = {
 				mimeType: 'video/webm;codecs=h264,opus',
 				videoBitsPerSecond: 4500000,
 				audioBitsPerSecond: 128000
 			};
 			
-			if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+			if (!MediaRecorder.isTypeSupported(<string>options.mimeType)) {
 				console.log('H.264+Opus not supported, trying VP8+Opus');
 				options.mimeType = 'video/webm;codecs=vp8,opus';
 				
@@ -122,6 +122,8 @@ export const useSocketBroadcast = (
 			}
 			
 			console.log('Using codec:', options.mimeType);
+			console.log('⚠️ Keyframe interval: Browser controls GOP size (usually 6-10s)');
+			console.log('💡 Local agent should re-encode with: -g 120 -keyint_min 120 for 2s keyframes');
 			
 			const mediaRecorder = new MediaRecorder(stream, options);
 			mediaRecorderRef.current = mediaRecorder;
@@ -168,14 +170,19 @@ export const useSocketBroadcast = (
 			socketRef.current.emit('start-stream-webm', {
 				rtmpUrl: validRtmpUrls.length === 1 ? validRtmpUrls[0] : validRtmpUrls,
 				mimeType: options.mimeType,
-				fps: 60
+				fps: 60,
+				// 키프레임 간격 힌트 (실제로는 브라우저가 결정하지만 로컬 에이전트에 전달)
+				keyframeInterval: 2 // 목표: 2초
 			});
 			
-			// MediaRecorder 시작 (100ms마다 데이터 전송)
-			mediaRecorder.start(100);
+			// MediaRecorder 시작
+			// 더 짧은 타임슬라이스로 키프레임 생성 빈도 향상 시도 (33ms = ~30fps)
+			// 하지만 실제 키프레임 간격은 브라우저가 결정
+			mediaRecorder.start(33);
 			chunkCountRef.current = 0;
 			
-			console.log('Streaming started with Socket.IO');
+			console.log('Streaming started with Socket.IO (timeslice: 33ms)');
+			console.log('⚠️ Browser controls keyframe interval - if GOP > 4s, consider using OBS with RTMP');
 			isStreaming.current = true;
 		} catch (error) {
 			console.error('Failed to start streaming:', error);
