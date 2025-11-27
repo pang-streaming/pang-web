@@ -501,7 +501,7 @@ export const CopyButton = styled.button`
   transition: background-color 0.2s;
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.primary.dark || '#1d4ed8'};
+    background-color: ${({ theme }) => theme.colors.primary.dark};
   }
 `;
 
@@ -509,4 +509,23 @@ export const InfoText = styled.div`
   font-size: 14px;
   color: ${({ theme }) => theme.colors.text.normal};
   line-height: 1.5;
+`;
+
+export const Input = styled.input`
+  width: 100%;
+  padding: 10px;
+  border: 1px solid ${({ theme }) => theme.colors.border.normal};
+  border-radius: ${({ theme }) => theme.borders.small};
+  background-color: ${({ theme }) => theme.colors.background.light};
+  color: ${({ theme }) => theme.colors.text.normal};
+  font-size: 14px;
+  
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.primary.normal};
+  }
+  
+  &::placeholder {
+    color: ${({ theme }) => theme.colors.text.subtitle};
+  }
 `;

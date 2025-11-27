@@ -43,6 +43,7 @@ const StreamingPage = () => {
   );
   const [hashtags, setHashtags] = useState<string[]>([]);
   const [isStreamingSettingsOpen, setIsStreamingSettingsOpen] = useState(false);
+  const [rtmpUrls, setRtmpUrls] = useState<string[]>(['', '', '']);
   const queryClient = useQueryClient();
 
   const {
@@ -200,6 +201,10 @@ const StreamingPage = () => {
     setIsStreamingSettingsOpen(false);
   };
 
+  const handleRtmpUrlsChange = (urls: string[]) => {
+    setRtmpUrls(urls);
+  };
+
   // titleChild를 별도 변수로 분리하여 스코프 문제 해결
   const titleChildContent = (
     <>
@@ -297,6 +302,7 @@ const StreamingPage = () => {
             title={myInfo?.data?.nickname ?? ""}
             onTitleClick={handleTitleClick}
             titleChild={titleChildContent}
+            rtmpUrls={rtmpUrls}
           />
         </S.VideoWrapper>
         <S.ChatSection>
@@ -344,6 +350,8 @@ const StreamingPage = () => {
         streamKey={streamKey || ""}
         queryClient={queryClient}
         streamStatus={streamStatus}
+        rtmpUrls={rtmpUrls}
+        onRtmpUrlsChange={handleRtmpUrlsChange}
       />
     </S.PageContainer>
   );

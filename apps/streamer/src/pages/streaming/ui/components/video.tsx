@@ -7,7 +7,7 @@ import {
 } from "@/features/canvas/constants/canvas-constants";
 import { VscDebugStart, VscDebugStop } from "react-icons/vsc";
 import { useVrmScreen } from "@/features/vrm/hooks/useVrmScreen";
-import { useWhipBroadcast2 } from "@/features/whip/useWhipBroadcast";
+import { useSocketBroadcast } from "@/features/whip/useSocketBroadcast";
 
 interface VideoProps {
   containerRef: React.RefObject<HTMLDivElement | null>;
@@ -23,6 +23,7 @@ interface VideoProps {
   title: string;
   onTitleClick: () => void;
   titleChild: React.ReactNode;
+  rtmpUrls?: string[];
 }
 
 export const Video = ({
@@ -37,12 +38,13 @@ export const Video = ({
   selectedDevice,
   isVTuberEnabled,
   titleChild,
+  rtmpUrls,
 }: VideoProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { isStreaming, startStreaming } = useWhipBroadcast2(
+  const { isStreaming, startStreaming, stopStreaming } = useSocketBroadcast(
     canvasRef,
     streamKey,
-    whipUrl
+    rtmpUrls
   );
 
   const { screen: vrmScreen, VrmRenderer } = useVrmScreen(
@@ -84,8 +86,8 @@ export const Video = ({
           {titleChild}
           <StatsContainer>
             <StartButton
-              isStarted={isStreaming.current}
-              onClick={startStreaming}
+              $isStarted={isStreaming.current}
+              onClick={isStreaming.current ? stopStreaming : startStreaming}
             >
               {isStreaming.current ? (
                 <VscDebugStop size={20} />
@@ -163,12 +165,12 @@ const StatsContainer = styled.div`
   gap: 12px;
 `;
 
-const StartButton = styled.button<{ isStarted: boolean }>`
+const StartButton = styled.button<{ $isStarted: boolean }>`
   padding: 8px;
   border-radius: ${({ theme }) => theme.borders.small};
   color: ${({ theme }) => theme.colors.text.normal};
-  background-color: ${({ theme, isStarted }) =>
-    isStarted ? theme.colors.primary.normal : theme.colors.content.normal};
+  background-color: ${({ theme, $isStarted }) =>
+    $isStarted ? theme.colors.primary.normal : theme.colors.content.normal};
   cursor: pointer;
   border: none;
 `;
