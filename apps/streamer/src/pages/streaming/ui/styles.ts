@@ -501,7 +501,7 @@ export const CopyButton = styled.button`
   transition: background-color 0.2s;
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.primary.dark || '#1d4ed8'};
+    background-color: ${({ theme }) => theme.colors.primary.dark};
   }
 `;
 
@@ -514,18 +514,18 @@ export const InfoText = styled.div`
 export const Input = styled.input`
   width: 100%;
   padding: 10px;
-  border: 1px solid ${({ theme }) => theme.colors.border.normal || '#ccc'};
-  border-radius: ${({ theme }) => theme.borders.small || '4px'};
-  background-color: ${({ theme }) => theme.colors.background.light || '#fff'};
+  border: 1px solid ${({ theme }) => theme.colors.border.normal};
+  border-radius: ${({ theme }) => theme.borders.small};
+  background-color: ${({ theme }) => theme.colors.background.light};
   color: ${({ theme }) => theme.colors.text.normal};
   font-size: 14px;
   
   &:focus {
     outline: none;
-    border-color: ${({ theme }) => theme.colors.primary.normal || '#3b82f6'};
+    border-color: ${({ theme }) => theme.colors.primary.normal};
   }
   
   &::placeholder {
-    color: ${({ theme }) => theme.colors.text.subtle || '#999'};
+    color: ${({ theme }) => theme.colors.text.subtitle};
   }
 `;
