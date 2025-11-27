@@ -1,6 +1,6 @@
-import { RefObject, useCallback, useRef, useEffect } from 'react';
-import { io, Socket } from 'socket.io-client';
-import { api } from "@pang/shared/ui";
+import {RefObject, useCallback, useEffect, useRef} from 'react';
+import {io, Socket} from 'socket.io-client';
+import {api} from "@pang/shared/ui";
 
 const SOCKET_URL = "ws://localhost:47284";
 
@@ -16,13 +16,24 @@ export const useSocketBroadcast = (
 	const chunkCountRef = useRef<number>(0);
 	
 	useEffect(() => {
-		// Socket.IO 연결 초기화
 		socketRef.current = io(SOCKET_URL, {
-			transports: ["websocket"]
+			transports: ["websocket"],
+			timeout: 3000
 		});
 		
 		socketRef.current.on('connect', () => {
 			console.log('Socket.IO connected to local agent');
+		});
+		
+		socketRef.current.on('connect_error', (error) => {
+			console.log('Socket connection failed, opening deeplink to start app');
+			console.error('Connection error:', error);
+			
+			window.location.href = 'pang-streamer://start';
+			
+			setTimeout(() => {
+				window.location.href = import.meta.env.VITE_STREAMER_DOWNLOAD_URL || 'https://github.com/your-org/pang-streamer/releases/latest';
+			}, 2000);
 		});
 		
 		socketRef.current.on('disconnect', () => {
@@ -121,10 +132,6 @@ export const useSocketBroadcast = (
 				}
 			}
 			
-			console.log('Using codec:', options.mimeType);
-			console.log('⚠️ Keyframe interval: Browser controls GOP size (usually 6-10s)');
-			console.log('💡 Local agent should re-encode with: -g 120 -keyint_min 120 for 2s keyframes');
-			
 			const mediaRecorder = new MediaRecorder(stream, options);
 			mediaRecorderRef.current = mediaRecorder;
 			
@@ -164,10 +171,6 @@ export const useSocketBroadcast = (
 			
 			// 내부 서버 URL을 첫번째로 추가
 			const validRtmpUrls = ["rtmp://43.202.111.208:1935/dde0fbf7e26cffe9d441cd8f5508a7f1", ...userRtmpUrls];
-			
-			if (validRtmpUrls.length === 0) {
-				throw new Error('최소 1개의 RTMP URL이 필요합니다');
-			}
 			
 			// Socket.IO로 로컬 에이전트에 스트리밍 시작 알림
 			socketRef.current.emit('start-stream-webm', {
