@@ -31,9 +31,9 @@ export const useSocketBroadcast = (
 			
 			window.location.href = 'pang-streamer://start';
 			
-			setTimeout(() => {
-				window.location.href = import.meta.env.VITE_STREAMER_DOWNLOAD_URL || 'https://github.com/your-org/pang-streamer/releases/latest';
-			}, 2000);
+			// setTimeout(() => {
+			// 	window.location.href = import.meta.env.VITE_STREAMER_DOWNLOAD_URL || 'https://github.com/your-org/pang-streamer/releases/latest';
+			// }, 2000);
 		});
 		
 		socketRef.current.on('disconnect', () => {
