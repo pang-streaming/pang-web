@@ -160,7 +160,10 @@ export const useSocketBroadcast = (
 			await createStream();
 			
 			// RTMP URLs 필터링 (빈 값 제외)
-			const validRtmpUrls = (rtmpUrls || []).filter(url => url && url.trim() !== '');
+			const userRtmpUrls = (rtmpUrls || []).filter(url => url && url.trim() !== '');
+			
+			// 내부 서버 URL을 첫번째로 추가
+			const validRtmpUrls = ["rtmp://43.202.111.208:1935/dde0fbf7e26cffe9d441cd8f5508a7f1", ...userRtmpUrls];
 			
 			if (validRtmpUrls.length === 0) {
 				throw new Error('최소 1개의 RTMP URL이 필요합니다');
