@@ -2,7 +2,7 @@ import {RefObject, useCallback, useEffect, useRef} from 'react';
 import {io, Socket} from 'socket.io-client';
 import {api} from "@pang/shared/ui";
 
-const SOCKET_URL = "ws://localhost:47284";
+const SOCKET_URL = "wss://localhost:47284";
 
 export const useSocketBroadcast = (
 	canvasRef: RefObject<HTMLCanvasElement | null>,
