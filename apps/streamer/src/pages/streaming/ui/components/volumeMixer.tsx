@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { useAudioStore } from "../../../../features/audio/stores/useAudioStore";
+import { useAudioStore } from "@/features/audio/stores/useAudioStore";
 
 interface VolumeMeterProps {
   label: string;
@@ -169,8 +169,8 @@ const MixerContainer = styled.div`
 const Title = styled.h3`
   font-size: 16px;
   font-weight: 600;
-  color: white;
-  background-color: #3a3a3a;
+  color: ${({ theme }) => theme.colors.text.normal};
+  background-color: ${({ theme }) => theme.colors.content.dark};
   padding: 8px 15px;
   border-radius: 6px;
   margin: 0;
@@ -178,7 +178,7 @@ const Title = styled.h3`
 
 const EmptyMessage = styled.div`
   font-size: 14px;
-  color: #999;
+  color: ${({ theme }) => theme.colors.text.subtitle};
   text-align: center;
   padding: 20px;
 `;
@@ -188,7 +188,7 @@ const MeterContainer = styled.div`
   flex-direction: column;
   gap: 8px;
   padding: 12px;
-  background-color: #2a2a2a;
+  background-color: ${({ theme }) => theme.colors.content.normal};
   border-radius: 8px;
 `;
 
@@ -201,7 +201,7 @@ const HeaderRow = styled.div`
 const Label = styled.div`
   font-size: 14px;
   font-weight: 600;
-  color: #fff;
+  color: ${({ theme }) => theme.colors.text.normal};
   display: flex;
   align-items: center;
   gap: 8px;
@@ -217,14 +217,14 @@ const SourceBadge = styled.span<{ source: string }>`
       : source === "screen"
         ? theme.colors.secondary.normal
         : theme.colors.primary.normal};
-  color: white;
+  color: ${({ theme }) => theme.colors.text.normal};
   font-weight: 500;
 `;
 
 const RemoveButton = styled.button`
   background: none;
   border: none;
-  color: #ff6b6b;
+  color: ${({ theme }) => theme.colors.status.negative};
   font-size: 18px;
   cursor: pointer;
   padding: 4px 8px;
@@ -232,7 +232,7 @@ const RemoveButton = styled.button`
   transition: background-color 0.2s;
 
   &:hover {
-    background-color: rgba(255, 107, 107, 0.1);
+    background-color: ${({ theme }) => `${theme.colors.status.negative}1A`};
   }
 `;
 
@@ -240,7 +240,7 @@ const MeterTrack = styled.div`
   position: relative;
   height: 6px;
   width: 100%;
-  background-color: #3a3a3a;
+  background-color: ${({ theme }) => theme.colors.content.dark};
   border-radius: 6px;
   overflow: hidden;
 `;
@@ -261,7 +261,7 @@ const VolumeControl = styled.div`
 
 const VolumeLabel = styled.div`
   font-size: 11px;
-  color: #aaa;
+  color: ${({ theme }) => theme.colors.text.subtitle};
 `;
 
 const Slider = styled.input<{ source?: string }>`
@@ -274,7 +274,7 @@ const Slider = styled.input<{ source?: string }>`
       : source === "screen"
         ? theme.colors.secondary.normal
         : theme.colors.primary.normal
-  } 0%, #fff 100%);
+  } 0%, ${({ theme }) => theme.colors.content.normal} 100%);
   border-radius: 10px;
   outline: none;
 

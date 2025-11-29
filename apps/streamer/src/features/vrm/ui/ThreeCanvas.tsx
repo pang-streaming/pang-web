@@ -3,6 +3,8 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { VRM, VRMUtils, VRMLoaderPlugin, VRMHumanoid } from "@pixiv/three-vrm";
 import * as Kalidokit from "kalidokit";
+import { DepthCorrectionSystem } from "../utils/depth-correction";
+import { useExpressionHotkeys } from "../hooks/useExpressionHotkeys";
 
 interface ThreeCanvasProps {
   vrmUrl: string | null;
@@ -14,7 +16,6 @@ interface ThreeCanvasProps {
   height: number;
 }
 
-// Animate Rotation Helper function
 const rigRotation = (vrm: VRM, name: keyof VRMHumanoid["humanBones"], rotation = { x: 0, y: 0, z: 0 }, dampener = 1, lerpAmount = 0.3) => {
   if (!vrm.humanoid) return;
 
@@ -26,7 +27,6 @@ const rigRotation = (vrm: VRM, name: keyof VRMHumanoid["humanBones"], rotation =
   Part.quaternion.slerp(quaternion, lerpAmount);
 };
 
-// Animate Position Helper Function
 const rigPosition = (vrm: VRM, name: keyof VRMHumanoid["humanBones"], position = { x: 0, y: 0, z: 0 }, dampener = 1, lerpAmount = 0.3) => {
   if (!vrm.humanoid) return;
 
@@ -42,6 +42,9 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled, selectedDevice, onCanvasReady, i
   const currentVrm = useRef<VRM | null>(null);
   const [isHolisticLoaded, setIsHolisticLoaded] = useState(false);
   const oldLookTarget = useRef(new THREE.Euler());
+  const depthCorrection = useRef(new DepthCorrectionSystem());
+
+  useExpressionHotkeys(currentVrm.current, isCameraEnabled);
 
   useEffect(() => {
     if (currentVrm.current) {
@@ -55,14 +58,12 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled, selectedDevice, onCanvasReady, i
     rigRotation(vrm, "neck", riggedFace.head, 0.7);
 
     const expressionManager = vrm.expressionManager;
-    // Eye blinking
     const stabilizedBlink = Kalidokit.Face.stabilizeBlink(
       { l: 1 - riggedFace.eye.l, r: 1 - riggedFace.eye.r },
       riggedFace.head.y
     );
     expressionManager.setValue("blink", stabilizedBlink.l);
 
-    // Mouth movements
     const lerpVal = 0.5;
     expressionManager.setValue("ih", Kalidokit.Vector.lerp(riggedFace.mouth.shape.I, expressionManager.getValue("i") || 0, lerpVal));
     expressionManager.setValue("aa", Kalidokit.Vector.lerp(riggedFace.mouth.shape.A, expressionManager.getValue("a") || 0, lerpVal));
@@ -70,7 +71,6 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled, selectedDevice, onCanvasReady, i
     expressionManager.setValue("oh", Kalidokit.Vector.lerp(riggedFace.mouth.shape.O, expressionManager.getValue("o") || 0, lerpVal));
     expressionManager.setValue("ou", Kalidokit.Vector.lerp(riggedFace.mouth.shape.U, expressionManager.getValue("u") || 0, lerpVal));
 
-    // Pupil tracking
     let lookTarget = new THREE.Euler(
       Kalidokit.Vector.lerp(oldLookTarget.current.x, riggedFace.pupil.y, 0.4),
       Kalidokit.Vector.lerp(oldLookTarget.current.y, riggedFace.pupil.x, 0.4),
@@ -97,21 +97,23 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled, selectedDevice, onCanvasReady, i
 		  const leftHandLandmarks = results.rightHandLandmarks;
 		  const rightHandLandmarks = results.leftHandLandmarks;
 
-		  // Animate Face
 		  if (faceLandmarks) {
 			  riggedFace = Kalidokit.Face.solve(faceLandmarks, { runtime: "mediapipe", video: videoElement });
 			  if (riggedFace) rigFace(vrm, riggedFace);
 		  }
 
-		  // Animate Pose
 		  if (pose2DLandmarks && pose3DLandmarks) {
 			  riggedPose = Kalidokit.Pose.solve(pose3DLandmarks, pose2DLandmarks, { runtime: "mediapipe", video: videoElement });
 			  if (riggedPose) {
 				  rigRotation(vrm, "hips", riggedPose.Hips.rotation, 0.3);
+
+				  const originalZ = riggedPose.Hips.position.z;
+				  const correctedZ = depthCorrection.current.correctZ(results, originalZ);
+
 				  rigPosition(vrm, "hips", {
 					  x: -riggedPose.Hips.position.x,
 					  y: riggedPose.Hips.position.y + 1,
-					  z: -riggedPose.Hips.position.z,
+					  z: -correctedZ,
 				  }, 1, 0.07);
 
 				  rigRotation(vrm, "chest", riggedPose.Spine, 0.25, 0.3);
@@ -125,7 +127,6 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled, selectedDevice, onCanvasReady, i
 				  rigRotation(vrm, "rightUpperLeg", riggedPose.RightUpperLeg, 1, 0.3);
 				  rigRotation(vrm, "rightLowerLeg", riggedPose.RightLowerLeg, 1, 0.3);
 
-				  // Animate Hands
 				  if (leftHandLandmarks) {
 					  riggedLeftHand = Kalidokit.Hand.solve(leftHandLandmarks, "Left");
 					  if (riggedLeftHand) {
@@ -199,6 +200,9 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled, selectedDevice, onCanvasReady, i
   useEffect(() => {
     if (!isCameraEnabled || !videoRef.current || !isHolisticLoaded) return;
 
+    depthCorrection.current.reset();
+    console.log("🔄 Depth correction system reset - calibrating...");
+
     const videoElement = videoRef.current;
     let holistic: any;
     let holisticFrameId: number;
@@ -239,7 +243,6 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled, selectedDevice, onCanvasReady, i
       }
       return;
     }
-    // Handle cases where the library might be nested under a .default property
     if (typeof HolisticConstructor.default === 'function') {
       HolisticConstructor = HolisticConstructor.default;
     }
@@ -321,10 +324,9 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled, selectedDevice, onCanvasReady, i
             VRMUtils.deepDispose(currentVrm.current.scene);
           }
           scene.add(vrm.scene);
-          vrm.scene.rotation.y = Math.PI; // Rotate model to face camera
+          vrm.scene.rotation.y = Math.PI;
           currentVrm.current = vrm;
 
-          // VRM 모델의 밝기 조정
           vrm.scene.traverse((child) => {
             if (child instanceof THREE.Mesh) {
               if (Array.isArray(child.material)) {

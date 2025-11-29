@@ -1,73 +1,10 @@
-import React, {useState} from "react";
+import React from "react";
 import styled from "styled-components";
-import { VolumeMixer } from "./volumeMixer";
-import {useDragAndDrop} from "../../hooks/useDragAndDrop";
-import {useAudioStore} from "../../../../features/audio/stores/useAudioStore";
-import { type Screen } from "../../../../features/canvas/constants/canvas-constants";
-import { ScreenListItem } from "../../../../features/canvas/components/ScreenListItem";
-import { useScreenDragAndDrop } from "../../../../features/canvas/hooks/useScreenDragAndDrop";
-
-interface DragState {
-  draggingIndex: number | null;
-  handleDragStart: (index: number) => void;
-  handleDragOver: (index: number) => void;
-  handleDragEnd: () => void;
-}
-
-interface SectionProps {
-  section: string;
-  index: number;
-  isDragging: boolean;
-  onDragStart: () => void;
-  onDragOver: (e: React.DragEvent) => void;
-  onDragEnd: () => void;
-}
-
-// Memoized section component
-const DraggableSectionItem = React.memo<SectionProps>(({
-  section,
-  isDragging,
-  onDragStart,
-  onDragOver,
-  onDragEnd,
-}) => (
-  <DraggableSection
-    draggable
-    isDragging={isDragging}
-    onDragStart={onDragStart}
-    onDragOver={onDragOver}
-    onDragEnd={onDragEnd}
-  >
-    <label>{section}</label>
-  </DraggableSection>
-));
-
-// Memoized sections renderer
-const SectionsRenderer = React.memo<{
-  items: string[];
-  dragState: DragState;
-}>(({ items, dragState }) => {
-  const { draggingIndex, handleDragStart, handleDragOver, handleDragEnd } = dragState;
-	
-  return (
-    <>
-      {items.map((section, index) => (
-        <DraggableSectionItem
-	        key={section}
-	        section={section}
-	        index={index}
-	        isDragging={draggingIndex === index}
-	        onDragStart={() => handleDragStart(index)}
-	        onDragOver={(e) => {
-		        e.preventDefault();
-		        handleDragOver(index);
-	        }}
-	        onDragEnd={handleDragEnd}
-        />
-      ))}
-    </>
-  );
-});
+import { VolumeMixer } from "@/pages/streaming/ui/components/volumeMixer";
+import { useAudioStore } from "@/features/audio/stores/useAudioStore";
+import { type Screen } from "@/features/canvas/constants/canvas-constants";
+import { ScreenListItem } from "@/features/canvas/components/ScreenListItem";
+import { useScreenDragAndDrop } from "@/features/canvas/hooks/useScreenDragAndDrop";
 
 interface StreamProps {
 	onVideoAddButtonClick: () => void;
@@ -161,24 +98,6 @@ const BaseSectionContainer = styled.div`
 const SectionSetContainer = styled(BaseSectionContainer)``;
 
 const ScreenSetContainer = styled(BaseSectionContainer)``;
-
-const DraggableSection = styled.div<{ isDragging?: boolean }>`
-  display: flex;
-  flex-direction: column;
-  padding: 8px 10px;
-  background-color: ${({ theme, isDragging}) => isDragging ? theme.colors.hover.normal : theme.colors.content.dark};
-  border-radius: ${({theme}) => theme.borders.large};
-  margin-bottom: 6px;
-
-  font-size: ${({theme}) => theme.font.medium};
-  color: ${({theme}) => theme.colors.text.normal};
-  font-weight: 500;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.hover.light};
-	  cursor: grab;
-  }
-`;
 
 const VolumeMixerContainer = styled(BaseSectionContainer)`
   flex: 1.5;
