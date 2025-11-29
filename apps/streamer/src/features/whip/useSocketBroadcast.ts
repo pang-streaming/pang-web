@@ -18,7 +18,8 @@ export const useSocketBroadcast = (
 	useEffect(() => {
 		socketRef.current = io(SOCKET_URL, {
 			transports: ["websocket"],
-			timeout: 3000
+			timeout: 3000,
+			secure: true,
 		});
 		
 		socketRef.current.on('connect', () => {
@@ -29,7 +30,7 @@ export const useSocketBroadcast = (
 			console.log('Socket connection failed, opening deeplink to start app');
 			console.error('Connection error:', error);
 			
-			window.location.href = 'pang-streamer://start';
+			// window.location.href = 'pang-streamer://start';
 			
 			// setTimeout(() => {
 			// 	window.location.href = import.meta.env.VITE_STREAMER_DOWNLOAD_URL || 'https://github.com/your-org/pang-streamer/releases/latest';
