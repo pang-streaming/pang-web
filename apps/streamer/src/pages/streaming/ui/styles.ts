@@ -509,11 +509,7 @@ export const CopyButton = styled.button`
   transition: background-color 0.2s;
 
   &:hover {
-<<<<<<< HEAD
     background-color: ${({ theme }) => theme.colors.primary.dark};
-=======
-    background-color: ${({ theme }) => theme.colors.primary.dark || "#1d4ed8"};
->>>>>>> a898f40 (chore: z)
   }
 `;
 
