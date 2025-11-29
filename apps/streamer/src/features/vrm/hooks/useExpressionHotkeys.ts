@@ -1,26 +1,10 @@
 import { useEffect, useRef } from "react";
 import { VRM } from "@pixiv/three-vrm";
-
-interface ExpressionConfig {
-  key: string;
-  expressionName: string;
-  displayName: string;
-}
-
-const DEFAULT_EXPRESSIONS: ExpressionConfig[] = [
-  { key: "1", expressionName: "neutral", displayName: "Neutral" },
-  { key: "2", expressionName: "happy", displayName: "Happy" },
-  { key: "3", expressionName: "angry", displayName: "Angry" },
-  { key: "4", expressionName: "sad", displayName: "Sad" },
-  { key: "5", expressionName: "relaxed", displayName: "Relaxed" },
-  { key: "6", expressionName: "surprised", displayName: "Surprised" },
-];
-
-const VRM_0X_MAPPING: Record<string, string> = {
-  "happy": "joy",
-  "sad": "sorrow",
-  "relaxed": "fun",
-};
+import {
+  DEFAULT_EXPRESSIONS,
+  VRM_0X_MAPPING,
+  type ExpressionConfig,
+} from "@/features/vrm/constants/expression-constants";
 
 export const useExpressionHotkeys = (
   vrm: VRM | null,
