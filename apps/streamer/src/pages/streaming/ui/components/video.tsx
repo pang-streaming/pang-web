@@ -8,6 +8,7 @@ import {
 import { VscDebugStart, VscDebugStop } from "react-icons/vsc";
 import { useVrmScreen } from "@/features/vrm/hooks/useVrmScreen";
 import { useSocketBroadcast } from "@/features/whip/useSocketBroadcast";
+import { useAudioMixer } from "@/features/audio/hooks/useAudioMixer";
 
 interface VideoProps {
   containerRef: React.RefObject<HTMLDivElement | null>;
@@ -41,10 +42,16 @@ export const Video = ({
   rtmpUrls,
 }: VideoProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // 오디오 믹서에서 믹싱된 트랙 가져오기 (마이크 + 화면공유 오디오 등)
+  const { mixedTrack, resumeAudioContext } = useAudioMixer();
+
   const { isStreaming, startStreaming, stopStreaming } = useSocketBroadcast(
     canvasRef,
     streamKey,
-    rtmpUrls
+    rtmpUrls,
+    mixedTrack,
+    resumeAudioContext
   );
 
   const { screen: vrmScreen, VrmRenderer } = useVrmScreen(

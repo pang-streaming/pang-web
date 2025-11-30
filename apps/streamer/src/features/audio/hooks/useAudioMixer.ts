@@ -25,28 +25,106 @@ export const useAudioMixer = () => {
     state.audioTracks.map((t) => `${t.id}:${t.gain}`).join(",")
   );
 
+  console.log("[MIXER DEBUG] useAudioMixer render:", {
+    mixedTrackExists: !!mixedTrack,
+    mixedTrackId: mixedTrack?.id,
+    mixedTrackState: mixedTrack?.readyState,
+    audioContextState: audioContextRef.current?.state,
+    audioTrackCount: audioTracks.length,
+    audioTrackIds,
+  });
+
+  // AudioContext resume 함수 (사용자 상호작용 시 호출해야 함)
+  const resumeAudioContext = async (): Promise<boolean> => {
+    const audioContext = audioContextRef.current;
+    if (!audioContext) {
+      console.warn("[MIXER DEBUG] resumeAudioContext: No AudioContext");
+      return false;
+    }
+
+    if (audioContext.state === "suspended") {
+      console.log("[MIXER DEBUG] resumeAudioContext: Resuming...");
+      try {
+        await audioContext.resume();
+        console.log("[MIXER DEBUG] resumeAudioContext: Resumed, state:", audioContext.state);
+      } catch (err) {
+        console.error("[MIXER DEBUG] resumeAudioContext: Failed", err);
+        return false;
+      }
+    }
+
+    return audioContext.state === "running";
+  };
+
   // AudioContext와 destination 초기화 (한 번만)
   useEffect(() => {
+    console.log("[MIXER DEBUG] Initializing AudioContext...");
+
     const audioContext = new AudioContext({
       latencyHint: "interactive",
       sampleRate: 48000,
     });
     audioContextRef.current = audioContext;
 
+    console.log("[MIXER DEBUG] AudioContext created:", {
+      state: audioContext.state,
+      sampleRate: audioContext.sampleRate,
+      baseLatency: audioContext.baseLatency,
+    });
+
     // AudioContext가 suspended 상태일 경우 resume
     if (audioContext.state === "suspended") {
+      console.log("[MIXER DEBUG] AudioContext is suspended, resuming...");
       audioContext.resume().then(() => {
-        console.log("AudioContext resumed");
+        console.log("[MIXER DEBUG] AudioContext resumed, new state:", audioContext.state);
+      }).catch((err) => {
+        console.error("[MIXER DEBUG] AudioContext resume failed:", err);
       });
     }
 
     const destination = audioContext.createMediaStreamDestination();
     destinationRef.current = destination;
 
+    console.log("[MIXER DEBUG] MediaStreamDestination created:", {
+      streamId: destination.stream.id,
+      streamActive: destination.stream.active,
+      audioTracksInDestination: destination.stream.getAudioTracks().length,
+    });
+
+    // 초기화 시 바로 무음 소스 연결 (오디오 트랙이 없을 때도 mixedTrack이 유효하도록)
+    const bufferSize = audioContext.sampleRate * 2;
+    const buffer = audioContext.createBuffer(2, bufferSize, audioContext.sampleRate);
+    // 스테레오 무음 버퍼 (기본값 0)
+
+    const bufferSource = audioContext.createBufferSource();
+    bufferSource.buffer = buffer;
+    bufferSource.loop = true;
+
+    const silentGain = audioContext.createGain();
+    silentGain.gain.value = 0; // 완전 무음
+
+    bufferSource.connect(silentGain);
+    silentGain.connect(destination);
+    bufferSource.start();
+    silentSourceRef.current = bufferSource;
+
+    console.log("[MIXER DEBUG] Silent source connected and started");
+
     const mixed = destination.stream.getAudioTracks()[0];
+
+    console.log("[MIXER DEBUG] Mixed track from destination:", {
+      exists: !!mixed,
+      id: mixed?.id,
+      kind: mixed?.kind,
+      enabled: mixed?.enabled,
+      muted: mixed?.muted,
+      readyState: mixed?.readyState,
+      label: mixed?.label,
+    });
+
     setMixedTrack(mixed);
 
-    console.log("AudioContext initialized:", {
+    console.log("[MIXER DEBUG] AudioContext initialized with silent source:", {
       sampleRate: audioContext.sampleRate,
       state: audioContext.state,
       mixedTrack: mixed
@@ -145,49 +223,36 @@ export const useAudioMixer = () => {
       }
     });
 
-    // 무음 트랙 처리
-    if (tracks.length === 0) {
-      // 트랙이 없으면 무음 소스 추가
-      if (!silentSourceRef.current) {
-        console.log("Adding silent track");
-
-        // 2초 길이의 무음 버퍼 생성
-        const bufferSize = audioContext.sampleRate * 2;
-        const buffer = audioContext.createBuffer(
-          2,
-          bufferSize,
-          audioContext.sampleRate
-        );
-
-        // 양쪽 채널 모두 완전 무음으로 초기화
-        for (let channel = 0; channel < 2; channel++) {
-          const data = buffer.getChannelData(channel);
-          for (let i = 0; i < bufferSize; i++) {
-            data[i] = 0;
-          }
-        }
-
-        const bufferSource = audioContext.createBufferSource();
-        bufferSource.buffer = buffer;
-        bufferSource.loop = true;
-
-        const gainNode = audioContext.createGain();
-        gainNode.gain.value = 0; // 완전 무음
-
-        bufferSource.connect(gainNode);
-        gainNode.connect(destination);
-        bufferSource.start();
-
-        silentSourceRef.current = bufferSource;
-      }
-    } else {
-      // 트랙이 있으면 무음 소스 제거
-      if (silentSourceRef.current) {
-        console.log("Removing silent track");
+    // 무음 트랙 처리 (초기화 시 이미 생성됨)
+    // 실제 오디오 트랙이 있으면 무음 소스 제거, 없으면 유지
+    if (tracks.length > 0 && silentSourceRef.current) {
+      console.log("Removing silent track - real audio tracks present");
+      try {
         silentSourceRef.current.stop();
         silentSourceRef.current.disconnect();
-        silentSourceRef.current = null;
+      } catch {
+        // 이미 정지된 경우 무시
       }
+      silentSourceRef.current = null;
+    } else if (tracks.length === 0 && !silentSourceRef.current) {
+      // 트랙이 모두 제거되면 다시 무음 소스 생성
+      console.log("Re-adding silent track - no audio tracks");
+
+      const bufferSize = audioContext.sampleRate * 2;
+      const buffer = audioContext.createBuffer(2, bufferSize, audioContext.sampleRate);
+
+      const bufferSource = audioContext.createBufferSource();
+      bufferSource.buffer = buffer;
+      bufferSource.loop = true;
+
+      const gainNode = audioContext.createGain();
+      gainNode.gain.value = 0;
+
+      bufferSource.connect(gainNode);
+      gainNode.connect(destination);
+      bufferSource.start();
+
+      silentSourceRef.current = bufferSource;
     }
   }, [audioTrackIds, audioTracks]);
 
@@ -207,5 +272,5 @@ export const useAudioMixer = () => {
     });
   }, [gainValues, audioTracks]);
 
-  return mixedTrack;
+  return { mixedTrack, resumeAudioContext };
 };
