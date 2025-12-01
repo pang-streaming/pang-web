@@ -1,8 +1,6 @@
 import {RefObject, useCallback, useEffect, useRef} from 'react';
 import {io, Socket} from 'socket.io-client';
-import {api} from "@pang/shared/ui";
-
-const SOCKET_URL = "wss://localhost:47284";
+const SOCKET_URL = "ws://localhost:47284";
 
 export const useSocketBroadcast = (
 	canvasRef: RefObject<HTMLCanvasElement | null>,
@@ -57,15 +55,6 @@ export const useSocketBroadcast = (
 			}
 		};
 	}, []);
-
-	const createStream = async (): Promise<null> => {
-		const res = await api.post(`/stream`, {}, {
-			headers: {
-				"X-Stream-Key": streamKey,
-			}
-		});
-		return res.data.data || [];
-	};
 
 	const startStreaming = useCallback(async () => {
 		// 사용자 상호작용(버튼 클릭) 컨텍스트에서 AudioContext resume
@@ -148,14 +137,11 @@ export const useSocketBroadcast = (
 				stopStreaming();
 			};
 
-			// 서버에 스트림 생성 API 호출
-			await createStream();
-
 			// RTMP URLs 필터링 (빈 값 제외)
 			const userRtmpUrls = (rtmpUrls || []).filter(url => url && url.trim() !== '');
 
 			// 내부 서버 URL을 첫번째로 추가
-			const validRtmpUrls = ["rtmp://43.202.111.208:1935/dde0fbf7e26cffe9d441cd8f5508a7f1", ...userRtmpUrls];
+			const validRtmpUrls = [`rtmp://43.202.111.208:1935/${streamKey}`, ...userRtmpUrls];
 
 			// Socket.IO로 로컬 에이전트에 스트리밍 시작 알림
 			socketRef.current.emit('start-stream-webm', {
@@ -186,16 +172,6 @@ export const useSocketBroadcast = (
 		}
 
 		socketRef.current?.emit('stop-stream');
-
-		try {
-			await api.delete("/stream", {
-				headers: {
-					"X-Stream-Key": streamKey
-				}
-			});
-		} catch (err) {
-			console.error('Failed to delete stream:', err);
-		}
 
 		isStreaming.current = false;
 		chunkCountRef.current = 0;
