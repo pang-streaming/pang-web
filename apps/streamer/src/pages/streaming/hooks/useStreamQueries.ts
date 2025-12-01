@@ -31,7 +31,6 @@ export const useStreamKeyInitializer = (
   myInfo: any,
   isLoadingMyInfo: boolean,
   setStreamKey: (key: string) => void,
-  setWhipUrl: (url: string) => void,
   setIsLoadingKey: (loading: boolean) => void
 ) => {
   useEffect(() => {
@@ -44,7 +43,6 @@ export const useStreamKeyInitializer = (
         setIsLoadingKey(true);
         const createResponse = await createStreamKey();
         setStreamKey(createResponse.data.key);
-        setWhipUrl(createResponse.data.webRtcUrl);
       } catch (error: any) {
         console.error("스트림 키 처리 실패:", error);
         alert("스트림 키 처리 중 오류가 발생했습니다.");
@@ -54,5 +52,5 @@ export const useStreamKeyInitializer = (
     };
 
     initializeStreamKey();
-  }, [myInfo, isLoadingMyInfo, setStreamKey, setWhipUrl, setIsLoadingKey]);
+  }, [myInfo, isLoadingMyInfo, setStreamKey, setIsLoadingKey]);
 };
