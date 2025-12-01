@@ -9,6 +9,7 @@ import { VscDebugStart, VscDebugStop } from "react-icons/vsc";
 import { useVrmScreen } from "@/features/vrm/hooks/useVrmScreen";
 import { useSocketBroadcast } from "@/features/whip/useSocketBroadcast";
 import { useAudioMixer } from "@/features/audio/hooks/useAudioMixer";
+import { AppDownloadModal } from "@/features/modal/components/AppDownloadModal";
 
 interface VideoProps {
   containerRef: React.RefObject<HTMLDivElement | null>;
@@ -16,7 +17,6 @@ interface VideoProps {
   setScreens: React.Dispatch<React.SetStateAction<Screen[]>>;
   canvasSize: CanvasSize;
   streamKey: string;
-  whipUrl: string | null;
   username: string;
   vrmUrl: string | null;
   selectedDevice: MediaDeviceInfo | null;
@@ -33,7 +33,6 @@ export const Video = ({
   containerRef,
   canvasSize,
   streamKey,
-  whipUrl,
   username,
   vrmUrl,
   selectedDevice,
@@ -46,7 +45,14 @@ export const Video = ({
   // 오디오 믹서에서 믹싱된 트랙 가져오기 (마이크 + 화면공유 오디오 등)
   const { mixedTrack, resumeAudioContext } = useAudioMixer();
 
-  const { isStreaming, startStreaming, stopStreaming } = useSocketBroadcast(
+  const {
+    isStreaming,
+    startStreaming,
+    stopStreaming,
+    showDownloadModal,
+    closeDownloadModal,
+    downloadApp,
+  } = useSocketBroadcast(
     canvasRef,
     streamKey,
     rtmpUrls,
@@ -88,6 +94,11 @@ export const Video = ({
   return (
     <>
       {isVTuberEnabled && selectedDevice && <VrmRenderer />}
+      <AppDownloadModal
+        isOpen={showDownloadModal}
+        onClose={closeDownloadModal}
+        onDownload={downloadApp}
+      />
       <LiveContainer>
         <TitleRow>
           {titleChild}

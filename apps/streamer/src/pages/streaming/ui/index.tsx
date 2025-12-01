@@ -33,7 +33,6 @@ const StreamingPage = () => {
   );
   const [isVTuberEnabled, setIsVTuberEnabled] = useState(false);
   const [streamKey, setStreamKey] = useState<string | null>(null);
-  const [whipUrl, setWhipUrl] = useState<string | null>(null);
   const [isLoadingKey, setIsLoadingKey] = useState(true);
   const [hasInitializedVRM, setHasInitializedVRM] = useState(false);
   const [hasInitializedBackground, setHasInitializedBackground] =
@@ -53,7 +52,7 @@ const StreamingPage = () => {
 
   const { data: streamStatus } = useStreamStatus(streamKey, isLoadingKey);
 
-  useStreamKeyInitializer(myInfo, isLoadingMyInfo, setStreamKey, setWhipUrl, setIsLoadingKey);
+  useStreamKeyInitializer(myInfo, isLoadingMyInfo, setStreamKey, setIsLoadingKey);
 
   // 기본 배경 이미지 추가 (한 번만)
   useEffect(() => {
@@ -136,7 +135,7 @@ const StreamingPage = () => {
             setSelectedDevice(videoDevices[0]);
             setIsVTuberEnabled(true);
           }
-        } catch (error: any) {
+        } catch (error) {
           console.warn("카메라 권한 요청 실패:", error);
         }
       };
@@ -296,7 +295,6 @@ const StreamingPage = () => {
             vrmUrl={vrmUrl}
             selectedDevice={selectedDevice}
             username={myInfo?.data?.username ?? ""}
-            whipUrl={whipUrl}
             isVTuberEnabled={isVTuberEnabled}
             streamKey={streamKey}
             title={myInfo?.data?.nickname ?? ""}
