@@ -42,21 +42,24 @@ export const StreamSetting = ({
       <SectionSetContainer>
         <SectionTitle>화면 소스</SectionTitle>
         <AddButton onClick={onVideoAddButtonClick}>+ 소스 추가</AddButton>
-        {screens.map((screen, index) => (
-          <ScreenListItem
-            key={screen.id}
-            screen={screen}
-            index={index}
-            isDragging={screenDragState.draggingIndex === index}
-            onDragStart={() => screenDragState.handleDragStart(index)}
-            onDragOver={(e) => {
-              e.preventDefault();
-              screenDragState.handleDragOver(index);
-            }}
-            onDragEnd={screenDragState.handleDragEnd}
-            onRemove={() => onRemoveScreen(screen.id)}
-          />
-        ))}
+        {[...screens].reverse().map((screen, reverseIndex) => {
+          const index = screens.length - 1 - reverseIndex;
+          return (
+            <ScreenListItem
+              key={screen.id}
+              screen={screen}
+              index={index}
+              isDragging={screenDragState.draggingIndex === index}
+              onDragStart={() => screenDragState.handleDragStart(index)}
+              onDragOver={(e) => {
+                e.preventDefault();
+                screenDragState.handleDragOver(index);
+              }}
+              onDragEnd={screenDragState.handleDragEnd}
+              onRemove={() => onRemoveScreen(screen.id)}
+            />
+          );
+        })}
         {screens.length === 0 && (
           <EmptyMessage>소스를 추가해보세요</EmptyMessage>
         )}
