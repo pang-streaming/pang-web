@@ -111,7 +111,7 @@ const ThreeCanvas = ({ vrmUrl, isCameraEnabled, selectedDevice, onCanvasReady, i
 				  const correctedZ = depthCorrection.current.correctZ(results, originalZ);
 
 				  rigPosition(vrm, "hips", {
-					  x: -riggedPose.Hips.position.x,
+					  x: riggedPose.Hips.position.x,
 					  y: riggedPose.Hips.position.y + 1,
 					  z: -correctedZ,
 				  }, 1, 0.07);
