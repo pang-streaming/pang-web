@@ -18,7 +18,7 @@ interface AddSourceModalProps {
   onGoBack: () => void;
   canvasSize: CanvasSize;
   onAddScreen: (screen: Screen) => void;
-  onAddVTuber: (vrmUrl: string | null, selectedDevice: MediaDeviceInfo) => void;
+  onAddVTuber: (vrmUrl: string | null, selectedDevice: MediaDeviceInfo, sourceName: string) => void;
 }
 
 export const AddSourceModal = ({
@@ -170,7 +170,11 @@ export const AddSourceModal = ({
               />
             )}
             {selectedType === "vtuber" && (
-              <VTuberOption onAddVTuber={onAddVTuber} onClose={onClose} />
+              <VTuberOption
+                onAddVTuber={onAddVTuber}
+                onClose={onClose}
+                sourceName={sourceName}
+              />
             )}
           </ContentArea>
         </ModalBody>

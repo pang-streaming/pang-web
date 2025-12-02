@@ -31,6 +31,7 @@ const StreamingPage = () => {
   const [selectedDevice, setSelectedDevice] = useState<MediaDeviceInfo | null>(
     null
   );
+  const [vrmSourceName, setVrmSourceName] = useState<string>("");
   const [isVTuberEnabled, setIsVTuberEnabled] = useState(false);
   const [streamKey, setStreamKey] = useState<string | null>(null);
   const [isLoadingKey, setIsLoadingKey] = useState(true);
@@ -148,9 +149,10 @@ const StreamingPage = () => {
     addScreen(screen);
   };
 
-  const handleAddVTuber = (vrmUrl: string | null, device: MediaDeviceInfo) => {
+  const handleAddVTuber = (vrmUrl: string | null, device: MediaDeviceInfo, sourceName: string) => {
     setVrmUrl(vrmUrl);
     setSelectedDevice(device);
+    setVrmSourceName(sourceName);
     setIsVTuberEnabled(true);
   };
 
@@ -162,6 +164,7 @@ const StreamingPage = () => {
           setIsVTuberEnabled(false);
           setVrmUrl(null);
           setSelectedDevice(null);
+          setVrmSourceName("");
         }
         if (screen.stream) {
           const audioTrack = screen.stream.getAudioTracks()[0];
@@ -296,6 +299,7 @@ const StreamingPage = () => {
             selectedDevice={selectedDevice}
             username={myInfo?.data?.username ?? ""}
             isVTuberEnabled={isVTuberEnabled}
+            vrmSourceName={vrmSourceName}
             streamKey={streamKey}
             title={myInfo?.data?.nickname ?? ""}
             onTitleClick={handleTitleClick}

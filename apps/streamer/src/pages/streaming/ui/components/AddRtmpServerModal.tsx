@@ -60,7 +60,7 @@ export const AddRtmpServerModal: React.FC<AddRtmpServerModalProps> = ({
                 type="text"
                 value={serverUrl}
                 onChange={(e) => setServerUrl(e.target.value)}
-                placeholder="rtmp://서버주소:포트/앱"
+                placeholder="서버 주소를 입력해주세요"
               />
             </S.FormGroup>
 
@@ -70,7 +70,7 @@ export const AddRtmpServerModal: React.FC<AddRtmpServerModalProps> = ({
                 type="text"
                 value={streamKey}
                 onChange={(e) => setStreamKey(e.target.value)}
-                placeholder="스트림 키 입력"
+                placeholder="스트림 키를 입력해주세요"
               />
             </S.FormGroup>
 

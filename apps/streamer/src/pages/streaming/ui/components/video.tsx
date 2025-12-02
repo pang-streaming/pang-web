@@ -21,6 +21,7 @@ interface VideoProps {
   vrmUrl: string | null;
   selectedDevice: MediaDeviceInfo | null;
   isVTuberEnabled: boolean;
+  vrmSourceName: string;
   title: string;
   onTitleClick: () => void;
   titleChild: React.ReactNode;
@@ -37,6 +38,7 @@ export const Video = ({
   vrmUrl,
   selectedDevice,
   isVTuberEnabled,
+  vrmSourceName,
   titleChild,
   rtmpUrls,
 }: VideoProps) => {
@@ -64,7 +66,8 @@ export const Video = ({
     canvasSize,
     vrmUrl,
     isVTuberEnabled && !!selectedDevice,
-    selectedDevice
+    selectedDevice,
+    vrmSourceName
   );
 
   useEffect(() => {

@@ -9,7 +9,8 @@ export const useVrmScreen = (
   canvasSize: CanvasSize,
   vrmUrl: string | null,
   isCameraEnabled: boolean,
-  selectedDevice: MediaDeviceInfo | null
+  selectedDevice: MediaDeviceInfo | null,
+  sourceName: string
 ) => {
   const [screen, setScreen] = useState<Screen | null>(null);
   const [isVisible, setIsVisible] = useState(true);
@@ -25,10 +26,11 @@ export const useVrmScreen = (
         y: 0,
         width: 600,
         height: 600,
+        name: sourceName || "VTuber",
       };
       setScreen(vrmScreen);
     },
-    [vrmId]
+    [vrmId, sourceName]
   );
 
   const VrmRenderer = useCallback(
