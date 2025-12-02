@@ -13,7 +13,7 @@ const convertToLocalHlsUrl = (url: string): string => {
 
 const checkPlayerRunning = async (): Promise<boolean> => {
   try {
-    await fetch("http://127.0.0.1:25137/ping", {
+    await fetch("http://localhost:25137/ping", {
       method: "GET",
       signal: AbortSignal.timeout(1000),
     });
