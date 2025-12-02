@@ -3,11 +3,12 @@ import styled from "styled-components";
 import { CanvasSize } from "@/features/canvas/constants/canvas-constants";
 
 interface VTuberOptionProps {
-  onAddVTuber: (vrmUrl: string | null, selectedDevice: MediaDeviceInfo) => void;
+  onAddVTuber: (vrmUrl: string | null, selectedDevice: MediaDeviceInfo, sourceName: string) => void;
   onClose: () => void;
+  sourceName: string;
 }
 
-export const VTuberOption = ({ onAddVTuber, onClose }: VTuberOptionProps) => {
+export const VTuberOption = ({ onAddVTuber, onClose, sourceName }: VTuberOptionProps) => {
   const [vrmFile, setVrmFile] = useState<File | null>(null);
   const [vrmUrl, setVrmUrl] = useState<string | null>(null);
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
@@ -64,7 +65,7 @@ export const VTuberOption = ({ onAddVTuber, onClose }: VTuberOptionProps) => {
       return;
     }
 
-    onAddVTuber(vrmUrl, selectedDevice);
+    onAddVTuber(vrmUrl, selectedDevice, sourceName);
     onClose();
   };
 
@@ -223,7 +224,7 @@ const Select = styled.select`
 
   &:focus {
     outline: none;
-    border-color: ${({ theme }) => theme.colors.primary || "#4CAF50"};
+    border-color: ${({ theme }) => theme.colors.primary};
   }
 `;
 
@@ -257,8 +258,8 @@ const CancelButton = styled(Button)`
 `;
 
 const ConfirmButton = styled(Button)`
-  background-color: ${({ theme }) => theme.colors.primary || "#4CAF50"};
-  color: black;
+  background-color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.text.inverse};
 
   &:hover:not(:disabled) {
     opacity: 0.9;

@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { SourceType } from '../hooks/useAddSourceModal';
-import { ScreenShareOption } from './ScreenShareOption';
-import { ImageOption } from './ImageOption';
-import { VTuberOption } from '@/features/modal/components/VtuberOption';
-import { Screen, CanvasSize } from '@/features/canvas/constants/canvas-constants';
+import React, { useState } from "react";
+import styled from "styled-components";
+import { SourceType } from "../hooks/useAddSourceModal";
+import { ScreenShareOption } from "./ScreenShareOption";
+import { ImageOption } from "./ImageOption";
+import { VTuberOption } from "@/features/modal/components/VtuberOption";
+import { ThreeDBackgroundModal } from "./3DBackgroundModal";
+import {
+  Screen,
+  CanvasSize,
+} from "@/features/canvas/constants/canvas-constants";
 
 interface AddSourceModalProps {
   isOpen: boolean;
@@ -14,7 +18,7 @@ interface AddSourceModalProps {
   onGoBack: () => void;
   canvasSize: CanvasSize;
   onAddScreen: (screen: Screen) => void;
-  onAddVTuber: (vrmUrl: string | null, selectedDevice: MediaDeviceInfo) => void;
+  onAddVTuber: (vrmUrl: string | null, selectedDevice: MediaDeviceInfo, sourceName: string) => void;
 }
 
 export const AddSourceModal = ({
@@ -27,44 +31,84 @@ export const AddSourceModal = ({
   onAddScreen,
   onAddVTuber,
 }: AddSourceModalProps) => {
-  const [sourceName, setSourceName] = useState('');
+  const [sourceName, setSourceName] = useState("");
+  const [isAI360ModalOpen, setIsAI360ModalOpen] = useState(false);
+
+  const handleSelectBackground = (imageUrl: string) => {
+    // 이미지를 배경으로 추가
+    const img = new Image();
+    img.onload = () => {
+      const newScreen: Screen = {
+        id: Date.now(),
+        type: "image",
+        source: img,
+        x: 0,
+        y: 0,
+        width: canvasSize.width,
+        height: canvasSize.height,
+        name: sourceName || "AI 배경",
+      };
+      onAddScreen(newScreen);
+      onClose();
+    };
+    img.src = imageUrl;
+  };
 
   if (!isOpen) return null;
 
   if (!selectedType) {
     return (
-      <ModalOverlay onClick={onClose}>
-        <ModalContent onClick={(e) => e.stopPropagation()}>
-          <ModalHeader>
-            <h2>화면 소스</h2>
-            <CloseButton onClick={onClose}>✕</CloseButton>
-          </ModalHeader>
-          <Divider />
-          <ModalBody>
-            <SourceNameInput
-              type="text"
-              placeholder="소스 이름"
-              value={sourceName}
-              onChange={(e) => setSourceName(e.target.value)}
-            />
-            
-            <TagSection>
-              <TagGroup>
-                <SourceTag onClick={() => onSelectType('screen')} $isActive={false}>
-                  화면 캡처
-                </SourceTag>
-                <SourceTag onClick={() => onSelectType('image')} $isActive={false}>
-                  이미지
-                </SourceTag>
-                <SourceTag onClick={() => onSelectType('vtuber')} $isActive={false}>
-                  VTuber
-                </SourceTag>
-              </TagGroup>
-              <AILink>AI 배경 생성</AILink>
-            </TagSection>
-          </ModalBody>
-        </ModalContent>
-      </ModalOverlay>
+      <>
+        <ModalOverlay onClick={onClose}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <ModalHeader>
+              <h2>화면 소스</h2>
+              <CloseButton onClick={onClose}>✕</CloseButton>
+            </ModalHeader>
+            <Divider />
+            <ModalBody>
+              <SourceNameInput
+                type="text"
+                placeholder="소스 이름"
+                value={sourceName}
+                onChange={(e) => setSourceName(e.target.value)}
+              />
+
+              <TagSection>
+                <TagGroup>
+                  <SourceTag
+                    onClick={() => onSelectType("screen")}
+                    $isActive={false}
+                  >
+                    화면 캡처
+                  </SourceTag>
+                  <SourceTag
+                    onClick={() => onSelectType("image")}
+                    $isActive={false}
+                  >
+                    이미지
+                  </SourceTag>
+                  <SourceTag
+                    onClick={() => onSelectType("vtuber")}
+                    $isActive={false}
+                  >
+                    VTuber
+                  </SourceTag>
+                </TagGroup>
+                <AILink onClick={() => setIsAI360ModalOpen(true)}>
+                  3D 배경 생성
+                </AILink>
+              </TagSection>
+            </ModalBody>
+          </ModalContent>
+        </ModalOverlay>
+
+        <ThreeDBackgroundModal
+          isOpen={isAI360ModalOpen}
+          onClose={() => setIsAI360ModalOpen(false)}
+          onSelectBackground={handleSelectBackground}
+        />
+      </>
     );
   }
 
@@ -83,24 +127,33 @@ export const AddSourceModal = ({
             value={sourceName}
             onChange={(e) => setSourceName(e.target.value)}
           />
-          
+
           <TagSection>
             <TagGroup>
-              <SourceTag onClick={() => onSelectType('screen')} $isActive={selectedType === 'screen'}>
+              <SourceTag
+                onClick={() => onSelectType("screen")}
+                $isActive={selectedType === "screen"}
+              >
                 화면 캡처
               </SourceTag>
-              <SourceTag onClick={() => onSelectType('image')} $isActive={selectedType === 'image'}>
+              <SourceTag
+                onClick={() => onSelectType("image")}
+                $isActive={selectedType === "image"}
+              >
                 이미지
               </SourceTag>
-              <SourceTag onClick={() => onSelectType('vtuber')} $isActive={selectedType === 'vtuber'}>
+              <SourceTag
+                onClick={() => onSelectType("vtuber")}
+                $isActive={selectedType === "vtuber"}
+              >
                 VTuber
               </SourceTag>
             </TagGroup>
-            <AILink>AI 배경 생성</AILink>
+            <AILink onClick={() => setIsAI360ModalOpen(true)}>3D 배경 생성</AILink>
           </TagSection>
 
           <ContentArea>
-            {selectedType === 'screen' && (
+            {selectedType === "screen" && (
               <ScreenShareOption
                 canvasSize={canvasSize}
                 onAddScreen={onAddScreen}
@@ -108,7 +161,7 @@ export const AddSourceModal = ({
                 sourceName={sourceName}
               />
             )}
-            {selectedType === 'image' && (
+            {selectedType === "image" && (
               <ImageOption
                 canvasSize={canvasSize}
                 onAddScreen={onAddScreen}
@@ -116,15 +169,22 @@ export const AddSourceModal = ({
                 sourceName={sourceName}
               />
             )}
-            {selectedType === 'vtuber' && (
+            {selectedType === "vtuber" && (
               <VTuberOption
                 onAddVTuber={onAddVTuber}
                 onClose={onClose}
+                sourceName={sourceName}
               />
             )}
           </ContentArea>
         </ModalBody>
       </ModalContent>
+
+      <ThreeDBackgroundModal
+        isOpen={isAI360ModalOpen}
+        onClose={() => setIsAI360ModalOpen(false)}
+        onSelectBackground={handleSelectBackground}
+      />
     </ModalOverlay>
   );
 };
@@ -135,7 +195,7 @@ const ModalOverlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: ${({ theme }) => `${theme.colors.background.dark}CC`};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -206,7 +266,7 @@ const SourceNameInput = styled.input`
   border-radius: 8px;
   color: ${({ theme }) => theme.colors.text.subtitle};
   font-size: 15px;
-  font-family: 'Wanted Sans', sans-serif;
+  font-family: "Wanted Sans", sans-serif;
   outline: none;
 
   &::placeholder {
@@ -231,12 +291,13 @@ const TagGroup = styled.div`
 
 const SourceTag = styled.button<{ $isActive: boolean }>`
   padding: 6px 12px;
-  background-color: ${({ $isActive, theme }) => ($isActive ? theme.colors.content.dark : theme.colors.content.normal)};
+  background-color: ${({ $isActive, theme }) =>
+    $isActive ? theme.colors.content.dark : theme.colors.content.normal};
   border: none;
   border-radius: 999px;
   color: ${({ theme }) => theme.colors.text.subtitle};
   font-size: 14px;
-  font-family: 'Wanted Sans', sans-serif;
+  font-family: "Wanted Sans", sans-serif;
   cursor: pointer;
   transition: all 0.2s;
   height: 25px;
@@ -254,7 +315,7 @@ const AILink = styled.button`
   border: none;
   color: ${({ theme }) => theme.colors.primary.normal};
   font-size: 14px;
-  font-family: 'Wanted Sans', sans-serif;
+  font-family: "Wanted Sans", sans-serif;
   cursor: pointer;
   padding: 0;
 

@@ -307,7 +307,7 @@ const ModalOverlay = styled.div<{ $isClosing?: boolean }>`
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: ${({ theme }) => `${theme.colors.background.dark}CC`};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -505,10 +505,10 @@ const DropdownIcon = styled.span`
 
 const ErrorMessage = styled.div`
   padding: 12px 16px;
-  background-color: #fef2f2;
-  border: 1px solid #fecaca;
+  background-color: ${({ theme }) => theme.colors.background.normal};
+  border: 1px solid ${({ theme }) => theme.colors.status.negative};
   border-radius: 8px;
-  color: #dc2626;
+  color: ${({ theme }) => theme.colors.status.negative};
   font-size: 0.875rem;
   font-weight: 500;
   margin-top: 8px;
@@ -516,10 +516,10 @@ const ErrorMessage = styled.div`
 
 const SuccessMessage = styled.div`
   padding: 12px 16px;
-  background-color: #f0fdf4;
-  border: 1px solid #bbf7d0;
+  background-color: ${({ theme }) => theme.colors.background.normal};
+  border: 1px solid ${({ theme }) => theme.colors.status.positive};
   border-radius: 8px;
-  color: #16a34a;
+  color: ${({ theme }) => theme.colors.status.positive};
   font-size: 0.875rem;
   font-weight: 500;
   margin-top: 8px;

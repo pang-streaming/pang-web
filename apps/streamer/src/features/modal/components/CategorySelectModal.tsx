@@ -173,7 +173,7 @@ const ModalOverlay = styled.div<{ $isClosing?: boolean }>`
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: ${({ theme }) => `${theme.colors.background.dark}CC`};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -284,7 +284,7 @@ const ErrorContainer = styled.div`
 
 const ErrorText = styled.div`
   font-size: 1rem;
-  color: #ef4444;
+  color: ${({ theme }) => theme.colors.status.negative};
 `;
 
 const CategoriesGrid = styled.div`
@@ -338,8 +338,8 @@ const Tooltip = styled.div`
   bottom: -40px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: rgba(0, 0, 0, 0.8);
-  color: white;
+  background-color: ${({ theme }) => theme.colors.content.dark};
+  color: ${({ theme }) => theme.colors.text.normal};
   padding: 8px 12px;
   border-radius: 6px;
   font-size: 0.875rem;
@@ -350,7 +350,7 @@ const Tooltip = styled.div`
   visibility: hidden;
   transition: all 0.3s ease;
   pointer-events: none;
-  
+
   /* 말풍선 화살표 */
   &::before {
     content: '';
@@ -362,7 +362,7 @@ const Tooltip = styled.div`
     height: 0;
     border-left: 6px solid transparent;
     border-right: 6px solid transparent;
-    border-bottom: 6px solid rgba(0, 0, 0, 0.8);
+    border-bottom: 6px solid ${({ theme }) => theme.colors.content.dark};
   }
 `;
 

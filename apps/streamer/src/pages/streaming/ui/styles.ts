@@ -203,7 +203,7 @@ export const StatusDot = styled.div<{ $isLive: boolean }>`
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: ${({ $isLive }) => ($isLive ? "#22c55e" : "#6b7280")};
+  background-color: ${({ $isLive, theme }) => ($isLive ? theme.colors.status.success : theme.colors.text.subtitle)};
   animation: ${({ $isLive }) => ($isLive ? "pulse 2s infinite" : "none")};
 
   @keyframes pulse {
@@ -280,7 +280,7 @@ export const ModalOverlay = styled.div<{ $isClosing?: boolean }>`
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: ${({ theme }) => `${theme.colors.background.dark}CC`};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -297,9 +297,7 @@ export const ModalContent = styled.div<{ $isClosing?: boolean }>`
   max-width: 500px;
   max-height: 90vh;
   overflow: hidden;
-  box-shadow:
-    0 20px 25px -5px rgba(0, 0, 0, 0.1),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   animation: ${({ $isClosing }) => ($isClosing ? slideOut : slideIn)} 0.3s
     ease-out;
   transform-origin: center;
@@ -527,13 +525,94 @@ export const Input = styled.input`
   background-color: ${({ theme }) => theme.colors.background.light};
   color: ${({ theme }) => theme.colors.text.normal};
   font-size: 14px;
-  
+  box-sizing: border-box;
+
   &:focus {
     outline: none;
     border-color: ${({ theme }) => theme.colors.primary.normal};
   }
-  
+
   &::placeholder {
     color: ${({ theme }) => theme.colors.text.subtitle};
   }
+`;
+
+export const RtmpUrlList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 12px 0;
+`;
+
+export const RtmpUrlItem = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background-color: ${({ theme }) => theme.colors.content.dark};
+  border-radius: ${({ theme }) => theme.borders.large};
+  border: 1px solid ${({ theme }) => theme.colors.border.normal};
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.hover.normal};
+  }
+`;
+
+export const RtmpUrlText = styled.span`
+  flex: 1;
+  font-size: 13px;
+  color: ${({ theme }) => theme.colors.text.normal};
+  font-family: monospace;
+  word-break: break-all;
+  margin-right: 12px;
+`;
+
+export const RemoveButton = styled.button`
+  background: none;
+  border: none;
+  color: ${({ theme }) => theme.colors.text.subtitle};
+  cursor: pointer;
+  font-size: 24px;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.content.normal};
+    color: ${({ theme }) => theme.colors.status.negative};
+  }
+`;
+
+export const AddButton = styled.button`
+  width: 100%;
+  padding: 8px;
+  margin-top: 8px;
+  background-color: ${({ theme }) => theme.colors.content.dark};
+  color: ${({ theme }) => theme.colors.text.normal};
+  border: 2px dashed ${({ theme }) => theme.colors.border.normal};
+  border-radius: ${({ theme }) => theme.borders.large};
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.hover.normal};
+    border-color: ${({ theme }) => theme.colors.primary.normal};
+    color: ${({ theme }) => theme.colors.primary.normal};
+  }
+`;
+
+export const EmptyMessage = styled.div`
+  padding: 20px;
+  text-align: center;
+  color: ${({ theme }) => theme.colors.text.subtitle};
+  font-size: 0.9rem;
+  font-style: italic;
 `;
