@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { updateStream } from '@/features/stream/api';
+import { AddRtmpServerModal } from './AddRtmpServerModal';
 import * as S from '../styles';
 
 interface StreamingSettingsModalProps {
@@ -26,7 +27,8 @@ export const StreamingSettingsModal: React.FC<StreamingSettingsModalProps> = ({
 }) => {
   const [selectedType, setSelectedType] = useState<'RTMP' | 'WHIP'>(currentStreamType);
   const [isClosing, setIsClosing] = useState(false);
-  const [localRtmpUrls, setLocalRtmpUrls] = useState<string[]>(rtmpUrls.length > 0 ? rtmpUrls : ['', '', '']);
+  const [localRtmpUrls, setLocalRtmpUrls] = useState<string[]>(rtmpUrls.length > 0 ? rtmpUrls : []);
+  const [isAddServerModalOpen, setIsAddServerModalOpen] = useState(false);
 
   // currentStreamType이 변경되면 selectedType도 업데이트
   useEffect(() => {
@@ -34,8 +36,10 @@ export const StreamingSettingsModal: React.FC<StreamingSettingsModalProps> = ({
   }, [currentStreamType]);
 
   useEffect(() => {
-    if (rtmpUrls.length > 0) {
-      setLocalRtmpUrls(rtmpUrls);
+    // 빈 문자열이 아닌 URL만 필터링
+    const validUrls = rtmpUrls.filter(url => url && url.trim() !== '');
+    if (validUrls.length > 0) {
+      setLocalRtmpUrls(validUrls);
     }
   }, [rtmpUrls]);
 
@@ -95,6 +99,15 @@ export const StreamingSettingsModal: React.FC<StreamingSettingsModalProps> = ({
     setLocalRtmpUrls(newUrls);
   };
 
+  const handleAddRtmpUrl = (rtmpUrl: string) => {
+    setLocalRtmpUrls([...localRtmpUrls, rtmpUrl]);
+  };
+
+  const handleRemoveRtmpUrl = (index: number) => {
+    const newUrls = localRtmpUrls.filter((_, i) => i !== index);
+    setLocalRtmpUrls(newUrls);
+  };
+
   const handleSave = () => {
     console.log(`방송 설정 저장: ${selectedType}`);
     
@@ -119,8 +132,9 @@ export const StreamingSettingsModal: React.FC<StreamingSettingsModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <S.ModalOverlay onClick={handleClose} $isClosing={isClosing}>
-      <S.ModalContent onClick={(e) => e.stopPropagation()} $isClosing={isClosing}>
+    <>
+      <S.ModalOverlay onClick={handleClose} $isClosing={isClosing}>
+        <S.ModalContent onClick={(e) => e.stopPropagation()} $isClosing={isClosing}>
         <S.ModalHeader>
           <S.ModalTitle>방송 설정</S.ModalTitle>
           <S.CloseButton onClick={handleClose}>×</S.CloseButton>
@@ -185,39 +199,31 @@ export const StreamingSettingsModal: React.FC<StreamingSettingsModalProps> = ({
 
             {selectedType === 'WHIP' && (
               <S.FormGroup>
-                <S.Label>팡 스트리머 - RTMP URL 설정</S.Label>
+                <S.Label>팡 스트리머 - RTMP 서버 설정</S.Label>
                 <S.InfoContainer>
                   <S.InfoText>
-                    로컬 에이전트로 전송할 RTMP URL을 최대 3개까지 설정할 수 있습니다.
+                    로컬 에이전트로 전송할 RTMP 서버를 설정할 수 있습니다.
                   </S.InfoText>
                 </S.InfoContainer>
-                <S.FormGroup>
-                  <S.Label>RTMP URL 1</S.Label>
-                  <S.Input
-                    type="text"
-                    value={localRtmpUrls[0] || ''}
-                    onChange={(e) => handleRtmpUrlChange(0, e.target.value)}
-                    placeholder="rtmp://서버주소:포트/앱/스트림키"
-                  />
-                </S.FormGroup>
-                <S.FormGroup>
-                  <S.Label>RTMP URL 2 (선택)</S.Label>
-                  <S.Input
-                    type="text"
-                    value={localRtmpUrls[1] || ''}
-                    onChange={(e) => handleRtmpUrlChange(1, e.target.value)}
-                    placeholder="rtmp://서버주소:포트/앱/스트림키"
-                  />
-                </S.FormGroup>
-                <S.FormGroup>
-                  <S.Label>RTMP URL 3 (선택)</S.Label>
-                  <S.Input
-                    type="text"
-                    value={localRtmpUrls[2] || ''}
-                    onChange={(e) => handleRtmpUrlChange(2, e.target.value)}
-                    placeholder="rtmp://서버주소:포트/앱/스트림키"
-                  />
-                </S.FormGroup>
+                <S.RtmpUrlList>
+                  {localRtmpUrls
+                    .map((url, index) => ({ url, originalIndex: index }))
+                    .filter(item => item.url && item.url.trim() !== '')
+                    .map(({ url, originalIndex }) => (
+                      <S.RtmpUrlItem key={originalIndex}>
+                        <S.RtmpUrlText>{url}</S.RtmpUrlText>
+                        <S.RemoveButton onClick={() => handleRemoveRtmpUrl(originalIndex)}>
+                          ×
+                        </S.RemoveButton>
+                      </S.RtmpUrlItem>
+                    ))}
+                  {localRtmpUrls.filter(url => url && url.trim() !== '').length === 0 && (
+                    <S.EmptyMessage>RTMP 서버를 추가해주세요</S.EmptyMessage>
+                  )}
+                </S.RtmpUrlList>
+                <S.AddButton onClick={() => setIsAddServerModalOpen(true)}>
+                  + 서버 추가
+                </S.AddButton>
               </S.FormGroup>
             )}
             
@@ -237,5 +243,12 @@ export const StreamingSettingsModal: React.FC<StreamingSettingsModalProps> = ({
         </S.ModalBody>
       </S.ModalContent>
     </S.ModalOverlay>
+
+    <AddRtmpServerModal
+      isOpen={isAddServerModalOpen}
+      onClose={() => setIsAddServerModalOpen(false)}
+      onAdd={handleAddRtmpUrl}
+    />
+  </>
   );
 };

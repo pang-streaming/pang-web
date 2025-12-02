@@ -419,7 +419,7 @@ export const OptionButton = styled.button<{ $isSelected: boolean }>`
       $isSelected ? theme.colors.primary.normal : theme.colors.border.normal};
   border-radius: 12px;
   background-color: ${({ $isSelected, theme }) =>
-    $isSelected ? theme.colors.primary.light : theme.colors.background.normal};
+    $isSelected ? "rgba(59, 130, 246, 0.05)" : theme.colors.background.normal};
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: left;
@@ -427,7 +427,7 @@ export const OptionButton = styled.button<{ $isSelected: boolean }>`
   &:hover {
     border-color: ${({ theme }) => theme.colors.primary.normal};
     background-color: ${({ $isSelected, theme }) =>
-      $isSelected ? theme.colors.hover.normal : theme.colors.primary.light};
+      $isSelected ? "rgba(59, 130, 246, 0.1)" : "rgba(59, 130, 246, 0.05)"};
   }
 `;
 
@@ -525,13 +525,94 @@ export const Input = styled.input`
   background-color: ${({ theme }) => theme.colors.background.light};
   color: ${({ theme }) => theme.colors.text.normal};
   font-size: 14px;
-  
+  box-sizing: border-box;
+
   &:focus {
     outline: none;
     border-color: ${({ theme }) => theme.colors.primary.normal};
   }
-  
+
   &::placeholder {
     color: ${({ theme }) => theme.colors.text.subtitle};
   }
+`;
+
+export const RtmpUrlList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 12px 0;
+`;
+
+export const RtmpUrlItem = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background-color: ${({ theme }) => theme.colors.content.dark};
+  border-radius: ${({ theme }) => theme.borders.large};
+  border: 1px solid ${({ theme }) => theme.colors.border.normal};
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.hover.normal};
+  }
+`;
+
+export const RtmpUrlText = styled.span`
+  flex: 1;
+  font-size: 13px;
+  color: ${({ theme }) => theme.colors.text.normal};
+  font-family: monospace;
+  word-break: break-all;
+  margin-right: 12px;
+`;
+
+export const RemoveButton = styled.button`
+  background: none;
+  border: none;
+  color: ${({ theme }) => theme.colors.text.subtitle};
+  cursor: pointer;
+  font-size: 24px;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.content.normal};
+    color: ${({ theme }) => theme.colors.status.negative};
+  }
+`;
+
+export const AddButton = styled.button`
+  width: 100%;
+  padding: 8px;
+  margin-top: 8px;
+  background-color: ${({ theme }) => theme.colors.content.dark};
+  color: ${({ theme }) => theme.colors.text.normal};
+  border: 2px dashed ${({ theme }) => theme.colors.border.normal};
+  border-radius: ${({ theme }) => theme.borders.large};
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.hover.normal};
+    border-color: ${({ theme }) => theme.colors.primary.normal};
+    color: ${({ theme }) => theme.colors.primary.normal};
+  }
+`;
+
+export const EmptyMessage = styled.div`
+  padding: 20px;
+  text-align: center;
+  color: ${({ theme }) => theme.colors.text.subtitle};
+  font-size: 0.9rem;
+  font-style: italic;
 `;

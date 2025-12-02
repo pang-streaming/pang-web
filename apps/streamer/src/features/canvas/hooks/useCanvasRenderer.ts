@@ -53,7 +53,7 @@ export const useCanvasRenderer = (
 						break;
 				}
 				if (selectedScreen === screen.id) {
-					ctx.strokeStyle = theme.colors.primary;
+					ctx.strokeStyle = '#FF0055';
 					ctx.lineWidth = 2;
 					ctx.strokeRect(screen.x, screen.y, screen.width, screen.height);
 
@@ -65,9 +65,9 @@ export const useCanvasRenderer = (
 					];
 
 					corners.forEach(([cx, cy]) => {
-						ctx.fillStyle = theme.colors.primary;
+						ctx.fillStyle = '#FF0055';
 						ctx.fillRect(cx, cy, HANDLE_SIZE, HANDLE_SIZE);
-						ctx.fillStyle = theme.colors.background.normal;
+						ctx.fillStyle = '#ffffff';
 						ctx.fillRect(cx + 3, cy + 3, HANDLE_SIZE - 6, HANDLE_SIZE - 6);
 					});
 				}
