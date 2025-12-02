@@ -6,7 +6,7 @@ import { VideoCard } from "@/entities/video/ui/video-card";
 
 export const VideoList = ({videos, maxColumns}: VideoListProps) => {
 	const safeVideos = Array.isArray(videos) ? videos : [];
-	
+
 	return (
 		<VideoListContainer maxColumns={maxColumns}>
 			{safeVideos.map((video, index) => (
@@ -22,6 +22,7 @@ export const VideoList = ({videos, maxColumns}: VideoListProps) => {
 					profileImage={video.profileImage}
 					thumbnail={video.thumbnail}
 					viewCount={video.viewCount}
+					isLive={video.isLive}
 				/>
 			))}
 		</VideoListContainer>

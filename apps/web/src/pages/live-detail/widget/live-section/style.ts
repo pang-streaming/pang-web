@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { Stream } from "@cloudflare/stream-react";
 
 export const LiveDetailContainer = styled.div`
 	width:  calc(100% - 435px);
@@ -78,11 +77,13 @@ export const VideoCenterController = styled.div`
 	}
 `;
 
-export const Video = styled(Stream)`
+export const Video = styled.video`
 	width: 100%;
+	height: 100%;
 	background-color: gray;
 	display: block;
 	pointer-events: none;
+	object-fit: cover;
 
   &:fullscreen,
 	&:-webkit-full-screen,
@@ -91,7 +92,7 @@ export const Video = styled(Stream)`
 		height: 100vh;
 		border-radius: 0;
 		object-fit: contain;
-		
+
 		position: absolute;
 		top: 50%;
 		left: 50%;

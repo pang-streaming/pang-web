@@ -12,7 +12,7 @@ export interface VideoListProps {
 	maxColumns?: number;
 }
 
-export interface IStreamDataResponse {  
+export interface IStreamDataResponse {
   streamId: string;
   title: string;
   url: string;
@@ -23,4 +23,5 @@ export interface IStreamDataResponse {
   followers: number;
   thumbnail? : string;
   viewCount: number;
+  isLive?: boolean;
 }
