@@ -83,11 +83,22 @@ export const useChat = (streamId: string) => {
   }, [socket, streamId]);
 
   const sendMessage = (overrideMessage?: string) => {
-    if (!socket || !socket.connected) return;
-    const token = localStorage.getItem("accessToken");
+    if (!socket || !socket.connected) {
+      console.warn("Socket is not connected");
+      return;
+    }
+    const token = getCookie("accessToken");
     const messageToSend = overrideMessage ?? chat;
     const trimmedMessage = messageToSend.trim();
-    if (!trimmedMessage || !token) return;
+    if (!trimmedMessage) {
+      console.warn("Message is empty");
+      return;
+    }
+    if (!token) {
+      console.warn("Access token is missing");
+      return;
+    }
+    console.log("Sending message:", { token: token ? "exists" : "missing", message: trimmedMessage, roomId: streamId });
     socket.emit("chat_message", {
       token,
       message: trimmedMessage,
