@@ -12,6 +12,7 @@ export const LiveCardContainer = styled.div`
 `;
 
 export const VideoContainer = styled.div`
+	position: relative;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -20,16 +21,98 @@ export const VideoContainer = styled.div`
 	border-radius: ${({theme}) => theme.borders.xlarge};
 	background-color: ${({theme}) => theme.colors.content.dark};
 	overflow: hidden;
-	
-	&:hover {
-		opacity: 0.8;
-	}
 `
 
 export const Thumbnail = styled.img`
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
+`
+
+export const PreviewVideo = styled.video<{ $isVisible?: boolean }>`
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	opacity: ${({ $isVisible }) => ($isVisible ? 1 : 0)};
+	transition: opacity 0.3s ease-in-out;
+`
+
+export const SeekbarContainer = styled.div`
+	position: absolute;
+	bottom: 8px;
+	left: 8px;
+	right: 8px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 6px 10px;
+	background: rgba(0, 0, 0, 0.7);
+	border-radius: 8px;
+	backdrop-filter: blur(4px);
+`
+
+export const SeekbarTime = styled.span`
+	font-size: 11px;
+	color: white;
+	font-weight: 500;
+	min-width: 36px;
+	text-align: center;
+`
+
+export const SeekbarWrapper = styled.div`
+	position: relative;
+	flex: 1;
+	height: 4px;
+	background: rgba(255, 255, 255, 0.3);
+	border-radius: 2px;
+`
+
+export const SeekbarProgress = styled.div<{ $progress: number }>`
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: ${({ $progress }) => $progress}%;
+	background: ${({ theme }) => theme.colors.primary.normal};
+	border-radius: 2px;
+	pointer-events: none;
+`
+
+export const SeekbarInput = styled.input`
+	position: absolute;
+	top: 50%;
+	left: 0;
+	transform: translateY(-50%);
+	width: 100%;
+	height: 12px;
+	margin: 0;
+	opacity: 0;
+	cursor: pointer;
+
+	&::-webkit-slider-thumb {
+		-webkit-appearance: none;
+		width: 12px;
+		height: 12px;
+		background: white;
+		border-radius: 50%;
+		cursor: pointer;
+	}
+`
+
+export const LiveBadge = styled.div`
+	position: absolute;
+	top: 8px;
+	left: 8px;
+	padding: 4px 8px;
+	background: #ff0000;
+	color: white;
+	font-size: 11px;
+	font-weight: 700;
+	border-radius: 4px;
+	letter-spacing: 0.5px;
 `
 
 export const ProfileImage = styled.img`

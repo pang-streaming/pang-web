@@ -10,6 +10,7 @@ import { AuthLayout, DefaultLayout } from "@pang/shared/ui";
 import { Home } from "@/pages/home/page";
 import { MyPage } from "@/pages/mypage/page";
 import { LiveDetail } from "@/pages/live-detail/page";
+import { VideoDetail } from "@/pages/video/page";
 import { Market } from "@/pages/market/page";
 import { MarketDetail } from "@/pages/market/page/market-detail/page";
 import { ProfilePage } from "@/pages/profile/page";
@@ -54,6 +55,7 @@ function App() {
 	    </Route>
       <Route element={<DefaultLayout type={"user"} full />}>
         <Route path="/livedetail" element={<LiveDetail />} />
+        <Route path="/video" element={<VideoDetail />} />
       </Route>
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<Login />} />

@@ -24,6 +24,11 @@ export const Explore = () => {
   const { data: lives = [], isLoading: livesLoading, error: livesError } = useLives();
   const { data: lastVideosResponse, isLoading: videosLoading, error: videosError } = useAllLastVideo();
 
+  const liveVideos = lives.map(video => ({
+    ...video,
+    isLive: true,
+  }));
+
   const lastVideos = (lastVideosResponse?.data || []).map(video => ({
     streamId: video.streamId,
     title: video.title,
@@ -35,11 +40,12 @@ export const Explore = () => {
     followers: video.viewCount || 0,
     viewCount: video.viewCount || 0,
     thumbnail: video.thumbnail || video.url,
+    isLive: false,
   }));
 
   const isLoading = activeTab === "live" ? livesLoading : videosLoading;
   const error = activeTab === "live" ? livesError : videosError;
-  const displayVideos = activeTab === "live" ? lives : lastVideos;
+  const displayVideos = activeTab === "live" ? liveVideos : lastVideos;
 
   if (isLoading) {
     return (

@@ -4,18 +4,23 @@ import type {MouseEvent} from "react";
 interface VideoCardProps {
 	streamId: string;
 	username: string;
+	isLive?: boolean;
 }
 
-export const useVideoCard = ({streamId, username}: VideoCardProps) => {
+export const useVideoCard = ({streamId, username, isLive = true}: VideoCardProps) => {
 	const navigate = useNavigate();
 	const handleOnClickVideoCard = () => {
-		navigate(`/livedetail?streamId=${streamId}`);
+		if (isLive) {
+			navigate(`/livedetail?streamId=${streamId}`);
+		} else {
+			navigate(`/video?streamId=${streamId}`);
+		}
 	};
-	
+
 	const handleOnClickProfile = (e: MouseEvent) => {
 		e.stopPropagation();
 		navigate(`/profile/${username}`);
 	}
-	
+
 	return {handleOnClickVideoCard, handleOnClickProfile};
 }
