@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { useMutation } from '@tanstack/react-query';
-import { updateStream } from '@/features/stream/api';
-import { AddRtmpServerModal } from './AddRtmpServerModal';
-import * as S from '../styles';
+import React, { useState, useEffect } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { updateStream } from "@/features/stream/api";
+import { AddRtmpServerModal } from "./AddRtmpServerModal";
+import * as S from "../styles";
 
 interface StreamingSettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  currentStreamType: 'RTMP' | 'WHIP';
+  currentStreamType: "RTMP" | "WHIP";
   streamKey: string;
   queryClient: any;
   streamStatus: any;
@@ -23,11 +23,15 @@ export const StreamingSettingsModal: React.FC<StreamingSettingsModalProps> = ({
   queryClient,
   streamStatus,
   rtmpUrls = [],
-  onRtmpUrlsChange
+  onRtmpUrlsChange,
 }) => {
-  const [selectedType, setSelectedType] = useState<'RTMP' | 'WHIP'>(currentStreamType);
+  const [selectedType, setSelectedType] = useState<"RTMP" | "WHIP">(
+    currentStreamType
+  );
   const [isClosing, setIsClosing] = useState(false);
-  const [localRtmpUrls, setLocalRtmpUrls] = useState<string[]>(rtmpUrls.length > 0 ? rtmpUrls : []);
+  const [localRtmpUrls, setLocalRtmpUrls] = useState<string[]>(
+    rtmpUrls.length > 0 ? rtmpUrls : []
+  );
   const [isAddServerModalOpen, setIsAddServerModalOpen] = useState(false);
 
   // currentStreamType이 변경되면 selectedType도 업데이트
@@ -36,8 +40,7 @@ export const StreamingSettingsModal: React.FC<StreamingSettingsModalProps> = ({
   }, [currentStreamType]);
 
   useEffect(() => {
-    // 빈 문자열이 아닌 URL만 필터링
-    const validUrls = rtmpUrls.filter(url => url && url.trim() !== '');
+    const validUrls = rtmpUrls.filter((url) => url && url.trim() !== "");
     if (validUrls.length > 0) {
       setLocalRtmpUrls(validUrls);
     }
@@ -45,38 +48,42 @@ export const StreamingSettingsModal: React.FC<StreamingSettingsModalProps> = ({
 
   // 스트림 타입 변경 mutation
   const updateStreamTypeMutation = useMutation({
-    mutationFn: (streamType: 'RTMP' | 'WHIP') => updateStream(streamKey, { 
-      title: streamStatus?.data?.title || '', // 기존 제목 유지
-      categoryId: streamStatus?.data?.categoryId || 0, // 기존 카테고리 유지
-      tags: streamStatus?.data?.tags || [], // 기존 태그 유지
-      streamType: streamType 
-    }),
+    mutationFn: (streamType: "RTMP" | "WHIP") =>
+      updateStream(streamKey, {
+        title: streamStatus?.data?.title || "", // 기존 제목 유지
+        categoryId: streamStatus?.data?.categoryId || 0, // 기존 카테고리 유지
+        tags: streamStatus?.data?.tags || [], // 기존 태그 유지
+        streamType: streamType,
+      }),
     onMutate: async (newStreamType) => {
       // 낙관적 업데이트: 서버 응답을 기다리지 않고 즉시 UI 업데이트
-      await queryClient.cancelQueries({ queryKey: ['streamStatus'] });
-      
-      const previousStreamStatus = queryClient.getQueryData(['streamStatus']);
-      
-      queryClient.setQueryData(['streamStatus'], (old: any) => ({
+      await queryClient.cancelQueries({ queryKey: ["streamStatus"] });
+
+      const previousStreamStatus = queryClient.getQueryData(["streamStatus"]);
+
+      queryClient.setQueryData(["streamStatus"], (old: any) => ({
         ...old,
         data: {
           ...old?.data,
-          streamType: newStreamType
-        }
+          streamType: newStreamType,
+        },
       }));
-      
+
       return { previousStreamStatus };
     },
     onError: (err, newStreamType, context) => {
       // 에러 발생 시 이전 상태로 롤백
       if (context?.previousStreamStatus) {
-        queryClient.setQueryData(['streamStatus'], context.previousStreamStatus);
+        queryClient.setQueryData(
+          ["streamStatus"],
+          context.previousStreamStatus
+        );
       }
-      console.error('스트림 타입 변경 실패:', err);
+      console.error("스트림 타입 변경 실패:", err);
     },
     onSettled: () => {
       // 성공/실패 관계없이 최신 데이터로 동기화
-      queryClient.invalidateQueries({ queryKey: ['streamStatus'] });
+      queryClient.invalidateQueries({ queryKey: ["streamStatus"] });
     },
   });
 
@@ -88,9 +95,11 @@ export const StreamingSettingsModal: React.FC<StreamingSettingsModalProps> = ({
     }, 300);
   };
 
-  const handleTypeChange = (type: 'RTMP' | 'WHIP') => {
+  const handleTypeChange = (type: "RTMP" | "WHIP") => {
     setSelectedType(type);
-    console.log(`방송 방식이 ${type === 'RTMP' ? '외부 송출 프로그램' : '팡 스트리머'}로 변경되었습니다.`);
+    console.log(
+      `방송 방식이 ${type === "RTMP" ? "외부 송출 프로그램" : "팡 스트리머"}로 변경되었습니다.`
+    );
   };
 
   const handleRtmpUrlChange = (index: number, value: string) => {
@@ -110,22 +119,22 @@ export const StreamingSettingsModal: React.FC<StreamingSettingsModalProps> = ({
 
   const handleSave = () => {
     console.log(`방송 설정 저장: ${selectedType}`);
-    
+
     // RTMP URLs 저장
-    if (selectedType === 'WHIP' && onRtmpUrlsChange) {
+    if (selectedType === "WHIP" && onRtmpUrlsChange) {
       onRtmpUrlsChange(localRtmpUrls);
     }
-    
+
     // mutation 실행 (낙관적 업데이트 포함)
     updateStreamTypeMutation.mutate(selectedType, {
       onSuccess: () => {
-        console.log('스트림 타입 변경 성공');
+        console.log("스트림 타입 변경 성공");
         handleClose();
       },
       onError: (error) => {
-        console.error('스트림 타입 변경 실패:', error);
-        alert('스트림 타입 변경에 실패했습니다.');
-      }
+        console.error("스트림 타입 변경 실패:", error);
+        alert("스트림 타입 변경에 실패했습니다.");
+      },
     });
   };
 
@@ -134,121 +143,140 @@ export const StreamingSettingsModal: React.FC<StreamingSettingsModalProps> = ({
   return (
     <>
       <S.ModalOverlay onClick={handleClose} $isClosing={isClosing}>
-        <S.ModalContent onClick={(e) => e.stopPropagation()} $isClosing={isClosing}>
-        <S.ModalHeader>
-          <S.ModalTitle>방송 설정</S.ModalTitle>
-          <S.CloseButton onClick={handleClose}>×</S.CloseButton>
-        </S.ModalHeader>
-        
-        <S.ModalBody>
-          <S.Form as="div">
-            <S.FormGroup>
-              <S.Label>방송 방식 선택</S.Label>
-              <S.OptionContainer>
-                <S.OptionButton
-                  type="button"
-                  $isSelected={selectedType === 'RTMP'}
-                  onClick={() => handleTypeChange('RTMP')}
-                >
-                  <S.OptionIcon>📺</S.OptionIcon>
-                  <S.OptionContent>
-                    <S.OptionTitle>외부 송출 프로그램</S.OptionTitle>
-                    <S.OptionDescription>OBS, XSplit 등 외부 프로그램 사용</S.OptionDescription>
-                  </S.OptionContent>
-                </S.OptionButton>
+        <S.ModalContent
+          onClick={(e) => e.stopPropagation()}
+          $isClosing={isClosing}
+        >
+          <S.ModalHeader>
+            <S.ModalTitle>방송 설정</S.ModalTitle>
+            <S.CloseButton onClick={handleClose}>×</S.CloseButton>
+          </S.ModalHeader>
 
-                <S.OptionButton
-                  type="button"
-                  $isSelected={selectedType === 'WHIP'}
-                  onClick={() => handleTypeChange('WHIP')}
-                >
-                  <S.OptionIcon>🎮</S.OptionIcon>
-                  <S.OptionContent>
-                    <S.OptionTitle>팡 스트리머</S.OptionTitle>
-                    <S.OptionDescription>팡 플랫폼 내장 스트리머 사용</S.OptionDescription>
-                  </S.OptionContent>
-                </S.OptionButton>
-              </S.OptionContainer>
-            </S.FormGroup>
-
-            {selectedType === 'RTMP' && (
+          <S.ModalBody>
+            <S.Form as="div">
               <S.FormGroup>
-                <S.Label>RTMP 설정 정보</S.Label>
-                <S.InfoContainer>
-                  <S.InfoItem>
-                    <S.StreamingInfoLabel>서버 주소:</S.StreamingInfoLabel>
-                    <S.StreamingInfoValue>
-                      rtmp://{import.meta.env.VITE_RTMP_SERVER_URL || 'stream.pang.com'}:{import.meta.env.VITE_RTMP_SERVER_PORT || '1935'}
-                    </S.StreamingInfoValue>
-                    <S.CopyButton onClick={() => navigator.clipboard.writeText(
-                      `rtmp://${import.meta.env.VITE_RTMP_SERVER_URL || 'stream.pang.com'}:${import.meta.env.VITE_RTMP_SERVER_PORT || '1935'}`
-                    )}>
-                      복사
-                    </S.CopyButton>
-                  </S.InfoItem>
-                  <S.InfoItem>
-                    <S.StreamingInfoLabel>스트림 키:</S.StreamingInfoLabel>
-                    <S.StreamingInfoValue>{streamKey}</S.StreamingInfoValue>
-                    <S.CopyButton onClick={() => navigator.clipboard.writeText(streamKey)}>
-                      복사
-                    </S.CopyButton>
-                  </S.InfoItem>
-                </S.InfoContainer>
-              </S.FormGroup>
-            )}
+                <S.Label>방송 방식 선택</S.Label>
+                <S.OptionContainer>
+                  <S.OptionButton
+                    type="button"
+                    $isSelected={selectedType === "RTMP"}
+                    onClick={() => handleTypeChange("RTMP")}
+                  >
+                    <S.OptionIcon>📺</S.OptionIcon>
+                    <S.OptionContent>
+                      <S.OptionTitle>외부 송출 프로그램</S.OptionTitle>
+                      <S.OptionDescription>
+                        OBS, XSplit 등 외부 프로그램 사용
+                      </S.OptionDescription>
+                    </S.OptionContent>
+                  </S.OptionButton>
 
-            {selectedType === 'WHIP' && (
-              <S.FormGroup>
-                <S.Label>팡 스트리머 - RTMP 서버 설정</S.Label>
-                <S.InfoContainer>
-                  <S.InfoText>
-                    로컬 에이전트로 전송할 RTMP 서버를 설정할 수 있습니다.
-                  </S.InfoText>
-                </S.InfoContainer>
-                <S.RtmpUrlList>
-                  {localRtmpUrls
-                    .map((url, index) => ({ url, originalIndex: index }))
-                    .filter(item => item.url && item.url.trim() !== '')
-                    .map(({ url, originalIndex }) => (
-                      <S.RtmpUrlItem key={originalIndex}>
-                        <S.RtmpUrlText>{url}</S.RtmpUrlText>
-                        <S.RemoveButton onClick={() => handleRemoveRtmpUrl(originalIndex)}>
-                          ×
-                        </S.RemoveButton>
-                      </S.RtmpUrlItem>
-                    ))}
-                  {localRtmpUrls.filter(url => url && url.trim() !== '').length === 0 && (
-                    <S.EmptyMessage>RTMP 서버를 추가해주세요</S.EmptyMessage>
-                  )}
-                </S.RtmpUrlList>
-                <S.AddButton onClick={() => setIsAddServerModalOpen(true)}>
-                  + 서버 추가
-                </S.AddButton>
+                  <S.OptionButton
+                    type="button"
+                    $isSelected={selectedType === "WHIP"}
+                    onClick={() => handleTypeChange("WHIP")}
+                  >
+                    <S.OptionIcon>🎮</S.OptionIcon>
+                    <S.OptionContent>
+                      <S.OptionTitle>팡 스트리머</S.OptionTitle>
+                      <S.OptionDescription>
+                        팡 플랫폼 내장 스트리머 사용
+                      </S.OptionDescription>
+                    </S.OptionContent>
+                  </S.OptionButton>
+                </S.OptionContainer>
               </S.FormGroup>
-            )}
-            
-            <S.ButtonGroup>
-              <S.CancelButton type="button" onClick={handleClose}>
-                취소
-              </S.CancelButton>
-              <S.SaveButton 
-                type="button" 
-                onClick={handleSave}
-                disabled={updateStreamTypeMutation.isPending}
-              >
-                {updateStreamTypeMutation.isPending ? '저장 중...' : '저장'}
-              </S.SaveButton>
-            </S.ButtonGroup>
-          </S.Form>
-        </S.ModalBody>
-      </S.ModalContent>
-    </S.ModalOverlay>
 
-    <AddRtmpServerModal
-      isOpen={isAddServerModalOpen}
-      onClose={() => setIsAddServerModalOpen(false)}
-      onAdd={handleAddRtmpUrl}
-    />
-  </>
+              {selectedType === "RTMP" && (
+                <S.FormGroup>
+                  <S.Label>RTMP 설정 정보</S.Label>
+                  <S.InfoContainer>
+                    <S.InfoItem>
+                      <S.StreamingInfoLabel>서버 주소:</S.StreamingInfoLabel>
+                      <S.StreamingInfoValue>
+                        rtmp://
+                        {import.meta.env.VITE_RTMP_SERVER_URL ||
+                          "stream.pang.com"}
+                        :{import.meta.env.VITE_RTMP_SERVER_PORT || "1935"}
+                      </S.StreamingInfoValue>
+                      <S.CopyButton
+                        onClick={() =>
+                          navigator.clipboard.writeText(
+                            `rtmp://${import.meta.env.VITE_RTMP_SERVER_URL || "stream.pang.com"}:${import.meta.env.VITE_RTMP_SERVER_PORT || "1935"}`
+                          )
+                        }
+                      >
+                        복사
+                      </S.CopyButton>
+                    </S.InfoItem>
+                    <S.InfoItem>
+                      <S.StreamingInfoLabel>스트림 키:</S.StreamingInfoLabel>
+                      <S.StreamingInfoValue>{streamKey}</S.StreamingInfoValue>
+                      <S.CopyButton
+                        onClick={() => navigator.clipboard.writeText(streamKey)}
+                      >
+                        복사
+                      </S.CopyButton>
+                    </S.InfoItem>
+                  </S.InfoContainer>
+                </S.FormGroup>
+              )}
+
+              {selectedType === "WHIP" && (
+                <S.FormGroup>
+                  <S.Label>팡 스트리머 - RTMP 서버 설정</S.Label>
+                  <S.InfoContainer>
+                    <S.InfoText>
+                      로컬 에이전트로 전송할 RTMP 서버를 설정할 수 있습니다.
+                    </S.InfoText>
+                  </S.InfoContainer>
+                  <S.RtmpUrlList>
+                    {localRtmpUrls
+                      .map((url, index) => ({ url, originalIndex: index }))
+                      .filter((item) => item.url && item.url.trim() !== "")
+                      .map(({ url, originalIndex }) => (
+                        <S.RtmpUrlItem key={originalIndex}>
+                          <S.RtmpUrlText>{url}</S.RtmpUrlText>
+                          <S.RemoveButton
+                            onClick={() => handleRemoveRtmpUrl(originalIndex)}
+                          >
+                            ×
+                          </S.RemoveButton>
+                        </S.RtmpUrlItem>
+                      ))}
+                    {localRtmpUrls.filter((url) => url && url.trim() !== "")
+                      .length === 0 && (
+                      <S.EmptyMessage>RTMP 서버를 추가해주세요</S.EmptyMessage>
+                    )}
+                  </S.RtmpUrlList>
+                  <S.AddButton onClick={() => setIsAddServerModalOpen(true)}>
+                    + 서버 추가
+                  </S.AddButton>
+                </S.FormGroup>
+              )}
+
+              <S.ButtonGroup>
+                <S.CancelButton type="button" onClick={handleClose}>
+                  취소
+                </S.CancelButton>
+                <S.SaveButton
+                  type="button"
+                  onClick={handleSave}
+                  disabled={updateStreamTypeMutation.isPending}
+                >
+                  {updateStreamTypeMutation.isPending ? "저장 중..." : "저장"}
+                </S.SaveButton>
+              </S.ButtonGroup>
+            </S.Form>
+          </S.ModalBody>
+        </S.ModalContent>
+      </S.ModalOverlay>
+
+      <AddRtmpServerModal
+        isOpen={isAddServerModalOpen}
+        onClose={() => setIsAddServerModalOpen(false)}
+        onAdd={handleAddRtmpUrl}
+      />
+    </>
   );
 };
