@@ -25,11 +25,10 @@ export const VideoPlayer = ({ streamUrl, isMobile, isLive = true }: VideoPlayerP
   useHlsPlayer(videoRef, streamUrl, isLive);
 
   useEffect(() => {
-    // VOD에서는 pang-player 체크 불필요
     if (!isLive) return;
     const checkAppStatus = async () => {
       try {
-        await fetch("http://127.0.0.1:25137/ping", {
+        await fetch("http://localhost:25137/ping", {
           method: "GET",
           signal: AbortSignal.timeout(3000),
         });
