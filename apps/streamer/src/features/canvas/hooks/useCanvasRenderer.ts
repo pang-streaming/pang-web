@@ -1,6 +1,7 @@
 import {CanvasSize, HANDLE_SIZE, Screen} from "@/features/canvas/constants/canvas-constants";
 import {useSelectedScreenStore} from "@/features/stores/useSelectedScreenStore";
 import {RefObject, useEffect} from "react";
+import {useTheme} from "styled-components";
 
 export const useCanvasRenderer = (
 	canvasRef: RefObject<HTMLCanvasElement | null>,
@@ -8,6 +9,7 @@ export const useCanvasRenderer = (
 	canvasSize: CanvasSize
 ): void => {
 	const { selectedScreen } = useSelectedScreenStore();
+	const theme = useTheme();
 	
 	useEffect(() => {
 		const canvas = canvasRef.current;
@@ -31,12 +33,12 @@ export const useCanvasRenderer = (
 		let animationId: number;
 		
 		const drawLoop = (): void => {
-			ctx.fillStyle = '#000000';
+			ctx.fillStyle = theme.colors.background.dark;
 			ctx.fillRect(0, 0, canvasSize.width, canvasSize.height);
-			
+
 			screens.forEach(screen => {
 				const { x, y, width, height, type, source } = screen;
-				
+
 				switch(type) {
 					case 'video':
 						if ((source as HTMLVideoElement).readyState >= 2) {
@@ -51,26 +53,26 @@ export const useCanvasRenderer = (
 						break;
 				}
 				if (selectedScreen === screen.id) {
-					ctx.strokeStyle = '#FF0055';
+					ctx.strokeStyle = theme.colors.primary;
 					ctx.lineWidth = 2;
 					ctx.strokeRect(screen.x, screen.y, screen.width, screen.height);
-					
+
 					const corners: [number, number][] = [
 						[screen.x, screen.y],
 						[screen.x + screen.width - HANDLE_SIZE, screen.y],
 						[screen.x, screen.y + screen.height - HANDLE_SIZE],
 						[screen.x + screen.width - HANDLE_SIZE, screen.y + screen.height - HANDLE_SIZE]
 					];
-					
+
 					corners.forEach(([cx, cy]) => {
-						ctx.fillStyle = '#FF0055';
+						ctx.fillStyle = theme.colors.primary;
 						ctx.fillRect(cx, cy, HANDLE_SIZE, HANDLE_SIZE);
-						ctx.fillStyle = '#ffffff';
+						ctx.fillStyle = theme.colors.background.normal;
 						ctx.fillRect(cx + 3, cy + 3, HANDLE_SIZE - 6, HANDLE_SIZE - 6);
 					});
 				}
 			});
-			
+
 			animationId = requestAnimationFrame(drawLoop);
 		};
 		
@@ -81,5 +83,5 @@ export const useCanvasRenderer = (
 				cancelAnimationFrame(animationId);
 			}
 		};
-	}, [canvasRef, canvasSize.height, canvasSize.width, screens, selectedScreen]);
+	}, [canvasRef, canvasSize.height, canvasSize.width, screens, selectedScreen, theme]);
 };

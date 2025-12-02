@@ -120,12 +120,12 @@ const ChatContainer = styled.div`
   }
   
   &::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
+    background: ${({ theme }) => theme.colors.border.normal};
     border-radius: 3px;
   }
-  
+
   &::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.5);
+    background: ${({ theme }) => theme.colors.hover.normal};
   }
 `;
 
@@ -146,7 +146,7 @@ const MessageText = styled.span`
   word-break: break-word;
   font-size: 18px;
   font-weight: 500;
-  color: white;
+  color: ${({ theme }) => theme.colors.text.normal};
 `;
 
 const ChatInputContainer = styled.div`
@@ -162,11 +162,11 @@ const ChatInputWrapper = styled.div`
   border-radius: 10px;
   padding: 4px;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 
   &:focus-within {
     border-color: ${({ theme }) => theme.colors.primary.normal};
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15), 0 0 0 3px rgba(59, 130, 246, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
     transform: translateY(-1px);
   }
 `;
@@ -210,13 +210,13 @@ const SendButton = styled.button<{ $hasMessage: boolean }>`
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   transform: ${({ $hasMessage }) => $hasMessage ? 'scale(1)' : 'scale(0.95)'};
   opacity: ${({ $hasMessage }) => $hasMessage ? '1' : '0.6'};
 
   &:hover:not(:disabled) {
     transform: scale(1.05);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
   }
 
   &:active:not(:disabled) {

@@ -223,7 +223,7 @@ const Select = styled.select`
 
   &:focus {
     outline: none;
-    border-color: ${({ theme }) => theme.colors.primary || "#4CAF50"};
+    border-color: ${({ theme }) => theme.colors.primary};
   }
 `;
 
@@ -257,8 +257,8 @@ const CancelButton = styled(Button)`
 `;
 
 const ConfirmButton = styled(Button)`
-  background-color: ${({ theme }) => theme.colors.primary || "#4CAF50"};
-  color: black;
+  background-color: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.text.inverse};
 
   &:hover:not(:disabled) {
     opacity: 0.9;

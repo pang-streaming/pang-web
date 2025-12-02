@@ -203,7 +203,7 @@ export const StatusDot = styled.div<{ $isLive: boolean }>`
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: ${({ $isLive }) => ($isLive ? "#22c55e" : "#6b7280")};
+  background-color: ${({ $isLive, theme }) => ($isLive ? theme.colors.status.success : theme.colors.text.subtitle)};
   animation: ${({ $isLive }) => ($isLive ? "pulse 2s infinite" : "none")};
 
   @keyframes pulse {
@@ -280,7 +280,7 @@ export const ModalOverlay = styled.div<{ $isClosing?: boolean }>`
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: ${({ theme }) => `${theme.colors.background.dark}CC`};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -297,9 +297,7 @@ export const ModalContent = styled.div<{ $isClosing?: boolean }>`
   max-width: 500px;
   max-height: 90vh;
   overflow: hidden;
-  box-shadow:
-    0 20px 25px -5px rgba(0, 0, 0, 0.1),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   animation: ${({ $isClosing }) => ($isClosing ? slideOut : slideIn)} 0.3s
     ease-out;
   transform-origin: center;
@@ -421,7 +419,7 @@ export const OptionButton = styled.button<{ $isSelected: boolean }>`
       $isSelected ? theme.colors.primary.normal : theme.colors.border.normal};
   border-radius: 12px;
   background-color: ${({ $isSelected, theme }) =>
-    $isSelected ? "rgba(59, 130, 246, 0.05)" : theme.colors.background.normal};
+    $isSelected ? theme.colors.primary.light : theme.colors.background.normal};
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: left;
@@ -429,7 +427,7 @@ export const OptionButton = styled.button<{ $isSelected: boolean }>`
   &:hover {
     border-color: ${({ theme }) => theme.colors.primary.normal};
     background-color: ${({ $isSelected, theme }) =>
-      $isSelected ? "rgba(59, 130, 246, 0.1)" : "rgba(59, 130, 246, 0.05)"};
+      $isSelected ? theme.colors.hover.normal : theme.colors.primary.light};
   }
 `;
 

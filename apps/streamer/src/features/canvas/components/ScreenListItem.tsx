@@ -71,7 +71,7 @@ const ScreenItem = styled.div<{ isDragging: boolean }>`
   border-radius: ${({ theme }) => theme.borders.large};
   margin-bottom: 6px;
   box-shadow: ${({ isDragging }) =>
-    isDragging ? '0 8px 16px rgba(0,0,0,0.3)' : 'none'};
+    isDragging ? '0 8px 16px rgba(0, 0, 0, 0.15)' : 'none'};
   transition: all 0.2s;
   cursor: grab;
 

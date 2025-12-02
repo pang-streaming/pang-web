@@ -124,19 +124,19 @@ const HashtagItem = styled.div`
   height: 20px;
   
   &:hover {
-    background-color: ${({ theme }) => theme.colors.primary.dark || '#1d4ed8'};
+    background-color: ${({ theme }) => theme.colors.primary.dark};
   }
 `;
 
 const HashtagText = styled.span`
-  color: white;
+  color: ${({ theme }) => theme.colors.text.inverse};
   font-weight: 500;
 `;
 
 const RemoveButton = styled.button`
   background: none;
   border: none;
-  color: white;
+  color: ${({ theme }) => theme.colors.text.inverse};
   cursor: pointer;
   font-size: 0.75rem;
   font-weight: bold;
@@ -149,9 +149,9 @@ const RemoveButton = styled.button`
   border-radius: 50%;
   transition: all 0.2s;
   margin-left: 3px;
-  
+
   &:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: ${({ theme }) => theme.colors.hover.light};
   }
 `;
 
