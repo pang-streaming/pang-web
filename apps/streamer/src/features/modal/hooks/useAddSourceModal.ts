@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export type SourceType = 'screen' | 'image' | 'vtuber' | null;
+export type SourceType = 'screen' | 'image' | 'vtuber' | '3d-background' | null;
 
 export const useAddSourceModal = () => {
   const [isOpen, setIsOpen] = useState(false);

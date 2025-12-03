@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { SourceType } from "../hooks/useAddSourceModal";
 import { ScreenShareOption } from "./ScreenShareOption";
 import { ImageOption } from "./ImageOption";
 import { VTuberOption } from "@/features/modal/components/VtuberOption";
-import { ThreeDBackgroundModal } from "./3DBackgroundModal";
+import { ThreeDBackgroundOption } from "./3DBackgroundModal";
 import {
   Screen,
   CanvasSize,
@@ -31,90 +31,77 @@ export const AddSourceModal = ({
   onAddScreen,
   onAddVTuber,
 }: AddSourceModalProps) => {
-  const [sourceName, setSourceName] = useState("");
-  const [isAI360ModalOpen, setIsAI360ModalOpen] = useState(false);
+  const [sourceName, setSourceName] = React.useState("");
+  const mouseDownTarget = React.useRef<EventTarget | null>(null);
 
-  const handleSelectBackground = (imageUrl: string) => {
-    // 이미지를 배경으로 추가
-    const img = new Image();
-    img.onload = () => {
-      const newScreen: Screen = {
-        id: Date.now(),
-        type: "image",
-        source: img,
-        x: 0,
-        y: 0,
-        width: canvasSize.width,
-        height: canvasSize.height,
-        name: sourceName || "AI 배경",
-      };
-      onAddScreen(newScreen);
+  const handleOverlayMouseDown = (e: React.MouseEvent) => {
+    mouseDownTarget.current = e.target;
+  };
+
+  const handleOverlayClick = (e: React.MouseEvent) => {
+    // mousedown과 click이 모두 overlay에서 발생했을 때만 닫기
+    if (e.target === e.currentTarget && mouseDownTarget.current === e.currentTarget) {
       onClose();
-    };
-    img.src = imageUrl;
+    }
+    mouseDownTarget.current = null;
   };
 
   if (!isOpen) return null;
 
   if (!selectedType) {
     return (
-      <>
-        <ModalOverlay onClick={onClose}>
-          <ModalContent onClick={(e) => e.stopPropagation()}>
-            <ModalHeader>
-              <h2>화면 소스</h2>
-              <CloseButton onClick={onClose}>✕</CloseButton>
-            </ModalHeader>
-            <Divider />
-            <ModalBody>
-              <SourceNameInput
-                type="text"
-                placeholder="소스 이름"
-                value={sourceName}
-                onChange={(e) => setSourceName(e.target.value)}
-              />
+      <ModalOverlay onMouseDown={handleOverlayMouseDown} onClick={handleOverlayClick}>
+        <ModalContent>
+          <ModalHeader>
+            <h2>화면 소스</h2>
+            <CloseButton onClick={onClose}>✕</CloseButton>
+          </ModalHeader>
+          <Divider />
+          <ModalBody>
+            <SourceNameInput
+              type="text"
+              placeholder="소스 이름"
+              value={sourceName}
+              onChange={(e) => setSourceName(e.target.value)}
+            />
 
-              <TagSection>
-                <TagGroup>
-                  <SourceTag
-                    onClick={() => onSelectType("screen")}
-                    $isActive={false}
-                  >
-                    화면 캡처
-                  </SourceTag>
-                  <SourceTag
-                    onClick={() => onSelectType("image")}
-                    $isActive={false}
-                  >
-                    이미지
-                  </SourceTag>
-                  <SourceTag
-                    onClick={() => onSelectType("vtuber")}
-                    $isActive={false}
-                  >
-                    VTuber
-                  </SourceTag>
-                </TagGroup>
-                <AILink onClick={() => setIsAI360ModalOpen(true)}>
-                  3D 배경 생성
-                </AILink>
-              </TagSection>
-            </ModalBody>
-          </ModalContent>
-        </ModalOverlay>
-
-        <ThreeDBackgroundModal
-          isOpen={isAI360ModalOpen}
-          onClose={() => setIsAI360ModalOpen(false)}
-          onSelectBackground={handleSelectBackground}
-        />
-      </>
+            <TagSection>
+              <TagGroup>
+                <SourceTag
+                  onClick={() => onSelectType("screen")}
+                  $isActive={false}
+                >
+                  화면 캡처
+                </SourceTag>
+                <SourceTag
+                  onClick={() => onSelectType("image")}
+                  $isActive={false}
+                >
+                  이미지
+                </SourceTag>
+                <SourceTag
+                  onClick={() => onSelectType("vtuber")}
+                  $isActive={false}
+                >
+                  VTuber
+                </SourceTag>
+                <SourceTag
+                  onClick={() => onSelectType("3d-background")}
+                  $isActive={false}
+                >
+                  3D 배경
+                </SourceTag>
+              </TagGroup>
+            </TagSection>
+          </ModalBody>
+        </ModalContent>
+      </ModalOverlay>
     );
   }
 
   return (
-    <ModalOverlay onClick={onClose}>
-      <ModalContent onClick={(e) => e.stopPropagation()}>
+    <ModalOverlay onMouseDown={handleOverlayMouseDown} onClick={handleOverlayClick}>
+      <ModalContent>
         <ModalHeader>
           <h2>화면 소스</h2>
           <CloseButton onClick={onClose}>✕</CloseButton>
@@ -148,8 +135,13 @@ export const AddSourceModal = ({
               >
                 VTuber
               </SourceTag>
+              <SourceTag
+                onClick={() => onSelectType("3d-background")}
+                $isActive={selectedType === "3d-background"}
+              >
+                3D 배경
+              </SourceTag>
             </TagGroup>
-            <AILink onClick={() => setIsAI360ModalOpen(true)}>3D 배경 생성</AILink>
           </TagSection>
 
           <ContentArea>
@@ -176,15 +168,17 @@ export const AddSourceModal = ({
                 sourceName={sourceName}
               />
             )}
+            {selectedType === "3d-background" && (
+              <ThreeDBackgroundOption
+                canvasSize={canvasSize}
+                onAddScreen={onAddScreen}
+                onClose={onClose}
+                sourceName={sourceName}
+              />
+            )}
           </ContentArea>
         </ModalBody>
       </ModalContent>
-
-      <ThreeDBackgroundModal
-        isOpen={isAI360ModalOpen}
-        onClose={() => setIsAI360ModalOpen(false)}
-        onSelectBackground={handleSelectBackground}
-      />
     </ModalOverlay>
   );
 };
@@ -281,7 +275,6 @@ const SourceNameInput = styled.input`
 const TagSection = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
 `;
 
 const TagGroup = styled.div`
@@ -307,20 +300,6 @@ const SourceTag = styled.button<{ $isActive: boolean }>`
 
   &:hover {
     background-color: ${({ theme }) => theme.colors.content.dark};
-  }
-`;
-
-const AILink = styled.button`
-  background: none;
-  border: none;
-  color: ${({ theme }) => theme.colors.primary.normal};
-  font-size: 14px;
-  font-family: "Wanted Sans", sans-serif;
-  cursor: pointer;
-  padding: 0;
-
-  &:hover {
-    opacity: 0.8;
   }
 `;
 

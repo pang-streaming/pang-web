@@ -2,82 +2,166 @@ import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import * as THREE from 'three';
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
+import {
+  Screen,
+  CanvasSize,
+} from "@/features/canvas/constants/canvas-constants";
 
-interface ThreeDBackgroundModalProps {
-  isOpen: boolean;
+const API_BASE_URL = 'https://pang-ai.euns.dev';
+const LOCAL_STORAGE_KEY = 'pang-3d-background-hdr-url';
+
+type Step = 'prompt' | 'loading' | 'preview';
+
+interface ThreeDBackgroundOptionProps {
+  canvasSize: CanvasSize;
+  onAddScreen: (screen: Screen) => void;
   onClose: () => void;
-  onSelectBackground: (imageUrl: string) => void;
+  sourceName: string;
 }
 
-export const ThreeDBackgroundModal: React.FC<ThreeDBackgroundModalProps> = ({
-  isOpen,
+export const ThreeDBackgroundOption: React.FC<ThreeDBackgroundOptionProps> = ({
+  canvasSize,
+  onAddScreen,
   onClose,
-  onSelectBackground
+  sourceName
 }) => {
+  // localStorage에서 저장된 HDR URL 확인
+  const savedHdrUrl = localStorage.getItem(LOCAL_STORAGE_KEY);
+
+  const [step, setStep] = useState<Step>(savedHdrUrl ? 'preview' : 'prompt');
+  const [prompt, setPrompt] = useState('');
+  const [hdrUrl, setHdrUrl] = useState<string | null>(savedHdrUrl);
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const containerRef = useRef<HTMLDivElement>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const isDragging = useRef(false);
   const previousMousePosition = useRef({ x: 0, y: 0 });
-  const [isClosing, setIsClosing] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const pollingRef = useRef<NodeJS.Timeout | null>(null);
 
+  // API: HDR 생성 요청
+  const requestHdrGeneration = async (promptText: string) => {
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/generate-hdr`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ prompt: promptText }),
+      });
+
+      if (!response.ok) {
+        throw new Error('HDR 생성 요청에 실패했습니다.');
+      }
+
+      const data = await response.json();
+
+      if (data.success && data.taskId) {
+        setStep('loading');
+        startPolling(data.taskId);
+      } else {
+        throw new Error(data.message || 'HDR 생성 요청에 실패했습니다.');
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '알 수 없는 오류가 발생했습니다.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // API: 상태 폴링
+  const checkStatus = async (id: string) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/status/${id}`);
+
+      if (!response.ok) {
+        throw new Error('상태 확인에 실패했습니다.');
+      }
+
+      const data = await response.json();
+
+      if (data.status === 'completed' && data.hdrUrl) {
+        stopPolling();
+        setHdrUrl(data.hdrUrl);
+        // localStorage에 저장
+        localStorage.setItem(LOCAL_STORAGE_KEY, data.hdrUrl);
+        setStep('preview');
+      } else if (data.status === 'failed' || data.error) {
+        stopPolling();
+        setError(data.error || 'HDR 생성에 실패했습니다.');
+        setStep('prompt');
+      }
+      // pending 상태면 계속 폴링
+    } catch (err) {
+      stopPolling();
+      setError(err instanceof Error ? err.message : '상태 확인 중 오류가 발생했습니다.');
+      setStep('prompt');
+    }
+  };
+
+  const startPolling = (id: string) => {
+    pollingRef.current = setInterval(() => {
+      checkStatus(id);
+    }, 10000); // 10초 간격
+  };
+
+  const stopPolling = () => {
+    if (pollingRef.current) {
+      clearInterval(pollingRef.current);
+      pollingRef.current = null;
+    }
+  };
+
+  // 컴포넌트 언마운트 시 폴링 정리
   useEffect(() => {
-    if (!isOpen || !containerRef.current) return;
+    return () => {
+      stopPolling();
+    };
+  }, []);
 
-    setIsLoading(true);
+  // HDR 미리보기 Three.js 설정
+  useEffect(() => {
+    if (step !== 'preview' || !hdrUrl || !containerRef.current) return;
 
-    // Scene 설정
     const scene = new THREE.Scene();
     sceneRef.current = scene;
 
-    // Camera 설정
-    const camera = new THREE.PerspectiveCamera(
-      75,
-      800 / 600,
-      0.1,
-      1000
-    );
+    const camera = new THREE.PerspectiveCamera(75, 800 / 450, 0.1, 1000);
     camera.position.set(0, 0, 0);
     cameraRef.current = camera;
 
-    // Renderer 설정
     const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
-    renderer.setSize(800, 600);
+    renderer.setSize(800, 450);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.domElement.style.display = 'block';
     containerRef.current.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
-    // 360도 Sphere 생성 (성능 최적화를 위해 폴리곤 수 감소)
     const geometry = new THREE.SphereGeometry(500, 60, 40);
-    geometry.scale(-1, 1, 1); // 내부에서 보이도록 반전
+    geometry.scale(-1, 1, 1);
 
-    // Neon Photostudio HDRI 로드
     const rgbeLoader = new RGBELoader();
     rgbeLoader.load(
-      '/textures/neon-photostudio.hdr',
-      (texture) => {
-        console.log('Neon Photostudio HDRI 로드 완료');
+      hdrUrl,
+      (texture: THREE.DataTexture) => {
         texture.mapping = THREE.EquirectangularReflectionMapping;
-
-        const material = new THREE.MeshBasicMaterial({
-          map: texture
-        });
+        const material = new THREE.MeshBasicMaterial({ map: texture });
         const sphere = new THREE.Mesh(geometry, material);
         scene.add(sphere);
-
-        setIsLoading(false);
       },
       undefined,
-      (error) => {
-        console.error('HDRI 로드 실패:', error);
-        setIsLoading(false);
+      () => {
+        console.error('HDR 로드 실패');
+        setError('HDR 파일 로드에 실패했습니다.');
       }
     );
 
-    // 애니메이션 루프
     let animationId: number;
     const animate = () => {
       animationId = requestAnimationFrame(animate);
@@ -85,19 +169,20 @@ export const ThreeDBackgroundModal: React.FC<ThreeDBackgroundModalProps> = ({
     };
     animate();
 
-    // 클린업
+    const container = containerRef.current;
+
     return () => {
       cancelAnimationFrame(animationId);
-      if (containerRef.current && renderer.domElement) {
-        containerRef.current.removeChild(renderer.domElement);
+      if (container && renderer.domElement) {
+        container.removeChild(renderer.domElement);
       }
       geometry.dispose();
-      scene.traverse((object) => {
+      scene.traverse((object: THREE.Object3D) => {
         if (object instanceof THREE.Mesh) {
           if (object.geometry) object.geometry.dispose();
           if (object.material) {
             if (Array.isArray(object.material)) {
-              object.material.forEach((material) => material.dispose());
+              object.material.forEach((mat: THREE.Material) => mat.dispose());
             } else {
               object.material.dispose();
             }
@@ -106,7 +191,7 @@ export const ThreeDBackgroundModal: React.FC<ThreeDBackgroundModalProps> = ({
       });
       renderer.dispose();
     };
-  }, [isOpen]);
+  }, [step, hdrUrl]);
 
   // 마우스 드래그 핸들러
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -121,12 +206,8 @@ export const ThreeDBackgroundModal: React.FC<ThreeDBackgroundModalProps> = ({
     const deltaY = e.clientY - previousMousePosition.current.y;
 
     const rotationSpeed = 0.005;
-
-    // 카메라 회전
     cameraRef.current.rotation.y -= deltaX * rotationSpeed;
     cameraRef.current.rotation.x -= deltaY * rotationSpeed;
-
-    // 상하 회전 제한 (90도)
     cameraRef.current.rotation.x = Math.max(
       -Math.PI / 2,
       Math.min(Math.PI / 2, cameraRef.current.rotation.x)
@@ -139,141 +220,213 @@ export const ThreeDBackgroundModal: React.FC<ThreeDBackgroundModalProps> = ({
     isDragging.current = false;
   };
 
-  const handleClose = () => {
-    setIsClosing(true);
-    setTimeout(() => {
-      setIsClosing(false);
-      onClose();
-    }, 300);
+  const handleSubmitPrompt = () => {
+    if (!prompt.trim()) return;
+    requestHdrGeneration(prompt.trim());
   };
 
   const handleCapture = () => {
     if (!rendererRef.current) return;
 
-    // 현재 뷰를 이미지로 캡처
     const canvas = rendererRef.current.domElement;
     const imageUrl = canvas.toDataURL('image/png');
 
-    onSelectBackground(imageUrl);
-    handleClose();
+    const img = new Image();
+    img.onload = () => {
+      const newScreen: Screen = {
+        id: Date.now(),
+        type: "image",
+        source: img,
+        x: 0,
+        y: 0,
+        width: canvasSize.width,
+        height: canvasSize.height,
+        name: sourceName || "AI 3D 배경",
+      };
+      onAddScreen(newScreen);
+      onClose();
+    };
+    img.src = imageUrl;
   };
 
-  if (!isOpen) return null;
+  const handleRetry = () => {
+    setError(null);
+    setHdrUrl(null);
+    // localStorage에서 제거하여 다음에 새로 생성할 수 있도록
+    localStorage.removeItem(LOCAL_STORAGE_KEY);
+    setStep('prompt');
+  };
 
-  return (
-    <ModalOverlay onClick={handleClose} $isClosing={isClosing}>
-      <ModalContent onClick={(e) => e.stopPropagation()} $isClosing={isClosing}>
-        <ModalHeader>
-          <ModalTitle>3D 배경 선택</ModalTitle>
-          <CloseButton onClick={handleClose}>×</CloseButton>
-        </ModalHeader>
+  // 프롬프트 입력 단계
+  if (step === 'prompt') {
+    return (
+      <OptionContainer>
+        <Description>
+          AI를 활용하여 360도 3D 배경을 생성합니다. 원하는 배경을 설명해주세요.
+        </Description>
 
-        <ModalBody>
-          <InfoText>마우스를 드래그하여 원하는 각도를 찾으세요</InfoText>
-          <ViewerContainer
-            ref={containerRef}
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
+        {error && <ErrorMessage>{error}</ErrorMessage>}
+
+        <Section>
+          <SectionLabel>배경 설명</SectionLabel>
+          <PromptTextarea
+            placeholder="예: 네온 조명이 가득한 사이버펑크 스튜디오, 별이 빛나는 우주 공간, 아늑한 카페 내부..."
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            rows={4}
+          />
+        </Section>
+
+        <ButtonGroup>
+          <CancelButton onClick={onClose}>취소</CancelButton>
+          <ConfirmButton
+            onClick={handleSubmitPrompt}
+            disabled={!prompt.trim() || isSubmitting}
           >
-            {isLoading && (
-              <LoadingOverlay>
-                <LoadingText>3D 배경 로딩 중...</LoadingText>
-              </LoadingOverlay>
-            )}
-          </ViewerContainer>
-        </ModalBody>
+            {isSubmitting ? '요청 중...' : '생성하기'}
+          </ConfirmButton>
+        </ButtonGroup>
+      </OptionContainer>
+    );
+  }
 
-        <ModalFooter>
-          <CancelButton onClick={handleClose}>취소</CancelButton>
-          <SelectButton onClick={handleCapture}>이 배경 선택</SelectButton>
-        </ModalFooter>
-      </ModalContent>
-    </ModalOverlay>
+  // 로딩 단계
+  if (step === 'loading') {
+    return (
+      <OptionContainer>
+        <LoadingContainer>
+          <Spinner />
+          <LoadingText>이미지 생성 중...</LoadingText>
+          <LoadingSubText>AI가 배경을 만들고 있어요. 잠시만 기다려주세요.</LoadingSubText>
+        </LoadingContainer>
+      </OptionContainer>
+    );
+  }
+
+  // 미리보기 단계
+  return (
+    <OptionContainer>
+      <Description>
+        마우스를 드래그하여 원하는 각도를 찾으세요.
+      </Description>
+
+      <ViewerContainer
+        ref={containerRef}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+      />
+
+      <ButtonGroup>
+        <CancelButton onClick={handleRetry}>다시 생성</CancelButton>
+        <ConfirmButton onClick={handleCapture}>이 배경 선택</ConfirmButton>
+      </ButtonGroup>
+    </OptionContainer>
   );
 };
 
 // Styled Components
-const ModalOverlay = styled.div<{ $isClosing?: boolean }>`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: ${({ theme }) => `${theme.colors.background.dark}CC`};
+const OptionContainer = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1002;
-  backdrop-filter: blur(4px);
+  flex-direction: column;
+  gap: 20px;
 `;
 
-const ModalContent = styled.div<{ $isClosing?: boolean }>`
-  background-color: ${({ theme }) => theme.colors.background.normal};
-  border-radius: 16px;
-  width: 90%;
-  max-width: 900px;
-  overflow: hidden;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-`;
-
-const ModalHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 24px;
-  border-bottom: 1px solid ${({ theme }) => theme.colors.border.normal};
-`;
-
-const ModalTitle = styled.h2`
-  margin: 0;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: ${({ theme }) => theme.colors.text.normal};
-`;
-
-const CloseButton = styled.button`
-  background: none;
-  border: none;
-  font-size: 28px;
+const Description = styled.p`
   color: ${({ theme }) => theme.colors.text.subtitle};
-  cursor: pointer;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: background-color 0.2s;
+  font-size: 0.95rem;
+  margin: 0;
+`;
 
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.background.light};
+const Section = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+`;
+
+const SectionLabel = styled.label`
+  color: ${({ theme }) => theme.colors.text.normal};
+  font-size: 1rem;
+  font-weight: 600;
+`;
+
+const PromptTextarea = styled.textarea`
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  background-color: ${({ theme }) => theme.colors.content.dark};
+  color: ${({ theme }) => theme.colors.text.normal};
+  border: 1px solid ${({ theme }) => theme.colors.border.normal};
+  font-size: 1rem;
+  font-family: "Wanted Sans", sans-serif;
+  resize: vertical;
+  min-height: 100px;
+  box-sizing: border-box;
+
+  &::placeholder {
+    color: ${({ theme }) => theme.colors.text.subtitle};
+  }
+
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.primary.normal};
   }
 `;
 
-const ModalBody = styled.div`
-  padding: 24px;
+const ErrorMessage = styled.div`
+  padding: 12px;
+  background-color: rgba(255, 59, 48, 0.1);
+  border: 1px solid rgba(255, 59, 48, 0.3);
+  border-radius: 8px;
+  color: #ff3b30;
+  font-size: 0.9rem;
+`;
+
+const LoadingContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
   gap: 16px;
 `;
 
-const InfoText = styled.p`
+const Spinner = styled.div`
+  width: 48px;
+  height: 48px;
+  border: 3px solid ${({ theme }) => theme.colors.content.dark};
+  border-top-color: ${({ theme }) => theme.colors.primary.normal};
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+`;
+
+const LoadingText = styled.p`
+  color: ${({ theme }) => theme.colors.text.normal};
+  font-size: 1.1rem;
+  font-weight: 600;
   margin: 0;
-  font-size: 14px;
+`;
+
+const LoadingSubText = styled.p`
   color: ${({ theme }) => theme.colors.text.subtitle};
-  text-align: center;
+  font-size: 0.9rem;
+  margin: 0;
 `;
 
 const ViewerContainer = styled.div`
-  width: 800px;
-  height: 600px;
+  width: 100%;
+  height: 450px;
   border-radius: 12px;
   overflow: hidden;
   cursor: grab;
-  border: 2px solid ${({ theme }) => theme.colors.border.normal};
+  border: 1px solid ${({ theme }) => theme.colors.border.normal};
   position: relative;
   background-color: ${({ theme }) => theme.colors.background.dark};
 
@@ -283,70 +436,46 @@ const ViewerContainer = styled.div`
 
   canvas {
     display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
     width: 100% !important;
     height: 100% !important;
-    z-index: 1;
   }
 `;
 
-const LoadingOverlay = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: ${({ theme }) => theme.colors.background.dark};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-`;
-
-const LoadingText = styled.p`
-  color: ${({ theme }) => theme.colors.text.subtitle};
-  font-size: 16px;
-  font-weight: 500;
-`;
-
-const ModalFooter = styled.div`
+const ButtonGroup = styled.div`
   display: flex;
   gap: 12px;
-  padding: 16px 24px;
-  border-top: 1px solid ${({ theme }) => theme.colors.border.normal};
   justify-content: flex-end;
 `;
 
-const CancelButton = styled.button`
-  padding: 10px 20px;
-  border-radius: ${({ theme }) => theme.borders.small};
-  border: 1px solid ${({ theme }) => theme.colors.border.normal};
-  background-color: ${({ theme }) => theme.colors.background.normal};
-  color: ${({ theme }) => theme.colors.text.normal};
-  font-size: 14px;
-  font-weight: 500;
+const Button = styled.button`
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 1rem;
   cursor: pointer;
+  border: none;
   transition: all 0.2s;
+  font-family: "Wanted Sans", sans-serif;
 
-  &:hover {
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
+const CancelButton = styled(Button)`
+  background-color: ${({ theme }) => theme.colors.content.dark};
+  color: ${({ theme }) => theme.colors.text.normal};
+
+  &:hover:not(:disabled) {
     background-color: ${({ theme }) => theme.colors.hover.normal};
   }
 `;
 
-const SelectButton = styled.button`
-  padding: 10px 20px;
-  border-radius: ${({ theme }) => theme.borders.small};
-  border: none;
+const ConfirmButton = styled(Button)`
   background-color: ${({ theme }) => theme.colors.primary.normal};
   color: white;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
 
-  &:hover {
+  &:hover:not(:disabled) {
     opacity: 0.9;
   }
 `;
