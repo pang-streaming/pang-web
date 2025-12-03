@@ -210,7 +210,7 @@ export const useSocketBroadcast = (
 			const userRtmpUrls = (rtmpUrls || []).filter(url => url && url.trim() !== '');
 
 			// 내부 서버 URL을 첫번째로 추가
-			const validRtmpUrls = [`rtmp://43.202.111.208:1935/${streamKey}`, ...userRtmpUrls];
+			const validRtmpUrls = [`rtmp://20.41.110.116:1935/${streamKey}`, ...userRtmpUrls];
 
 			// Socket.IO로 로컬 에이전트에 스트리밍 시작 알림
 			socketRef.current.emit('start-stream-webm', {
