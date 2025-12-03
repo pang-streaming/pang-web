@@ -30,6 +30,7 @@
     "socket.io-client": "^4.8.1",
     "styled-components": "^6.1.19",
     "three": "^0.164.1",
+    "video.js": "^8.23.4",
     "vite-plugin-svgr": "^4.5.0",
     "zustand": "^5.0.8"
   },
