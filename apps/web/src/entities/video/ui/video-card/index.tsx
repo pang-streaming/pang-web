@@ -18,6 +18,7 @@ export const VideoCard = ({
   profileImage,
   thumbnail,
   isLive = true,
+  isTopVideo = false,
 }: IStreamDataResponse) => {
 	const {handleOnClickVideoCard, handleOnClickProfile} = useVideoCard({streamId, username, isLive});
 	const displayThumbnail = thumbnail || normalThumbnail;
@@ -25,26 +26,35 @@ export const VideoCard = ({
 	const [isHovering, setIsHovering] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const [isVideoReady, setIsVideoReady] = useState(false);
-	const videoRef = useRef<HTMLVideoElement>(null);
+	const videoContainerRef = useRef<HTMLDivElement>(null);
 	const playerRef = useRef<Player | null>(null);
 	const hoverTimerRef = useRef<NodeJS.Timeout | null>(null);
 	const previewTimerRef = useRef<NodeJS.Timeout | null>(null);
 
 	const cleanupPlayer = useCallback(() => {
-		if (playerRef.current) {
-			playerRef.current.dispose();
-			playerRef.current = null;
-		}
 		if (previewTimerRef.current) {
 			clearTimeout(previewTimerRef.current);
 			previewTimerRef.current = null;
 		}
+		if (playerRef.current) {
+			playerRef.current.dispose();
+			playerRef.current = null;
+		}
+		// dispose 후 container 내부 정리
+		if (videoContainerRef.current) {
+			videoContainerRef.current.innerHTML = '';
+		}
 	}, []);
 
 	const startPreview = useCallback(() => {
-		if (!url || !videoRef.current) return;
+		if (!url || !videoContainerRef.current || playerRef.current) return;
 
-		const video = videoRef.current;
+		// video 요소를 동적으로 생성
+		const video = document.createElement('video');
+		video.className = 'video-js';
+		video.muted = true;
+		video.playsInline = true;
+		videoContainerRef.current.appendChild(video);
 
 		const player = videojs(video, {
 			controls: false,
@@ -73,17 +83,18 @@ export const VideoCard = ({
 			player.play()?.catch(() => {});
 		});
 
-		// 라이브일 때만 10초 후 미리보기 종료
-		if (isLive) {
+		// 라이브일 때만 10초 후 미리보기 종료 (top video 제외)
+		if (isLive && !isTopVideo) {
 			previewTimerRef.current = setTimeout(() => {
 				setIsLoading(false);
 				setIsVideoReady(false);
 				cleanupPlayer();
 			}, PREVIEW_DURATION);
 		}
-	}, [url, cleanupPlayer, isLive]);
+	}, [url, cleanupPlayer, isLive, isTopVideo]);
 
 	const handleMouseEnter = () => {
+		if (isTopVideo) return;
 		setIsHovering(true);
 		hoverTimerRef.current = setTimeout(() => {
 			setIsLoading(true);
@@ -91,6 +102,7 @@ export const VideoCard = ({
 	};
 
 	const handleMouseLeave = () => {
+		if (isTopVideo) return;
 		setIsHovering(false);
 		setIsLoading(false);
 		setIsVideoReady(false);
@@ -99,14 +111,22 @@ export const VideoCard = ({
 			clearTimeout(hoverTimerRef.current);
 			hoverTimerRef.current = null;
 		}
+
 		cleanupPlayer();
 	};
 
+	// top video는 마운트 시 바로 재생
 	useEffect(() => {
-		if (isLoading && isHovering) {
+		if (isTopVideo && url) {
 			startPreview();
 		}
-	}, [isLoading, isHovering, startPreview]);
+	}, [isTopVideo, url, startPreview]);
+
+	useEffect(() => {
+		if (!isTopVideo && isLoading && isHovering) {
+			startPreview();
+		}
+	}, [isLoading, isHovering, startPreview, isTopVideo]);
 
 	useEffect(() => {
 		return () => {
@@ -123,19 +143,13 @@ export const VideoCard = ({
 				onMouseEnter={handleMouseEnter}
 				onMouseLeave={handleMouseLeave}
 			>
-				<S.Thumbnail src={displayThumbnail} alt={title} />
-				{isLoading && url && (
-					<>
-						<S.PreviewVideo
-							ref={videoRef}
-							muted
-							playsInline
-							$isVisible={isVideoReady}
-						/>
-						{isVideoReady && isLive && (
-							<S.LiveBadge>LIVE</S.LiveBadge>
-						)}
-					</>
+				{!isTopVideo && <S.Thumbnail src={displayThumbnail} alt={title} />}
+				<S.PreviewVideoContainer
+					ref={videoContainerRef}
+					$isVisible={isTopVideo || isVideoReady}
+				/>
+				{(isTopVideo || isVideoReady) && isLive && (
+					<S.LiveBadge>LIVE</S.LiveBadge>
 				)}
 			</S.VideoContainer>
 			<S.LiveInfo>

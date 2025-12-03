@@ -29,15 +29,26 @@ export const Thumbnail = styled.img`
 	object-fit: cover;
 `
 
-export const PreviewVideo = styled.video<{ $isVisible?: boolean }>`
+export const PreviewVideoContainer = styled.div<{ $isVisible?: boolean }>`
 	position: absolute;
 	top: 0;
 	left: 0;
 	width: 100%;
 	height: 100%;
-	object-fit: cover;
 	opacity: ${({ $isVisible }) => ($isVisible ? 1 : 0)};
 	transition: opacity 0.3s ease-in-out;
+	pointer-events: none;
+
+	.video-js {
+		width: 100%;
+		height: 100%;
+	}
+
+	video {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
 `
 
 export const SeekbarContainer = styled.div`

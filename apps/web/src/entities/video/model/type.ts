@@ -24,4 +24,5 @@ export interface IStreamDataResponse {
   thumbnail? : string;
   viewCount: number;
   isLive?: boolean;
+  isTopVideo?: boolean;
 }
