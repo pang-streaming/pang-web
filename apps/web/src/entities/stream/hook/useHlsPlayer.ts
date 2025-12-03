@@ -1,5 +1,7 @@
 import { RefObject, useEffect, useRef, useState } from "react";
-import Hls from "hls.js";
+import videojs from "video.js";
+import type Player from "video.js/dist/types/player";
+import "video.js/dist/video-js.css";
 
 const convertToLocalHlsUrl = (url: string): string => {
   if (!url.endsWith("playlist.m3u8")) return url;
@@ -28,7 +30,7 @@ export const useHlsPlayer = (
   streamUrl?: string,
   isLive: boolean = true
 ) => {
-  const hlsRef = useRef<Hls | null>(null);
+  const playerRef = useRef<Player | null>(null);
   const [currentStreamUrl, setCurrentStreamUrl] = useState<string | undefined>(undefined);
 
   // streamUrl이 변경되면 플레이어 체크 후 URL 설정
@@ -56,155 +58,77 @@ export const useHlsPlayer = (
     const video = videoRef.current;
     if (!video || !currentStreamUrl) return;
 
-    // 기존 hls 인스턴스 정리
-    if (hlsRef.current) {
-      hlsRef.current.destroy();
-      hlsRef.current = null;
+    // 기존 player 인스턴스 정리
+    if (playerRef.current) {
+      playerRef.current.dispose();
+      playerRef.current = null;
     }
 
-    if (video.canPlayType("application/vnd.apple.mpegurl")) {
-      // Safari 네이티브 HLS 지원
-      video.src = currentStreamUrl;
-      video.muted = true;
-      video.play().catch((err) => {
-        console.warn("Auto-play blocked on Safari:", err);
-      });
-    } else if (Hls.isSupported()) {
-      const hlsConfig = isLive
-        ? {
-            enableWorker: true,
-            lowLatencyMode: true,
-            liveSyncDurationCount: 3,
-            liveMaxLatencyDurationCount: 6,
-            maxBufferLength: 30,
-            maxMaxBufferLength: 60,
-          }
-        : {
-            enableWorker: true,
-            lowLatencyMode: false,
-            startPosition: 0,
-            maxBufferLength: 60,
-            maxMaxBufferLength: 120,
-          };
+    // video.js 플레이어 초기화 (커스텀 UI 사용을 위해 controls: false)
+    const player = videojs(video, {
+      controls: false,
+      autoplay: true,
+      muted: true,
+      preload: "auto",
+      fluid: false,
+      liveui: isLive,
+      html5: {
+        vhs: {
+          overrideNative: true,
+          enableLowInitialPlaylist: !isLive,
+          smoothQualityChange: true,
+          fastQualityChange: true,
+        },
+        nativeAudioTracks: false,
+        nativeVideoTracks: false,
+      },
+      sources: [
+        {
+          src: currentStreamUrl,
+          type: "application/x-mpegURL",
+        },
+      ],
+    });
 
-      const hls = new Hls(hlsConfig);
+    playerRef.current = player;
 
-      hlsRef.current = hls;
-
-      hls.loadSource(currentStreamUrl);
-      hls.attachMedia(video);
-
-      hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        video.muted = true;
-        // VOD일 때 0초부터 시작
-        if (!isLive) {
-          video.currentTime = 0;
-        }
-        video.play().catch((err) => {
-          console.warn("Auto-play blocked:", err);
-        });
-      });
-
-      if (isLive) {
-        hls.on(Hls.Events.FRAG_LOADED, () => {
-          // 세그먼트 로드 후 재생이 멈춰있으면 다시 시작 (라이브만)
-          if (video.paused && video.readyState >= 3) {
-            video.play().catch(() => {});
-          }
-        });
+    player.ready(() => {
+      // VOD일 때 0초부터 시작
+      if (!isLive) {
+        player.currentTime(0);
       }
-
-      hls.on(Hls.Events.ERROR, (_, data) => {
-        console.error("HLS error:", data);
-        if (data.fatal) {
-          switch (data.type) {
-            case Hls.ErrorTypes.NETWORK_ERROR:
-              hls.startLoad();
-              break;
-            case Hls.ErrorTypes.MEDIA_ERROR:
-              hls.recoverMediaError();
-              break;
-            default:
-              hls.destroy();
-              break;
-          }
-        }
+      player.play()?.catch((err) => {
+        console.warn("Auto-play blocked:", err);
       });
+    });
 
-      return () => {
-        hls.destroy();
-        hlsRef.current = null;
-      };
-    } else {
-      console.error("HLS is not supported in this browser");
-    }
+    player.on("error", () => {
+      const error = player.error();
+      console.error("Video.js error:", error);
+
+      // 네트워크 에러 시 재시도
+      if (error?.code === 2) {
+        setTimeout(() => {
+          player.src({
+            src: currentStreamUrl,
+            type: "application/x-mpegURL",
+          });
+          player.play()?.catch(() => {});
+        }, 1000);
+      }
+    });
+
+    return () => {
+      if (playerRef.current) {
+        playerRef.current.dispose();
+        playerRef.current = null;
+      }
+    };
   }, [currentStreamUrl, isLive]);
 
   return {
     streamUrl: currentStreamUrl,
     setStreamUrl: setCurrentStreamUrl,
+    player: playerRef.current,
   };
 };
-
-
-// export function useHlsPlayer(videoRef: RefObject<HTMLVideoElement | null>, sourceUrl?: string) {
-//   const hlsRef = useRef<Hls | null>(null);
-
-//   useEffect(() => {
-//     const video = videoRef.current;
-//     if (!video || !sourceUrl) return;
-
-//     if (Hls.isSupported()) {
-//       if (hlsRef.current) hlsRef.current.destroy();
-//       const hls = new Hls({
-//         maxBufferLength: 10,
-//         maxMaxBufferLength: 30,
-//         lowLatencyMode: true,
-//         enableWorker: true,
-//         backBufferLength: 90,
-//       });
-      
-//       hls.loadSource(sourceUrl);
-
-//       hls.attachMedia(video);
-      
-//       hls.on(Hls.Events.MANIFEST_PARSED, () => {
-//         console.log("HLS manifest parsed successfully");
-//       });                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
-      
-//       hls.on(Hls.Events.ERROR, (event, data) => {
-//         console.error("HLS error:", data);
-//         if (data.fatal) {
-//           switch (data.type) {
-//             case Hls.ErrorTypes.NETWORK_ERROR:
-//               console.error("Fatal network error encountered, trying to recover...");
-//               hls.startLoad();
-//               break;
-//             case Hls.ErrorTypes.MEDIA_ERROR:
-//               console.error("Fatal media error encountered, trying to recover...");
-//               hls.recoverMediaError();
-//               break;
-//             default:
-//               console.error("Fatal error, cannot recover");
-//               hls.destroy();
-//               break;
-//           }
-//         }
-//       });
-      
-//       hlsRef.current = hls;
-//       return () => hls.destroy();
-//     } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-//       video.src = sourceUrl;
-//       video.addEventListener('error', (e) => {
-//         console.error("Native HLS error:", e);
-//       });
-//       video.addEventListener('loadstart', () => {
-//         console.log("Native HLS load started");
-//       });
-//     } else {
-//       console.error("HLS is not supported in this browser");
-//     }
-//   }, [videoRef, sourceUrl]);
-// }
-

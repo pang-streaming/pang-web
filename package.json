@@ -10,15 +10,14 @@
     "check-types": "turbo run check-types"
   },
   "dependencies": {
-    "@eyevinn/whip-web-client": "^1.1.7",
     "@cloudflare/stream-react": "^1.9.3",
+    "@eyevinn/whip-web-client": "^1.1.7",
     "@mux/mux-video-react": "^0.27.0",
     "@pang/shared": "workspace:*",
     "@pixiv/three-vrm": "^2.1.0",
     "@swc/helpers": "^0.5.17",
     "@tanstack/react-query": "^5.85.5",
     "axios": "^1.11.0",
-    "hls.js": "^1.6.12",
     "js-confetti": "^0.13.1",
     "kalidokit": "^1.1.5",
     "qs": "^6.14.0",

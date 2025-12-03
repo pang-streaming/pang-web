@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import Hls from "hls.js";
+import videojs from "video.js";
+import type Player from "video.js/dist/types/player";
 import * as S from "./style";
 import normalProfile from "@/app/assets/images/normal_profile.svg";
 import {useVideoCard} from "@/entities/video/hooks/controller/useVideoCard";
@@ -25,14 +26,14 @@ export const VideoCard = ({
 	const [isLoading, setIsLoading] = useState(false);
 	const [isVideoReady, setIsVideoReady] = useState(false);
 	const videoRef = useRef<HTMLVideoElement>(null);
-	const hlsRef = useRef<Hls | null>(null);
+	const playerRef = useRef<Player | null>(null);
 	const hoverTimerRef = useRef<NodeJS.Timeout | null>(null);
 	const previewTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-	const cleanupHls = useCallback(() => {
-		if (hlsRef.current) {
-			hlsRef.current.destroy();
-			hlsRef.current = null;
+	const cleanupPlayer = useCallback(() => {
+		if (playerRef.current) {
+			playerRef.current.dispose();
+			playerRef.current = null;
 		}
 		if (previewTimerRef.current) {
 			clearTimeout(previewTimerRef.current);
@@ -44,47 +45,43 @@ export const VideoCard = ({
 		if (!url || !videoRef.current) return;
 
 		const video = videoRef.current;
-		let hasStartedPlaying = false;
 
-		const onCanPlay = () => {
-			if (!hasStartedPlaying) {
-				hasStartedPlaying = true;
-				setIsVideoReady(true);
-				video.play().catch(() => {});
-			}
-		};
+		const player = videojs(video, {
+			controls: false,
+			autoplay: true,
+			muted: true,
+			preload: "auto",
+			html5: {
+				vhs: {
+					overrideNative: true,
+				},
+				nativeAudioTracks: false,
+				nativeVideoTracks: false,
+			},
+			sources: [
+				{
+					src: url,
+					type: "application/x-mpegURL",
+				},
+			],
+		});
 
-		if (video.canPlayType("application/vnd.apple.mpegurl")) {
-			video.src = url;
-			video.muted = true;
-			video.addEventListener('canplay', onCanPlay, { once: true });
-		} else if (Hls.isSupported()) {
-			const hls = new Hls({
-				enableWorker: true,
-				lowLatencyMode: isLive,
-			});
-			hlsRef.current = hls;
-			hls.loadSource(url);
-			hls.attachMedia(video);
-			hls.on(Hls.Events.FRAG_BUFFERED, () => {
-				if (!hasStartedPlaying) {
-					hasStartedPlaying = true;
-					video.muted = true;
-					setIsVideoReady(true);
-					video.play().catch(() => {});
-				}
-			});
-		}
+		playerRef.current = player;
+
+		player.ready(() => {
+			setIsVideoReady(true);
+			player.play()?.catch(() => {});
+		});
 
 		// 라이브일 때만 10초 후 미리보기 종료
 		if (isLive) {
 			previewTimerRef.current = setTimeout(() => {
 				setIsLoading(false);
 				setIsVideoReady(false);
-				cleanupHls();
+				cleanupPlayer();
 			}, PREVIEW_DURATION);
 		}
-	}, [url, cleanupHls, isLive]);
+	}, [url, cleanupPlayer, isLive]);
 
 	const handleMouseEnter = () => {
 		setIsHovering(true);
@@ -102,7 +99,7 @@ export const VideoCard = ({
 			clearTimeout(hoverTimerRef.current);
 			hoverTimerRef.current = null;
 		}
-		cleanupHls();
+		cleanupPlayer();
 	};
 
 	useEffect(() => {
@@ -113,12 +110,12 @@ export const VideoCard = ({
 
 	useEffect(() => {
 		return () => {
-			cleanupHls();
+			cleanupPlayer();
 			if (hoverTimerRef.current) {
 				clearTimeout(hoverTimerRef.current);
 			}
 		};
-	}, [cleanupHls]);
+	}, [cleanupPlayer]);
 
 	return (
 		<S.LiveCardContainer onClick={handleOnClickVideoCard}>
